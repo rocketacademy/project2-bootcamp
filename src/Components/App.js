@@ -11,22 +11,8 @@ import Feed from "./Feed"
 import Error from "./Error"
 import Movie from "./Movie"
 import Profile from "./Profile"
+import ReviewCreator from "./ReviewCreator"
 import "./App.css";
-
-function NavBar (){
-  return(
-    <div>
-      <nav>
-        <Link exact to="/">Landing Page</Link>
-        <Link to="/login">Login</Link>
-        <Link to = "/feed">Feed</Link>
-        <Link to = "/error">Error</Link>
-        <Link to = "/:profileId/:profilename">Profile</Link>
-        <Link to = "/:movieId/:movietitle">Movie</Link>
-      </nav>
-    </div>
-  )
-}
 
 
 function App() {
@@ -39,8 +25,9 @@ function App() {
               <Route path="/login" element= {<Login />}/>
               <Route path="/feed" element= {<Feed />}/>
               <Route path="*" element= {<Error/>}/>
-              <Route path="/:profileId/:profilename" element= {<Profile/>}/>
-              <Route path="/:movieId/:movietitle" element= {<Movie/>}/>
+              <Route path="/profile" element= {<Profile/>}/>
+              <Route path="/movie/:movieId/:movietitle" element= {<Movie/>}/>
+              <Route path="/create-review" element = {<ReviewCreator/>}/>
             </Routes>            
           </BrowserRouter>
       </header>

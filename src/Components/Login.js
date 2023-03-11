@@ -22,8 +22,8 @@ export default function Login (){
 
   function handleSubmit(e){
     e.preventDefault();
-    if(e.name === 'login'){
-      console.log('login')
+    if(mode === 'Login'){
+      console.log('loginrun')
       if (email === '' || password === ''){
         alert('Please enter an email and passowrd')
       } else{
@@ -49,8 +49,8 @@ export default function Login (){
           }
         });
       }
-    } else if (e.name === 'signup'){
-      console.log('signup')
+    } else if (mode === 'Register'){
+      console.log('signup run')
       if (email === '' || password === ''){
         alert('Please enter an email and passowrd')
       } else if(email.indexOf('@')===-1 || email.indexOf('@') === email.length-1){
@@ -75,20 +75,25 @@ export default function Login (){
   function changeLogin(e){
     setMode('Login')
     console.log(mode)
+    setPassword('')
+    setEmail('')
   }
   
   function changeRegister(e){
     setMode('Register')
     console.log(mode)
+    setPassword('')
+    setEmail('')
   }
 
   return(
     <div>
+      <h1>{mode}</h1>
       <button onClick ={changeLogin}>Login</button>
       <button onClick ={changeRegister}>Register</button>
       <form onSubmit = {handleSubmit}>
         <input type= 'text' name= 'email' placeholder = 'Email' value = {email} onChange = {handleInput}/>
-        <input type= 'text' name= 'password' placeholder = 'Password' value = {password} onChange = {handleInput}/>
+        <input type= 'password' name= 'password' placeholder = 'Password' value = {password} onChange = {handleInput}/>
         { mode === 'Login'
         ? <input name = 'login' type = 'submit' value = 'Login'/>
         : <input name = 'signup' type = 'submit' value = 'Sign Up'/>

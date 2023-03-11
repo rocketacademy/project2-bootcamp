@@ -1,0 +1,13 @@
+.search-flex-container{
+  width: 100%;
+  display: flex;
+  flex-wrap: nowrap;
+}
+
+.search-flex-container:hover{
+  background-color: #000;
+}
+
+.search-preview-image {
+  max-width: 40px;
+}

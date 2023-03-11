@@ -1,0 +1,9 @@
+.selected-movie-flex{
+  display: flex;
+  flex-direction: column;
+}
+
+.selected-movie-poster{
+  max-height: 40vh;
+  align-self: center;
+}
