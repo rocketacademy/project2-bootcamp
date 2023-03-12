@@ -9,6 +9,7 @@ import "./ReviewCreator.css";
 import StarRating from './StarRating';
 
 const DB_REVIEWS_KEY = "reviews";
+const DB_MOVIES_KEY = "movies";
 
 export default function ReviewCreator (){
   const navigate = useNavigate();
@@ -17,6 +18,8 @@ export default function ReviewCreator (){
   const [searchResult, setSearchResult] = useState([])
   const [movie, setMovie] = useState(null)
   const [rating, setRating] = useState(null)
+  const [reviews, setReviews] = useState([]);
+
 
 
   function handleReviewInput(e){
@@ -37,9 +40,23 @@ export default function ReviewCreator (){
         dateTime: currDate.toLocaleDateString() + " " + currDate.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}),
       });
       setReviewInput('');
+      addMovieDatabase();
       navigate("/movie/" + movie.id + "/" + movie.title)
     }
   }
+
+  function addMovieDatabase(){
+    if (reviews.length === 0){
+      const moviesListRef = ref(database, DB_MOVIES_KEY);
+      const newMovieRef = push(moviesListRef);
+      set(newMovieRef, {
+        id: movie.id,
+        title: movie.title,
+        imgPath: movie.imgPath
+      });
+    }
+  }
+
 
   function handleSearchInput(e) {
     setSearchInput(e.target.value);
@@ -49,9 +66,7 @@ export default function ReviewCreator (){
   function fetchSearchResult(e){
     axios.get(`https://api.themoviedb.org/3/search/movie?api_key=${process.env.REACT_APP_MOVIES_API_KEY}&language=en-US&query=${e.target.value}`).then(function (response) {
     const slicedArray = response.data.results.slice(0,5)
-    console.log(response.data.results)
     setSearchResult(slicedArray);
-    console.log(searchResult);
     }).catch(function (error) {
         console.error(error);
     });  
@@ -63,9 +78,19 @@ export default function ReviewCreator (){
       title: title,
       imgPath: imgPath
     })
+    fetchReviews(id);
+    console.log(reviews);
     setSearchResult([]);
     setSearchInput('');
   }
+
+  function fetchReviews (id){
+    console.log('run')
+    const reviewsRef = ref(database, DB_REVIEWS_KEY + "/" + id);
+    onChildAdded(reviewsRef, (data) => {
+      setReviews((prev)=> [...prev, {key: data.key, val: data.val()}])
+    })
+  } 
 
   function changeStarRating(rating){
     setRating(rating);
@@ -75,8 +100,7 @@ export default function ReviewCreator (){
     <SearchResult handleResultClick = {handleResultClick} movieDetails = {result} key = {id}/>
   ));
   
-  console.log(rating)
-  console.log(reviewInput)
+  console.log(reviews);
   return(
     <div>
       <h1>REVIEW CREATOOOOOOOOOR</h1>

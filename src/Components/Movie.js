@@ -1,13 +1,14 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-import { onChildAdded, push, ref, set } from "firebase/database";
-import { storage, database, auth } from "../firebase";
+import { onChildAdded, push, ref, set, get } from "firebase/database";
+import { storage, database, auth  } from "../firebase";
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 import "./Movie.css"
 import StarRating from './StarRating';
 
 const DB_REVIEWS_KEY = "reviews";
+const DB_MOVIES_KEY = "movies";
 
 export default function Movie (){
   const [reviews, setReviews] = useState([]);
@@ -21,7 +22,6 @@ export default function Movie (){
   
   useEffect(()=>{
     axios.get(`https://api.themoviedb.org/3/movie/${movieId}?api_key=${process.env.REACT_APP_MOVIES_API_KEY}&language=en-US`).then(function (response) {
-      console.log(response)
       setImgPath(()=> imgPath + response.data.poster_path)
     }).catch(function (error) {
         console.error(error);
@@ -54,8 +54,23 @@ export default function Movie (){
         dateTime: currDate.toLocaleDateString() + " " + currDate.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}),
         rating: rating
       });
+      addMovieDatabase();
       setReviewInput('');
     }
+  }
+
+  function addMovieDatabase(){
+    if (reviews.length === 0){
+      const moviesListRef = ref(database, DB_MOVIES_KEY);
+      const newMovieRef = push(moviesListRef);
+      set(newMovieRef, {
+        id: movieId,
+        title: movieTitle,
+        imgPath: imgPath
+      });
+    }
+    console.log('reviews')
+    console.log(reviews)
   }
 
   let reviewItems = reviews.map((review) => (
@@ -68,7 +83,7 @@ export default function Movie (){
   function changeStarRating(rating){
     setRating(rating);
   }
-  
+  console.log(reviews)
   return(
     <div>
       <h1>{movieTitle}</h1>
