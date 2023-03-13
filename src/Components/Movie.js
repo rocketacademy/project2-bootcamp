@@ -1,11 +1,12 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-import { onChildAdded, push, ref, set, get } from "firebase/database";
+import { onChildAdded, onChildRemoved, push, ref, set, get, update, remove } from "firebase/database";
 import { storage, database, auth  } from "../firebase";
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 import "./Movie.css"
 import StarRating from './StarRating';
+import ReviewBlock from './ReviewBlock';
 
 const DB_REVIEWS_KEY = "reviews";
 const DB_MOVIES_KEY = "movies";
@@ -34,7 +35,7 @@ export default function Movie (){
     onChildAdded(reviewsRef, (data) => {
       setReviews((prev)=> [...prev, {key: data.key, val: data.val()}])
     })
-  },[])
+  }, [])
 
   function handleReviewInput(e){
     setReviewInput(e.target.value)
@@ -69,21 +70,93 @@ export default function Movie (){
         imgPath: imgPath
       });
     }
-    console.log('reviews')
-    console.log(reviews)
+  }
+
+  function handleReviewEdit(input, id){
+    let index = -1;
+    for (let i = 0; i < reviews.length; i++){
+      if(reviews[i].key === id){
+        index = i;
+      }
+    }
+    
+    let updatedReview = {...reviews[index]};
+    updatedReview.val.val = input;
+    
+
+    console.log(updatedReview)
+
+    let newReviewsArray  = [...reviews];
+
+    newReviewsArray.splice(index, 1, updatedReview);
+
+    setReviews(newReviewsArray);
+  }
+
+  function handleStarsEdit( rating, id){
+    let index = -1;
+    for (let i = 0; i < reviews.length; i++){
+      if(reviews[i].key === id){
+        index = i;
+      }
+    }
+    
+    let updatedReview = {...reviews[index]};
+    updatedReview.val.rating = rating;
+
+    let newReviewsArray  = [...reviews];
+
+    newReviewsArray.splice(index, 1, updatedReview);
+
+    setReviews(newReviewsArray);
+  }
+
+  function confirmChanges(reviewText, id ){
+    const reviewRef = ref(database, DB_REVIEWS_KEY+ "/" + movieId + "/" + id);
+    update(reviewRef, {
+      val: reviewText,
+    })
+  }
+
+  function handleDelete(id){
+    const reviewRef = ref(database, DB_REVIEWS_KEY+ "/" + movieId + "/" + id);
+    let updatedArray = [];
+    if (reviews.length >1){
+      let index = -1;
+      for (let i = 0; i < reviews.length; i++){
+        if(reviews[i].key === id){
+          console.log('true')
+          index = i;
+          updatedArray = [...reviews].splice(0, 1)
+        }
+      }
+    }
+    
+    
+    console.log(updatedArray);
+    setReviews(updatedArray);
+    remove(reviewRef);
   }
 
   let reviewItems = reviews.map((review) => (
-    <div>
-      {review.val.val + " - " + [...Array(review.val.rating)].map((star)=>{return "★"}).join('')}<br/>
-      {review.val.dateTime}
-    </div>
-  ));
+      <div>
+        <ReviewBlock
+        reviewText = {review.val.val}
+        id = {review.key}
+        datetime = {review.val.dateTime} 
+        stars = {review.val.rating}
+        handleReviewEdit ={handleReviewEdit}
+        handleStarsEdit = {handleStarsEdit}
+        confirmChanges = {confirmChanges}
+        handleDelete = {handleDelete}
+        />
+      </div>
+    ));
 
   function changeStarRating(rating){
     setRating(rating);
   }
-  console.log(reviews)
+
   return(
     <div>
       <h1>{movieTitle}</h1>
