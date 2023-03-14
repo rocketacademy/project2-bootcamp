@@ -51,7 +51,7 @@ export default function Login (){
       console.log('signup run')
       if (email === '' || password === ''){
         alert('Please enter an email and passowrd')
-      } else if(email.indexOf('@')===-1 || email.indexOf('@') === email.length-1){
+      } else if(email.indexOf('@')===-1 || email.indexOf('@') === email.length-1 || email.indexOf('@') === 0){
         alert('Please use a valid email format')
       } else {
         createUser(email, password).then(()=>{

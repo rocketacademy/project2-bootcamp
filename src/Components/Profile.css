@@ -1,0 +1,5 @@
+.profile-pic {
+  height: 30vw;
+  width: 30vw;
+  object-fit: cover;
+}

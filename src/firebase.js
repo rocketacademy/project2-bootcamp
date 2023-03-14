@@ -1,8 +1,10 @@
 // Import the functions you need from the SDKs you need
+import { ref, getDownloadURL } from "firebase/storage";
+import { updateProfile } from "firebase/auth";
 import { initializeApp } from "firebase/app";
 import { getDatabase } from "firebase/database";
-import { getStorage } from "firebase/storage";
-import { getAuth, setPersistence, browserSessionPersistence } from "firebase/auth";
+import { getStorage, uploadBytes } from "firebase/storage";
+import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_API_KEY,
@@ -21,3 +23,17 @@ const firebaseApp = initializeApp(firebaseConfig);
 export const database = getDatabase(firebaseApp);
 export const storage = getStorage(firebaseApp);
 export const auth = getAuth(firebaseApp);
+
+export async function upload(file, user, setLoading){
+  const fileRef = ref(storage, user.uid + '.png')
+
+  setLoading(true)
+
+  const snapshot = await uploadBytes(fileRef, file)
+  const photoURL = await getDownloadURL(fileRef)
+
+  await updateProfile( user,  {photoURL: photoURL})
+  console.log(user.photoURL)
+  setLoading(false)
+  alert('File Uploaded!')
+}
