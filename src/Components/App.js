@@ -13,13 +13,15 @@ import Movie from "./Movie"
 import Profile from "./Profile"
 import ReviewCreator from "./ReviewCreator"
 import "./App.css";
+import { AuthContextProvider } from "../Context/AuthContext";
 
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <BrowserRouter>
+        <AuthContextProvider>
+          <BrowserRouter>
             <Routes>
               <Route exact path="/" element= {<LandingPage />}/>
               <Route path="/login" element= {<Login />}/>
@@ -28,8 +30,9 @@ function App() {
               <Route path="/profile" element= {<Profile/>}/>
               <Route path="/movie/:movieId/:movietitle" element= {<Movie/>}/>
               <Route path="/create-review" element = {<ReviewCreator/>}/>
-            </Routes>            
+            </Routes>
           </BrowserRouter>
+        </AuthContextProvider>            
       </header>
     </div>
   );

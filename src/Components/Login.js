@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from '../firebase';
 import { useNavigate } from 'react-router-dom';
+import { UserAuth } from '../Context/AuthContext'
 
 export default function Login (){
   const navigate = useNavigate();
@@ -10,6 +11,8 @@ export default function Login (){
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
   const [mode, setMode ] = useState('Login')
+
+  const { createUser, signIn } = UserAuth();
   
   function handleInput(e){
     if (e.target.name === 'email'){
@@ -20,23 +23,18 @@ export default function Login (){
     console.log(`email: ${email} and password: ${password}`)
   }
 
-  function handleSubmit(e){
+  function handleSubmit (e) {
     e.preventDefault();
+    console.log('run')
+    
     if(mode === 'Login'){
       console.log('loginrun')
       if (email === '' || password === ''){
         alert('Please enter an email and passowrd')
       } else{
-        signInWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-          // Signed in
-          console.log('signed in!')
-          console.log(userCredential)
-          const user = userCredential.user;
-          setUser(user);
-          navigate('/feed')
-        })
-        .catch((error) => {
+        signIn(email, password).then(()=>{
+        navigate('/profile')
+      }).catch((error) => {
           const errorMessage = error.message;
           console.log(errorMessage);
           console.log(error.code)
@@ -56,21 +54,17 @@ export default function Login (){
       } else if(email.indexOf('@')===-1 || email.indexOf('@') === email.length-1){
         alert('Please use a valid email format')
       } else {
-        createUserWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-        // Signed in
-        console.log(userCredential)
-        const user = userCredential.user;
-        setUser(user);
-        navigate('/feed')
-      })
-      .catch((error) => {
-        console.log(error.message);
-        console.log(error.code)
-        });
+        createUser(email, password).then(()=>{
+          navigate('/profile')
+        }).catch((error) => {
+          const errorMessage = error.message;
+          console.log(errorMessage);
+          console.log(error.code)
+          })
+        };
       } 
     }
-  }
+  
   
   function changeLogin(e){
     setMode('Login')
