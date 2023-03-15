@@ -22,6 +22,10 @@ export default function Profile (){
     }
   }, [user.photoURL])
 
+  useEffect(()=>{
+    setDisplayName(user.displayName)
+  },[])
+
   function handleDisplayNameEdit(e){
     setDisplayName(()=> e.target.value)
   }
