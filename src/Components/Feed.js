@@ -35,7 +35,7 @@ export default function Feed (){
   }
 
   function handleProfileClick(){
-    navigate("/profile")
+    navigate("/profile/" + user.uid)
   }
 
   function handlePosterClick(e){

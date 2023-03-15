@@ -1,7 +1,5 @@
 import React from 'react';
 import { useState } from 'react';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from '../firebase';
 import { useNavigate } from 'react-router-dom';
 import { UserAuth } from '../Context/AuthContext'
 
@@ -9,10 +7,9 @@ export default function Login (){
   const navigate = useNavigate();
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [user, setUser] = useState(null)
   const [mode, setMode ] = useState('Login')
 
-  const { createUser, signIn } = UserAuth();
+  const { createUser, signIn, user } = UserAuth();
   
   function handleInput(e){
     if (e.target.name === 'email'){
@@ -55,7 +52,7 @@ export default function Login (){
         alert('Please use a valid email format')
       } else {
         createUser(email, password).then(()=>{
-          navigate('/profile')
+          navigate('/create-profile')
         }).catch((error) => {
           const errorMessage = error.message;
           console.log(errorMessage);

@@ -20,8 +20,6 @@ export default function ReviewCreator (){
   const [rating, setRating] = useState(null)
   const [reviews, setReviews] = useState([]);
 
-
-
   function handleReviewInput(e){
     setReviewInput(e.target.value)
   }

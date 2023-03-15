@@ -1,78 +1,41 @@
-import React from 'react';
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { UserAuth } from '../Context/AuthContext'
-import { upload, setUserName,setDefaultPFP } from '../firebase';
+import React, { useEffect, useState } from "react";
+import { UserAuth } from "../Context/AuthContext";
+import { useLocation } from "react-router-dom";
+import { ref, child, get } from "firebase/database";
+import { database } from "../firebase";
 import "./Profile.css"
 
-export default function Profile (){
-  const navigate = useNavigate();
-  const { user , logout } = UserAuth();
-  const [ displayName, setDisplayName ] = useState('');
-  const [ profilePic, setProfilePic] = useState(null);
-  const [ loading, setLoading ] = useState(false);
-  const [ photoURL, setPhotoURL] = useState('https://i.pinimg.com/564x/9b/47/a0/9b47a023caf29f113237d61170f34ad9.jpg')
-  
-  useEffect(()=>{
-    if(user ?.photoURL){
-      setPhotoURL(user.photoURL)
-    }
-  }, [user.photoURL])
+const DB_USERS_KEY = "users";
+
+export default function Profile(){
+  const { user } = UserAuth();
+  const [profile, setProfile] = useState({displayName:'', photoURL:''})
+  const location = useLocation();
+  const userId = location.pathname.split("/")[2];
 
   useEffect(()=>{
-    if(user ?.displayName){
-      setDisplayName(user.displayName)
+    const userRef = ref(database, DB_USERS_KEY);
+    get(child(userRef, userId)).then((snapshot) => {
+    if (snapshot.exists()) {
+      setProfile(snapshot.val())
+      setTimeout(console.log(profile.displayName), 500)
+    } else {
+      console.log("No data available");
     }
-  }, [user.photoURL])
-
-  function handleDisplayNameEdit(e){
-    setDisplayName(()=> e.target.value)
-  }
-  
-  function handleLogout(){
-    logout();
-    navigate("/login")
-  }
-
-  function handleSubmit(e){
-    e.preventDefault();
-    setUserName(displayName, user, setLoading);
-    if(profilePic === null){
-      setDefaultPFP(photoURL, user, setLoading)
-    }
-    navigate("/feed")
-  }
-
-  function handleFile(e){
-    if(e.target.files[0]){
-      setProfilePic(e.target.files[0])
-    }
-  }
-
-  function uploadProfilePic (){
-    upload(profilePic, user, setLoading);
-  }
+  }).catch((error) => {
+    console.error(error);
+  });
+  },[])
 
   return(
-    <div>
-      <img className ="profile-pic" src={photoURL} alt=''/><br/>
-      Profile Picture
-      <br/>
-      <input
-      type="file"
-      accept="image/*"
-      onChange = {handleFile}/>
-      <br/>
-      <button onClick = {uploadProfilePic} disabled={!profilePic || loading}>Upload</button>
-      <form id="profile-create" onSubmit={handleSubmit}>
-        Email: <input type="text" disabled value = {user.email}/>
-        <br/>
-        Display Name: <input type='text' value = {displayName} placeholder ={'Enter a Display Name'} onChange = {handleDisplayNameEdit}/>
-        <br/>
-        <input type="submit" value="Submit"/>
-      </form>
-      <br/>
-      <button onClick={handleLogout}>Logout</button>
-    </div>
-  )
+  <div>
+    <img src={profile.photoURL} alt=''/>
+    <h3>{profile.displayName}</h3>
+    <br/>
+    <h3>Films Watched:</h3>
+    <p>None Yet!</p>
+  </div>)
 }
+
+
+

@@ -3,9 +3,11 @@ import { useState, useEffect } from 'react';
 import { retrievePFP } from '../firebase';
 import { UserAuth } from '../Context/AuthContext';
 import "./ReviewBlock.css"
+import { Navigate, useNavigate } from 'react-router-dom';
 
 export default function ReviewBlock (props){
   const { user } = UserAuth();
+  const navigate = useNavigate();
   const [editMode, setEditMode] = useState(false);
   const [photoURL, setPhotoURL] = useState('https://i.pinimg.com/564x/9b/47/a0/9b47a023caf29f113237d61170f34ad9.jpg');
   
@@ -30,6 +32,10 @@ export default function ReviewBlock (props){
     props.handleDelete(props.id)
   }
 
+  function profileClick(){
+    navigate(`/profile/${props.userId}`)
+  }
+
   let editPanel = 
     <div>
       {editMode===true
@@ -42,14 +48,14 @@ export default function ReviewBlock (props){
     <div>
         {editMode === true
         ? <div>
-            <img className = "review-profile-pic" src = {photoURL} alt=''/>
-            <p>{props.userDisplay}</p>
+            <img onClick={profileClick} className = "review-profile-pic" src = {photoURL} alt=''/>
+            <p onClick={profileClick}>{props.userDisplay}</p>
             <input type= 'text' value = {props.reviewText} onChange={handleReviewInput}/>
             <p>{props.datetime}</p>
           </div>
         : <div>
-            <img className = "review-profile-pic" src = {photoURL} alt=''/>
-            <p>{props.userDisplay}</p>
+            <img onClick={profileClick} className = "review-profile-pic" src = {photoURL} alt=''/>
+            <p onClick={profileClick}>{props.userDisplay}</p>
             <p>{props.reviewText} - {[...Array(props.stars)].map((star)=>{return "★"}).join('')}</p>
             <p>{props.datetime}</p>
           </div>}
