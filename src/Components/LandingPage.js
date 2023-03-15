@@ -1,10 +1,31 @@
-import React from 'react';
-import Movie from './Movie';
+import React, { useEffect } from 'react';
+import { UserAuth } from '../Context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 export default function LandingPage (){
+  const { user } = UserAuth();
+  const navigate = useNavigate();
+  console.log(user===null)
+  
+  useEffect(()=>{
+    if (user){
+      redirectToFeed()
+     }else{
+      redirectToLogin()
+     }
+  })
+
+  function redirectToLogin(){
+    navigate("/login")
+  }
+  
+  function redirectToFeed(){
+    navigate("/feed")
+  }
+
   return(
-    <div>
-      <h1>LandingPage</h1>
-    </div>
+    <>
+      <h1>LOADING......</h1>
+    </>
   )
 }

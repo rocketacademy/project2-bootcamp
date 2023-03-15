@@ -2,9 +2,12 @@
 import { ref, getDownloadURL } from "firebase/storage";
 import { updateProfile } from "firebase/auth";
 import { initializeApp } from "firebase/app";
-import { getDatabase } from "firebase/database";
+import { getDatabase, remove } from "firebase/database";
 import { getStorage, uploadBytes } from "firebase/storage";
 import { getAuth } from "firebase/auth";
+
+const DB_REVIEWS_KEY = "reviews";
+const DB_MOVIES_KEY = "movies";
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_API_KEY,
@@ -56,4 +59,10 @@ export async function retrievePFP(userId, setPhotoURL){
   const photoURL = await getDownloadURL(fileRef).then((pfpURL)=>{
     setPhotoURL(pfpURL)
   })
+}
+
+export async function deleteMovieReview(reviewRef, checkMovieDatabase){
+  await remove(reviewRef)
+  console.log('item deleted')
+  checkMovieDatabase();
 }

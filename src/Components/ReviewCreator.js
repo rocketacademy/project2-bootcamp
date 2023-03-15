@@ -1,8 +1,9 @@
 import React from 'react';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { onChildAdded, push, ref, set } from "firebase/database";
-import { storage, database, auth } from "../firebase";
+import { ref, set } from "firebase/database";
+import { database } from "../firebase";
+import { UserAuth } from '../Context/AuthContext';
 import axios from 'axios';
 import SearchResult from './SearchResult';
 import "./ReviewCreator.css";
@@ -13,12 +14,12 @@ const DB_MOVIES_KEY = "movies";
 
 export default function ReviewCreator (){
   const navigate = useNavigate();
+  const { user } = UserAuth();
   const [reviewInput, setReviewInput] = useState('')
   const [searchInput, setSearchInput] = useState('')
   const [searchResult, setSearchResult] = useState([])
   const [movie, setMovie] = useState(null)
   const [rating, setRating] = useState(null)
-  const [reviews, setReviews] = useState([]);
 
   function handleReviewInput(e){
     setReviewInput(e.target.value)
@@ -29,32 +30,25 @@ export default function ReviewCreator (){
     if (rating === null || reviewInput === ''){
       alert('Please enter a rating or review')
     } else{
-      const reiewsListRef = ref(database, DB_REVIEWS_KEY + "/" + movie.id);
-      const newReviewRef = push(reiewsListRef);
       let currDate = new Date();
-      set(newReviewRef, {
+      set(ref(database, `${DB_REVIEWS_KEY}/${movie.id}/${user.uid}` ) , {
+        user: user.displayName,
         val: reviewInput,
-        rating: rating,
         dateTime: currDate.toLocaleDateString() + " " + currDate.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}),
-      });
-      setReviewInput('');
+        rating: rating
+      })
       addMovieDatabase();
+      setReviewInput('');
       navigate("/movie/" + movie.id + "/" + movie.title)
     }
   }
 
   function addMovieDatabase(){
-    if (reviews.length === 0){
-      const moviesListRef = ref(database, DB_MOVIES_KEY);
-      const newMovieRef = push(moviesListRef);
-      set(newMovieRef, {
-        id: movie.id,
-        title: movie.title,
-        imgPath: movie.imgPath
-      });
-    }
+    set(ref(database, `${DB_MOVIES_KEY}/${movie.id}` ) , {
+      title: movie.title,
+      imgPath: movie.imgPath
+    })
   }
-
 
   function handleSearchInput(e) {
     setSearchInput(e.target.value);
@@ -76,19 +70,9 @@ export default function ReviewCreator (){
       title: title,
       imgPath: imgPath
     })
-    fetchReviews(id);
-    console.log(reviews);
     setSearchResult([]);
     setSearchInput('');
   }
-
-  function fetchReviews (id){
-    console.log('run')
-    const reviewsRef = ref(database, DB_REVIEWS_KEY + "/" + id);
-    onChildAdded(reviewsRef, (data) => {
-      setReviews((prev)=> [...prev, {key: data.key, val: data.val()}])
-    })
-  } 
 
   function changeStarRating(rating){
     setRating(rating);
@@ -98,7 +82,6 @@ export default function ReviewCreator (){
     <SearchResult handleResultClick = {handleResultClick} movieDetails = {result} key = {id}/>
   ));
   
-  console.log(reviews);
   return(
     <div>
       <h1>REVIEW CREATOOOOOOOOOR</h1>

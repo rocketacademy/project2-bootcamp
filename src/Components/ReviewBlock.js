@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { retrievePFP } from '../firebase';
 import { UserAuth } from '../Context/AuthContext';
 import "./ReviewBlock.css"
-import { Navigate, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 export default function ReviewBlock (props){
   const { user } = UserAuth();
@@ -12,7 +12,8 @@ export default function ReviewBlock (props){
   const [photoURL, setPhotoURL] = useState('https://i.pinimg.com/564x/9b/47/a0/9b47a023caf29f113237d61170f34ad9.jpg');
   
   useEffect(()=>{
-    retrievePFP(props.userId, setPhotoURL)
+    retrievePFP(props.userId, setPhotoURL).then(()=>{
+    })
   },[])
 
   function handleEditMode(){
@@ -21,15 +22,15 @@ export default function ReviewBlock (props){
 
   function confirmChanges(){
     setEditMode(!editMode)
-    props.confirmChanges(props.reviewText, props.id);
+    props.confirmChanges(props.reviewText, props.userId);
   }
 
   function handleReviewInput(e){
-    props.handleReviewEdit(e.target.value, props.id)
+    props.handleReviewEdit(e.target.value, props.userId)
   }
   
   function handleDelete(){
-    props.handleDelete(props.id)
+    props.handleDelete(props.userId)
   }
 
   function profileClick(){

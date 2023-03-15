@@ -39,6 +39,7 @@ export default function Feed (){
   }
 
   function handlePosterClick(e){
+    console.log(e.target.id)
     let movieTitle = e.target.name.split(' ')
     let updatedMovieTitle = movieTitle.join('%20')
     console.log(updatedMovieTitle)
@@ -46,13 +47,14 @@ export default function Feed (){
     navigate(movieURL);
   }
 
+  console.log(movies)
   let moviesList = movies.map((movie)=>(
     <label>
       <input
       type='button' 
       className="poster-button"
       onClick={handlePosterClick}
-      id = {movie.val.id}
+      id = {movie.key}
       name = {movie.val.title}
       />
       <img
