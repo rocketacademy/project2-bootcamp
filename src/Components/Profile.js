@@ -2,13 +2,13 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { UserAuth } from '../Context/AuthContext'
-import { upload } from '../firebase';
+import { upload, setUserName,setDefaultPFP } from '../firebase';
 import "./Profile.css"
 
 export default function Profile (){
   const navigate = useNavigate();
   const { user , logout } = UserAuth();
-  const [ bio, setBio ] = useState('');
+  const [ displayName, setDisplayName ] = useState('');
   const [ profilePic, setProfilePic] = useState(null);
   const [ loading, setLoading ] = useState(false);
   const [ photoURL, setPhotoURL] = useState('https://i.pinimg.com/564x/9b/47/a0/9b47a023caf29f113237d61170f34ad9.jpg')
@@ -19,8 +19,14 @@ export default function Profile (){
     }
   }, [user.photoURL])
 
-  function handleBioEdit (e){
-    setBio(()=> e.target.value)
+  useEffect(()=>{
+    if(user ?.displayName){
+      setDisplayName(user.displayName)
+    }
+  }, [user.photoURL])
+
+  function handleDisplayNameEdit(e){
+    setDisplayName(()=> e.target.value)
   }
   
   function handleLogout(){
@@ -30,6 +36,11 @@ export default function Profile (){
 
   function handleSubmit(e){
     e.preventDefault();
+    setUserName(displayName, user, setLoading);
+    if(profilePic === null){
+      setDefaultPFP(photoURL, user, setLoading)
+    }
+    navigate("/feed")
   }
 
   function handleFile(e){
@@ -42,7 +53,6 @@ export default function Profile (){
     upload(profilePic, user, setLoading);
   }
 
-
   return(
     <div>
       <img className ="profile-pic" src={photoURL} alt=''/><br/>
@@ -52,11 +62,12 @@ export default function Profile (){
       type="file"
       accept="image/*"
       onChange = {handleFile}/>
+      <br/>
       <button onClick = {uploadProfilePic} disabled={!profilePic || loading}>Upload</button>
       <form id="profile-create" onSubmit={handleSubmit}>
         Email: <input type="text" disabled value = {user.email}/>
         <br/>
-        Bio: <textarea form = "profile-create" name = "bio" onChange = {handleBioEdit}/>
+        Display Name: <input type='text' value = {displayName} placeholder ={'Enter a Display Name'} onChange = {handleDisplayNameEdit}/>
         <br/>
         <input type="submit" value="Submit"/>
       </form>

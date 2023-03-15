@@ -7,11 +7,13 @@ import axios from 'axios';
 import "./Movie.css"
 import StarRating from './StarRating';
 import ReviewBlock from './ReviewBlock';
+import { UserAuth } from '../Context/AuthContext';
 
 const DB_REVIEWS_KEY = "reviews";
 const DB_MOVIES_KEY = "movies";
 
 export default function Movie (){
+  const { user } = UserAuth();
   const [reviews, setReviews] = useState([]);
   const [reviewInput, setReviewInput] = useState('');
   const [rating, setRating] = useState(null);
@@ -51,6 +53,8 @@ export default function Movie (){
       const newReviewRef = push(reiewsListRef);
       let currDate = new Date();
       set(newReviewRef, {
+        userId: user.uid,
+        user: user.displayName,
         val: reviewInput,
         dateTime: currDate.toLocaleDateString() + " " + currDate.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}),
         rating: rating
@@ -131,9 +135,6 @@ export default function Movie (){
         }
       }
     }
-    
-    
-    console.log(updatedArray);
     setReviews(updatedArray);
     remove(reviewRef);
   }
@@ -143,6 +144,8 @@ export default function Movie (){
         <ReviewBlock
         reviewText = {review.val.val}
         id = {review.key}
+        userId = {review.val.userId}
+        userDisplay = {review.val.user}
         datetime = {review.val.dateTime} 
         stars = {review.val.rating}
         handleReviewEdit ={handleReviewEdit}

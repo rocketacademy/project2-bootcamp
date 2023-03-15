@@ -35,5 +35,25 @@ export async function upload(file, user, setLoading){
   await updateProfile( user,  {photoURL: photoURL})
   console.log(user.photoURL)
   setLoading(false)
-  alert('File Uploaded!')
+  alert('Profile Picture Updated!')
+}
+
+export async function setUserName(userName, user, setLoading){
+  setLoading(true)
+  await updateProfile( user,  {displayName: userName})
+  setLoading(false)
+}
+
+export async function setDefaultPFP(photoURL, user, setLoading){
+  setLoading(true)
+  await updateProfile( user,  {photoURL: photoURL})
+  setLoading(false)
+}
+
+export async function retrievePFP(userId, setPhotoURL){
+  const fileRef = ref(storage, userId + '.png')
+
+  const photoURL = await getDownloadURL(fileRef).then((pfpURL)=>{
+    setPhotoURL(pfpURL)
+  })
 }

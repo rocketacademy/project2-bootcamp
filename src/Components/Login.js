@@ -33,7 +33,7 @@ export default function Login (){
         alert('Please enter an email and passowrd')
       } else{
         signIn(email, password).then(()=>{
-        navigate('/profile')
+        navigate('/feed')
       }).catch((error) => {
           const errorMessage = error.message;
           console.log(errorMessage);
