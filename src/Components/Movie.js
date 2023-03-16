@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-import { onChildAdded, onChildChanged, onChildRemoved, ref, set, update, remove, onValue} from "firebase/database";
+import { ref, set, update, remove, onValue, onChildAdded, onChildRemoved} from "firebase/database";
 import { database, deleteMovieReview } from "../firebase";
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
@@ -17,8 +17,9 @@ export default function Movie (){
   const [reviews, setReviews] = useState([]);
   const [reviewInput, setReviewInput] = useState('');
   const [rating, setRating] = useState(null);
-  const location = useLocation();
   const [imgPath, setImgPath] = useState(`https://image.tmdb.org/t/p/w1280/`);
+  const [avgRating, setAvgRating] = useState(null);
+  const location = useLocation();
 
   const movieId = location.pathname.split("/")[2];
   const movieTitle = location.pathname.split("/")[3].split("%20").join(" ");
@@ -31,31 +32,32 @@ export default function Movie (){
     });
   },[])
 
-  useEffect(()=> {
+  /*useEffect(()=> {
     const reviewsRef = ref(database, DB_REVIEWS_KEY + "/" + movieId);
-    onValue(reviewsRef, (snapshot)=>{
+    onChildAdded(reviewsRef, (snapshot)=>{
+      console.log(snapshot)
       if(snapshot.val()!==null){
+        console.log(snapshot.val())
         const obj = snapshot.val()
-        const objkey = Object.keys(obj)[0]
-        const objval = obj[objkey]
-        console.log(objval)
-        setReviews((prev)=> [...prev, {key: objkey, val: objval}])
+        const objKeys = Object.keys(obj)
+        for (let i = 0; i < objKeys.length; i++){
+          const objval = obj[objKeys[i]]
+          setReviews((prev)=> [...prev, {key: objKeys[i], val: objval}])
+        }        
       } else{
-        setReviews((prev)=> [])
+        setReviews(()=>[])
       }
     })
-    /*onChildAdded(reviewsRef, (data) => {
+  }, [])*/
+
+  useEffect(()=> {
+    const reviewsRef = ref(database, DB_REVIEWS_KEY + "/" + movieId);
+    // For Text Input
+    onChildAdded(reviewsRef, (data) => {
       setReviews((prev)=> [...prev, {key: data.key, val: data.val()}])
     })
+  },[])
 
-    onChildChanged(reviewsRef, (data) => {
-      setReviews((prev)=> [...prev, {key: data.key, val: data.val()}])
-    })
-
-    onChildRemoved(reviewsRef, (data) => {
-      setReviews((prev)=> [...prev, {key: data.key, val: data.val()}])
-    })*/
-  }, [])
 
   function handleReviewSubmit(e){
     e.preventDefault();
@@ -113,7 +115,21 @@ export default function Movie (){
   function handleDelete (id){
     const reviewRef = ref(database, DB_REVIEWS_KEY+ "/" + movieId + "/" + id);
     deleteMovieReview(reviewRef, checkMovieDatabase)
+    const reviewsRef = ref(database, DB_REVIEWS_KEY + "/" + movieId);
+    console.log('run')
+    let index = -1;
+    for (let i = 0; i < reviews.length; i++){
+      if (reviews[i].key === id){
+        index = i
+        console.log(index)
+      }
+    }
+    let updatedReviewsArr = [...reviews]
+    updatedReviewsArr.splice(index, 1)
+    console.log(updatedReviewsArr)
+    setReviews(updatedReviewsArr)
   }
+  
 
   function checkMovieDatabase(){
     const reviewRef = ref(database, `${DB_REVIEWS_KEY}/${movieId}`)
