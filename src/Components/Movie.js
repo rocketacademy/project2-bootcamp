@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-import { ref, set, update, remove, onValue, onChildAdded, onChildRemoved} from "firebase/database";
+import { ref, set, update, remove, onValue, onChildAdded, get, child} from "firebase/database";
 import { database, deleteMovieReview } from "../firebase";
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
@@ -8,17 +8,19 @@ import "./Movie.css"
 import StarRating from './StarRating';
 import ReviewBlock from './ReviewBlock';
 import { UserAuth } from '../Context/AuthContext';
+import { connectStorageEmulator } from 'firebase/storage';
 
 const DB_REVIEWS_KEY = "reviews";
 const DB_MOVIES_KEY = "movies";
+const DB_USERS_KEY = "users";
 
 export default function Movie (){
   const { user } = UserAuth();
   const [reviews, setReviews] = useState([]);
   const [reviewInput, setReviewInput] = useState('');
   const [rating, setRating] = useState(null);
+  const [watched, setWatched] = useState(false);
   const [imgPath, setImgPath] = useState(`https://image.tmdb.org/t/p/w1280/`);
-  const [avgRating, setAvgRating] = useState(null);
   const location = useLocation();
 
   const movieId = location.pathname.split("/")[2];
@@ -32,31 +34,30 @@ export default function Movie (){
     });
   },[])
 
-  /*useEffect(()=> {
-    const reviewsRef = ref(database, DB_REVIEWS_KEY + "/" + movieId);
-    onChildAdded(reviewsRef, (snapshot)=>{
-      console.log(snapshot)
-      if(snapshot.val()!==null){
-        console.log(snapshot.val())
-        const obj = snapshot.val()
-        const objKeys = Object.keys(obj)
-        for (let i = 0; i < objKeys.length; i++){
-          const objval = obj[objKeys[i]]
-          setReviews((prev)=> [...prev, {key: objKeys[i], val: objval}])
-        }        
-      } else{
-        setReviews(()=>[])
-      }
-    })
-  }, [])*/
 
   useEffect(()=> {
     const reviewsRef = ref(database, DB_REVIEWS_KEY + "/" + movieId);
-    // For Text Input
     onChildAdded(reviewsRef, (data) => {
       setReviews((prev)=> [...prev, {key: data.key, val: data.val()}])
     })
   },[])
+
+  useEffect(()=>{
+    if(user.uid){
+      const userRef = ref(database, DB_USERS_KEY);
+      get(child(userRef, user.uid)).then((snapshot) => {
+      if (snapshot.exists() && snapshot.val().moviesWatched) {
+        if(snapshot.val().moviesWatched.indexOf(movieId) !== -1){
+          setWatched(true)
+        }
+      } else {
+        console.log("No data available");
+      }
+    }).catch((error) => {
+      console.error(error);
+    });
+  }
+  },[user.uid])
 
 
   function handleReviewSubmit(e){
@@ -115,18 +116,14 @@ export default function Movie (){
   function handleDelete (id){
     const reviewRef = ref(database, DB_REVIEWS_KEY+ "/" + movieId + "/" + id);
     deleteMovieReview(reviewRef, checkMovieDatabase)
-    const reviewsRef = ref(database, DB_REVIEWS_KEY + "/" + movieId);
-    console.log('run')
     let index = -1;
     for (let i = 0; i < reviews.length; i++){
       if (reviews[i].key === id){
         index = i
-        console.log(index)
       }
     }
     let updatedReviewsArr = [...reviews]
     updatedReviewsArr.splice(index, 1)
-    console.log(updatedReviewsArr)
     setReviews(updatedReviewsArr)
   }
   
@@ -142,6 +139,38 @@ export default function Movie (){
     })
   }
 
+  function handleWatched(){
+    const userRef = ref(database, DB_USERS_KEY);
+    if (watched === false){
+      get(child(userRef, user.uid)).then((snapshot) => {
+        if (snapshot.val() && typeof snapshot.val().moviesWatched === "undefined") {
+          update(ref(database, `${DB_USERS_KEY}/${user.uid}` ) , {
+            moviesWatched: [movieId]
+          })
+        } else if (snapshot.val() && snapshot.val().moviesWatched){
+          let updatedArr = [...snapshot.val().moviesWatched, movieId]
+          update(ref(database, `${DB_USERS_KEY}/${user.uid}` ) , {
+            moviesWatched: updatedArr
+          })
+        }
+      })
+    } else if (watched === true){
+      get(child(userRef, user.uid)).then((snapshot) => {
+        if (snapshot.val()){
+          let updatedArr = [...snapshot.val().moviesWatched]
+          let index = updatedArr.indexOf(movieId)
+          console.log(index)
+          updatedArr.splice(index,1);
+          console.log(updatedArr)
+          update(ref(database, `${DB_USERS_KEY}/${user.uid}` ) , {
+            moviesWatched: updatedArr
+          })
+          }
+        })
+      }
+    setWatched((prev)=> !prev)
+  }
+
   function changeStarRating(rating){
     setRating(rating);
   }
@@ -150,7 +179,8 @@ export default function Movie (){
     setReviewInput(e.target.value)
   }
 
-  let reviewItems = reviews.map((review) => (
+  let reviewItems = reviews.map((review) => {
+    return (
     <div>
       <ReviewBlock
       reviewText = {review.val.val}
@@ -163,12 +193,14 @@ export default function Movie (){
       handleDelete = {handleDelete}
       />
     </div>
-  ));
+   )}
+  );
 
   return(
     <div>
       <h1>{movieTitle}</h1>
       <img className = "movie-poster" src = {imgPath} alt = ''/>
+      <button onClick={handleWatched}>Watched: {`${watched}`}</button>
       <form onSubmit = {handleReviewSubmit}>
         <h6>Write a Review:</h6>
         <StarRating changeStarRating = {changeStarRating}/>

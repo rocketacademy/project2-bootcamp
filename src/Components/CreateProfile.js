@@ -50,7 +50,7 @@ export default function Profile (){
     console.log('run')
     set(ref(database, `${DB_USERS_KEY}/${user.uid}` ) , {
       displayName: user.displayName,
-      photoURL: user.photoURL
+      photoURL: user.photoURL,
     })
   }
 

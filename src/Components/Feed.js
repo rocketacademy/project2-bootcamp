@@ -39,15 +39,12 @@ export default function Feed (){
   }
 
   function handlePosterClick(e){
-    console.log(e.target.id)
     let movieTitle = e.target.name.split(' ')
     let updatedMovieTitle = movieTitle.join('%20')
-    console.log(updatedMovieTitle)
     let movieURL = `/movie/${e.target.id}/${updatedMovieTitle}`
     navigate(movieURL);
   }
 
-  console.log(movies)
   let moviesList = movies.map((movie)=>(
     <label>
       <input
