@@ -4,3 +4,7 @@
   object-fit: cover;
   border-radius: 50%;
 }
+.logout {
+  size: 30px;
+  border-radius: 50%;
+}

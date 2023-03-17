@@ -2,6 +2,41 @@
   max-height: 30vh;
 }
 
-.poster-button{
-  display: none
+.poster-button {
+  display: none;
+}
+
+.button {
+  background-color: #04aa6d;
+  border: none;
+  color: yellow;
+  padding: 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 30px;
+  margin: 4px 2px;
+}
+.add-review {
+  border-radius: 20px;
+  font-size: 30px;
+  margin: 4px 2px;
+}
+
+.profile {
+  border-radius: 20px;
+  font-size: 30px;
+  margin: 4px 2px;
+}
+
+.signout {
+  border-radius: 20px;
+  font-size: 30px;
+  margin: 4px 2px;
+}
+
+.main-page {
+  border-radius: 20px;
+  font-size: 30px;
+  margin: 4px 2px;
 }

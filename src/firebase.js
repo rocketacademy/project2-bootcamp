@@ -27,42 +27,42 @@ export const database = getDatabase(firebaseApp);
 export const storage = getStorage(firebaseApp);
 export const auth = getAuth(firebaseApp);
 
-export async function upload(file, user, setLoading){
-  const fileRef = ref(storage, user.uid + '.png')
+export async function upload(file, user, setLoading) {
+  const fileRef = ref(storage, user.uid + ".png");
 
-  setLoading(true)
+  setLoading(true);
 
-  const snapshot = await uploadBytes(fileRef, file)
-  const photoURL = await getDownloadURL(fileRef)
+  const snapshot = await uploadBytes(fileRef, file);
+  const photoURL = await getDownloadURL(fileRef);
 
-  await updateProfile( user,  {photoURL: photoURL})
-  console.log(user.photoURL)
-  setLoading(false)
-  alert('Profile Picture Updated!')
+  await updateProfile(user, { photoURL: photoURL });
+  console.log(user.photoURL);
+  setLoading(false);
+  alert("Profile Picture Updated!");
 }
 
-export async function setUserName(userName, user, setLoading){
-  setLoading(true)
-  await updateProfile( user,  {displayName: userName})
-  setLoading(false)
+export async function setUserName(userName, user, setLoading) {
+  setLoading(true);
+  await updateProfile(user, { displayName: userName });
+  setLoading(false);
 }
 
-export async function setDefaultPFP(photoURL, user, setLoading){
-  setLoading(true)
-  await updateProfile( user,  {photoURL: photoURL})
-  setLoading(false)
+export async function setDefaultPFP(photoURL, user, setLoading) {
+  setLoading(true);
+  await updateProfile(user, { photoURL: photoURL });
+  setLoading(false);
 }
 
-export async function retrievePFP(userId, setPhotoURL){
-  const fileRef = ref(storage, userId + '.png')
+export async function retrievePFP(userId, setPhotoURL) {
+  const fileRef = ref(storage, userId + ".png");
 
-  const photoURL = await getDownloadURL(fileRef).then((pfpURL)=>{
-    setPhotoURL(pfpURL)
-  })
+  const photoURL = await getDownloadURL(fileRef).then((pfpURL) => {
+    setPhotoURL(pfpURL);
+  });
 }
 
-export async function deleteMovieReview(reviewRef, checkMovieDatabase){
-  await remove(reviewRef)
-  console.log('item deleted')
+export async function deleteMovieReview(reviewRef, checkMovieDatabase) {
+  await remove(reviewRef);
+  console.log("item deleted");
   checkMovieDatabase();
 }
