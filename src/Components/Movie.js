@@ -21,6 +21,7 @@ export default function Movie (){
   const [rating, setRating] = useState(null);
   const [watched, setWatched] = useState(false);
   const [imgPath, setImgPath] = useState(`https://image.tmdb.org/t/p/w1280/`);
+  const [totalRating, setTotalRating] = useState(0);
   const location = useLocation();
 
   const movieId = location.pathname.split("/")[2];
@@ -38,6 +39,8 @@ export default function Movie (){
   useEffect(()=> {
     const reviewsRef = ref(database, DB_REVIEWS_KEY + "/" + movieId);
     onChildAdded(reviewsRef, (data) => {
+      console.log(data.val().rating)
+      setTotalRating((prev)=> prev + data.val().rating)
       setReviews((prev)=> [...prev, {key: data.key, val: data.val()}])
     })
   },[])
@@ -195,12 +198,13 @@ export default function Movie (){
     </div>
    )}
   );
-
+  
   return(
     <div>
       <h1>{movieTitle}</h1>
       <img className = "movie-poster" src = {imgPath} alt = ''/>
       <button onClick={handleWatched}>Watched: {`${watched}`}</button>
+      <h5>Average Rating: {totalRating/reviews.length} stars</h5>
       <form onSubmit = {handleReviewSubmit}>
         <h6>Write a Review:</h6>
         <StarRating changeStarRating = {changeStarRating}/>
