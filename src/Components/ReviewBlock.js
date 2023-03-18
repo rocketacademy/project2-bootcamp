@@ -38,33 +38,48 @@ export default function ReviewBlock (props){
   }
 
   let editPanel = 
-    <div>
+    <div className="edit-panel">
       {editMode===true
-        ? <button onClick={confirmChanges}>Confirm</button>
-        : <button onClick={handleEditMode}>Edit</button>}
-        <button onClick={handleDelete}>Delete</button>
+        ? <button className="edit-button" onClick={confirmChanges}>Confirm</button>
+        : <button className= "edit-button" onClick={handleEditMode}>Edit</button>}
+        <button className = "delete-button" onClick={handleDelete}>Delete</button>
     </div>
 
   return(
-    <div>
+    <div className = "review-container">
         {editMode === true
         ? <div>
-            <img onClick={profileClick} className = "review-profile-pic" src = {photoURL} alt=''/>
-            <p onClick={profileClick}>{props.userDisplay}</p>
-            <input type= 'text' value = {props.reviewText} onChange={handleReviewInput}/>
-            <p>{props.datetime}</p>
+            <div className="review-name-block">
+              <img onClick={profileClick} className = "review-profile-pic" src = {photoURL} alt=''/>
+              <p className = "display-name" onClick={profileClick}>{props.userDisplay}</p>
+              - <p className="stars"> {[...Array(props.stars)].map((star)=>{return "★"}).join('')}</p>
+              <div>
+                {(user.uid===props.userId)
+                ? editPanel
+                : null}
+              </div>  
+            </div>
+            <div className="review-text-edit">
+              <input  type= 'text' value = {props.reviewText} onChange={handleReviewInput}/>
+            </div>
+            <p className="review-date-time">{props.datetime}</p>
           </div>
-        : <div>
-            <img onClick={profileClick} className = "review-profile-pic" src = {photoURL} alt=''/>
-            <p onClick={profileClick}>{props.userDisplay}</p>
-            <p>{props.reviewText} - {[...Array(props.stars)].map((star)=>{return "★"}).join('')}</p>
-            <p>{props.datetime}</p>
-          </div>}
-          <div>
-            {(user.uid===props.userId)
-            ? editPanel
-            : null}
-          </div>    
+        : <div className = "review-container">
+            <div className="review-name-block">
+              <img onClick={profileClick} className = "review-profile-pic" src = {photoURL} alt=''/>
+              <p className = "display-name" onClick={profileClick}>{props.userDisplay}</p>
+              - <p className="stars"> {[...Array(props.stars)].map((star)=>{return "★"}).join('')}</p>
+              <div>
+                {(user.uid===props.userId)
+                ? editPanel
+                : null}
+              </div>
+            </div>
+            <div className="review-text">
+              <p >{props.reviewText}</p>
+            </div>
+            <p className="review-date-time">{props.datetime}</p>
+          </div>}  
     </div>
   )
 }

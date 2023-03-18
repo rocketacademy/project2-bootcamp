@@ -1,3 +1,112 @@
 .movie-poster{
-  max-height: 50vh;
+  align-self: center;
+  max-width: 35%;
+  margin: 1.5vmin;
+  border: solid rgb(255, 255, 255) 1.5px;
+  border-radius: 5px;
+}
+
+.synopsis{
+  max-width: 35%;
+  margin: 1.5vmin 1.5vmin 1.5vmin 3vmin;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.synopsis-text{
+  font-size: small;
+  margin: 3vmin 0 3vmin 0;
+}
+
+.movie-page-flex {
+  display:flex;
+  flex-direction: column;
+}
+
+.review-flex-container{
+  display: flex;
+  flex-direction: column;
+}
+
+.movie-details-flex{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  background-color: blue;
+}
+
+.watched-div{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 1vmin;
+  padding: 1vmin;
+  width: 30%
+}
+
+.watched-text{
+  align-self: center;
+}
+
+.eye-button{
+  background-color: rgb(34, 34, 34);
+  padding: 1vmin;
+  margin: 1vmin;
+  border-radius: 5px;
+  max-width: 5vmin;
+}
+
+.avg-stars{
+  padding: 2vmin;
+  font-size: x-large;
+  color: rgb(255, 226, 59)
+}
+
+.movie-poster-div{
+  padding: 1vmin;
+  margin: 2vmin;
+  display: flex;
+  justify-content: center;
+}
+
+.cast-link{
+  color: rgb(255, 256, 256);
+  text-decoration: none;
+  font-size: small;
+  align-self: center;
+}
+
+.cast-link:hover{
+  text-decoration: underline;
+}
+
+.cast-link:visited{
+  text-decoration: none;
+}
+
+.cast-photo{
+  height: 1.5em;
+  width: 1.5em;
+  border-radius: 50%;
+  margin: 0.5vmin 1vmin 1vmin 0;
+  align-self: center;
+  object-fit: cover
+}
+
+.cast-div{
+  display:flex;
+  align-items: center;
+}
+
+@media only screen and (max-width: 600px){
+  .movie-poster-div{
+    flex-direction: column;
+  }
+  .movie-poster{
+    max-width: 70%;
+  }
+  .synopsis{
+    max-width: 100%;
+  }
 }

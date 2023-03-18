@@ -8,7 +8,8 @@ import "./Movie.css"
 import StarRating from './StarRating';
 import ReviewBlock from './ReviewBlock';
 import { UserAuth } from '../Context/AuthContext';
-import { connectStorageEmulator } from 'firebase/storage';
+import greeneye from "../Images/greeneye.png";
+import greyeye from "../Images/greyeye.png";
 
 const DB_REVIEWS_KEY = "reviews";
 const DB_MOVIES_KEY = "movies";
@@ -18,6 +19,9 @@ export default function Movie (){
   const { user } = UserAuth();
   const [reviews, setReviews] = useState([]);
   const [reviewInput, setReviewInput] = useState('');
+  const [ description, setDescription ] = useState('');
+  const [ release, setRelease ] = useState('')
+  const [ cast, setCast ] = useState('')
   const [rating, setRating] = useState(null);
   const [watched, setWatched] = useState(false);
   const [imgPath, setImgPath] = useState(`https://image.tmdb.org/t/p/w1280/`);
@@ -30,6 +34,16 @@ export default function Movie (){
   useEffect(()=>{
     axios.get(`https://api.themoviedb.org/3/movie/${movieId}?api_key=${process.env.REACT_APP_MOVIES_API_KEY}&language=en-US`).then(function (response) {
       setImgPath(()=> imgPath + response.data.poster_path)
+      setDescription(()=> response.data.overview)
+      setRelease(()=> response.data.release_date.substring(0,4))
+    }).catch(function (error) {
+        console.error(error);
+    });
+  },[])
+
+  useEffect(()=>{
+    axios.get(`https://api.themoviedb.org/3/movie/${movieId}/credits?api_key=${process.env.REACT_APP_MOVIES_API_KEY}&language=en-US`).then(function (response) {
+      setCast(response.data.cast)
     }).catch(function (error) {
         console.error(error);
     });
@@ -39,7 +53,6 @@ export default function Movie (){
   useEffect(()=> {
     const reviewsRef = ref(database, DB_REVIEWS_KEY + "/" + movieId);
     onChildAdded(reviewsRef, (data) => {
-      console.log(data.val().rating)
       setTotalRating((prev)=> prev + data.val().rating)
       setReviews((prev)=> [...prev, {key: data.key, val: data.val()}])
     })
@@ -98,9 +111,6 @@ export default function Movie (){
     
     let updatedReview = {...reviews[index]};
     updatedReview.val.val = input;
-    
-
-    console.log(updatedReview)
 
     let newReviewsArray  = [...reviews];
 
@@ -135,7 +145,6 @@ export default function Movie (){
     const reviewRef = ref(database, `${DB_REVIEWS_KEY}/${movieId}`)
     onValue(reviewRef, (snapshot)=>{
       if(snapshot.val()===null){
-        console.log('movie gone')
         const movieRef = ref(database, `${DB_MOVIES_KEY}/${movieId}`)
         remove(movieRef)
       }
@@ -162,9 +171,7 @@ export default function Movie (){
         if (snapshot.val()){
           let updatedArr = [...snapshot.val().moviesWatched]
           let index = updatedArr.indexOf(movieId)
-          console.log(index)
           updatedArr.splice(index,1);
-          console.log(updatedArr)
           update(ref(database, `${DB_USERS_KEY}/${user.uid}` ) , {
             moviesWatched: updatedArr
           })
@@ -198,23 +205,51 @@ export default function Movie (){
     </div>
    )}
   );
+
+  let castItems
+  if(cast){
+    castItems = cast.slice(0,5).map((cast) => {
+    return (
+     <div className="cast-div">
+      <img className ="cast-photo"src={`https://image.tmdb.org/t/p/w1280/${cast.profile_path}`} alt=''/>
+      <a className="cast-link" href= {`https://www.google.com/search?q=${cast.name.split(" ").join("+")}`}>{cast.name}</a>
+     </div> 
+    )}
+  );
+  }
+  
   
   return(
-    <div>
-      <h1>{movieTitle}</h1>
-      <img className = "movie-poster" src = {imgPath} alt = ''/>
-      <button onClick={handleWatched}>Watched: {`${watched}`}</button>
-      <h5>Average Rating: {totalRating/reviews.length} stars</h5>
+    <div className = "movie-page-flex">
+      <h1>{movieTitle} ({release})</h1>
+      <div className='movie-poster-div'>
+        <img className = "movie-poster" src = {imgPath} alt = ''/>
+        <div className='synopsis'>
+          <h4>Synopsis</h4>
+          <p className='synopsis-text'>{description}</p>
+          <h4>Cast</h4>
+          {castItems}
+          <div className='movie-details-flex'>
+            <div className = "watched-div">
+              <h6 className="watched-text">{watched ? "Watched" : "Watch"} </h6> 
+              <img className="eye-button" onClick = {handleWatched} src= {watched ? greeneye : greyeye} alt='' /> 
+            </div>
+            <div className = "watched-div">
+              <h6>Average Rating</h6>
+              <h6 className="avg-stars">{totalRating/reviews.length} ★</h6>
+            </div>
+          </div>  
+        </div>
+      </div>
       <form onSubmit = {handleReviewSubmit}>
         <h6>Write a Review:</h6>
         <StarRating changeStarRating = {changeStarRating}/>
         <input type='text' name='review' value={reviewInput} onChange={handleReviewInput}/>
         <input type='submit'/>
       </form>
-      <div>
+      <div className = "review-flex-container">
         {reviewItems}
       </div>
     </div>
   )
 }
-
