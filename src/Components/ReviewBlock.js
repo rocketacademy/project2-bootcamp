@@ -1,19 +1,34 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-import { retrievePFP } from '../firebase';
+import { retrievePFP, database } from '../firebase';
 import { UserAuth } from '../Context/AuthContext';
+import { ref, child, get } from 'firebase/database'
 import "./ReviewBlock.css"
 import { useNavigate } from 'react-router-dom';
+
+const DB_USERS_KEY = "users";
 
 export default function ReviewBlock (props){
   const { user } = UserAuth();
   const navigate = useNavigate();
+  const [ displayName, setDisplayName ] = useState('')
   const [editMode, setEditMode] = useState(false);
   const [photoURL, setPhotoURL] = useState('https://i.pinimg.com/564x/9b/47/a0/9b47a023caf29f113237d61170f34ad9.jpg');
   
   useEffect(()=>{
     retrievePFP(props.userId, setPhotoURL).then(()=>{
     })
+  },[])
+
+  useEffect(()=>{
+    const userRef = ref(database, DB_USERS_KEY);
+    get(child(userRef, props.userId)).then((snapshot) => {
+      if (snapshot.exists()) {
+        setDisplayName(snapshot.val().displayName);
+      }
+    }).catch((error) => {
+      console.error(error);
+    });
   },[])
 
   function handleEditMode(){
@@ -38,7 +53,7 @@ export default function ReviewBlock (props){
   }
 
   let editPanel = 
-    <div className="edit-panel">
+    <div>
       {editMode===true
         ? <button className="edit-button" onClick={confirmChanges}>Confirm</button>
         : <button className= "edit-button" onClick={handleEditMode}>Edit</button>}
@@ -46,12 +61,12 @@ export default function ReviewBlock (props){
     </div>
 
   return(
-    <div className = "review-container">
+    <>
         {editMode === true
         ? <div>
             <div className="review-name-block">
               <img onClick={profileClick} className = "review-profile-pic" src = {photoURL} alt=''/>
-              <p className = "display-name" onClick={profileClick}>{props.userDisplay}</p>
+              <p className = "display-name" onClick={profileClick}>{displayName}</p>
               - <p className="stars"> {[...Array(props.stars)].map((star)=>{return "★"}).join('')}</p>
               <div>
                 {(user.uid===props.userId)
@@ -60,14 +75,14 @@ export default function ReviewBlock (props){
               </div>  
             </div>
             <div className="review-text-edit">
-              <input  type= 'text' value = {props.reviewText} onChange={handleReviewInput}/>
+              <textarea className='edit-box' autofocus value = {props.reviewText} onChange={handleReviewInput}/>
             </div>
             <p className="review-date-time">{props.datetime}</p>
           </div>
-        : <div className = "review-container">
+        : <div>
             <div className="review-name-block">
               <img onClick={profileClick} className = "review-profile-pic" src = {photoURL} alt=''/>
-              <p className = "display-name" onClick={profileClick}>{props.userDisplay}</p>
+              <p className = "display-name" onClick={profileClick}>{displayName}</p>
               - <p className="stars"> {[...Array(props.stars)].map((star)=>{return "★"}).join('')}</p>
               <div>
                 {(user.uid===props.userId)
@@ -80,6 +95,6 @@ export default function ReviewBlock (props){
             </div>
             <p className="review-date-time">{props.datetime}</p>
           </div>}  
-    </div>
+    </>
   )
 }

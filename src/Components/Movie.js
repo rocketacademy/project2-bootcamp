@@ -2,7 +2,7 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import { ref, set, update, remove, onValue, onChildAdded, get, child} from "firebase/database";
 import { database, deleteMovieReview } from "../firebase";
-import { useLocation } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import "./Movie.css"
 import StarRating from './StarRating';
@@ -10,6 +10,7 @@ import ReviewBlock from './ReviewBlock';
 import { UserAuth } from '../Context/AuthContext';
 import greeneye from "../Images/greeneye.png";
 import greyeye from "../Images/greyeye.png";
+import { useNavigate } from 'react-router-dom';
 
 const DB_REVIEWS_KEY = "reviews";
 const DB_MOVIES_KEY = "movies";
@@ -27,6 +28,7 @@ export default function Movie (){
   const [imgPath, setImgPath] = useState(`https://image.tmdb.org/t/p/w1280/`);
   const [totalRating, setTotalRating] = useState(0);
   const location = useLocation();
+  const navigate = useNavigate();
 
   const movieId = location.pathname.split("/")[2];
   const movieTitle = location.pathname.split("/")[3].split("%20").join(" ");
@@ -84,7 +86,7 @@ export default function Movie (){
     } else {
       let currDate = new Date();
       set(ref(database, `${DB_REVIEWS_KEY}/${movieId}/${user.uid}` ) , {
-        user: user.displayName,
+        user: user.uid,
         val: reviewInput,
         dateTime: currDate.toLocaleDateString() + " " + currDate.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}),
         rating: rating
@@ -189,9 +191,13 @@ export default function Movie (){
     setReviewInput(e.target.value)
   }
 
+  function handleFeed(){
+    navigate("/feed")
+  }
+
   let reviewItems = reviews.map((review) => {
     return (
-    <div>
+    <div className="review-container">
       <ReviewBlock
       reviewText = {review.val.val}
       userId = {review.key}
@@ -208,7 +214,7 @@ export default function Movie (){
 
   let castItems
   if(cast){
-    castItems = cast.slice(0,5).map((cast) => {
+    castItems = cast.slice(0,4).map((cast) => {
     return (
      <div className="cast-div">
       <img className ="cast-photo"src={`https://image.tmdb.org/t/p/w1280/${cast.profile_path}`} alt=''/>
@@ -221,6 +227,7 @@ export default function Movie (){
   
   return(
     <div className = "movie-page-flex">
+      <button className='back-button' onClick={handleFeed}>Feed</button>
       <h1>{movieTitle} ({release})</h1>
       <div className='movie-poster-div'>
         <img className = "movie-poster" src = {imgPath} alt = ''/>
@@ -238,18 +245,20 @@ export default function Movie (){
               <h6>Average Rating</h6>
               <h6 className="avg-stars">{totalRating/reviews.length} ★</h6>
             </div>
-          </div>  
-        </div>
+          </div>
+            <div className="write-a-review">
+              <form name="review-form" onSubmit = {handleReviewSubmit}>
+                <h6 className="watched-text">Write a Review</h6>
+                <StarRating changeStarRating = {changeStarRating}/>
+                <textarea form="review-form" name='review' className="review-box" value={reviewInput} onChange={handleReviewInput}/>
+                <input className= "review-submit" type='submit'/>
+              </form>
+            </div>  
+          </div>
       </div>
-      <form onSubmit = {handleReviewSubmit}>
-        <h6>Write a Review:</h6>
-        <StarRating changeStarRating = {changeStarRating}/>
-        <input type='text' name='review' value={reviewInput} onChange={handleReviewInput}/>
-        <input type='submit'/>
-      </form>
-      <div className = "review-flex-container">
+      <div className="review-flex-container">
         {reviewItems}
       </div>
-    </div>
+    </div>      
   )
 }

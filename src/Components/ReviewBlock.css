@@ -1,15 +1,3 @@
-.review-container{
-  display: flex;
-  min-width: 90%;
-  flex-direction: column;
-  justify-content: flex-start;
-  flex-wrap: wrap;
-  background-color: rgb(20, 42, 82);
-  border-radius: 20px;
-  margin: 1.5vmin;
-  padding: 1vmin;
-}
-
 .review-profile-pic{
   height: 1.5em;
   width: 1.5em;
@@ -17,11 +5,10 @@
   align-self: center;
   outline: 2px solid rgb(182, 216, 255, 0);
   transition: 0.3s;
-  align-self: center;
 }
 
 .review-profile-pic:hover{
-  outline: 2px solid rgb(182, 216, 255, 1) 
+  outline: 1px solid rgb(182, 216, 255, 1) 
 }
 
 .review-name-block{
@@ -32,22 +19,35 @@
 
 .review-date-time{
   font-size: x-small;
-  align-self: flex-end;
+  align-self: center;
+  text-align: right;
 }
 
 .review-text-edit{
   display: flex;
-  min-width: 90%;
   justify-items: flex-start;
+}
+
+.edit-box{
+  width: 100%;
+  height: 2em;
+  background-color: transparent;
+  outline: 0;
+  border: none;
+  border: 1px rgb(182, 216, 255) solid;
+  margin: 1.5vmin 0 0.5vmin 0;
+  padding: 1vmin;
+  color: rgb(255, 255, 255);
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-size: 1em;
+  border-radius: 5px;
 }
 
 .review-text{
   display: flex;
-  min-width: 90%;
+  min-width: 70%;
   justify-items: flex-start;
-  background-color: rgb(182, 216, 255);
-  color: rgb(20, 42, 82);
-  border-radius: 5px;
+  border-top: 1px rgb(182, 216, 255) solid;
   margin: 1.5vmin 0 0.5vmin 0;
   padding: 1vmin
 }
@@ -87,5 +87,7 @@
 }
 
 .stars{
-  color: rgb(255, 226, 59)
+  color: rgb(255, 226, 59);
+  padding: 0 1.5vmin 0 1.5vmin;
 }
+

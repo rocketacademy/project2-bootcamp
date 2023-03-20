@@ -7,11 +7,6 @@
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
 .App-header {
   background-image: linear-gradient(to right, #243949 0%, #517fa4 100%);
   background-blend-mode: multiply;

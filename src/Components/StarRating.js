@@ -12,7 +12,7 @@ export default function StarRating (props){
   })
 
   return(
-    <div>
+    <div className="star-container">
       {[...Array(5)].map((star, counter)=>{
         const ratingValue = counter + 1 
         return(
