@@ -168,6 +168,7 @@ export default function Movie (){
           })
         }
       })
+      addMovieDatabase();
     } else if (watched === true){
       get(child(userRef, user.uid)).then((snapshot) => {
         if (snapshot.val()){
