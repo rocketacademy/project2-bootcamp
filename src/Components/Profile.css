@@ -1,6 +1,6 @@
 .profile-picture {
-  height: 30vw;
-  width: 30vw;
+  height: 20vw;
+  width: 20vw;
   object-fit: cover;
   border-radius: 50%;
   align-self: center;
@@ -22,7 +22,7 @@
 .profile-poster{
   width: 30vmin;
   height: 45vmin;
-  margin: 3vmin;
+  margin: 2vmin;
   object-fit: cover;
   border-radius: 5px;
   box-sizing: border-box;

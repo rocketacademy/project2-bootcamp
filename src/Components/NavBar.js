@@ -1,17 +1,70 @@
 import React, { useState } from "react";
 import * as FaIcons from "react-icons/fa";
-import * as AiIcons from "react-icons/ai";
+import { IoMdArrowBack } from "react-icons/io";
 import { Link } from "react-router-dom";
 import { SidebarData } from "./SidebarData";
-import "./Navbar.css";
 import { IconContext } from "react-icons";
+import { UserAuth } from "../Context/AuthContext";
+import { useNavigate } from "react-router-dom";
+import "./Navbar.css";
 
 export default function Navbar() {
   const [sidebar, setSidebar] = useState(false);
   const showSidebar = () => setSidebar(!sidebar);
+  const navigate = useNavigate();
+  const { user, logout } = UserAuth();
+
+
+  function handleSignOut(){
+    console.log('signed out')
+    logout();
+    navigate('/login');
+  }
+
+  function handleProfileClick(){
+    navigate("/profile/" + user.uid)
+  }
+
+  let sideBarItems = SidebarData.map((item, index) => {
+    if(item.title === "Sign Out"){
+      return (
+      <li key={index}
+       className={item.cName}
+       onClick = {handleSignOut}>              
+         <Link to={item.path}>
+          {item.icon}
+          <span>{item.title}</span>
+         </Link>
+       </li>
+      );
+    } else if (item.title === "Profile"){
+      return (
+      <li key={index}
+       className={item.cName}
+       onClick = {handleProfileClick}>              
+         <Link to={item.path}>
+          {item.icon}
+          <span>{item.title}</span>
+         </Link>
+       </li>
+      );
+    } else{
+      return (
+      <li key={index}
+       className={item.cName}>              
+         <Link to={item.path}>
+          {item.icon}
+          <span>{item.title}</span>
+         </Link>
+       </li>
+      );
+    }
+  })
+    
+
   return (
     <>
-      <IconContext.Provider value={{ color: "#fff" }} />
+      <IconContext.Provider value={{ color: "#fff" }}>
       <div className="navbar">
         <Link to="#" className="menu-bars">
           <FaIcons.FaBars onClick={showSidebar} />
@@ -21,21 +74,13 @@ export default function Navbar() {
         <ul className="nav-menu-items">
           <li className="navbar-toggle">
             <Link to="#" className="menu-bars">
-              <AiIcons.AiOutlineClose />
+              <IoMdArrowBack onClick/>
             </Link>
           </li>
-          {SidebarData.map((item, index) => {
-            return (
-              <li key={index} className={item.cName}>
-                <Link to={item.path}>
-                  {item.icon}
-                  <span>{item.title}</span>
-                </Link>
-              </li>
-            );
-          })}
+          {sideBarItems}
         </ul>
       </nav>
+      </IconContext.Provider>
     </>
   );
 }

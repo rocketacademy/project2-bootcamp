@@ -5,7 +5,6 @@ import { useNavigate } from 'react-router-dom';
 export default function LandingPage (){
   const { user } = UserAuth();
   const navigate = useNavigate();
-  console.log(user===null)
   
   useEffect(()=>{
     if (user){

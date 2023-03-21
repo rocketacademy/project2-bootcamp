@@ -1,31 +1,34 @@
 import React from "react";
-import * as FaIcons from "react-icons/fa";
-import * as AiIcons from "react-icons/ai";
-import * as IoIcons from "react-icons/io";
+import { FaUserCircle } from "react-icons/fa";
+import { AiFillHome } from "react-icons/ai";
+import { IoIosPaper } from "react-icons/io";
+import { BiLogOut } from "react-icons/bi"
+import { UserAuth } from '../Context/AuthContext';
+
 
 export const SidebarData = [
   {
-    title: "Home",
+    title: "Feed",
     path: "/",
-    icon: <AiIcons.AiFillHome />,
+    icon: <AiFillHome />,
     cName: "nav-text",
   },
   {
     title: "Add a Review",
-    path: "/",
-    icon: <IoIcons.IoIosPaper />,
+    path: "/create-review",
+    icon: <IoIosPaper />,
     cName: "nav-text",
   },
   {
     title: "Profile",
-    path: "/",
-    icon: <FaIcons.FaCartPlus />,
+    path: `/`,
+    icon: <FaUserCircle />,
     cName: "nav-text",
   },
   {
     title: "Sign Out",
-    path: "/",
-    icon: <IoIcons.IoMdPeople />,
+    path: "/login",
+    icon: <BiLogOut />,
     cName: "nav-text",
   },
 ];
