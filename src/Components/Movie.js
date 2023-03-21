@@ -244,7 +244,7 @@ export default function Movie (){
             </div>
             <div className = "watched-div">
               <h6>Average Rating</h6>
-              <h6 className="avg-stars">{totalRating/reviews.length} ★</h6>
+              <h6 className="avg-stars">{reviews.length === 0 ? "-" : Math.round((totalRating/reviews.length)*100)/100 + "★"} </h6>
             </div>
           </div>
             <div className="write-a-review">

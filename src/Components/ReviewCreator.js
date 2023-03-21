@@ -1,13 +1,14 @@
 import React from 'react';
+import axios from 'axios';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ref, set } from "firebase/database";
 import { database } from "../firebase";
 import { UserAuth } from '../Context/AuthContext';
-import axios from 'axios';
+import { FaSearch } from 'react-icons/fa';
 import SearchResult from './SearchResult';
-import "./ReviewCreator.css";
 import StarRating from './StarRating';
+import "./ReviewCreator.css";
 
 const DB_REVIEWS_KEY = "reviews";
 const DB_MOVIES_KEY = "movies";
@@ -64,11 +65,13 @@ export default function ReviewCreator (){
     });  
   }
 
-  function handleResultClick(imgPath, title, id){
+  function handleResultClick(imgPath, title, id, release, synopsis){
     setMovie({
       id: id,
       title: title,
-      imgPath: imgPath
+      imgPath: imgPath,
+      release: release,
+      synopsis: synopsis
     })
     setSearchResult([]);
     setSearchInput('');
@@ -78,29 +81,56 @@ export default function ReviewCreator (){
     setRating(rating);
   }
 
+  function handlePosterClick(e){
+    let movieTitle = e.target.name.split(' ')
+    let updatedMovieTitle = movieTitle.join('%20')
+    let movieURL = `/movie/${e.target.id}/${updatedMovieTitle}`
+    navigate(movieURL);
+  }
+
   let searchResultItems = searchResult.map((result, id) => (
     <SearchResult handleResultClick = {handleResultClick} movieDetails = {result} key = {id}/>
   ));
   
   return(
-    <div>
-      <h1>REVIEW CREATOOOOOOOOOR</h1>
+    <div className='review-creator-div'>
+      <h3>Search for a Movie!</h3>
       <form>
-        <input type='text' name='search' value={searchInput} onChange={handleSearchInput}/>
-        {searchResultItems}
+        <div className='search-field-div'>
+          <input className='search-field' type='text' name='search' value={searchInput} onChange={handleSearchInput}/>
+          <FaSearch className='search-icon'/>
+        </div>
       </form>
+      <div className='search-bar-div'>
+        {searchResultItems}
+      </div>
       {movie === null
       ? null
       : <div className = "selected-movie-flex">
-          <h1>{movie.title}</h1>
-          <img className = "selected-movie-poster" src= {movie.imgPath} alt = '' />
-          <h6>Rating</h6><StarRating changeStarRating = {changeStarRating}/>
+          <h1>{movie.title} ({movie.release})</h1>
+          <div className='movie-poster-div'>
+            <label className='test'>
+              <button
+                type='button' 
+                className="poster-button"
+                onClick={handlePosterClick}
+                id = {movie.id}
+                name = {movie.title}
+              />
+              <img className = "selected-movie-poster" src = {movie.imgPath} alt = ''/>
+            </label>
+            <div className='synopsis'>
+              <h4>Synopsis</h4>
+              <p className='synopsis-text'>{movie.synopsis}</p>
+              <form id="create-review-form" className='review-div' onSubmit = {handleReviewSubmit}>
+                <h6>Write a Review</h6>
+                <StarRating className="stars" changeStarRating = {changeStarRating}/>
+                <textarea className='review-text-box' form="create-review-form" name='review' value={reviewInput} onChange={handleReviewInput}/>
+                <input className= "review-submit-button" type='submit'/>
+              </form>
+            </div>
+          </div>
         </div>}
-      <form onSubmit = {handleReviewSubmit}>
-        <h6>Review:</h6>
-        <input type='text' name='review' value={reviewInput} onChange={handleReviewInput}/>
-        <input type='submit'/>
-      </form>
     </div>
   )
 }

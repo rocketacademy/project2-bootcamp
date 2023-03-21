@@ -2,6 +2,7 @@ import React from 'react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { UserAuth } from '../Context/AuthContext'
+import "./Login.css";
 
 export default function Login (){
   const navigate = useNavigate();
@@ -78,18 +79,25 @@ export default function Login (){
   }
 
   return(
-    <div>
-      <h1>{mode}</h1>
-      <button onClick ={changeLogin}>Login</button>
-      <button onClick ={changeRegister}>Register</button>
-      <form onSubmit = {handleSubmit}>
-        <input type= 'text' name= 'email' placeholder = 'Email' value = {email} onChange = {handleInput}/>
-        <input type= 'password' name= 'password' placeholder = 'Password' value = {password} onChange = {handleInput}/>
-        { mode === 'Login'
-        ? <input name = 'login' type = 'submit' value = 'Login'/>
-        : <input name = 'signup' type = 'submit' value = 'Sign Up'/>
-        }
-      </form>
-    </div>
+    <>
+      <header className='header-div'>
+        <h1>Film-O-Rama</h1>
+        <p>Your One-Stop Movie Tracker App</p>
+      </header>
+      <div className='login-panel'>
+        <div className='mode-panel'>
+          <button className={mode === "Login"? 'active-button' : 'inactive-button'} onClick ={changeLogin}>Login</button>
+          <button className={mode === "Register"? 'active-button' : 'inactive-button'} onClick ={changeRegister}>Register</button>
+        </div>
+        <form className='form-panel' onSubmit = {handleSubmit}>
+          <input className='login-form-fields' type= 'text' name= 'email' placeholder = 'Email' value = {email} onChange = {handleInput}/>
+          <input className='login-form-fields' type= 'password' name= 'password' placeholder = 'Password' value = {password} onChange = {handleInput}/>
+          { mode === 'Login'
+          ? <input className="submit-button" name = 'login' type = 'submit' value = 'Login'/>
+          : <input className="submit-button" name = 'signup' type = 'submit' value = 'Register'/>
+          }
+        </form>
+      </div>
+    </>
   )
 }

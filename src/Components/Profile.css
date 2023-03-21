@@ -21,18 +21,21 @@
 
 .profile-poster{
   width: 30vmin;
+  height: 45vmin;
   margin: 3vmin;
+  object-fit: cover;
   border-radius: 5px;
   box-sizing: border-box;
+  transition: 0.1s;
 }
 
 .profile-poster-div{
   display: flex;
-  justify-content: flex-start;
+  justify-content: center;
   flex-wrap: wrap;
   margin: 0 0 10vmin 0;
 }
 
 .profile-poster:hover{
-  border: solid rgb(255, 255, 255) 1.5px;
+  border: solid rgb(255, 255, 255) 2.5px;
 }

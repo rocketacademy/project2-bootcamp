@@ -92,9 +92,9 @@ export default function Profile(){
     <br/>
     <h3>Films Watched</h3>
     <div className="profile-poster-div">
-      {moviesList!==undefined
-      ? moviesList
-      : <p>No Films Yet!</p>}
+        {moviesList!==undefined
+        ? moviesList
+        : <p>No Films Yet!</p>}
     </div>
   </div>)
 }

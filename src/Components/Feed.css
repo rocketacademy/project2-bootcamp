@@ -1,5 +1,15 @@
 .feed-poster {
-  max-height: 30vh;
+  width: 30vmin;
+  height: 45vmin;
+  margin: 3vmin;
+  object-fit: cover;
+  border-radius: 5px;
+  box-sizing: border-box;
+  transition: 0.1s;
+}
+
+.feed-poster:hover{
+  border: solid rgb(255, 255, 255) 2.5px;
 }
 
 .poster-button{

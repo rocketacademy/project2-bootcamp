@@ -5,9 +5,11 @@ export default function SearchResult (props){
   const imgPath = `https://image.tmdb.org/t/p/w1280/${props.movieDetails.poster_path}`
   const title = props.movieDetails.title
   const id = props.movieDetails.id
+  const release = props.movieDetails.release_date.substring(0,4)
+  const synopsis = props.movieDetails.overview
 
   function handleClick(){
-    props.handleResultClick(imgPath, title, id)
+    props.handleResultClick(imgPath, title, id, release, synopsis)
   }
 
   return(
