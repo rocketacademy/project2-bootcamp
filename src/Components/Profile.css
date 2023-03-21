@@ -3,4 +3,36 @@
   width: 30vw;
   object-fit: cover;
   border-radius: 50%;
+  align-self: center;
+  margin: 3vmin 0 3vmin 0;
+}
+
+.user-profile-flex{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 80vw;
+}
+
+.profile-display-name{
+  margin: 3vmin 0 0 0;
+}
+
+.profile-poster{
+  width: 30vmin;
+  margin: 3vmin;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+.profile-poster-div{
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  margin: 0 0 10vmin 0;
+}
+
+.profile-poster:hover{
+  border: solid rgb(255, 255, 255) 1.5px;
 }

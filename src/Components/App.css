@@ -1,14 +1,15 @@
+*{
+  margin: 0px;
+  padding: 0px;
+}
+
 .App {
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
 .App-header {
-  background-color: #282c34;
+  background-image: linear-gradient(to right, #243949 0%, #517fa4 100%);
+  background-blend-mode: multiply;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -16,4 +17,8 @@
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
+}
+
+.display-name:hover{
+  text-decoration: underline;
 }

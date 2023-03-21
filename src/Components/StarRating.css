@@ -6,3 +6,7 @@ input[type="radio"] {
   size: 150;
   cursor: pointer;
 }
+
+.star-container{
+  margin: 1vmin 0 1vmin 0;
+}

@@ -32,7 +32,7 @@ export default function ReviewCreator (){
     } else{
       let currDate = new Date();
       set(ref(database, `${DB_REVIEWS_KEY}/${movie.id}/${user.uid}` ) , {
-        user: user.displayName,
+        user: user.uid,
         val: reviewInput,
         dateTime: currDate.toLocaleDateString() + " " + currDate.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}),
         rating: rating
@@ -96,7 +96,6 @@ export default function ReviewCreator (){
           <img className = "selected-movie-poster" src= {movie.imgPath} alt = '' />
           <h6>Rating</h6><StarRating changeStarRating = {changeStarRating}/>
         </div>}
-      
       <form onSubmit = {handleReviewSubmit}>
         <h6>Review:</h6>
         <input type='text' name='review' value={reviewInput} onChange={handleReviewInput}/>

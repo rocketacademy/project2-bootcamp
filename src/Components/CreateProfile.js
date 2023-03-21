@@ -65,25 +65,25 @@ export default function Profile (){
   }
 
   return(
-    <div>
-      <img className ="profile-pic" src={photoURL} alt=''/><br/>
-      Profile Picture
-      <br/>
-      <input
-      type="file"
-      accept="image/*"
-      onChange = {handleFile}/>
-      <br/>
-      <button onClick = {uploadProfilePic} disabled={!profilePic || loading}>Upload</button>
-      <form id="profile-create" onSubmit={handleSubmit}>
-        Email: <input type="text" disabled value = {user.email}/>
-        <br/>
-        Display Name: <input type='text' value = {displayName} placeholder ={'Enter a Display Name'} onChange = {handleDisplayNameEdit}/>
-        <br/>
-        <input type="submit" value="Submit"/>
+    <div className="profile-flex">
+      <button className='logout-button' onClick={handleLogout}>Logout</button>
+      <div className="profile-pic-div">
+        <img className ="profile-pic" src={photoURL} alt=''/><br/>
+        Profile Picture
+        <div className='file-upload-div'>
+          <input
+          className="file-upload"
+          type="file"
+          accept="image/*"
+          onChange = {handleFile}/>
+          <button className='profile-buttons' onClick = {uploadProfilePic} disabled={!profilePic || loading}>Upload</button>
+        </div>
+      </div>
+      <form id="profile-create" className="profile-form" onSubmit={handleSubmit}>
+        Email<input type="text" className="form-fields" disabled value = {user.email}/>
+        Display Name<input type='text' className="form-fields" value = {displayName} placeholder ={'Enter a Display Name'} onChange = {handleDisplayNameEdit}/>
+        <input className='profile-buttons' type="submit" value="Submit"/>
       </form>
-      <br/>
-      <button onClick={handleLogout}>Logout</button>
     </div>
   )
 }

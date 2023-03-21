@@ -48,6 +48,10 @@ export default function Profile(){
     navigate(movieURL);
   }
   
+  function handleFeed(){
+    navigate("/feed")
+  }
+
   let moviesList;
   if(movies && profile.moviesWatched){
     moviesList = movies.map((movie)=>{
@@ -63,7 +67,7 @@ export default function Profile(){
               name = {movie.val.title}
               />
               <img
-              className= 'feed-poster'
+              className= 'profile-poster'
               src ={movie.val.imgPath}
               alt=''
               />
@@ -76,21 +80,21 @@ export default function Profile(){
       } 
     })
   }
-  
-  
-
 
   return(
-  <div>
+  <div className="user-profile-flex">
+    <button className='logout-button' onClick={handleFeed}>Feed</button>
+    <img className="profile-picture" src={profile.photoURL} alt=''/>
     {userId === user.uid
-    ? <button onClick={handleProfileEdit}>Edit Profile</button>
+    ? <button onClick={handleProfileEdit} className="profile-buttons">Edit Profile</button>
     : null}
-    <img src={profile.photoURL} alt=''/>
-    <h3>{profile.displayName}</h3>
+    <h3 className="profile-display-name">{profile.displayName}</h3>
     <br/>
-    <h3>Films Watched:</h3>
-    <div>
-      {moviesList}
+    <h3>Films Watched</h3>
+    <div className="profile-poster-div">
+      {moviesList!==undefined
+      ? moviesList
+      : <p>No Films Yet!</p>}
     </div>
   </div>)
 }
