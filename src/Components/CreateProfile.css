@@ -45,11 +45,12 @@
   padding: 0 0 0 1vmin;
   margin: 1.5vmin 0 4vmin 0;
   height: 2em;
-  background-color: rgb(182, 216, 255);
+  border: none;
 }
 
 .form-fields:disabled{
-  background-color: rgb(118, 164, 216, 0.8);
+  background-color: rgba(214, 214, 214, 0.8);
+  color: rgb(57, 57, 57)
 }
 
 .file-upload::file-selector-button{
@@ -79,21 +80,4 @@
   display: flex;
   flex-wrap: nowrap;
   margin: 1vmin 0 5vmin 0;
-}
-
-.logout-button{
-  min-width: 12vmin;
-  font-size: 70%;
-  align-self: flex-start;
-  background-color: rgb(182, 216, 255);
-  padding: 1vmin 0 1vmin 0;
-  border-radius: 5px;
-  margin: 4vmin 0 0 0;
-  border-style: none;
-  transition: 0.3s;
-}
-
-.logout-button:hover{
-  background-color: rgb(20, 42, 82);
-  color: rgb(255, 255, 255)
 }

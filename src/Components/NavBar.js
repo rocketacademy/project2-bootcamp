@@ -60,21 +60,55 @@ export default function Navbar() {
       );
     }
   })
-    
 
+  let navBarItems = SidebarData.map((item, index) => {
+    if(item.title === "Sign Out"){
+      return (
+      <li key={index}
+       className="navBar-text"
+       onClick = {handleSignOut}>              
+         <Link to={item.path}>
+          <span>{item.title}</span>
+         </Link>
+       </li>
+      );
+    } else if (item.title === "Profile"){
+      return (
+      <li key={index}
+       className="navBar-text"
+       onClick = {handleProfileClick}>              
+         <Link to={item.path}>
+          <span>{item.title}</span>
+         </Link>
+       </li>
+      );
+    } else{
+      return (
+      <li key={index}
+       className="navBar-text">              
+         <Link to={item.path}>
+          <span>{item.title}</span>
+         </Link>
+       </li>
+      );
+    }
+  })
+    
+  console.log(sidebar)
   return (
     <>
       <IconContext.Provider value={{ color: "#fff" }}>
-      <div className="navbar">
+        <div className="navbar">
+          {navBarItems}
+        </div>
         <Link to="#" className="menu-bars">
-          <FaIcons.FaBars onClick={showSidebar} />
+          <FaIcons.FaBars className="hamburger-menu" onClick={showSidebar} />
         </Link>
-      </div>
       <nav className={sidebar ? "nav-menu active" : "nav-menu"}>
         <ul className="nav-menu-items">
           <li className="navbar-toggle">
             <Link to="#" className="menu-bars">
-              <IoMdArrowBack onClick/>
+              <IoMdArrowBack onClick={showSidebar}/>
             </Link>
           </li>
           {sideBarItems}

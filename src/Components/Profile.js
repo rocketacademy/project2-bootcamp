@@ -47,10 +47,6 @@ export default function Profile(){
     let movieURL = `/movie/${e.target.id}/${updatedMovieTitle}`
     navigate(movieURL);
   }
-  
-  function handleFeed(){
-    navigate("/feed")
-  }
 
   let moviesList;
   if(movies && profile.moviesWatched){
@@ -83,7 +79,6 @@ export default function Profile(){
 
   return(
   <div className="user-profile-flex">
-    <button className='logout-button' onClick={handleFeed}>Feed</button>
     <img className="profile-picture" src={profile.photoURL} alt=''/>
     {userId === user.uid
     ? <button onClick={handleProfileEdit} className="profile-buttons">Edit Profile</button>

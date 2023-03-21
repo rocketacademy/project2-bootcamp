@@ -1,10 +1,12 @@
 .navbar {
   background-color: rgb(20, 42, 82);
-  height: 100px;
-  display: flex;
-  justify-content: flex-start;
-  align-items: left;
-  left: -100%;
+  top:0;
+  width: 100vw;
+  height: 50px;
+  display:flex;
+  align-items: center;
+  justify-content: space-evenly;
+  position: fixed;
 }
 
 .menu-bars {
@@ -51,6 +53,26 @@
   border-radius: 4px;
 }
 
+.navBar-text{
+  list-style: none;
+}
+
+.navBar-text a{
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  color: rgb(255, 255, 255);
+}
+
+.navBar-text a:visited{
+  text-decoration: none;
+}
+
+
+.navBar-text:hover{
+  font-weight: bold;
+}
+
 .nav-text a:hover {
   background-color: rgb(5, 22, 54);
 }
@@ -70,4 +92,25 @@
 
 span {
   margin-left: 16px;
+}
+
+.hamburger-menu{
+  border-radius: 5px;
+  position: fixed;
+  background-color: rgb(5, 22, 54);
+  padding: 8px;
+  width: 45px;
+  height: 45px;
+  left: 15px;
+  top: 15px;
+  display: none;
+}
+
+@media only screen and (max-width: 800px){
+  .hamburger-menu{
+    display: inline;
+  }
+  .navbar{
+    display: none;
+  }
 }

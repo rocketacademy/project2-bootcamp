@@ -23,21 +23,6 @@ export default function Feed (){
     })
   },[])
 
-  function handleSignOut(){
-    console.log('signed out')
-    logout();
-    navigate('/login');
-  }
-  
-  function handleCreateReview(){
-    console.log('create review')
-    navigate('/create-review')
-  }
-
-  function handleProfileClick(){
-    navigate("/profile/" + user.uid)
-  }
-
   function handlePosterClick(e){
     let movieTitle = e.target.name.split(' ')
     let updatedMovieTitle = movieTitle.join('%20')
@@ -63,10 +48,10 @@ export default function Feed (){
 
   return(
     <div>
-      <h1>Welcome, {user.displayName}!</h1>
-      <button onClick={handleCreateReview}>Add a Review</button>
-      <button onClick={handleProfileClick}>Profile</button>
-      <button onClick={handleSignOut}>Sign Out</button>
+      <div className="text-div">
+        <h1>Welcome to Film-O-Rama, {user.displayName}!</h1>
+        <p>Check out some movies other users are watching!</p>
+      </div>
       <div>
         {moviesList}
       </div>

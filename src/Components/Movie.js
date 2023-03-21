@@ -192,10 +192,6 @@ export default function Movie (){
     setReviewInput(e.target.value)
   }
 
-  function handleFeed(){
-    navigate("/feed")
-  }
-
   let reviewItems = reviews.map((review) => {
     return (
     <div className="review-container">
@@ -228,7 +224,6 @@ export default function Movie (){
   
   return(
     <div className = "movie-page-flex">
-      <button className='back-button' onClick={handleFeed}>Feed</button>
       <h1>{movieTitle} ({release})</h1>
       <div className='movie-poster-div'>
         <img className = "movie-poster" src = {imgPath} alt = ''/>

@@ -29,11 +29,6 @@ export default function Profile (){
   function handleDisplayNameEdit(e){
     setDisplayName(()=> e.target.value)
   }
-  
-  function handleLogout(){
-    logout();
-    navigate("/login")
-  }
 
   function handleSubmit(e){
     e.preventDefault();
@@ -66,7 +61,6 @@ export default function Profile (){
 
   return(
     <div className="profile-flex">
-      <button className='logout-button' onClick={handleLogout}>Logout</button>
       <div className="profile-pic-div">
         <img className ="profile-pic" src={photoURL} alt=''/><br/>
         Profile Picture

@@ -3,7 +3,6 @@ import { FaUserCircle } from "react-icons/fa";
 import { AiFillHome } from "react-icons/ai";
 import { IoIosPaper } from "react-icons/io";
 import { BiLogOut } from "react-icons/bi"
-import { UserAuth } from '../Context/AuthContext';
 
 
 export const SidebarData = [
