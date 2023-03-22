@@ -47,7 +47,7 @@ export default function Feed (){
   ))
 
   return(
-    <div>
+    <div className='top-div'>
       <div className="text-div">
         <h1>Welcome to Film-O-Rama, {user.displayName}!</h1>
         <p>Check out some movies other users are watching!</p>

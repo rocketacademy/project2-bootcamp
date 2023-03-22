@@ -1,5 +1,5 @@
 .header-div {
-  margin: 5vmin;
+  margin: 0 5vmin 5vmin 5vmin;
 }
 
 .login-panel {
@@ -8,7 +8,7 @@
   background-color: rgb(20, 42, 82);
   border-radius: 25px;
   padding: 2vmin;
-  min-width: 30%;
+  width: 35%;
 }
 
 .mode-panel {
@@ -78,4 +78,10 @@
   margin: 1.5vmin 0 4vmin 0;
   height: 2.2em;
   font-size: 0.8em;
+}
+
+@media only screen and (max-width: 800px){
+  .login-panel{
+    width: 70%
+  }
 }

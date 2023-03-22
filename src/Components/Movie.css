@@ -15,13 +15,14 @@
 }
 
 .synopsis-text{
-  font-size: small;
+  font-size: large;
   margin: 2vmin 0 2vmin 0;
 }
 
 .movie-page-flex {
   display:flex;
   flex-direction: column;
+  padding: 12vmin 0 0 0;
 }
 
 
@@ -99,7 +100,7 @@
 .cast-link{
   color: rgb(255, 256, 256);
   text-decoration: none;
-  font-size: small;
+  font-size: large;
   align-self: center;
 }
 

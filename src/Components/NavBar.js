@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { SidebarData } from "./SidebarData";
 import { IconContext } from "react-icons";
 import { UserAuth } from "../Context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import "./Navbar.css";
 
 export default function Navbar() {
@@ -13,6 +13,7 @@ export default function Navbar() {
   const showSidebar = () => setSidebar(!sidebar);
   const navigate = useNavigate();
   const { user, logout } = UserAuth();
+  const location = useLocation();
 
 
   function handleSignOut(){
@@ -97,7 +98,9 @@ export default function Navbar() {
   console.log(sidebar)
   return (
     <>
-      <IconContext.Provider value={{ color: "#fff" }}>
+      {location.pathname === "/login"
+      ? null
+      : <IconContext.Provider value={{ color: "#fff" }}>
         <div className="navbar">
           {navBarItems}
         </div>
@@ -114,7 +117,7 @@ export default function Navbar() {
           {sideBarItems}
         </ul>
       </nav>
-      </IconContext.Provider>
+      </IconContext.Provider>}
     </>
   );
 }
