@@ -7,19 +7,22 @@
   margin: 3vmin 0 3vmin 0;
 }
 
-.user-profile-flex{
+.user-profile-flex {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   width: 80vw;
 }
+.profile-buttons:hover {
+  transition: scale(1.25);
+}
 
-.profile-display-name{
+.profile-display-name {
   margin: 3vmin 0 0 0;
 }
 
-.profile-poster{
+.profile-poster {
   width: 30vmin;
   height: 45vmin;
   margin: 2vmin;
@@ -29,13 +32,14 @@
   transition: 0.1s;
 }
 
-.profile-poster-div{
+.profile-poster-div {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
   margin: 0 0 10vmin 0;
 }
 
-.profile-poster:hover{
+.profile-poster:hover {
+  transition: scale(2);
   border: solid rgb(255, 255, 255) 2.5px;
 }

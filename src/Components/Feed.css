@@ -5,18 +5,19 @@
   object-fit: cover;
   border-radius: 5px;
   box-sizing: border-box;
-  transition: 0.1s;
+  transition: 0.5s;
+  cursor: pointer;
 }
 
-.feed-poster:hover{
+.feed-poster:hover {
   border: solid rgb(255, 255, 255) 2.5px;
 }
 
-.poster-button{
-  display: none
+.poster-button {
+  display: none;
 }
 
-.text-div{
+.text-div {
   display: flex;
   flex-direction: column;
   justify-content: center;
