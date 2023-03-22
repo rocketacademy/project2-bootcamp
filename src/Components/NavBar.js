@@ -95,7 +95,6 @@ export default function Navbar() {
     }
   })
     
-  console.log(sidebar)
   return (
     <>
       {location.pathname === "/login"

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { UserAuth } from '../Context/AuthContext'
@@ -12,6 +12,17 @@ export default function Login (){
 
   const { createUser, signIn, user } = UserAuth();
   
+  /*useEffect(()=>{
+    if(user){
+      console.log('go feed')
+      redirectToFeed();
+    }
+  },[])
+
+  function redirectToFeed(){
+    navigate("/feed")
+  }*/
+
   function handleInput(e){
     if (e.target.name === 'email'){
       setEmail(e.target.value)

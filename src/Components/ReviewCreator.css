@@ -49,6 +49,10 @@
   margin: 0 2vmin 0 0;
 }
 
+.poster-buttton{
+  display:none;
+}
+
 .selected-movie-poster{
   width: 100%;
   align-self: center;
@@ -75,7 +79,7 @@
 
 .review-text-box{
   width: 100%;
-  height: 20vmin;
+  height: 18vmin;
   border: 0;
 }
 
@@ -96,11 +100,17 @@
   color: rgb(255, 255, 255);
 }
 
-@media only screen and (max-width: 800px){
+@media only screen and (max-width: 1000px){
+  .selected-movie-flex{
+    flex-direction: column;
+  }
   .search-field{
     width: 70%;
   }
   .selected-movie-poster{
-    width: 70%;
+    width: 100%;
+  }
+  .test{
+    width: 100%;
   }
 }

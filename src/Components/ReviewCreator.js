@@ -123,7 +123,7 @@ export default function ReviewCreator (){
               <h4>Synopsis</h4>
               <p className='synopsis-text'>{movie.synopsis}</p>
               <form id="create-review-form" className='review-div' onSubmit = {handleReviewSubmit}>
-                <h6>Write a Review</h6>
+                <h4>Write a Review</h4>
                 <StarRating className="stars" changeStarRating = {changeStarRating}/>
                 <textarea className='review-text-box' form="create-review-form" name='review' value={reviewInput} onChange={handleReviewInput}/>
                 <input className= "review-submit-button" type='submit'/>
