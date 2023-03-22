@@ -2,22 +2,19 @@ import React from 'react';
 import { useEffect,useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ref, onChildAdded } from "firebase/database"
-import axios from 'axios';
-import { storage, database, auth } from "../firebase";
+import { database } from "../firebase";
 import { UserAuth } from '../Context/AuthContext';
 import "./Feed.css"
 
 const DB_MOVIES_KEY = "movies";
-const DB_REVIEWS_KEY = "reviews";
 
 export default function Feed (){
   const navigate = useNavigate();
-  const { user , logout } = UserAuth();
+  const { user } = UserAuth();
   const [movies, setMovies] = useState([]);
 
   useEffect(()=> {
     const moviesRef = ref(database, DB_MOVIES_KEY);
-    // For Text Input
     onChildAdded(moviesRef, (data) => {
       setMovies((prev)=> [...prev, {key: data.key, val: data.val()}])
     })
@@ -45,7 +42,8 @@ export default function Feed (){
       alt=''/>
     </label> 
   ))
-
+  
+  console.log('landed on login')
   return(
     <div className='top-div'>
       <div className="text-div">

@@ -12,24 +12,12 @@ export default function Login (){
 
   const { createUser, signIn, user } = UserAuth();
   
-  /*useEffect(()=>{
-    if(user){
-      console.log('go feed')
-      redirectToFeed();
-    }
-  },[])
-
-  function redirectToFeed(){
-    navigate("/feed")
-  }*/
-
   function handleInput(e){
     if (e.target.name === 'email'){
       setEmail(e.target.value)
     } else if (e.target.name === 'password'){
       setPassword(e.target.value)
     }
-    console.log(`email: ${email} and password: ${password}`)
   }
 
   function handleSubmit (e) {

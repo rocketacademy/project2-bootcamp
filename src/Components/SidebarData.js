@@ -8,7 +8,7 @@ import { BiLogOut } from "react-icons/bi"
 export const SidebarData = [
   {
     title: "Feed",
-    path: "/",
+    path: "/feed",
     icon: <AiFillHome />,
     cName: "nav-text",
   },

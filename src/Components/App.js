@@ -28,7 +28,6 @@ function App() {
               <Route path="/profile/:userId" element={<Profile />} />
               <Route path="/movie/:movieId/:movietitle" element={<Movie />} />
               <Route path="/create-review" element={<ReviewCreator />} />
-              <Route path="/" />
             </Routes>
           </BrowserRouter>
         </AuthContextProvider>
