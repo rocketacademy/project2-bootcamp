@@ -1,8 +1,8 @@
-.header-div{
+.header-div {
   margin: 5vmin;
 }
 
-.login-panel{
+.login-panel {
   display: flex;
   flex-direction: column;
   background-color: rgb(20, 42, 82);
@@ -11,13 +11,13 @@
   min-width: 30%;
 }
 
-.mode-panel{
+.mode-panel {
   display: flex;
   justify-content: space-around;
   box-sizing: border-box;
 }
 
-.inactive-button{
+.inactive-button {
   width: 46%;
   background-color: rgb(20, 42, 82);
   color: rgb(255, 255, 255);
@@ -29,11 +29,11 @@
   transition: 0.3s;
 }
 
-.inactive-button:hover{
-  border: 2px solid rgb(182, 216, 255)
+.inactive-button:hover {
+  border: 2px solid rgb(182, 216, 255);
 }
 
-.active-button{
+.active-button {
   width: 46%;
   background-color: rgb(182, 216, 255, 0.8);
   border: 0;
@@ -43,17 +43,17 @@
   border: 2px solid transparent;
 }
 
-.form-panel{
+.form-panel {
   display: flex;
   flex-direction: column;
   margin: 2vmin 0 2vmin 0;
   padding: 2vmin;
 }
 
-.submit-button{
+.submit-button {
   background-color: rgb(182, 216, 255);
   outline: none;
-  color:rgb(20, 42, 82);
+  color: rgb(20, 42, 82);
   padding: 1.2vmin;
   border-radius: 5px;
   border-style: none;
@@ -62,16 +62,17 @@
   box-sizing: border-box;
   font-size: 0.8em;
   border: 2px solid transparent;
-  width: 30%
+  width: 30%;
 }
 
-.submit-button:hover{
+.submit-button:hover {
+  transform: scale(1.25);
   background-color: rgb(20, 42, 82);
   color: rgb(255, 255, 255);
   border: 2px solid rgb(182, 216, 255);
 }
 
-.login-form-fields{
+.login-form-fields {
   border-radius: 5px;
   padding: 0 0 0 1vmin;
   margin: 1.5vmin 0 4vmin 0;
