@@ -1,0 +1,45 @@
+.profile-picture {
+  height: 20vw;
+  width: 20vw;
+  object-fit: cover;
+  border-radius: 50%;
+  align-self: center;
+  margin: 3vmin 0 3vmin 0;
+}
+
+.user-profile-flex {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 80vw;
+}
+.profile-buttons:hover {
+  transition: scale(1.25);
+}
+
+.profile-display-name {
+  margin: 3vmin 0 0 0;
+}
+
+.profile-poster {
+  width: 30vmin;
+  height: 45vmin;
+  margin: 2vmin;
+  object-fit: cover;
+  border-radius: 5px;
+  box-sizing: border-box;
+  transition: 0.1s;
+}
+
+.profile-poster-div {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: 0 0 10vmin 0;
+}
+
+.profile-poster:hover {
+  transition: scale(2);
+  border: solid rgb(255, 255, 255) 2.5px;
+}

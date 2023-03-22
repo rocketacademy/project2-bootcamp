@@ -1,0 +1,83 @@
+.profile-flex{
+  display: flex;
+  flex-direction: column;
+  justify-content: top;
+  margin-bottom: auto;
+  align-items:center;
+}
+
+.profile-pic {
+  height: 30vmin;
+  width: 30vmin;
+  object-fit: cover;
+  border-radius: 50%;
+  outline: 3px rgb(182, 216, 255) solid ;
+  margin: 10vmin 0 0 0;
+}
+
+.profile-buttons{
+  background-color: rgb(182, 216, 255);
+  outline: none;
+  color:rgb(20, 42, 82);
+  padding: 1vmin;
+  border-radius: 5px;
+  border-style: none;
+  transition: 0.3s;
+  align-self: center;
+}
+
+.profile-buttons:hover{
+  background-color: rgb(20, 42, 82);
+  color: rgb(255, 255, 255);
+}
+
+.profile-form{
+  display:flex;
+  flex-direction: column;
+  text-align: left;
+  font-size: large;
+  width:80vmin;
+  margin: 0 0 10vmin 0;
+}
+
+.form-fields{
+  border-radius: 5px;
+  padding: 0 0 0 1vmin;
+  margin: 1.5vmin 0 4vmin 0;
+  height: 2em;
+  border: none;
+}
+
+.form-fields:disabled{
+  background-color: rgba(214, 214, 214, 0.8);
+  color: rgb(57, 57, 57)
+}
+
+.file-upload::file-selector-button{
+  background-color: rgb(182, 216, 255);
+  outline: none;
+  color:rgb(20, 42, 82);
+  padding: 1vmin;
+  border-radius: 5px;
+  border-style: none;
+  transition: 0.3s;
+}
+
+.file-upload::file-selector-button:hover{
+  background-color: rgb(20, 42, 82);
+  color: rgb(255, 255, 255);
+}
+
+.profile-pic-div{
+  display: flex;
+  flex-direction: column;
+  justify-content:center;
+  align-items: center;
+  width: 80vw;
+}
+
+.file-upload-div{ 
+  display: flex;
+  flex-wrap: nowrap;
+  margin: 1vmin 0 5vmin 0;
+}

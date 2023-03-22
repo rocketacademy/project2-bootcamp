@@ -1,0 +1,18 @@
+.search-flex-container{
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  width: 50%;
+  background-color: rgb(39, 62, 106);
+  padding: 0 1vmin 0 1vmin;
+  text-align: left;
+}
+
+.search-flex-container:hover{
+  background-color: rgb(30, 43, 66);
+}
+
+.search-preview-image {
+  max-width: 40px;
+  margin: 0 2vmin 0 0;
+}

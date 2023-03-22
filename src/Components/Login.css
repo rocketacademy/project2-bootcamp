@@ -1,0 +1,81 @@
+.header-div {
+  margin: 5vmin;
+}
+
+.login-panel {
+  display: flex;
+  flex-direction: column;
+  background-color: rgb(20, 42, 82);
+  border-radius: 25px;
+  padding: 2vmin;
+  min-width: 30%;
+}
+
+.mode-panel {
+  display: flex;
+  justify-content: space-around;
+  box-sizing: border-box;
+}
+
+.inactive-button {
+  width: 46%;
+  background-color: rgb(20, 42, 82);
+  color: rgb(255, 255, 255);
+  border: 2px transparent solid;
+  padding: 2vmin;
+  border-radius: 15px;
+  box-sizing: border-box;
+  font-size: 1em;
+  transition: 0.3s;
+}
+
+.inactive-button:hover {
+  border: 2px solid rgb(182, 216, 255);
+}
+
+.active-button {
+  width: 46%;
+  background-color: rgb(182, 216, 255, 0.8);
+  border: 0;
+  padding: 2vmin;
+  border-radius: 15px;
+  font-size: 1em;
+  border: 2px solid transparent;
+}
+
+.form-panel {
+  display: flex;
+  flex-direction: column;
+  margin: 2vmin 0 2vmin 0;
+  padding: 2vmin;
+}
+
+.submit-button {
+  background-color: rgb(182, 216, 255);
+  outline: none;
+  color: rgb(20, 42, 82);
+  padding: 1.2vmin;
+  border-radius: 5px;
+  border-style: none;
+  transition: 0.3s;
+  align-self: center;
+  box-sizing: border-box;
+  font-size: 0.8em;
+  border: 2px solid transparent;
+  width: 30%;
+}
+
+.submit-button:hover {
+  transform: scale(1.25);
+  background-color: rgb(20, 42, 82);
+  color: rgb(255, 255, 255);
+  border: 2px solid rgb(182, 216, 255);
+}
+
+.login-form-fields {
+  border-radius: 5px;
+  padding: 0 0 0 1vmin;
+  margin: 1.5vmin 0 4vmin 0;
+  height: 2.2em;
+  font-size: 0.8em;
+}
