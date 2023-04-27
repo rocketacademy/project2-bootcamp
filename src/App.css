@@ -25,3 +25,11 @@ body {
   font-size: calc(10px + 2vmin);
   color: white;
 }
+
+button {
+  padding: 5px;
+}
+
+form input {
+  padding: 5px;
+}
