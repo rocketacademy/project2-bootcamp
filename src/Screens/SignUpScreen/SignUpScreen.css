@@ -1,0 +1,6 @@
+#signup form {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin: 10px;
+}

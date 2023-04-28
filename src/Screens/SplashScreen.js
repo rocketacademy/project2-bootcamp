@@ -1,8 +1,23 @@
+import { NavContext } from "../App";
+import { useContext } from "react";
+
 const SplashScreen = () => {
+  const { handleNavigate } = useContext(NavContext);
+
   return (
     <div>
       <header className="App-header">
-        <p>Splash Screen</p>
+        <h1>Poké App</h1>
+        <img
+          src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/6.png"
+          alt="POKEMON"
+        />
+        <button onClick={handleNavigate} id="login">
+          Login
+        </button>
+        <button onClick={handleNavigate} id="signup">
+          Sign Up
+        </button>
       </header>
     </div>
   );
