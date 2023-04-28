@@ -9,6 +9,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-y: hidden;
 }
 
 .App {
@@ -34,5 +35,7 @@ button {
 }
 
 form input {
-  padding: 5px;
+  padding: 10px;
+  border: none;
+  border-radius: 20px;
 }

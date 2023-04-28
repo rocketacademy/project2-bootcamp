@@ -26,6 +26,7 @@ import SplashScreen from "./Screens/SplashScreen";
 import LoginScreen from "./Screens/LoginScreen";
 import SignUpScreen from "./Screens/SignUpScreen/SignUpScreen";
 import ProfileScreen from "./Screens/ProfileScreen/ProfileScreen";
+import ExploreScreen from "./Screens/ExploreScreen/ExploreScreen";
 
 //--------- Variables  ---------//
 
@@ -79,6 +80,7 @@ const App = () => {
             />
             <Route path="/login" element={<LoginScreen />} />
             <Route path="/signup" element={<SignUpScreen />} />
+            <Route path="/explore" element={<ExploreScreen />} />
             <Route
               path="/profile"
               element={<ProfileScreen handleLogOut={handleLogOut} />}

@@ -6,7 +6,7 @@ const NavBar = () => {
   const { handleNavigate } = useContext(NavContext);
   return (
     <div id="nav">
-      <button onClick={handleNavigate} id="">
+      <button onClick={handleNavigate} id="explore">
         Explore
       </button>
       <button onClick={handleNavigate} id="profile">

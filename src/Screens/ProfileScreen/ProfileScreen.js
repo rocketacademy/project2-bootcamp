@@ -4,10 +4,6 @@ import NavBar from "../../Components/NavBar/NavBar";
 import "./ProfileScreen.css";
 
 const ProfileScreen = (props) => {
-  // const navigate = useNavigate();
-  // const handleNavigate = (e) => {
-  //   navigate(`/${e.target.id}`);
-  // };
   const { navigate, handleNavigate } = useContext(NavContext);
   const { user } = useContext(UserContext);
 

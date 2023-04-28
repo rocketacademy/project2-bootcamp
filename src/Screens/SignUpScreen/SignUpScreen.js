@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth } from "../../firebase";
 import { NavContext, UserContext } from "../../App";
@@ -51,6 +51,7 @@ const SignUpScreen = (props) => {
       onClick={(e) => {
         e.preventDefault();
         setPic(url);
+        e.currentTarget.classList.toggle("selected");
       }}
     >
       <img src={url} alt={`user-icon-${index}`} />
@@ -91,7 +92,7 @@ const SignUpScreen = (props) => {
             type="password"
             value={passwordAgain}
             onChange={(e) => setPasswordAgain(e.target.value)}
-            placeholder="Enter password again"
+            placeholder="Re-enter password"
           />
           <p>Select your character</p>
           <div className="user-icons">{iconList}</div>
