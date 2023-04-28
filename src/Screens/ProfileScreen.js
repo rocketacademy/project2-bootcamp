@@ -1,5 +1,6 @@
 import { useContext } from "react";
 import { NavContext, UserContext } from "../App";
+import NavBar from "../Components/NavBar";
 
 const ProfileScreen = (props) => {
   const { navigate, handleNavigate } = useContext(NavContext);
@@ -18,6 +19,7 @@ const ProfileScreen = (props) => {
       <button onClick={handleClick} id="/">
         Log Out
       </button>
+      <NavBar />
     </header>
   );
 };

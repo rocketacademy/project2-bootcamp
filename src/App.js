@@ -73,7 +73,10 @@ const App = () => {
       <UserContext.Provider value={{ user, setUser }}>
         <div className="App">
           <Routes>
-            <Route path="/" element={<SplashScreen />} />
+            <Route
+              path="/"
+              element={user.uid ? <SplashScreen /> : navigate("/profile")}
+            />
             <Route path="/login" element={<LoginScreen />} />
             <Route path="/signup" element={<SignUpScreen />} />
             <Route
