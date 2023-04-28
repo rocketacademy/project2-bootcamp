@@ -18,14 +18,14 @@ import React, { useEffect, useState } from "react";
 
 //-------- React Router --------//
 
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route, useNavigate, Navigate } from "react-router-dom";
 
 //---------- Screens  ----------//
 
 import SplashScreen from "./Screens/SplashScreen";
 import LoginScreen from "./Screens/LoginScreen";
 import SignUpScreen from "./Screens/SignUpScreen/SignUpScreen";
-import ProfileScreen from "./Screens/ProfileScreen";
+import ProfileScreen from "./Screens/ProfileScreen/ProfileScreen";
 
 //--------- Variables  ---------//
 
@@ -63,9 +63,9 @@ const App = () => {
     });
   }, []);
 
-  const handleLogOut = () => {
+  const handleLogOut = async () => {
+    await setUser(userObj);
     signOut(auth);
-    setUser(userObj);
   };
 
   return (
@@ -75,7 +75,7 @@ const App = () => {
           <Routes>
             <Route
               path="/"
-              element={user.uid ? <SplashScreen /> : navigate("/profile")}
+              element={user.uid ? <Navigate to="/profile" /> : <SplashScreen />}
             />
             <Route path="/login" element={<LoginScreen />} />
             <Route path="/signup" element={<SignUpScreen />} />

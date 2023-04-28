@@ -1,5 +1,6 @@
 import { useContext } from "react";
-import { NavContext } from "../App";
+import { NavContext } from "../../App";
+import "./NavBar.css";
 
 const NavBar = () => {
   const { handleNavigate } = useContext(NavContext);

@@ -13,10 +13,11 @@ body {
 
 .App {
   text-align: center;
+  background-color: #282c34;
+  padding: 20px;
 }
 
 .App-header {
-  background-color: #282c34;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -28,6 +29,8 @@ body {
 
 button {
   padding: 5px;
+  height: fit-content;
+  width: fit-content;
 }
 
 form input {
