@@ -1,13 +1,10 @@
-import { useNavigate } from "react-router-dom";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { NavContext } from "../App";
 
 const LoginScreen = () => {
-  const navigate = useNavigate();
-  const handleNavigate = (e) => {
-    navigate(`/${e.target.id}`);
-  };
+  const { navigate, handleNavigate } = useContext(NavContext);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

@@ -18,7 +18,7 @@ import React, { useEffect, useState } from "react";
 
 //-------- React Router --------//
 
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
 
 //---------- Screens  ----------//
 
@@ -32,6 +32,7 @@ import ProfileScreen from "./Screens/ProfileScreen";
 const DB_USERS_KEY = "users";
 const DB_IMAGES_KEY = "images";
 const UserContext = React.createContext(null);
+const NavContext = React.createContext(null);
 const userObj = {
   uid: null,
   email: null,
@@ -43,6 +44,10 @@ const userObj = {
 
 const App = () => {
   const [user, setUser] = useState(userObj);
+  const navigate = useNavigate();
+  const handleNavigate = (e) => {
+    navigate(`/${e.target.id}`);
+  };
 
   useEffect(() => {
     // const databaseRef = ref(database, DB_USERS_KEY);
@@ -64,21 +69,23 @@ const App = () => {
   };
 
   return (
-    <UserContext.Provider value={user}>
-      <div className="App">
-        <Routes>
-          <Route path="/" element={<SplashScreen />} />
-          <Route path="/login" element={<LoginScreen />} />
-          <Route path="/signup" element={<SignUpScreen setUser={setUser} />} />
-          <Route
-            path="/profile"
-            element={<ProfileScreen handleLogOut={handleLogOut} />}
-          />
-        </Routes>
-      </div>
-    </UserContext.Provider>
+    <NavContext.Provider value={{ navigate, handleNavigate }}>
+      <UserContext.Provider value={{ user, setUser }}>
+        <div className="App">
+          <Routes>
+            <Route path="/" element={<SplashScreen />} />
+            <Route path="/login" element={<LoginScreen />} />
+            <Route path="/signup" element={<SignUpScreen />} />
+            <Route
+              path="/profile"
+              element={<ProfileScreen handleLogOut={handleLogOut} />}
+            />
+          </Routes>
+        </div>
+      </UserContext.Provider>
+    </NavContext.Provider>
   );
 };
 
 export default App;
-export { UserContext };
+export { UserContext, NavContext };

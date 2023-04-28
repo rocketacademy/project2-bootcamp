@@ -1,29 +1,26 @@
-import { useNavigate } from "react-router-dom";
 import { useContext, useState } from "react";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth } from "../../firebase";
-import { UserContext } from "../../App";
+import { NavContext, UserContext } from "../../App";
 import "./SignUpScreen.css";
 
 const userIcons = [
-  "https://archives.bulbagarden.net/media/upload/f/fc/Cheryl_OD.png",
-  "https://archives.bulbagarden.net/media/upload/1/1a/Blue_IV_OD.png",
-  "https://archives.bulbagarden.net/media/upload/2/2c/Artist_IV_OD.png",
-  "https://archives.bulbagarden.net/media/upload/8/82/Bugsy_IV_OD.png",
+  "https://i.imgur.com/XZTIoPq.png",
+  "https://i.imgur.com/TzcDN1E.png",
+  "https://i.imgur.com/NkcfqP3.png",
+  "https://i.imgur.com/L7oGJf7.png",
+  "https://i.imgur.com/vmRbEuS.png",
 ];
 
 const SignUpScreen = (props) => {
-  const navigate = useNavigate();
-  const handleNavigate = (e) => {
-    navigate(`/${e.target.id}`);
-  };
+  const { setUser } = useContext(UserContext);
+  const { navigate, handleNavigate } = useContext(NavContext);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordAgain, setPasswordAgain] = useState("");
   const [name, setName] = useState("");
   const [pic, setPic] = useState("");
-  const user = useContext(UserContext);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -32,13 +29,13 @@ const SignUpScreen = (props) => {
         await createUserWithEmailAndPassword(auth, email, password);
         await updateProfile(auth.currentUser, {
           displayName: name,
+          photoURL: pic,
         });
-        props.setUser({
-          uid: user.uid,
-          email: user.email,
+        setUser((user) => ({
+          ...user,
           name: name,
           pic: pic,
-        });
+        }));
         navigate("/profile");
       } else {
         alert("Passwords do not match!");

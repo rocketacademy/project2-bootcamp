@@ -1,14 +1,9 @@
 import { useContext } from "react";
-import { useNavigate } from "react-router-dom";
-import { UserContext } from "../App";
+import { NavContext, UserContext } from "../App";
 
 const ProfileScreen = (props) => {
-  const navigate = useNavigate();
-  const handleNavigate = (e) => {
-    navigate(`/${e.target.id}`);
-  };
-
-  const user = useContext(UserContext);
+  const { navigate, handleNavigate } = useContext(NavContext);
+  const { user } = useContext(UserContext);
 
   const handleClick = () => {
     props.handleLogOut();

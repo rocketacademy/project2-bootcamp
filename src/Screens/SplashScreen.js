@@ -1,11 +1,8 @@
-import { useNavigate } from "react-router-dom";
+import { NavContext } from "../App";
+import { useContext } from "react";
 
 const SplashScreen = () => {
-  const navigate = useNavigate();
-
-  const handleNavigate = (e) => {
-    navigate(`/${e.target.id}`);
-  };
+  const { handleNavigate } = useContext(NavContext);
 
   return (
     <div>
