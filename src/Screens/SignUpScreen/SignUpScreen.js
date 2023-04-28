@@ -13,7 +13,7 @@ const userIcons = [
 ];
 
 const SignUpScreen = (props) => {
-  const { setUser } = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
   const { navigate, handleNavigate } = useContext(NavContext);
 
   const [email, setEmail] = useState("");
