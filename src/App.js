@@ -18,14 +18,15 @@ import React, { useEffect, useState } from "react";
 
 //-------- React Router --------//
 
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route, useNavigate, Navigate } from "react-router-dom";
 
 //---------- Screens  ----------//
 
 import SplashScreen from "./Screens/SplashScreen";
 import LoginScreen from "./Screens/LoginScreen";
 import SignUpScreen from "./Screens/SignUpScreen/SignUpScreen";
-import ProfileScreen from "./Screens/ProfileScreen";
+import ProfileScreen from "./Screens/ProfileScreen/ProfileScreen";
+import ExploreScreen from "./Screens/ExploreScreen/ExploreScreen";
 
 //--------- Variables  ---------//
 
@@ -63,9 +64,9 @@ const App = () => {
     });
   }, []);
 
-  const handleLogOut = () => {
+  const handleLogOut = async () => {
+    await setUser(userObj);
     signOut(auth);
-    setUser(userObj);
   };
 
   return (
@@ -73,9 +74,13 @@ const App = () => {
       <UserContext.Provider value={{ user, setUser }}>
         <div className="App">
           <Routes>
-            <Route path="/" element={<SplashScreen />} />
+            <Route
+              path="/"
+              element={user.uid ? <Navigate to="/profile" /> : <SplashScreen />}
+            />
             <Route path="/login" element={<LoginScreen />} />
             <Route path="/signup" element={<SignUpScreen />} />
+            <Route path="/explore" element={<ExploreScreen />} />
             <Route
               path="/profile"
               element={<ProfileScreen handleLogOut={handleLogOut} />}
