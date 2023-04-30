@@ -27,6 +27,7 @@ import LoginScreen from "./Screens/LoginScreen";
 import SignUpScreen from "./Screens/SignUpScreen/SignUpScreen";
 import ProfileScreen from "./Screens/ProfileScreen/ProfileScreen";
 import ExploreScreen from "./Screens/ExploreScreen/ExploreScreen";
+import SearchPokeScreen from "./Screens/SearchPokeScreen/SearchPokeScreen";
 
 //--------- Variables  ---------//
 
@@ -85,6 +86,7 @@ const App = () => {
               path="/profile"
               element={<ProfileScreen handleLogOut={handleLogOut} />}
             />
+            <Route path="/search-poke" element={<SearchPokeScreen />} />
           </Routes>
         </div>
       </UserContext.Provider>
