@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useState } from "react";
 import "./SearchPokeScreen.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -10,24 +10,74 @@ import {
   faMagnifyingGlass,
   faChevronLeft,
 } from "@fortawesome/free-solid-svg-icons";
-import { get } from "firebase/database";
+import { get, ref, set } from "firebase/database";
+import { database } from "../../firebase";
+import { UserContext } from "../../App";
 
-const SearchPokeScreen = () => {
-  const [pokeName, setPokeName] = useState("")
-  const [pokeData, setPokeData] = useState("")
+const pokeObj = {
+  type: null,
+  imgURL: null
+}
+
+//comment
+const SearchPokeScreen = ({ DB_USERS_KEY }) => {
+  const [input, setInput] = useState("");
+  const [pokeData, setPokeData] = useState(pokeObj);
+  const [pokeName, setPokeName] = useState("");
+  const { user } = useContext(UserContext);
+
   const handleChange = (e) => {
-    setPokeName(e.target.value)
+    setInput(e.target.value);
   }
-
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.get(`https://pokeapi.co/api/v2/pokemon/${pokeName}`).then((response) => {
-      console.log(response.data.types[0].type.name)
-      setPokeData(response.data.types[0].type.name)
-    })
+    axios
+      .get(`https://pokeapi.co/api/v2/pokemon/${input}`)
+      .then((response) => {
+        setPokeData()
+        const retrievedData = {
+          type: response.data.types[0].type.name,
+          imgURL: response.data.sprites.front_default
+        }
+        console.log(retrievedData)
+        setPokeName(response.data.name) //storing the response data as a state
+        setPokeData(retrievedData); // --ditto--
+      });
+  };
 
-  }
+
+  const handleClick = (e) => {
+    const pokeRef = ref(database, DB_USERS_KEY + "/" + user.uid + "/" + e.target.id + "/" + pokeName)
+    const listOrderRef = ref(database, DB_USERS_KEY + "/" + user.uid + "/" + e.target.id + "order")
+    if (e.target.id == "topten") {
+      get(pokeRef).then((data) => {
+        if (data.exists()) {
+          alert('pokemon in list')
+        } else {
+          set(pokeRef, pokeData)  //setPokeData(retrievedData);
+            .then(() => {
+              get(listOrderRef).then((data) => {
+                if (data.exists()) {
+                  const newList = [...data.val(), pokeName]
+                  set(listOrderRef, newList)
+                } else {
+                  set(listOrderRef, [pokeName])
+                }
+
+              })
+            })
+        }
+
+
+      })
+
+
+
+    } else if (e.target.id == "wishlist") {
+
+    }
+  };
   return (
     <div className="pokeSearch">
       <button className="back">
@@ -43,9 +93,8 @@ const SearchPokeScreen = () => {
               placeholder="enter pokemon name"
               className="pokeSearchBox"
               onChange={handleChange}
-              value={pokeName}
+              value={input}
             ></input>
-
 
             <button type="submit" className="pokeSearchIcon">
               <FontAwesomeIcon icon={faMagnifyingGlass} />{" "}
@@ -58,25 +107,21 @@ const SearchPokeScreen = () => {
 
         <div>
           <div className="flex-container">
-            <div className="flex-item results">
-              {pokeData}
-
-            </div>
-            <div className="flex-item plus">
+            <div className="flex-item results">{pokeData}</div>
+            <button
+              className="flex-item plus"
+              onClick={handleClick}
+              id="topten"
+            >
               <FontAwesomeIcon icon={faPlus} />
-            </div>
-            <div className="flex-item star">
+            </button>
+            <button
+              className="flex-item star"
+              onClick={handleClick}
+              id="wishlist"
+            >
               <FontAwesomeIcon icon={faStar} />
-            </div>
-          </div>
-          <div className="flex-container">
-            <div className="flex-item results">results</div>
-            <div className="flex-item plus">
-              <FontAwesomeIcon icon={faPlus} />
-            </div>
-            <div className="flex-item star">
-              <FontAwesomeIcon icon={faStar} />
-            </div>
+            </button>
           </div>
         </div>
 

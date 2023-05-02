@@ -115,7 +115,7 @@ const App = () => {
                 />
               }
             />
-            <Route path="/search-poke" element={<SearchPokeScreen />} />
+            <Route path="/search-poke" element={<SearchPokeScreen DB_USERS_KEY={DB_USERS_KEY} />} />
           </Routes>
         </div>
       </UserContext.Provider>
