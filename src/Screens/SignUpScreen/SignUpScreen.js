@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth } from "../../firebase";
 import { NavContext, UserContext } from "../../App";
@@ -13,7 +13,7 @@ const userIcons = [
 ];
 
 const SignUpScreen = (props) => {
-  const { user, setUser } = useContext(UserContext);
+  const { setUser } = useContext(UserContext);
   const { navigate, handleNavigate } = useContext(NavContext);
 
   const [email, setEmail] = useState("");
