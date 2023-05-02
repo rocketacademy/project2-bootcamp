@@ -38,6 +38,8 @@
 .results {
   flex-basis: 50%;
   background-color: blue;
+  color: white;
+  height: 2rem;
 }
 .plus,
 .star {

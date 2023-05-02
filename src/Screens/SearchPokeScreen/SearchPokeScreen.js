@@ -54,12 +54,12 @@ const SearchPokeScreen = () => {
         </div>
 
         <br />
-        <h1>{pokeData}</h1>
+        {/* <h1>{pokeData}</h1> */}
 
         <div>
           <div className="flex-container">
             <div className="flex-item results">
-
+              {pokeData}
 
             </div>
             <div className="flex-item plus">
