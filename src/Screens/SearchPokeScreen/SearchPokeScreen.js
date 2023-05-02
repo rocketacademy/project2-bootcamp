@@ -19,7 +19,7 @@ const pokeObj = {
   imgURL: null
 }
 
-
+//comment
 const SearchPokeScreen = ({ DB_USERS_KEY }) => {
   const [input, setInput] = useState("");
   const [pokeData, setPokeData] = useState(pokeObj);
