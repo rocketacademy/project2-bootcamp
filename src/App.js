@@ -46,13 +46,29 @@ const userObj = {
 
 const App = () => {
   const [user, setUser] = useState(userObj);
+  const [userDatabase, setUserDatabase] = useState([]);
+
   const navigate = useNavigate();
   const handleNavigate = (e) => {
     navigate(`/${e.target.id}`);
   };
 
   useEffect(() => {
-    // const databaseRef = ref(database, DB_USERS_KEY);
+    const usersRef = ref(database, DB_USERS_KEY);
+
+    onChildAdded(usersRef, (data) => {
+      setUserDatabase((prevData) => [
+        ...prevData,
+        { key: data.key, val: data.val() },
+      ]);
+    });
+
+    onChildRemoved(usersRef, (data) => {
+      setUserDatabase((prevData) =>
+        prevData.filter((post) => post.key !== data.key)
+      );
+    });
+
     onAuthStateChanged(auth, (user) => {
       if (user) {
         setUser({
@@ -64,6 +80,14 @@ const App = () => {
       }
     });
   }, []);
+
+  const addPokemon = (uid) => {
+    const usersRef = ref(database, DB_USERS_KEY);
+  };
+
+  const updatePokemon = () => {
+    const usersRef = ref(database, DB_USERS_KEY);
+  };
 
   const handleLogOut = async () => {
     await setUser(userObj);
@@ -84,7 +108,12 @@ const App = () => {
             <Route path="/explore" element={<ExploreScreen />} />
             <Route
               path="/profile"
-              element={<ProfileScreen handleLogOut={handleLogOut} />}
+              element={
+                <ProfileScreen
+                  userDatabase={userDatabase}
+                  handleLogOut={handleLogOut}
+                />
+              }
             />
             <Route path="/search-poke" element={<SearchPokeScreen />} />
           </Routes>

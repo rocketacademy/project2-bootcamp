@@ -38,7 +38,9 @@ const ProfileScreen = (props) => {
           <button onClick={handleToggle} id="wishlist">
             Wishlist
           </button>
-          <button id="/">Add Pokemon</button>
+          <button onClick={handleNavigate} id="search-poke">
+            Add Pokemon
+          </button>
         </div>
         {tab === "top-ten" ? <ListTopTen /> : <ListWish />}
       </div>
