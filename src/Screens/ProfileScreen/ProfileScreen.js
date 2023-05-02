@@ -2,8 +2,7 @@ import { useContext, useState } from "react";
 import { NavContext, UserContext } from "../../App";
 import NavBar from "../../Components/NavBar/NavBar";
 import "./ProfileScreen.css";
-import ListTopTen from "../../Components/List/ListTopTen";
-import ListWish from "../../Components/List/ListWish";
+import List from "../../Components/List/List";
 
 const ProfileScreen = (props) => {
   const { navigate, handleNavigate } = useContext(NavContext);
@@ -42,7 +41,11 @@ const ProfileScreen = (props) => {
             Add Pokemon
           </button>
         </div>
-        {tab === "top-ten" ? <ListTopTen /> : <ListWish />}
+        {tab === "top-ten" ? (
+          <List list={props.topten} listOrder={props.toptenorder} />
+        ) : (
+          <List list={props.wishlist} listOrder={props.wishlistorder} />
+        )}
       </div>
 
       <NavBar />

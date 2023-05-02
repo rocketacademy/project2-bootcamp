@@ -10,6 +10,8 @@ import {
   remove,
   ref,
   update,
+  get,
+  onValue,
 } from "firebase/database";
 
 //----------- React -----------//
@@ -46,7 +48,10 @@ const userObj = {
 
 const App = () => {
   const [user, setUser] = useState(userObj);
-  const [userDatabase, setUserDatabase] = useState([]);
+  const [topten, setTopten] = useState(null);
+  const [toptenorder, setToptenorder] = useState([]);
+  const [wishlist, setWishlist] = useState(null);
+  const [wishlistorder, setWishlistorder] = useState(null);
 
   const navigate = useNavigate();
   const handleNavigate = (e) => {
@@ -54,21 +59,6 @@ const App = () => {
   };
 
   useEffect(() => {
-    const usersRef = ref(database, DB_USERS_KEY);
-
-    onChildAdded(usersRef, (data) => {
-      setUserDatabase((prevData) => [
-        ...prevData,
-        { key: data.key, val: data.val() },
-      ]);
-    });
-
-    onChildRemoved(usersRef, (data) => {
-      setUserDatabase((prevData) =>
-        prevData.filter((post) => post.key !== data.key)
-      );
-    });
-
     onAuthStateChanged(auth, (user) => {
       if (user) {
         setUser({
@@ -81,13 +71,34 @@ const App = () => {
     });
   }, []);
 
-  const addPokemon = (uid) => {
-    const usersRef = ref(database, DB_USERS_KEY);
-  };
-
-  const updatePokemon = () => {
-    const usersRef = ref(database, DB_USERS_KEY);
-  };
+  useEffect(() => {
+    if (user.uid) {
+      const CURRENT_USER_KEY = DB_USERS_KEY + "/" + user.uid;
+      const toptenRef = ref(database, CURRENT_USER_KEY + "/topten");
+      const toptenorderRef = ref(database, CURRENT_USER_KEY + "/toptenorder");
+      const wishlistRef = ref(database, CURRENT_USER_KEY + "/wishlist");
+      const wishlistorderRef = ref(
+        database,
+        CURRENT_USER_KEY + "/wishlistorder"
+      );
+      onValue(toptenRef, (snapshot) => {
+        const data = snapshot.val();
+        setTopten(data);
+      });
+      onValue(toptenorderRef, (snapshot) => {
+        const data = snapshot.val();
+        setToptenorder(data);
+      });
+      onValue(wishlistRef, (snapshot) => {
+        const data = snapshot.val();
+        setWishlist(data);
+      });
+      onValue(wishlistorderRef, (snapshot) => {
+        const data = snapshot.val();
+        setWishlistorder(data);
+      });
+    }
+  }, [user]);
 
   const handleLogOut = async () => {
     await setUser(userObj);
@@ -110,12 +121,18 @@ const App = () => {
               path="/profile"
               element={
                 <ProfileScreen
-                  userDatabase={userDatabase}
+                  topten={topten}
+                  toptenorder={toptenorder}
+                  wishlist={wishlist}
+                  wishlistorder={wishlistorder}
                   handleLogOut={handleLogOut}
                 />
               }
             />
-            <Route path="/search-poke" element={<SearchPokeScreen DB_USERS_KEY={DB_USERS_KEY} />} />
+            <Route
+              path="/search-poke"
+              element={<SearchPokeScreen DB_USERS_KEY={DB_USERS_KEY} />}
+            />
           </Routes>
         </div>
       </UserContext.Provider>
