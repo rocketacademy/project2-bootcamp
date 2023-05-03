@@ -24,17 +24,38 @@ const SearchPokeScreen = ({ DB_USERS_KEY }) => {
     setInput(e.target.value);
   };
 
+  const inputValidation = (userInput) => {
+    const regex = /^[A-Za-z0-9 ]+$/;
+    const hyphenatedString = "-";
+    if (input == "") {
+      alert("please enter a pokemon name");
+    } else if (!regex.test(input)) {
+      alert("please remove any special characters in input");
+    } else if (input.includes(hyphenatedString)) {
+      alert("your input contains hyphen")
+    } else if (input.match(/\d+/g) !== null) {
+      alert("your input contains numbers")
+    } else if (input.replace(/\./g, "-")) {
+      return input.toLowerCase();
+    }
+    return input.toLowerCase();
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.get(`https://pokeapi.co/api/v2/pokemon/${input}`).then((response) => {
-      // setPokeData()
-      const retrievedData = {
-        type: response.data.types[0].type.name,
-        imgURL: response.data.sprites.front_default,
-      };
-      setPokeName(response.data.name); //storing the response data as a state
-      setPokeData(retrievedData); // --ditto--
-    });
+    const result = inputValidation(input);
+
+    axios
+      .get(`https://pokeapi.co/api/v2/pokemon/${result}`)
+      .then((response) => {
+        // setPokeData()
+        const retrievedData = {
+          type: response.data.types[0].type.name,
+          imgURL: response.data.sprites.front_default,
+        };
+        setPokeName(response.data.name); //storing the response data as a state
+        setPokeData(retrievedData); // --ditto--
+      });
   };
 
   const handleClick = (e) => {
@@ -97,23 +118,25 @@ const SearchPokeScreen = ({ DB_USERS_KEY }) => {
         <br />
 
         <div>
-          <div className="flex-container">
-            <div className="flex-item results">{pokeName}</div>
-            <button
-              className="flex-item plus"
-              onClick={handleClick}
-              id="topten"
-            >
-              +
-            </button>
-            <button
-              className="flex-item star"
-              onClick={handleClick}
-              id="wishlist"
-            >
-              ★
-            </button>
-          </div>
+          {pokeName ? (
+            <div className="flex-container">
+              <div className="flex-item results">{pokeName}</div>
+              <button
+                className="flex-item plus"
+                onClick={handleClick}
+                id="topten"
+              >
+                +
+              </button>
+              <button
+                className="flex-item star"
+                onClick={handleClick}
+                id="wishlist"
+              >
+                ★
+              </button>
+            </div>) : null
+          }
         </div>
 
         <br />
