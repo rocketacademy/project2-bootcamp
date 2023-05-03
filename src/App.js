@@ -28,6 +28,7 @@ import SplashScreen from "./Screens/SplashScreen";
 import LoginScreen from "./Screens/LoginScreen";
 import SignUpScreen from "./Screens/SignUpScreen/SignUpScreen";
 import ProfileScreen from "./Screens/ProfileScreen/ProfileScreen";
+import PokeStatsScreen from "./Screens/PokeStatsScreen/PokeStatsScreen";
 import ExploreScreen from "./Screens/ExploreScreen/ExploreScreen";
 import SearchPokeScreen from "./Screens/SearchPokeScreen/SearchPokeScreen";
 
@@ -117,18 +118,21 @@ const App = () => {
             <Route path="/login" element={<LoginScreen />} />
             <Route path="/signup" element={<SignUpScreen />} />
             <Route path="/explore" element={<ExploreScreen />} />
-            <Route
-              path="/profile"
-              element={
-                <ProfileScreen
-                  topten={topten}
-                  toptenorder={toptenorder}
-                  wishlist={wishlist}
-                  wishlistorder={wishlistorder}
-                  handleLogOut={handleLogOut}
-                />
-              }
-            />
+            <Route path="/profile">
+              <Route
+                index
+                element={
+                  <ProfileScreen
+                    topten={topten}
+                    toptenorder={toptenorder}
+                    wishlist={wishlist}
+                    wishlistorder={wishlistorder}
+                    handleLogOut={handleLogOut}
+                  />
+                }
+              />
+              <Route path=":pokeName" element={<PokeStatsScreen />} />
+            </Route>
             <Route
               path="/search-poke"
               element={<SearchPokeScreen DB_USERS_KEY={DB_USERS_KEY} />}
