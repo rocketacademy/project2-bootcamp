@@ -10,6 +10,8 @@ import {
   remove,
   ref,
   update,
+  get,
+  onValue,
 } from "firebase/database";
 
 //----------- React -----------//
@@ -26,6 +28,7 @@ import SplashScreen from "./Screens/SplashScreen";
 import LoginScreen from "./Screens/LoginScreen";
 import SignUpScreen from "./Screens/SignUpScreen/SignUpScreen";
 import ProfileScreen from "./Screens/ProfileScreen/ProfileScreen";
+import PokeStatsScreen from "./Screens/PokeStatsScreen/PokeStatsScreen";
 import ExploreScreen from "./Screens/ExploreScreen/ExploreScreen";
 import SearchPokeScreen from "./Screens/SearchPokeScreen/SearchPokeScreen";
 
@@ -46,7 +49,10 @@ const userObj = {
 
 const App = () => {
   const [user, setUser] = useState(userObj);
-  const [userDatabase, setUserDatabase] = useState([]);
+  const [topten, setTopten] = useState(null);
+  const [toptenorder, setToptenorder] = useState([]);
+  const [wishlist, setWishlist] = useState(null);
+  const [wishlistorder, setWishlistorder] = useState(null);
 
   const navigate = useNavigate();
   const handleNavigate = (e) => {
@@ -54,21 +60,6 @@ const App = () => {
   };
 
   useEffect(() => {
-    const usersRef = ref(database, DB_USERS_KEY);
-
-    onChildAdded(usersRef, (data) => {
-      setUserDatabase((prevData) => [
-        ...prevData,
-        { key: data.key, val: data.val() },
-      ]);
-    });
-
-    onChildRemoved(usersRef, (data) => {
-      setUserDatabase((prevData) =>
-        prevData.filter((post) => post.key !== data.key)
-      );
-    });
-
     onAuthStateChanged(auth, (user) => {
       if (user) {
         setUser({
@@ -81,13 +72,34 @@ const App = () => {
     });
   }, []);
 
-  const addPokemon = (uid) => {
-    const usersRef = ref(database, DB_USERS_KEY);
-  };
-
-  const updatePokemon = () => {
-    const usersRef = ref(database, DB_USERS_KEY);
-  };
+  useEffect(() => {
+    if (user.uid) {
+      const CURRENT_USER_KEY = DB_USERS_KEY + "/" + user.uid;
+      const toptenRef = ref(database, CURRENT_USER_KEY + "/topten");
+      const toptenorderRef = ref(database, CURRENT_USER_KEY + "/toptenorder");
+      const wishlistRef = ref(database, CURRENT_USER_KEY + "/wishlist");
+      const wishlistorderRef = ref(
+        database,
+        CURRENT_USER_KEY + "/wishlistorder"
+      );
+      onValue(toptenRef, (snapshot) => {
+        const data = snapshot.val();
+        setTopten(data);
+      });
+      onValue(toptenorderRef, (snapshot) => {
+        const data = snapshot.val();
+        setToptenorder(data);
+      });
+      onValue(wishlistRef, (snapshot) => {
+        const data = snapshot.val();
+        setWishlist(data);
+      });
+      onValue(wishlistorderRef, (snapshot) => {
+        const data = snapshot.val();
+        setWishlistorder(data);
+      });
+    }
+  }, [user]);
 
   const handleLogOut = async () => {
     await setUser(userObj);
@@ -106,16 +118,25 @@ const App = () => {
             <Route path="/login" element={<LoginScreen />} />
             <Route path="/signup" element={<SignUpScreen />} />
             <Route path="/explore" element={<ExploreScreen />} />
+            <Route path="/profile">
+              <Route
+                index
+                element={
+                  <ProfileScreen
+                    topten={topten}
+                    toptenorder={toptenorder}
+                    wishlist={wishlist}
+                    wishlistorder={wishlistorder}
+                    handleLogOut={handleLogOut}
+                  />
+                }
+              />
+              <Route path=":pokeName" element={<PokeStatsScreen />} />
+            </Route>
             <Route
-              path="/profile"
-              element={
-                <ProfileScreen
-                  userDatabase={userDatabase}
-                  handleLogOut={handleLogOut}
-                />
-              }
+              path="/search-poke"
+              element={<SearchPokeScreen DB_USERS_KEY={DB_USERS_KEY} />}
             />
-            <Route path="/search-poke" element={<SearchPokeScreen DB_USERS_KEY={DB_USERS_KEY} />} />
           </Routes>
         </div>
       </UserContext.Provider>
