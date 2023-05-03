@@ -131,7 +131,12 @@ const App = () => {
                   />
                 }
               />
-              <Route path=":pokeName" element={<PokeStatsScreen />} />
+              <Route
+                path=":link"
+                element={
+                  <PokeStatsScreen topten={topten} wishlist={wishlist} />
+                }
+              />
             </Route>
             <Route
               path="/search-poke"
