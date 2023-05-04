@@ -17,6 +17,9 @@ const PokeStatsScreen = ({ topten, wishlist }) => {
   } else if (listName === "wishlist") {
     pokeData = wishlist[pokeName];
   }
+  let typeList = pokeData.type.map((type) => (
+    <div className={`poke-type ${type}`}>{type}</div>
+  ));
   return (
     <header className="App-header">
       <div id="poke-stats">
@@ -28,7 +31,7 @@ const PokeStatsScreen = ({ topten, wishlist }) => {
           {pokeName}
         </h1>
         <img className={pokeData.type} src={pokeData.imgURL} alt={pokeName} />
-        <div className={`poke-type ${pokeData.type}`}>{pokeData.type}</div>
+        <div className="poke-types">{typeList}</div>
       </div>
       <NavBar />
     </header>
