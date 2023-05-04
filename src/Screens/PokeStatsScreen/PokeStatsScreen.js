@@ -26,24 +26,24 @@ const PokeStatsScreen = ({ topten, wishlist }) => {
   ));
 
   return (
-    <header className="App-header">
+    <div className="contents">
       <div id="poke-stats">
         <button onClick={handleNavigate} id="">
           Back
         </button>
         <h1>
           {listName === "topten" && `${user.name}'s `}
-          {pokeName}
+          {pokeData.name}
         </h1>
         <img
           className={pokeData.type[0]}
           src={pokeData.imgURL}
-          alt={pokeName}
+          alt={pokeData.name}
         />
         <div className="poke-types">{typeList}</div>
       </div>
       <NavBar />
-    </header>
+    </div>
   );
 };
 

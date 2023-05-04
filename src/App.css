@@ -2,6 +2,14 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: "Nippo", sans-serif;
+}
+
+html,
+body,
+body #root {
+  overflow: hidden;
+  height: 100%;
 }
 
 body {
@@ -14,13 +22,22 @@ body {
 }
 
 .App {
+  height: 100%;
   text-align: center;
   background-color: #282c34;
   padding: 20px;
 }
 
-.App-header {
-  min-height: 100vh;
+h1 {
+  font-size: 45px;
+}
+
+h2 {
+  font-size: 36px;
+}
+
+.contents {
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;

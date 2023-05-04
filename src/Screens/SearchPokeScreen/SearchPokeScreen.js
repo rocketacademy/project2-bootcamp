@@ -3,7 +3,7 @@ import { useState } from "react";
 import "./SearchPokeScreen.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
-
+import { formatName } from "../../utils";
 import {
   faMagnifyingGlass,
   faChevronLeft,
@@ -66,6 +66,7 @@ const SearchPokeScreen = ({ DB_USERS_KEY }) => {
         //create array of types
         //push types into array and into line 67
         const retrievedData = {
+          name: formatName(response.data.name),
           type: arrTypes,
           imgURL: response.data.sprites.front_default,
         };
@@ -75,7 +76,6 @@ const SearchPokeScreen = ({ DB_USERS_KEY }) => {
   };
 
   const handleClick = (e) => {
-    console.log(e.target);
     const pokeRef = ref(
       database,
       DB_USERS_KEY + "/" + user.uid + "/" + e.target.id + "/" + pokeName
@@ -136,8 +136,12 @@ const SearchPokeScreen = ({ DB_USERS_KEY }) => {
         <div>
           {pokeData ? (
             <div className="flex-container">
-              <div className="flex-item results">{pokeName}</div>
-              <img src={pokeData.imgURL} className="pokeImg" />
+              <div className="flex-item results">{pokeData.name}</div>
+              <img
+                src={pokeData.imgURL}
+                className="pokeImg"
+                alt={pokeData.name}
+              />
               <p>{pokeData.arrTypes}</p>
               <button
                 className="flex-item plus"

@@ -16,11 +16,14 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  flex: 1;
+  justify-content: flex-start;
+  flex: 1 1 auto;
+  min-height: 0;
   width: 100%;
+  overflow-y: auto;
   background-color: grey;
-  margin: 20px 0 100px;
+  margin: 20px 0 50px;
+  padding-top: 40px;
 }
 
 #profile-lists #profile-lists-tabs {
@@ -34,4 +37,18 @@
 
 #profile-lists #profile-lists-tabs button {
   width: 100%;
+  height: 40px;
+  border-radius: 0;
+  border: none;
+  font-size: 15px;
+}
+
+#profile-lists #profile-lists-tabs #top-ten {
+  border-right: 1px solid black;
+}
+
+#profile-lists #profile-lists-tabs #search-poke {
+  width: 60px;
+  background-color: rgb(126, 169, 255);
+  color: white;
 }

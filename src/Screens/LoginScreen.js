@@ -17,36 +17,34 @@ const LoginScreen = () => {
   };
 
   return (
-    <div>
-      <header className="App-header">
-        <button onClick={handleNavigate} id="">
-          Back
+    <div className="contents">
+      <button onClick={handleNavigate} id="">
+        Back
+      </button>
+      <h1>Login</h1>
+      <form>
+        <input
+          id="email"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Enter email"
+        />
+        <input
+          id="password"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="Enter password"
+        />
+        <button onClick={handleSubmit} id="login">
+          Login
         </button>
-        <h1>Login</h1>
-        <form>
-          <input
-            id="email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Enter email"
-          />
-          <input
-            id="password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Enter password"
-          />
-          <button onClick={handleSubmit} id="login">
-            Login
-          </button>
-        </form>
-        <p>Don't have an account?</p>
-        <button onClick={handleNavigate} id="signup">
-          Sign Up
-        </button>
-      </header>
+      </form>
+      <p>Don't have an account?</p>
+      <button onClick={handleNavigate} id="signup">
+        Sign Up
+      </button>
     </div>
   );
 };

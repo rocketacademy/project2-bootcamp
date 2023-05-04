@@ -1,0 +1,14 @@
+.explore-header {
+  width: 100%;
+}
+
+.explore-map {
+  flex: 1 1 auto;
+  margin: 10px 0 50px;
+}
+
+.explore-map img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}

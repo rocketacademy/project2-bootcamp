@@ -27,7 +27,7 @@ const ProfileScreen = ({
   };
 
   return (
-    <header className="App-header">
+    <div className="contents">
       <div id="profile-header">
         <div id="profile-header-user">
           <img src={user.pic} alt={user.name} />
@@ -46,7 +46,7 @@ const ProfileScreen = ({
             Wishlist
           </button>
           <button onClick={handleNavigate} id="search-poke">
-            Add Pokemon
+            +
           </button>
         </div>
         {tab === "top-ten" ? (
@@ -67,7 +67,7 @@ const ProfileScreen = ({
       </div>
 
       <NavBar />
-    </header>
+    </div>
   );
 };
 

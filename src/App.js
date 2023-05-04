@@ -24,7 +24,7 @@ import { Routes, Route, useNavigate, Navigate } from "react-router-dom";
 
 //---------- Screens  ----------//
 
-import SplashScreen from "./Screens/SplashScreen";
+import SplashScreen from "./Screens/SplashScreen/SplashScreen";
 import LoginScreen from "./Screens/LoginScreen";
 import SignUpScreen from "./Screens/SignUpScreen/SignUpScreen";
 import ProfileScreen from "./Screens/ProfileScreen/ProfileScreen";

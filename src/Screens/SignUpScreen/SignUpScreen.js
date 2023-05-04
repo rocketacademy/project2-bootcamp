@@ -1,8 +1,9 @@
 import { useContext, useState } from "react";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { auth } from "../../firebase";
+import { auth, database } from "../../firebase";
 import { NavContext, UserContext } from "../../App";
 import "./SignUpScreen.css";
+import { ref, set } from "firebase/database";
 
 const userIcons = [
   "https://i.imgur.com/XZTIoPq.png",
@@ -31,11 +32,21 @@ const SignUpScreen = (props) => {
           displayName: name,
           photoURL: pic,
         });
-        setUser((user) => ({
-          ...user,
-          name: name,
-          pic: pic,
-        }));
+        setUser((user) => {
+          const userRef = ref(database, "users/" + user.uid);
+          const userDetails = {
+            name: name,
+            pic: pic,
+            email: email,
+          };
+          set(userRef, userDetails);
+          return {
+            ...user,
+            name: name,
+            pic: pic,
+          };
+        });
+
         navigate("/profile");
       } else {
         alert("Passwords do not match!");
@@ -59,8 +70,8 @@ const SignUpScreen = (props) => {
   ));
 
   return (
-    <div id="signup">
-      <header className="App-header">
+    <div className="contents">
+      <div id="signup">
         <button onClick={handleNavigate} id="">
           Back
         </button>
@@ -100,7 +111,7 @@ const SignUpScreen = (props) => {
             Sign Up
           </button>
         </form>
-      </header>
+      </div>
     </div>
   );
 };
