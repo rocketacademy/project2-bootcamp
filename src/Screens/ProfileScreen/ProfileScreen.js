@@ -4,13 +4,21 @@ import NavBar from "../../Components/NavBar/NavBar";
 import "./ProfileScreen.css";
 import List from "../../Components/List/List";
 
-const ProfileScreen = (props) => {
+const ProfileScreen = ({
+  topten,
+  toptenorder,
+  setToptenorder,
+  wishlist,
+  wishlistorder,
+  setWishlistorder,
+  handleLogOut,
+}) => {
   const { navigate, handleNavigate } = useContext(NavContext);
   const { user } = useContext(UserContext);
   const [tab, setTab] = useState("top-ten");
 
   const handleClick = () => {
-    props.handleLogOut();
+    handleLogOut();
     navigate("/");
   };
 
@@ -42,11 +50,17 @@ const ProfileScreen = (props) => {
           </button>
         </div>
         {tab === "top-ten" ? (
-          <List list={props.topten} listOrder={props.toptenorder} id="topten" />
+          <List
+            list={topten}
+            listOrder={toptenorder}
+            setOrder={setToptenorder}
+            id="topten"
+          />
         ) : (
           <List
-            list={props.wishlist}
-            listOrder={props.wishlistorder}
+            list={wishlist}
+            listOrder={wishlistorder}
+            setOrder={setWishlistorder}
             id="wishlist"
           />
         )}
