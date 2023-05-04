@@ -8,7 +8,7 @@ import {
   faMagnifyingGlass,
   faChevronLeft,
 } from "@fortawesome/free-solid-svg-icons";
-import { get, ref, set } from "firebase/database";
+import { get, push, ref, set } from "firebase/database";
 import { database } from "../../firebase";
 import { NavContext, UserContext } from "../../App";
 
@@ -61,9 +61,15 @@ const SearchPokeScreen = ({ DB_USERS_KEY }) => {
     axios
       .get(`https://pokeapi.co/api/v2/pokemon/${result}`)
       .then((response) => {
-        // setPokeData()
+        let arrTypes = [];
+        //check how many types? 
+        for (let i = 0; i < response.data.types.length; i++) {
+          arrTypes.push(response.data.types[i].type.name)
+        }
+        //create array of types
+        //push types into array and into line 67
         const retrievedData = {
-          type: response.data.types[0].type.name,
+          type: arrTypes,
           imgURL: response.data.sprites.front_default,
         };
         setPokeName(response.data.name); //storing the response data as a state
@@ -123,7 +129,7 @@ const SearchPokeScreen = ({ DB_USERS_KEY }) => {
             ></input>
 
             <button type="submit" className="pokeSearchIcon">
-              <FontAwesomeIcon icon={faMagnifyingGlass} />{" "}
+              <FontAwesomeIcon icon={faMagnifyingGlass} />
             </button>
           </form>
         </div>
@@ -135,6 +141,7 @@ const SearchPokeScreen = ({ DB_USERS_KEY }) => {
             <div className="flex-container">
               <div className="flex-item results">{pokeName}</div>
               <img src={pokeData.imgURL} className="pokeImg" />
+              <p>{pokeData.arrTypes}</p>
               <button
                 className="flex-item plus"
                 onClick={handleClick}
