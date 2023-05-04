@@ -15,6 +15,11 @@
   padding: 20px;
 }
 
+#poke-stats .poke-types {
+  display: flex;
+  gap: 10px;
+}
+
 #poke-stats .poke-type {
   padding: 5px;
   width: 100px;

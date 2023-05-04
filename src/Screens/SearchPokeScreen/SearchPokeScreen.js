@@ -8,7 +8,7 @@ import {
   faMagnifyingGlass,
   faChevronLeft,
 } from "@fortawesome/free-solid-svg-icons";
-import { get, push, ref, set } from "firebase/database";
+import { get, ref, set } from "firebase/database";
 import { database } from "../../firebase";
 import { NavContext, UserContext } from "../../App";
 
@@ -26,9 +26,6 @@ const SearchPokeScreen = ({ DB_USERS_KEY }) => {
 
   const inputValidation = (userInput) => {
     const regex = /^[A-Za-z0-9.-\s]+$/;
-    const hyphenatedString = "-";
-
-    // if (pass)
 
     if (regex.test(input)) {
       let clearInput = input;
@@ -62,9 +59,9 @@ const SearchPokeScreen = ({ DB_USERS_KEY }) => {
       .get(`https://pokeapi.co/api/v2/pokemon/${result}`)
       .then((response) => {
         let arrTypes = [];
-        //check how many types? 
+        //check how many types?
         for (let i = 0; i < response.data.types.length; i++) {
-          arrTypes.push(response.data.types[i].type.name)
+          arrTypes.push(response.data.types[i].type.name);
         }
         //create array of types
         //push types into array and into line 67

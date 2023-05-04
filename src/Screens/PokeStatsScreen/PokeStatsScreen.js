@@ -8,18 +8,23 @@ const PokeStatsScreen = ({ topten, wishlist }) => {
   const { link } = useParams();
   const { handleNavigate } = useContext(NavContext);
   const { user } = useContext(UserContext);
-  const linkBreakdown = link.split("-");
-  const listName = linkBreakdown[0];
-  const pokeName = linkBreakdown[1];
+  const [first, ...rest] = link.split("-");
+  const listName = first;
+  const pokeName = rest.join("-");
+
   let pokeData;
   if (listName === "topten") {
     pokeData = topten[pokeName];
   } else if (listName === "wishlist") {
     pokeData = wishlist[pokeName];
   }
+
   let typeList = pokeData.type.map((type) => (
-    <div className={`poke-type ${type}`}>{type}</div>
+    <div key={type} className={`poke-type ${type}`}>
+      {type}
+    </div>
   ));
+
   return (
     <header className="App-header">
       <div id="poke-stats">
@@ -30,7 +35,11 @@ const PokeStatsScreen = ({ topten, wishlist }) => {
           {listName === "topten" && `${user.name}'s `}
           {pokeName}
         </h1>
-        <img className={pokeData.type} src={pokeData.imgURL} alt={pokeName} />
+        <img
+          className={pokeData.type[0]}
+          src={pokeData.imgURL}
+          alt={pokeName}
+        />
         <div className="poke-types">{typeList}</div>
       </div>
       <NavBar />
