@@ -25,20 +25,33 @@ const SearchPokeScreen = ({ DB_USERS_KEY }) => {
   };
 
   const inputValidation = (userInput) => {
-    const regex = /^[A-Za-z0-9 ]+$/;
+    const regex = /^[A-Za-z0-9.-\s]+$/;
     const hyphenatedString = "-";
-    if (input == "") {
-      alert("please enter a pokemon name");
-    } else if (!regex.test(input)) {
-      alert("please remove any special characters in input");
-    } else if (input.includes(hyphenatedString)) {
-      alert("your input contains hyphen")
-    } else if (input.match(/\d+/g) !== null) {
-      alert("your input contains numbers")
-    } else if (input.replace(/\./g, "-")) {
-      return input.toLowerCase();
+
+    // if (pass)
+
+    if (regex.test(input)) {
+      let clearInput = input;
+      clearInput = clearInput.replace(/\./g, "");
+      clearInput = clearInput.replace(/\s/g, "-");
+      return clearInput.toLowerCase();
     }
-    return input.toLowerCase();
+    // return result with
+    //(1) remove period
+    //(2) replace space with hyphen
+    //(3) change to lowercase
+    // else, do all the other checks
+    // if (input == "") {
+    //   alert("please enter a pokemon name");
+    // } else if (!regex.test(input)) {
+    //   alert("please remove any special characters in input");
+    // } else if (input.includes(hyphenatedString)) {
+    //   alert("your input contains hyphen")
+    // } /* else if (input.match(/\d+/g) !== null) {
+    //alert("your input contains numbers")
+    // } else if (input.includes(/\./g, "-")) {
+    //   return input.toLowerCase();
+    // }
   };
 
   const handleSubmit = (e) => {
@@ -118,9 +131,10 @@ const SearchPokeScreen = ({ DB_USERS_KEY }) => {
         <br />
 
         <div>
-          {pokeName ? (
+          {pokeData ? (
             <div className="flex-container">
               <div className="flex-item results">{pokeName}</div>
+              <img src={pokeData.imgURL} className="pokeImg" />
               <button
                 className="flex-item plus"
                 onClick={handleClick}
@@ -135,8 +149,8 @@ const SearchPokeScreen = ({ DB_USERS_KEY }) => {
               >
                 ★
               </button>
-            </div>) : null
-          }
+            </div>
+          ) : null}
         </div>
 
         <br />
