@@ -3,7 +3,7 @@ import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth, database } from "../../firebase";
 import { NavContext, UserContext } from "../../App";
 import "./SignUpScreen.css";
-import { ref, set } from "firebase/database";
+import { get, ref, set } from "firebase/database";
 
 const userIcons = [
   "https://i.imgur.com/XZTIoPq.png",
@@ -12,6 +12,13 @@ const userIcons = [
   "https://i.imgur.com/L7oGJf7.png",
   "https://i.imgur.com/vmRbEuS.png",
 ];
+
+const isValid = (input) => {
+  const regex = /^[A-Za-z0-9]+$/;
+  return regex.test(input) ? true : false;
+};
+
+const isUnique = (input) => {};
 
 const SignUpScreen = (props) => {
   const { setUser } = useContext(UserContext);
@@ -25,34 +32,50 @@ const SignUpScreen = (props) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (email && password && name && pic) {
-      if (password === passwordAgain) {
-        await createUserWithEmailAndPassword(auth, email, password);
-        await updateProfile(auth.currentUser, {
-          displayName: name,
-          photoURL: pic,
-        });
-        setUser((user) => {
-          const userRef = ref(database, "users/" + user.uid);
-          const userDetails = {
-            name: name,
-            pic: pic,
-            email: email,
-          };
-          set(userRef, userDetails);
-          return {
-            ...user,
-            name: name,
-            pic: pic,
-          };
-        });
+    let passwordCheck = password === passwordAgain;
+    let userCheck = false;
 
-        navigate("/profile");
-      } else {
-        alert("Passwords do not match!");
-      }
-    } else {
+    if (!(email && password && name && pic)) {
       alert("Please fill in all fields!");
+    } else if (!isValid(name)) {
+      alert("Only letters and numbers are allowed in usernames.");
+    } else {
+      const usersRef = ref(database, "users/" + name.toLowerCase());
+      get(usersRef)
+        .then((response) => {
+          if (!response.exists()) {
+            userCheck = true;
+            if (!passwordCheck) {
+              alert("Passwords don't match!");
+            }
+          } else {
+            alert("Username already exists.");
+          }
+        })
+        .then(async () => {
+          if (email && passwordCheck && userCheck) {
+            await createUserWithEmailAndPassword(auth, email, password);
+            await updateProfile(auth.currentUser, {
+              displayName: name,
+              photoURL: pic,
+            });
+            setUser((user) => {
+              const userRef = ref(database, "users/" + name.toLowerCase());
+              const userDetails = {
+                pic: pic,
+                email: email,
+              };
+              set(userRef, userDetails);
+              return {
+                ...user,
+                name: name,
+                pic: pic,
+              };
+            });
+
+            navigate("/profile");
+          }
+        });
     }
   };
 
@@ -82,7 +105,7 @@ const SignUpScreen = (props) => {
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="Enter Display Name"
+            placeholder="Enter Username"
           />
           <input
             id="email"

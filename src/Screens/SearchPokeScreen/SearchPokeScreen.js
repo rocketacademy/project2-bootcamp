@@ -78,11 +78,17 @@ const SearchPokeScreen = ({ DB_USERS_KEY }) => {
   const handleClick = (e) => {
     const pokeRef = ref(
       database,
-      DB_USERS_KEY + "/" + user.uid + "/" + e.target.id + "/" + pokeName
+      DB_USERS_KEY +
+        "/" +
+        user.name.toLowerCase() +
+        "/" +
+        e.target.id +
+        "/" +
+        pokeName
     );
     const listOrderRef = ref(
       database,
-      DB_USERS_KEY + "/" + user.uid + "/" + e.target.id + "order"
+      DB_USERS_KEY + "/" + user.name.toLowerCase() + "/" + e.target.id + "order"
     );
     get(pokeRef).then((data) => {
       if (data.exists()) {

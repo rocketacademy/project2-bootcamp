@@ -2,17 +2,7 @@
 
 import { database, storage, auth } from "./firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
-import {
-  onChildAdded,
-  onChildRemoved,
-  onChildChanged,
-  push,
-  remove,
-  ref,
-  update,
-  get,
-  onValue,
-} from "firebase/database";
+import { ref, onValue } from "firebase/database";
 
 //----------- React -----------//
 
@@ -73,8 +63,8 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    if (user.uid) {
-      const CURRENT_USER_KEY = DB_USERS_KEY + "/" + user.uid;
+    if (user.uid && user.name) {
+      const CURRENT_USER_KEY = DB_USERS_KEY + "/" + user.name.toLowerCase();
       const toptenRef = ref(database, CURRENT_USER_KEY + "/topten");
       const toptenorderRef = ref(database, CURRENT_USER_KEY + "/toptenorder");
       const wishlistRef = ref(database, CURRENT_USER_KEY + "/wishlist");
