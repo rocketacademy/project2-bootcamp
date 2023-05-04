@@ -42,9 +42,13 @@ const ProfileScreen = (props) => {
           </button>
         </div>
         {tab === "top-ten" ? (
-          <List list={props.topten} listOrder={props.toptenorder} />
+          <List list={props.topten} listOrder={props.toptenorder} id="topten" />
         ) : (
-          <List list={props.wishlist} listOrder={props.wishlistorder} />
+          <List
+            list={props.wishlist}
+            listOrder={props.wishlistorder}
+            id="wishlist"
+          />
         )}
       </div>
 
