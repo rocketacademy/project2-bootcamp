@@ -125,8 +125,10 @@ const App = () => {
                   <ProfileScreen
                     topten={topten}
                     toptenorder={toptenorder}
+                    setToptenorder={setToptenorder}
                     wishlist={wishlist}
                     wishlistorder={wishlistorder}
+                    setWishlistorder={setWishlistorder}
                     handleLogOut={handleLogOut}
                   />
                 }
