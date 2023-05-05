@@ -18,8 +18,6 @@ const isValid = (input) => {
   return regex.test(input) ? true : false;
 };
 
-const isUnique = (input) => {};
-
 const SignUpScreen = (props) => {
   const { setUser } = useContext(UserContext);
   const { navigate, handleNavigate } = useContext(NavContext);

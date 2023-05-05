@@ -12,7 +12,7 @@ const NavBar = () => {
       <button onClick={handleNavigate} id="profile">
         Profile
       </button>
-      <button onClick={handleNavigate} id="">
+      <button onClick={handleNavigate} id="search">
         Search
       </button>
     </div>

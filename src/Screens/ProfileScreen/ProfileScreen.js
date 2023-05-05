@@ -3,6 +3,7 @@ import { NavContext, UserContext } from "../../App";
 import NavBar from "../../Components/NavBar/NavBar";
 import "./ProfileScreen.css";
 import List from "../../Components/List/List";
+import HeaderBar from "../../Components/HeaderBar/HeaderBar";
 
 const ProfileScreen = ({
   topten,
@@ -11,16 +12,10 @@ const ProfileScreen = ({
   wishlist,
   wishlistorder,
   setWishlistorder,
-  handleLogOut,
 }) => {
-  const { navigate, handleNavigate } = useContext(NavContext);
+  const { handleNavigate } = useContext(NavContext);
   const { user } = useContext(UserContext);
   const [tab, setTab] = useState("top-ten");
-
-  const handleClick = () => {
-    handleLogOut();
-    navigate("/");
-  };
 
   const handleToggle = (e) => {
     setTab(e.target.id);
@@ -28,15 +23,7 @@ const ProfileScreen = ({
 
   return (
     <div className="contents">
-      <div id="profile-header">
-        <div id="profile-header-user">
-          <img src={user.pic} alt={user.name} />
-          <h1>{user.name}</h1>
-        </div>
-        <button onClick={handleClick} id="/">
-          Log Out
-        </button>
-      </div>
+      <HeaderBar title={user.name} />
       <div id="profile-lists">
         <div id="profile-lists-tabs">
           <button onClick={handleToggle} id="top-ten">

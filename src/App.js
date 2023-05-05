@@ -21,6 +21,7 @@ import ProfileScreen from "./Screens/ProfileScreen/ProfileScreen";
 import PokeStatsScreen from "./Screens/PokeStatsScreen/PokeStatsScreen";
 import ExploreScreen from "./Screens/ExploreScreen/ExploreScreen";
 import SearchPokeScreen from "./Screens/SearchPokeScreen/SearchPokeScreen";
+import SearchUserScreen from "./Screens/SearchUserScreen/SearchUserScreen";
 
 //--------- Variables  ---------//
 
@@ -91,11 +92,6 @@ const App = () => {
     }
   }, [user]);
 
-  const handleLogOut = async () => {
-    await setUser(userObj);
-    signOut(auth);
-  };
-
   return (
     <NavContext.Provider value={{ navigate, handleNavigate }}>
       <UserContext.Provider value={{ user, setUser, DB_USERS_KEY }}>
@@ -123,7 +119,6 @@ const App = () => {
                       wishlist={wishlist}
                       wishlistorder={wishlistorder}
                       setWishlistorder={setWishlistorder}
-                      handleLogOut={handleLogOut}
                     />
                   ) : (
                     <Navigate to="/" />
@@ -133,13 +128,27 @@ const App = () => {
               <Route
                 path=":link"
                 element={
-                  <PokeStatsScreen topten={topten} wishlist={wishlist} />
+                  user.uid ? (
+                    <PokeStatsScreen topten={topten} wishlist={wishlist} />
+                  ) : (
+                    <Navigate to="/" />
+                  )
                 }
               />
             </Route>
             <Route
               path="/search-poke"
-              element={<SearchPokeScreen DB_USERS_KEY={DB_USERS_KEY} />}
+              element={
+                user.uid ? (
+                  <SearchPokeScreen DB_USERS_KEY={DB_USERS_KEY} />
+                ) : (
+                  <Navigate to="/" />
+                )
+              }
+            />
+            <Route
+              path="/search"
+              element={user.uid ? <SearchUserScreen /> : <Navigate to="/" />}
             />
           </Routes>
         </div>

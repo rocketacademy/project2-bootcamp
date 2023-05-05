@@ -1,16 +1,3 @@
-#profile-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-}
-
-#profile-header #profile-header-user {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-
 #profile-lists {
   position: relative;
   display: flex;
@@ -22,7 +9,7 @@
   width: 100%;
   overflow-y: auto;
   background-color: grey;
-  margin: 20px 0 50px;
+  margin-bottom: 50px;
   padding-top: 40px;
 }
 
