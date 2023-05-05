@@ -170,6 +170,7 @@ const SearchPokeScreen = ({ DB_USERS_KEY }) => {
 
         <br />
       </div>
+      {/*  */}
       <NavBar />
     </div>
   );
