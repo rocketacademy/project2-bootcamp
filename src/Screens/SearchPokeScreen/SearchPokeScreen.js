@@ -11,6 +11,7 @@ import {
 import { get, ref, set } from "firebase/database";
 import { database } from "../../firebase";
 import { NavContext, UserContext } from "../../App";
+import NavBar from "../../Components/NavBar/NavBar";
 
 //comment
 const SearchPokeScreen = ({ DB_USERS_KEY }) => {
@@ -79,12 +80,12 @@ const SearchPokeScreen = ({ DB_USERS_KEY }) => {
     const pokeRef = ref(
       database,
       DB_USERS_KEY +
-        "/" +
-        user.name.toLowerCase() +
-        "/" +
-        e.target.id +
-        "/" +
-        pokeName
+      "/" +
+      user.name.toLowerCase() +
+      "/" +
+      e.target.id +
+      "/" +
+      pokeName
     );
     const listOrderRef = ref(
       database,
@@ -145,10 +146,10 @@ const SearchPokeScreen = ({ DB_USERS_KEY }) => {
               <div className="flex-item results">{pokeData.name}</div>
               <img
                 src={pokeData.imgURL}
-                className="pokeImg"
+                className="flex-item pokeImg"
                 alt={pokeData.name}
               />
-              <p>{pokeData.arrTypes}</p>
+              <p className="flex-item">{pokeData.arrTypes}</p>
               <button
                 className="flex-item plus"
                 onClick={handleClick}
@@ -169,6 +170,8 @@ const SearchPokeScreen = ({ DB_USERS_KEY }) => {
 
         <br />
       </div>
+      {/*  */}
+      <NavBar />
     </div>
   );
 };

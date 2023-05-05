@@ -1,12 +1,13 @@
 .pokeSearch {
   position: relative;
-  background-color: aquamarine;
+  background-color: #282c34;
   width: 100vw;
   height: 100vh;
 }
 
 .addPoke {
-  color: black;
+  color: white;
+  font-size: 5rem;
 }
 
 .flex-container {
@@ -19,7 +20,8 @@
 }
 .flex-item {
   justify-content: space-between;
-  flex-basis: 10%;
+  height: 3rem;
+  flex-basis: auto;
 }
 .pokeSearchBox,
 .pokeSearchIcon {
@@ -36,21 +38,24 @@
 }
 
 .results {
-  flex-basis: 50%;
   background-color: blue;
   color: white;
-  height: 2rem;
+  height: 3rem;
+  font-size: 2rem;
 }
 .plus,
 .star {
   /* flex-basis: 10%; */
   background-color: orange;
+  font-size: 1.5rem;
+  margin: 0 auto;
 }
 
 .pokeImg {
-  background-color: "white";
+  background-color: white;
   width: 10rem;
   height: 10rem;
   justify-content: center;
   align-items: center;
+  margin: 0 auto;
 }
