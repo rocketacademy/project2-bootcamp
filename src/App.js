@@ -1,7 +1,7 @@
 //--------- Firebase ---------//
 
-import { database, storage, auth } from "./firebase";
-import { onAuthStateChanged, signOut } from "firebase/auth";
+import { database, auth } from "./firebase";
+import { onAuthStateChanged } from "firebase/auth";
 import { ref, onValue, onChildAdded } from "firebase/database";
 
 //----------- React -----------//
@@ -26,7 +26,7 @@ import SearchUserScreen from "./Screens/SearchUserScreen/SearchUserScreen";
 //--------- Variables  ---------//
 
 const DB_USERS_KEY = "users";
-const DB_IMAGES_KEY = "images";
+// const DB_IMAGES_KEY = "images";
 const UserContext = React.createContext(null);
 const NavContext = React.createContext(null);
 const userObj = {
@@ -112,7 +112,13 @@ const App = () => {
             <Route path="/signup" element={<SignUpScreen />} />
             <Route
               path="/explore"
-              element={user.uid ? <ExploreScreen /> : <Navigate to="/" />}
+              element={
+                user.uid ? (
+                  <ExploreScreen userList={userList} />
+                ) : (
+                  <Navigate to="/" />
+                )
+              }
             />
             <Route path="/profile">
               <Route
@@ -153,16 +159,22 @@ const App = () => {
                 )
               }
             />
-            <Route
-              path="/search"
-              element={
-                user.uid ? (
-                  <SearchUserScreen userList={userList} />
-                ) : (
-                  <Navigate to="/" />
-                )
-              }
-            />
+            <Route path="/search">
+              <Route
+                index
+                element={
+                  user.uid ? (
+                    <SearchUserScreen userList={userList} />
+                  ) : (
+                    <Navigate to="/" />
+                  )
+                }
+              />
+              <Route
+                path=":link"
+                element={user.uid ? <ProfileScreen /> : <Navigate to="/" />}
+              />
+            </Route>
           </Routes>
         </div>
       </UserContext.Provider>

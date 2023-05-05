@@ -1,9 +1,16 @@
+//----------- React -----------//
+
 import { useContext, useState } from "react";
 import { NavContext, UserContext } from "../../App";
-import NavBar from "../../Components/NavBar/NavBar";
-import "./ProfileScreen.css";
+
+//---------- Components  ----------//
+
 import List from "../../Components/List/List";
 import HeaderBar from "../../Components/HeaderBar/HeaderBar";
+import NavBar from "../../Components/NavBar/NavBar";
+import "./ProfileScreen.css";
+
+//------------------------------//
 
 const ProfileScreen = ({
   topten,

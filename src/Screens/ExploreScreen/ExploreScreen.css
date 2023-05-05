@@ -3,12 +3,23 @@
 }
 
 .explore-map {
+  display: flex;
   flex: 1 1 auto;
   margin: 10px 0 50px;
+  position: relative;
+  min-height: 0;
+  width: 100%;
 }
 
-.explore-map img {
-  height: 100%;
+.explore-map #map {
   width: 100%;
+  flex: 1 1 auto;
+  min-height: 0;
   object-fit: cover;
+}
+
+.explore-map .user-button {
+  position: absolute;
+  top: 40%;
+  left: 50%;
 }
