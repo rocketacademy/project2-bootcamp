@@ -20,7 +20,7 @@ const List = ({ list, listOrder, setOrder, id }) => {
     }
     const listOrderRef = ref(
       database,
-      "users/" + user.uid + "/" + id + "order"
+      "users/" + user.name.toLowerCase() + "/" + id + "order"
     );
     set(listOrderRef, reorderedList);
     setOrder(reorderedList);
