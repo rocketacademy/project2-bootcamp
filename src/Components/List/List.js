@@ -1,27 +1,31 @@
 import { useContext } from "react";
 import "./List.css";
 import { NavContext, UserContext } from "../../App";
-import { ref, set } from "firebase/database";
+import { ref, remove, set } from "firebase/database";
 import { database } from "../../firebase";
 
 const List = ({ list, listOrder, setOrder, id }) => {
   const { navigate } = useContext(NavContext);
-  const { user } = useContext(UserContext);
+  const { user, DB_USERS_KEY } = useContext(UserContext);
 
   const handleClick = (e) => {
     const label = e.target.id;
-    let index = Number(label.charAt(0));
+    let index = Number(label.split("-")[0]);
     const reorderedList = [...listOrder];
     const targetItem = reorderedList.splice(index, 1);
+    const DB_CURRENT_KEY =
+      DB_USERS_KEY + "/" + user.name.toLowerCase() + "/" + id;
+
     if (label.includes("up")) {
       reorderedList.splice(index - 1, 0, ...targetItem);
     } else if (label.includes("down")) {
       reorderedList.splice(index + 1, 0, ...targetItem);
+    } else if (label.includes("delete")) {
+      console.log(targetItem);
+      const itemRef = ref(database, DB_CURRENT_KEY + "/" + targetItem);
+      remove(itemRef);
     }
-    const listOrderRef = ref(
-      database,
-      "users/" + user.name.toLowerCase() + "/" + id + "order"
-    );
+    const listOrderRef = ref(database, DB_CURRENT_KEY + "order");
     set(listOrderRef, reorderedList);
     setOrder(reorderedList);
   };
@@ -41,11 +45,14 @@ const List = ({ list, listOrder, setOrder, id }) => {
           <img src={list[pokemon].imgURL} alt={list[pokemon].name} />
         </div>
         <div className="rank-panel">
-          <button onClick={handleClick} id={index + "up"}>
+          <button onClick={handleClick} id={index + "-delete"}>
+            X
+          </button>
+          <button onClick={handleClick} id={index + "-up"}>
             ⬆
           </button>
 
-          <button onClick={handleClick} id={index + "down"} index={index}>
+          <button onClick={handleClick} id={index + "-down"} index={index}>
             ⬇
           </button>
         </div>

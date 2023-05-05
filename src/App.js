@@ -98,7 +98,7 @@ const App = () => {
 
   return (
     <NavContext.Provider value={{ navigate, handleNavigate }}>
-      <UserContext.Provider value={{ user, setUser }}>
+      <UserContext.Provider value={{ user, setUser, DB_USERS_KEY }}>
         <div className="App">
           <Routes>
             <Route
@@ -107,20 +107,27 @@ const App = () => {
             />
             <Route path="/login" element={<LoginScreen />} />
             <Route path="/signup" element={<SignUpScreen />} />
-            <Route path="/explore" element={<ExploreScreen />} />
+            <Route
+              path="/explore"
+              element={user.uid ? <ExploreScreen /> : <Navigate to="/" />}
+            />
             <Route path="/profile">
               <Route
                 index
                 element={
-                  <ProfileScreen
-                    topten={topten}
-                    toptenorder={toptenorder}
-                    setToptenorder={setToptenorder}
-                    wishlist={wishlist}
-                    wishlistorder={wishlistorder}
-                    setWishlistorder={setWishlistorder}
-                    handleLogOut={handleLogOut}
-                  />
+                  user.uid ? (
+                    <ProfileScreen
+                      topten={topten}
+                      toptenorder={toptenorder}
+                      setToptenorder={setToptenorder}
+                      wishlist={wishlist}
+                      wishlistorder={wishlistorder}
+                      setWishlistorder={setWishlistorder}
+                      handleLogOut={handleLogOut}
+                    />
+                  ) : (
+                    <Navigate to="/" />
+                  )
                 }
               />
               <Route
