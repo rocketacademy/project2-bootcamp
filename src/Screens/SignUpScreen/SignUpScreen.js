@@ -60,6 +60,7 @@ const SignUpScreen = (props) => {
             setUser((user) => {
               const userRef = ref(database, "users/" + name.toLowerCase());
               const userDetails = {
+                name: name,
                 pic: pic,
                 email: email,
               };

@@ -2,7 +2,7 @@
 
 import { database, storage, auth } from "./firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
-import { ref, onValue } from "firebase/database";
+import { ref, onValue, onChildAdded } from "firebase/database";
 
 //----------- React -----------//
 
@@ -40,6 +40,7 @@ const userObj = {
 
 const App = () => {
   const [user, setUser] = useState(userObj);
+  const [userList, setUserList] = useState([]);
   const [topten, setTopten] = useState(null);
   const [toptenorder, setToptenorder] = useState([]);
   const [wishlist, setWishlist] = useState(null);
@@ -51,6 +52,12 @@ const App = () => {
   };
 
   useEffect(() => {
+    const usersRef = ref(database, DB_USERS_KEY);
+
+    onChildAdded(usersRef, (data) => {
+      setUserList((prevUsers) => [...prevUsers, data.key]);
+    });
+
     onAuthStateChanged(auth, (user) => {
       if (user) {
         setUser({
@@ -148,7 +155,13 @@ const App = () => {
             />
             <Route
               path="/search"
-              element={user.uid ? <SearchUserScreen /> : <Navigate to="/" />}
+              element={
+                user.uid ? (
+                  <SearchUserScreen userList={userList} />
+                ) : (
+                  <Navigate to="/" />
+                )
+              }
             />
           </Routes>
         </div>
