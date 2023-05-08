@@ -99,8 +99,13 @@ const SearchPokeScreen = ({ DB_USERS_KEY }) => {
           .then(() => {
             get(listOrderRef).then((data) => {
               if (data.exists()) {
-                const newList = [...data.val(), pokeName];
-                set(listOrderRef, newList);
+                if ((data.val().length == 10)) {
+                  alert("cannot add anymore");
+                } else {
+                  const newList = [...data.val(), pokeName];
+                  set(listOrderRef, newList);
+                }
+
               } else {
                 set(listOrderRef, [pokeName]);
               }
