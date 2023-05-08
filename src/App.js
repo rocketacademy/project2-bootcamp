@@ -22,6 +22,7 @@ import PokeStatsScreen from "./Screens/PokeStatsScreen/PokeStatsScreen";
 import ExploreScreen from "./Screens/ExploreScreen/ExploreScreen";
 import SearchPokeScreen from "./Screens/SearchPokeScreen/SearchPokeScreen";
 import SearchUserScreen from "./Screens/SearchUserScreen/SearchUserScreen";
+import ProfileUserScreen from "./Screens/ProfileUserScreen/ProfileUserScreen";
 
 //--------- Variables  ---------//
 
@@ -172,7 +173,7 @@ const App = () => {
               />
               <Route
                 path=":link"
-                element={user.uid ? <ProfileScreen /> : <Navigate to="/" />}
+                element={user.uid ? <ProfileUserScreen /> : <Navigate to="/" />}
               />
             </Route>
           </Routes>

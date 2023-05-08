@@ -17,6 +17,7 @@
 
 #user-search #user-search-results #user-search-profile {
   display: flex;
+  width: 100%;
 }
 
 #user-search #user-search-results .user-poke {

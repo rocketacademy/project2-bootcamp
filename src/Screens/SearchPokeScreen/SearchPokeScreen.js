@@ -80,12 +80,12 @@ const SearchPokeScreen = ({ DB_USERS_KEY }) => {
     const pokeRef = ref(
       database,
       DB_USERS_KEY +
-      "/" +
-      user.name.toLowerCase() +
-      "/" +
-      e.target.id +
-      "/" +
-      pokeName
+        "/" +
+        user.name.toLowerCase() +
+        "/" +
+        e.target.id +
+        "/" +
+        pokeName
     );
     const listOrderRef = ref(
       database,
@@ -99,13 +99,12 @@ const SearchPokeScreen = ({ DB_USERS_KEY }) => {
           .then(() => {
             get(listOrderRef).then((data) => {
               if (data.exists()) {
-                if ((data.val().length == 10)) {
+                if (data.val().length === 10) {
                   alert("cannot add anymore");
                 } else {
                   const newList = [...data.val(), pokeName];
                   set(listOrderRef, newList);
                 }
-
               } else {
                 set(listOrderRef, [pokeName]);
               }

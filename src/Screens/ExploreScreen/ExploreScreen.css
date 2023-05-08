@@ -21,5 +21,25 @@
 .explore-map .user-button {
   position: absolute;
   top: 40%;
-  left: 50%;
+  left: 49%;
+  width: 10%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.explore-map .user-button img {
+  width: 100%;
+}
+
+.explore-map .user-button h3 {
+  background-color: white;
+  font-size: 13px;
+  padding: 2px 5px;
+  margin-top: 3px;
+  border-radius: 6px;
 }

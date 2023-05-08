@@ -11,7 +11,7 @@ const userObj = {
   pic: null,
 };
 
-const HeaderBar = ({ title }) => {
+const HeaderBar = ({ title, userData = null, button = true }) => {
   const { user, setUser } = useContext(UserContext);
   const { navigate } = useContext(NavContext);
 
@@ -29,11 +29,14 @@ const HeaderBar = ({ title }) => {
     <div id="header">
       <div id="header-user">
         {title === user.name && <img src={user.pic} alt={user.name} />}
+        {userData && <img src={userData.pic} alt={userData.name} />}
         <h1>{title}</h1>
       </div>
-      <button onClick={handleClick} id="/">
-        Log Out
-      </button>
+      {button && (
+        <button onClick={handleClick} id="/">
+          Log Out
+        </button>
+      )}
     </div>
   );
 };

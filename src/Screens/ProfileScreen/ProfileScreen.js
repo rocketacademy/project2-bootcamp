@@ -33,10 +33,18 @@ const ProfileScreen = ({
       <HeaderBar title={user.name} />
       <div id="profile-lists">
         <div id="profile-lists-tabs">
-          <button onClick={handleToggle} id="top-ten">
+          <button
+            onClick={handleToggle}
+            id="top-ten"
+            className={tab === "top-ten" ? "active-tab" : ""}
+          >
             Top Ten
           </button>
-          <button onClick={handleToggle} id="wishlist">
+          <button
+            onClick={handleToggle}
+            id="wishlist"
+            className={tab === "wishlist" ? "active-tab" : ""}
+          >
             Wishlist
           </button>
           <button onClick={handleNavigate} id="search-poke">

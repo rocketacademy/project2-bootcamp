@@ -21,4 +21,8 @@ const capitalise = (word) => {
   return firstLetter + remainingLetters;
 };
 
-export { formatName };
+const randomIndex = (max) => {
+  return Math.floor(Math.random() * max);
+};
+
+export { formatName, randomIndex };
