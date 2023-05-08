@@ -2,7 +2,6 @@ import { useContext, useState } from "react";
 import { get, ref } from "firebase/database";
 import { database } from "../../firebase";
 import { NavContext, UserContext } from "../../App";
-import { formatName } from "../../utils";
 import HeaderBar from "../../Components/HeaderBar/HeaderBar";
 import NavBar from "../../Components/NavBar/NavBar";
 import "./SearchUserScreen.css";
