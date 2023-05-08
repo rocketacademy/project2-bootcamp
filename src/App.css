@@ -1,19 +1,59 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Nippo", sans-serif;
+}
+
+html,
+body,
+body #root {
+  overflow: hidden;
+  height: 100%;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-y: hidden;
+}
+
 .App {
+  height: 100%;
   text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-.App-header {
   background-color: #282c34;
-  min-height: 100vh;
+  padding: 20px;
+}
+
+h1 {
+  font-size: 45px;
+}
+
+h2 {
+  font-size: 36px;
+}
+
+.contents {
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
+}
+
+button {
+  padding: 5px;
+  height: fit-content;
+  width: fit-content;
+}
+
+form input {
+  padding: 10px;
+  border: none;
+  border-radius: 20px;
 }

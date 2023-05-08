@@ -1,0 +1,19 @@
+#splash {
+  display: flex;
+  height: 100%;
+  gap: 20px;
+  padding-bottom: 20px;
+}
+
+#splash h1 {
+  font-size: calc(15vw);
+}
+
+#splash img {
+  flex: 1 1 auto;
+}
+
+#splash .buttons {
+  display: flex;
+  gap: 10px;
+}

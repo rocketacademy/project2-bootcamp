@@ -1,0 +1,61 @@
+.pokeSearch {
+  position: relative;
+  background-color: #282c34;
+  width: 100vw;
+  height: 100vh;
+}
+
+.addPoke {
+  color: white;
+  font-size: 5rem;
+}
+
+.flex-container {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  justify-content: center;
+}
+.flex-item {
+  justify-content: space-between;
+  height: 3rem;
+  flex-basis: auto;
+}
+.pokeSearchBox,
+.pokeSearchIcon {
+  height: 3rem;
+  font-size: 2rem;
+}
+
+.back {
+  position: absolute;
+  margin: 0;
+  padding: 0;
+  left: 0.5rem;
+  top: 0.5rem;
+}
+
+.results {
+  background-color: blue;
+  color: white;
+  height: 3rem;
+  font-size: 2rem;
+}
+.plus,
+.star {
+  /* flex-basis: 10%; */
+  background-color: orange;
+  font-size: 1.5rem;
+  margin: 0 auto;
+}
+
+.pokeImg {
+  background-color: white;
+  width: 10rem;
+  height: 10rem;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+}
