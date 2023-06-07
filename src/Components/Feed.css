@@ -1,0 +1,30 @@
+.top-div{
+  padding: 12vmin 0 0 0;
+}
+
+.feed-poster {
+  width: 30vmin;
+  height: 45vmin;
+  margin: 1.5vmin;
+  object-fit: cover;
+  border-radius: 5px;
+  box-sizing: border-box;
+  transition: 0.5s;
+  cursor: pointer;
+}
+
+.feed-poster:hover {
+  border: solid rgb(255, 255, 255) 2.5px;
+}
+
+.poster-button {
+  display: none;
+}
+
+.text-div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 5vmin 0 5vmin;
+  margin: 5vmin 0 5vmin 0;
+}

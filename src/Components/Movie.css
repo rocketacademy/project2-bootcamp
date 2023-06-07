@@ -1,0 +1,190 @@
+.movie-poster{
+  align-self: center;
+  max-width: 35%;
+  margin: 1.5vmin;
+  border: solid rgb(255, 255, 255) 1.5px;
+  border-radius: 5px;
+}
+
+.synopsis{
+  max-width: 35%;
+  margin: 1.5vmin 1.5vmin 1.5vmin 3vmin;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.synopsis-text{
+  font-size: large;
+  margin: 2vmin 0 2vmin 0;
+}
+
+.movie-page-flex {
+  display:flex;
+  flex-direction: column;
+  padding: 12vmin 0 0 0;
+}
+
+
+.review-flex-container{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 0 0 8vmin 0;
+}
+
+.review-container{
+  display: flex;
+  flex-direction: column;
+  border-radius: 20px;
+  padding: 3vmin;
+  margin: 1.5vmin;
+  background-color: rgb(20, 42, 82, 0.8);
+  width: 68vw
+}
+
+.movie-details-flex{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  margin: 1vmin 0 0 0;
+}
+
+.watched-div{
+  display: flex;
+  background-color: rgb(20, 42, 82, 0.32);
+  width: 50%;
+  flex-direction: column;
+  align-items: center;
+  margin: 1vmin;
+  padding: 1vmin;
+  border-radius: 5px;
+  outline: solid rgb(20, 42, 82) 2px;
+}
+
+.watched-text{
+  align-self: center;
+  align-items: center;
+  justify-content: center;
+}
+
+.eye-button{
+  background-color: rgb(34, 34, 34);
+  padding: 1vmin;
+  margin: 1vmin;
+  border-radius: 5px;
+  max-width: 5vmin;
+  align-self: center;
+  outline: rgb(182, 216, 255, 0) 1px solid;
+  transition: 0.5s;
+}
+
+.eye-button:hover{
+  outline: rgb(182, 216, 255) 1px solid;
+}
+
+.avg-stars{
+  padding: 1vmin;
+  font-size: 5vmin;
+  color: rgb(255, 226, 59)
+}
+
+.movie-poster-div{
+  padding: 1vmin;
+  margin: 2vmin;
+  display: flex;
+  justify-content: center;
+}
+
+.cast-link{
+  color: rgb(255, 256, 256);
+  text-decoration: none;
+  font-size: large;
+  align-self: center;
+}
+
+.cast-link:hover{
+  text-decoration: underline;
+}
+
+.cast-link:visited{
+  text-decoration: none;
+}
+
+.cast-photo{
+  height: 1.5em;
+  width: 1.5em;
+  border-radius: 50%;
+  margin: 0.5vmin 1vmin 1vmin 0;
+  align-self: center;
+  object-fit: cover
+}
+
+.cast-div{
+  display:flex;
+  align-items: center;
+}
+
+@media only screen and (max-width: 1000px){
+  .movie-poster-div{
+    flex-direction: column;
+  }
+  .movie-poster{
+    max-width: 70%;
+  }
+  .synopsis{
+    max-width: 100%;
+  }
+  .review-container{
+    width: 85vw;
+  }
+}
+
+.write-a-review{
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: column;
+  padding: 3vmin;
+  margin: 1vmin;
+  background-color: rgb(20, 42, 82, 0.32);
+  border-radius: 5px;
+  outline: solid rgb(20, 42, 82) 2px;
+}
+
+.review-box{
+  width: 100%;
+  height: 4em;
+  margin: 1vmin 0 1vmin 0;
+}
+
+.review-submit{
+  background-color: rgb(182, 216, 255);
+  outline: none;
+  padding: 1vmin;
+  border-radius: 5px;
+  border-style: none;
+  transition: 0.3s;
+}
+
+.review-submit:hover{
+  background-color: rgb(20, 42, 82);
+  color: rgb(255, 255, 255)
+}
+
+.back-button{
+  width: 12vmin;
+  align-self: flex-start;
+  background-color: rgb(182, 216, 255);
+  padding: 1vmin 0 1vmin 0;
+  border-radius: 5px;
+  margin: 2vmin 0 0 2vmin;
+  border-style: none;
+  transition: 0.3s;
+}
+
+.back-button:hover{
+  background-color: rgb(20, 42, 82);
+  color: rgb(255, 255, 255)
+}
+
