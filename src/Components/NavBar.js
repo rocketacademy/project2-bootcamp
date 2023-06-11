@@ -1,5 +1,26 @@
+import Container from "react-bootstrap/Container";
+import Navbar from "react-bootstrap/Navbar";
+import "../App.css";
+
 export default function NavBar() {
-  return <div>NavBar</div>;
+  return (
+    <div className="nav-bar">
+      <Navbar bg="dark" fixed="top">
+        <Container>
+          <Navbar.Brand href="#home">
+            <img
+              alt=""
+              src="/img/logo.svg"
+              width="30"
+              height="30"
+              className="d-inline-block align-top"
+            />{" "}
+            Dollar Direction
+          </Navbar.Brand>
+        </Container>
+      </Navbar>
+    </div>
+  );
 }
 
 // import * as React from "react";

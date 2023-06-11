@@ -2,11 +2,9 @@ import { GoogleMap, Marker, useLoadScript } from "@react-google-maps/api";
 import { useMemo } from "react";
 import "../App.css";
 
-// process.env.GOOGLE_MAPS_API_KEY;
-
 const Map = () => {
   const { isLoaded } = useLoadScript({
-    googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY,
+    googleMapsApiKey: process.env.REACT_APP_API_KEY,
   });
   const center = useMemo(() => ({ lat: 1.3521, lng: 103.8198 }), []);
 
