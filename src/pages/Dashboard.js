@@ -1,5 +1,5 @@
 // File to contain 'Dashboard' items like charts, expense by category
-import NavBar from "./NavBar";
+import NavBar from "../Components/NavBar";
 import "../App.css";
 
 export default function Dashboard() {

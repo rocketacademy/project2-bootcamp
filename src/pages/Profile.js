@@ -1,5 +1,5 @@
 // File to contain 'Profile' items like edit and update name, profile picture, email address, bio, etc
-import NavBar from "./NavBar";
+import NavBar from "../Components/NavBar";
 import "../App.css";
 
 export default function Profile() {

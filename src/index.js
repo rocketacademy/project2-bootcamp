@@ -5,8 +5,8 @@ import "./index.css";
 import App from "./App";
 import Welcome from "./Components/Welcome";
 import AuthForm from "./Components/AuthForm";
-import Profile from "./Components/Profile";
-import Dashboard from "./Components/Dashboard";
+import Profile from "./Pages/Profile";
+import Dashboard from "./Pages/Dashboard";
 import Error from "./Components/Error";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
