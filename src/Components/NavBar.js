@@ -20,14 +20,11 @@ export default function NavBar({ isLoggedIn }) {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="mr-auto">
-              <Nav.Link as={Link} to="/welcome">
-                Welcome
-              </Nav.Link>
               <Nav.Link as={Link} to="/authForm">
                 Login
               </Nav.Link>
-              <Nav.Link as={Link} to="/">
-                Map/Expenses
+              <Nav.Link as={Link} to="/mapexpenses">
+                MapExpenses
               </Nav.Link>
               <Nav.Link as={Link} to="/dashboard">
                 Dashboard

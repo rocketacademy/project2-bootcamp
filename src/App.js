@@ -3,10 +3,9 @@ import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import NavBar from "./Components/NavBar";
 import Welcome from "./Components/Welcome";
-import Map from "./Components/Map";
-import ListExpenses from "./Components/ListExpenses";
 import { auth } from "./firebase";
 import { onAuthStateChanged } from "firebase/auth";
+import { Outlet } from "react-router-dom";
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -16,22 +15,13 @@ const App = () => {
       user ? setIsLoggedIn(true) : setIsLoggedIn(false);
     });
   }, []);
-
+  console.log(isLoggedIn);
   return (
-    <div>
-      <NavBar isLoggedIn={isLoggedIn} />
-      {isLoggedIn ? (
-        <div className="App">
-          <Map />
-          <ListExpenses />
-        </div>
-      ) : (
-        <div className="App">
-          <Map />
-          <Welcome />
-        </div>
-      )}
-    </div>
+    <>
+      <NavBar />
+      {/* <Outlet isLoggedIn={true} /> */}
+      {isLoggedIn ? <Outlet /> : <Welcome />}
+    </>
   );
 };
 

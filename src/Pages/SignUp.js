@@ -20,7 +20,7 @@ const DB_USER_FOLDER_NAME = "user";
 const STORAGE_PROFILE_FOLDER_NAME = "profilePhoto";
 
 export default function SignUp({ isLoggedIn, username }) {
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(null);
   const [password, setPassword] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -71,7 +71,7 @@ export default function SignUp({ isLoggedIn, username }) {
     setLastName("");
     setFileInputFile("");
     setFileInputValue("");
-    navigate("/");
+    navigate("/mapexpenses");
   };
 
   return (

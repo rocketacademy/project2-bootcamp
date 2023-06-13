@@ -15,9 +15,9 @@ export default function AuthForm({ isLoggedIn, username }) {
 
   const signIn = async () => {
     const user = signInWithEmailAndPassword(auth, email, password);
-    navigate("/");
     setEmail("");
     setPassword("");
+    navigate("/mapexpenses");
   };
 
   return (
@@ -29,7 +29,7 @@ export default function AuthForm({ isLoggedIn, username }) {
       >
         {isLoggedIn ? (
           <div>
-            <h2>Welcome {username}</h2>
+            <h2>Welcome </h2>
             <h5>Click on the top navigator to start posting!</h5>
           </div>
         ) : (
@@ -69,7 +69,7 @@ export default function AuthForm({ isLoggedIn, username }) {
                 </Button>
                 <div className="text-center">
                   <Link to="/signUp">
-                    don't have an account? Create one here!
+                    Don't have an account? Create one here!
                   </Link>
                 </div>
               </Form>
