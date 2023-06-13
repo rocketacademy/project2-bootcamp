@@ -2,7 +2,7 @@ import { Navbar, Nav, Container } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import "../App.css";
 
-export default function NavBar() {
+export default function NavBar({ isLoggedIn }) {
   return (
     <div className="nav-bar">
       <Navbar bg="light" fixed="top">
@@ -24,7 +24,7 @@ export default function NavBar() {
                 Welcome
               </Nav.Link>
               <Nav.Link as={Link} to="/authForm">
-                Sign Up/In
+                Login
               </Nav.Link>
               <Nav.Link as={Link} to="/">
                 Map/Expenses
