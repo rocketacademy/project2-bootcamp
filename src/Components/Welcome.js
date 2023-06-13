@@ -6,7 +6,6 @@ import "../App.css";
 export default function Welcome() {
   return (
     <div>
-      <NavBar />
       <div className="temporary-box">
         <div>
           Welcome to DollarDirection - the app that keeps track of where you've
@@ -16,7 +15,7 @@ export default function Welcome() {
           </b>{" "}
           <br />
           <br />
-          <Link to="/authForm">Sign Up / Log In here</Link>
+          <Link to="/authform">Sign Up / Log In here</Link>
         </div>
       </div>
     </div>

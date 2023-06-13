@@ -9,23 +9,22 @@ import SignUp from "./Pages/SignUp";
 import Profile from "./Pages/Profile";
 import Dashboard from "./Pages/Dashboard";
 import Error from "./Components/Error";
+import MapExpenses from "./Pages/MapExpenses";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<App />} />
+        <Route path="/" element={<App />}>
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/mapexpenses" element={<MapExpenses />} />
 
-        <Route path="/welcome" element={<Welcome />} />
-        <Route path="/authform" element={<AuthForm />} />
-
-        <Route path="/app" element={<App />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="*" element={<Error />} />
+        </Route>
         <Route path="/signup" element={<SignUp />} />
-
-        <Route path="*" element={<Error />} />
+        <Route path="/authform" element={<AuthForm />} />
       </Routes>
     </BrowserRouter>
   </React.StrictMode>
