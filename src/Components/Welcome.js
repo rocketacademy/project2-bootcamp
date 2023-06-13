@@ -1,6 +1,6 @@
 // File to contain 'Welcome' page items
 import { Link } from "react-router-dom";
-import NavBar from "./NavBar";
+import NavBar from "../Components/NavBar";
 import "../App.css";
 
 export default function Welcome() {
