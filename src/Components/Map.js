@@ -1,22 +1,46 @@
-import {
-  withGoogleMap,
-  GoogleMap,
-  Marker,
-  useLoadScript,
-} from "@react-google-maps/api";
+import { GoogleMap, MarkerF, useLoadScript } from "@react-google-maps/api";
 import { useMemo } from "react";
 import "../App.css";
 
 const Singapore = { lat: 1.3521, lng: 103.8198 };
 
+const jsonData = [
+  {
+    location: {
+      latitude: 1.3521,
+      longitude: 103.8198,
+    },
+    dollarAmount: 5,
+  },
+  {
+    location: {
+      latitude: 1.2806,
+      longitude: 103.8505,
+    },
+    dollarAmount: 50,
+  },
+  {
+    location: {
+      latitude: 1.2903,
+      longitude: 103.8515,
+    },
+    dollarAmount: 500,
+  },
+  {
+    location: {
+      latitude: 1.3187,
+      longitude: 103.8444,
+    },
+    dollarAmount: 5000,
+  },
+];
+
 // paths to icons to mark expenses on the map
 const markerImages = [
-  "project2-bootcamp/src/Icons/coin_1fa99.png",
-  "project2-bootcamp/src/Icons/dollar-banknote_1f4b5.png",
-  "project2-bootcamp/src/Icons/money-bag_1f4b0.png",
-  "",
-  "project2-bootcamp/src/Icons/money-bag_1f4b0.png",
-  "",
+  "https://i.imgur.com/7cK1OS9.png",
+  "https://i.imgur.com/WcjaOHE.png",
+  "https://i.imgur.com/jdBvHmU.png",
+  "https://i.imgur.com/Z83u9o9.png",
 ];
 
 function getDollarAmountCategory(dollarAmount) {
@@ -38,10 +62,16 @@ const Map = () => {
         <h1>Loading...</h1>
       ) : (
         <GoogleMap mapContainerClassName="map" center={center} zoom={11}>
-          <Marker
-            position={Singapore}
-            icon={"project2-bootcamp/src/Icons/money-bag_1f4b0.png"}
-          />
+          {jsonData.map((item, index) => (
+            <MarkerF
+              key={index}
+              position={{
+                lat: item.location.latitude,
+                lng: item.location.longitude,
+              }}
+              icon={markerImages[getDollarAmountCategory(item.dollarAmount)]}
+            />
+          ))}
         </GoogleMap>
       )}
     </div>
