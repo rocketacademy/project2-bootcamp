@@ -1,7 +1,7 @@
 import "../App.css";
 import Map from "../Components/Map";
 import ListExpenses from "../Components/ListExpenses";
-import Welcome from "../Components/Welcome";
+import Welcome from "./Welcome";
 
 export default function MapExpenses({ isLoggedIn }) {
   return (

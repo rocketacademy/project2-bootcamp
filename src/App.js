@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import Welcome from "./Components/Welcome";
+import Welcome from "./Pages/Welcome";
 import { realTimeDatabase, auth } from "./firebase";
 import { ref, onValue } from "firebase/database";
 import { onAuthStateChanged, signOut } from "firebase/auth";
