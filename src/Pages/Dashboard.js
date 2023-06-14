@@ -6,7 +6,6 @@ export default function Dashboard() {
   return (
     <div>
       {" "}
-      <NavBar />
       <div className="temporary-box">Dashboard</div>
     </div>
   );
