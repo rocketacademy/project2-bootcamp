@@ -57,6 +57,12 @@ function getDollarAmountCategory(dollarAmount) {
   return 3;
 }
 
+const onLoad = (map) => {
+  const bounds = new google.maps.LatLngBounds();
+  jsonData?.forEach();
+  map.fitBounds(bounds);
+};
+
 const Map = () => {
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: process.env.REACT_APP_API_KEY,
