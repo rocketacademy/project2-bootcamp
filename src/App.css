@@ -49,10 +49,9 @@
 }
 
 .temporary-box {
-  min-height: 90svh;
+  min-height: 100svh;
   max-width: 1025px;
   font-size: calc(10px + 2vmin);
-  margin: 7svh auto 0 auto;
 
   color: rgb(255, 255, 255);
   background-color: rgb(137, 179, 137);

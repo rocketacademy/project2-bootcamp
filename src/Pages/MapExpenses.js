@@ -1,18 +1,13 @@
-// File to contain 'Profile' items like edit and update name, profile picture, email address, bio, etc
-
 import "../App.css";
 import Map from "../Components/Map";
 import ListExpenses from "../Components/ListExpenses";
+import Welcome from "./Welcome";
 
-export default function MapExpenses() {
+export default function MapExpenses({ isLoggedIn }) {
   return (
     <div>
       {" "}
-      <div className="App">
-        <Map />
-        <ListExpenses />
-      </div>
-      {/* {isLoggedIn ? (
+      {isLoggedIn ? (
         <div className="App">
           <Map />
           <ListExpenses />
@@ -22,7 +17,7 @@ export default function MapExpenses() {
           <Map />
           <Welcome />
         </div>
-      )} */}
+      )}
     </div>
   );
 }

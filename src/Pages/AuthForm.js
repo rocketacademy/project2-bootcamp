@@ -1,12 +1,9 @@
-// File to contain 'AuthForm' items like user sign up, user log in
-import NavBar from "../Components/NavBar";
 import "../App.css";
 import React, { useState } from "react";
 import { auth } from "../firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
-import { Link } from "react-router-dom";
 
 export default function AuthForm({ isLoggedIn, username }) {
   const [email, setEmail] = useState("");
@@ -22,7 +19,6 @@ export default function AuthForm({ isLoggedIn, username }) {
 
   return (
     <>
-      <NavBar />
       <Container
         className="d-flex align-items-center justify-content-center"
         style={{ height: "100vh" }}

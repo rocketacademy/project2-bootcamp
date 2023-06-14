@@ -1,29 +1,26 @@
-// File to contain 'AuthForm' items like user sign up, user log in
-import NavBar from "../Components/NavBar";
 import "../App.css";
 import React, { useState } from "react";
-import { auth } from "../firebase";
+import { realTimeDatabase, storage, auth } from "../firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { useNavigate } from "react-router-dom";
-import { Container, Row, Col, Form, Button } from "react-bootstrap";
-import { Link } from "react-router-dom";
 import { push, ref, set } from "firebase/database";
-import { realTimeDatabase, storage } from "../firebase";
 import {
   ref as storageRef,
   uploadBytes,
   getDownloadURL,
 } from "firebase/storage";
+import { useNavigate, Link } from "react-router-dom";
+import { Container, Row, Col, Form, Button } from "react-bootstrap";
 
 // Save the Firebase post folder name as a constant to avoid bugs due to misspelling
 const DB_USER_FOLDER_NAME = "user";
 const STORAGE_PROFILE_FOLDER_NAME = "profilePhoto";
 
 export default function SignUp({ isLoggedIn, username }) {
-  const [email, setEmail] = useState(null);
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [displayName, setDisplayName] = useState("");
   const [fileInputFile, setFileInputFile] = useState("");
   const [fileInputValue, setFileInputValue] = useState("");
   const navigate = useNavigate();
@@ -43,6 +40,7 @@ export default function SignUp({ isLoggedIn, username }) {
           lastName: lastName,
           userId: userCredential.user.uid,
           email: email,
+          displayName: displayName,
         });
         // Store images in an images folder in Firebase Storage
         const fileRef = storageRef(
@@ -76,14 +74,13 @@ export default function SignUp({ isLoggedIn, username }) {
 
   return (
     <>
-      <NavBar isLoggedIn={isLoggedIn} />
       <Container
         className="d-flex align-items-center justify-content-center"
         style={{ height: "100vh" }}
       >
         {isLoggedIn ? (
           <div>
-            <h2>Welcome {username}</h2>
+            <h2>Welcome {displayName}</h2>
             <h5>Click on the top navigator to start posting!</h5>
           </div>
         ) : (
@@ -118,6 +115,19 @@ export default function SignUp({ isLoggedIn, username }) {
                     </Col>
                   </Row>
                 </Form.Group>
+                <Form.Group className="mb-3">
+                  <Form.Label>Display Name</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="Display Name"
+                    value={displayName}
+                    onChange={(e) => {
+                      setDisplayName(e.target.value);
+                    }}
+                    required
+                  />
+                </Form.Group>
+
                 <Form.Group className="mb-3" controlId="formBasicEmail">
                   <Form.Label>Email address</Form.Label>
                   <Form.Control
