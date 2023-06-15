@@ -3,6 +3,7 @@
 import {
   GoogleMap,
   InfoWindow,
+  InfoWindowF,
   MarkerF,
   useLoadScript,
 } from "@react-google-maps/api";
@@ -57,9 +58,10 @@ const Map = () => {
   });
   const [mapRef, setMapRef] = useState();
   const [isOpen, setIsOpen] = useState(false);
-  const [infoWindow, setInfoWindow] = useState();
-  const center = useMemo(() => Singapore, []);
+  const [infoWindowData, setInfoWindowData] = useState();
+  // const center = useMemo(() => Singapore, []);
 
+  // when map loads, determine the boundaries based on the location of the markers
   const onMapLoad = (map) => {
     setMapRef(map);
     const bounds = new google.maps.LatLngBounds();
@@ -67,9 +69,11 @@ const Map = () => {
     map.fitBounds(bounds);
   };
 
+  // when a marker is clicked, pan the map to the marker location
   const handleMarkerClick = (id, lat, lng, dollarAmount) => {
+    setIsOpen(false);
     mapRef?.panTo({ lat, lng });
-    setInfoWindow({ id, dollarAmount });
+    setInfoWindowData({ id, dollarAmount });
     setIsOpen(true);
   };
 
@@ -80,8 +84,10 @@ const Map = () => {
       ) : (
         <GoogleMap
           mapContainerClassName="map"
+          // hide the map and satellite overlay
           options={{ mapTypeControl: false }}
           onLoad={onMapLoad}
+          // when map is clicked, change setIsOpen state to false
           onClick={() => setIsOpen(false)}
         >
           {/* code to render markers */}
@@ -93,7 +99,18 @@ const Map = () => {
                 handleMarkerClick(index, lat, lng, dollarAmount);
               }}
               icon={markerImages[getDollarAmountCategory(dollarAmount)]}
-            />
+            >
+              {/* if marker is clicked, isOpen is set to true and infoWindow is rendered with dollar amount */}
+              {isOpen && infoWindowData?.id === index && (
+                <InfoWindowF
+                  onCloseClick={() => {
+                    setIsOpen(false);
+                  }}
+                >
+                  <h4>{infoWindowData.dollarAmount}</h4>
+                </InfoWindowF>
+              )}
+            </MarkerF>
           ))}
         </GoogleMap>
       )}
