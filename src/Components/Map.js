@@ -37,10 +37,10 @@ const jsonData = [
 
 // paths to icons to mark expenses on the map
 const markerImages = [
-  "https://i.imgur.com/7cK1OS9.png",
-  "https://i.imgur.com/WcjaOHE.png",
-  "https://i.imgur.com/jdBvHmU.png",
-  "https://i.imgur.com/Z83u9o9.png",
+  "https://i.imgur.com/ovmoJoo.png",
+  "https://i.imgur.com/QSmFBIk.png",
+  "https://i.imgur.com/DGO3ZQK.png",
+  "https://i.imgur.com/6nLIyt6.png",
 ];
 
 // function to assign an icon to display based on the dollar amount
@@ -69,7 +69,11 @@ const Map = () => {
       {!isLoaded ? (
         <h1>Loading...</h1>
       ) : (
-        <GoogleMap mapContainerClassName="map" onLoad={onLoad}>
+        <GoogleMap
+          mapContainerClassName="map"
+          options={{ mapTypeControl: false }}
+          onLoad={onLoad}
+        >
           {/* center={center} zoom={11} */}
           {jsonData.map((item, index) => (
             <MarkerF
