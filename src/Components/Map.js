@@ -12,7 +12,7 @@ import "../App.css";
 const Singapore = { lat: 1.3521, lng: 103.8198 };
 
 // the json data which will be mapped out to render the markers
-const jsonData = [
+const markers = [
   {
     lat: 1.3521,
     lng: 103.8198,
@@ -51,18 +51,27 @@ function getDollarAmountCategory(dollarAmount) {
   return 3;
 }
 
-const onLoad = (map) => {
-  const bounds = new google.maps.LatLngBounds();
-  jsonData?.forEach(({ lat, lng }) => bounds.extend({ lat, lng }));
-  map.fitBounds(bounds);
-};
-
 const Map = () => {
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: process.env.REACT_APP_API_KEY,
   });
-
+  const [mapRef, setMapRef] = useState();
+  const [isOpen, setIsOpen] = useState(false);
+  const [infoWindow, setInfoWindow] = useState();
   const center = useMemo(() => Singapore, []);
+
+  const onMapLoad = (map) => {
+    setMapRef(map);
+    const bounds = new google.maps.LatLngBounds();
+    markers?.forEach(({ lat, lng }) => bounds.extend({ lat, lng }));
+    map.fitBounds(bounds);
+  };
+
+  const handleMarkerClick = (id, lat, lng, dollarAmount) => {
+    mapRef?.panTo({ lat, lng });
+    setInfoWindow({ id, dollarAmount });
+    setIsOpen(true);
+  };
 
   return (
     <div className="map-container">
@@ -72,17 +81,18 @@ const Map = () => {
         <GoogleMap
           mapContainerClassName="map"
           options={{ mapTypeControl: false }}
-          onLoad={onLoad}
+          onLoad={onMapLoad}
+          onClick={() => setIsOpen(false)}
         >
-          {/* center={center} zoom={11} */}
-          {jsonData.map((item, index) => (
+          {/* code to render markers */}
+          {markers.map(({ lat, lng, dollarAmount }, index) => (
             <MarkerF
               key={index}
-              position={{
-                lat: item.lat,
-                lng: item.lng,
+              position={{ lat, lng }}
+              onClick={() => {
+                handleMarkerClick(index, lat, lng, dollarAmount);
               }}
-              icon={markerImages[getDollarAmountCategory(item.dollarAmount)]}
+              icon={markerImages[getDollarAmountCategory(dollarAmount)]}
             />
           ))}
         </GoogleMap>
