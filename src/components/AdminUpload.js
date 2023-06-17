@@ -6,27 +6,70 @@ import {
   InputAdornment,
   IconButton,
   Button,
+  Snackbar,
 } from "@mui/material";
 import AutorenewIcon from "@mui/icons-material/Autorenew";
 import SendIcon from "@mui/icons-material/Send";
+import MuiAlert from "@mui/material/Alert";
 
 function AdminUpload(props) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [pass, setPass] = useState("");
   const [files, setFiles] = useState([]);
+  const [openSuccessSnackbar, setOpenSuccessSnackbar] = useState(false);
+  const [openErrorSnackbar, setOpenErrorSnackbar] = useState(false);
 
   // 1. Function to set state on the files upon dropping
 
   // 2. Perform your form submission logic here, along with file upload handling
+
+  const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+  });
+
+  const handleCloseSuccessSnackbar = () => {
+    setOpenSuccessSnackbar(false);
+  };
+
+  const handleCloseErrorSnackbar = () => {
+    setOpenErrorSnackbar(false);
+  };
+
   const handleSubmit = (event) => {
     event.preventDefault();
-
     // Perform your form submission logic here, along with file upload handling
     // Access the selected files from the "files" state and include them in your form data
-
-    console.log("Form submitted with files:", files);
+    // Perform form validation before submission
+    if (isFormValid()) {
+      // Submit the form
+      setName(""); //Reset the form
+      setEmail(""); //Reset the form
+      setPass(""); //Reset the form
+      setFiles([]); //Reset the form
+      setOpenSuccessSnackbar(true);
+      setOpenErrorSnackbar(false);
+      console.log("Form submitted successfully");
+      console.log("Form submitted with files:", files);
+      // Additional submission logic
+    } else {
+      setOpenErrorSnackbar(true);
+      setOpenSuccessSnackbar(false);
+      console.log("Form is not valid. Please fill in all fields.");
+    }
   };
+
+  // Validate form fields
+  const isFormValid = () => {
+    return (
+      name.trim() !== "" &&
+      email.trim() !== "" &&
+      pass.trim() !== "" &&
+      files.length !== 0
+    );
+  };
+
+  //handling value inputs and display
 
   const handleNameChange = (event) => {
     setName(event.target.value);
@@ -105,6 +148,32 @@ function AdminUpload(props) {
           {" "}
           User Account Creation
         </FormLabel>
+        <Snackbar
+          open={openSuccessSnackbar}
+          autoHideDuration={6000}
+          onClose={handleCloseSuccessSnackbar}
+        >
+          <Alert
+            onClose={handleCloseSuccessSnackbar}
+            severity="success"
+            sx={{ width: "100%" }}
+          >
+            Form submitted successfully.
+          </Alert>
+        </Snackbar>
+        <Snackbar
+          open={openErrorSnackbar}
+          autoHideDuration={6000}
+          onClose={handleCloseErrorSnackbar}
+        >
+          <Alert
+            onClose={handleCloseErrorSnackbar}
+            severity="error"
+            sx={{ width: "100%" }}
+          >
+            Please fill in all fields!
+          </Alert>
+        </Snackbar>
         <TextField
           label="Customer Name"
           value={name}
