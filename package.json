@@ -8,6 +8,7 @@
     "@mui/icons-material": "^5.11.16",
     "@mui/material": "^5.13.5",
     "file-saver": "^2.0.5",
+    "firebase": "^9.22.2",
     "jszip": "^3.10.1",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
