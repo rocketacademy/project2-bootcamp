@@ -17,7 +17,6 @@
 }
 
 .dropzone {
-  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -30,4 +29,52 @@
   color: #bdbdbd;
   outline: none;
   transition: border 0.24s ease-in-out;
+}
+
+.dropzone-area {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  min-height: 100px;
+}
+.upload-form {
+  max-width: 50%;
+  margin: 0 auto;
+}
+
+.admin-form {
+  margin-top: 30px;
+}
+
+.thumbsContainer {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+
+.thumb {
+  display: inline-flex;
+  border-radius: 2px;
+  border: 1px solid #eaeaea;
+  margin-bottom: 8px;
+  margin-right: 8px;
+  width: 100px;
+  height: 100px;
+  padding: 4px;
+  box-sizing: border-box;
+}
+
+.thumbInner {
+  display: flex;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.img {
+  display: block;
+  width: auto;
+  height: 100%;
 }
