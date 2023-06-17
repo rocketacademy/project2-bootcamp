@@ -11,7 +11,7 @@ export default function AuthForm({ isLoggedIn, username }) {
   const navigate = useNavigate();
 
   const signIn = async () => {
-    const user = signInWithEmailAndPassword(auth, email, password);
+    signInWithEmailAndPassword(auth, email, password);
     setEmail("");
     setPassword("");
     navigate("/mapexpenses");

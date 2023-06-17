@@ -3,9 +3,9 @@ import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Welcome from "./Pages/Welcome";
 import { realTimeDatabase, auth } from "./firebase";
-import { ref, onValue } from "firebase/database";
+import { ref, onValue, child, get } from "firebase/database";
 import { onAuthStateChanged, signOut } from "firebase/auth";
-import { Routes, Route, Link } from "react-router-dom";
+import { useNavigate, Routes, Route, Link } from "react-router-dom";
 import AuthForm from "./Pages/AuthForm";
 import SignUp from "./Pages/SignUp";
 import Profile from "./Pages/Profile";
@@ -22,6 +22,9 @@ const App = () => {
   const [user, setUser] = useState({});
   const [uid, setUID] = useState("");
   const [profilePhotoURL, setProfilePhotoURL] = useState("");
+  const [userKey, setUserKey] = useState("");
+  const [userData, setUserData] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
@@ -33,17 +36,45 @@ const App = () => {
         setIsLoggedIn(false);
         setUser({});
         setUID("");
+        setProfilePhotoURL("");
       }
     });
 
-    // use uid to find profile url
-    const profilePhotoRef = ref(
-      realTimeDatabase,
-      `${DB_USER_FOLDER_NAME}/${uid}/profileUrl`
-    );
-    onValue(profilePhotoRef, (snapshot) => {
-      setProfilePhotoURL(snapshot.val());
-    });
+    const dbRef = ref(realTimeDatabase);
+    get(child(dbRef, `${DB_USER_FOLDER_NAME}/${uid}`))
+      .then((snapshot) => {
+        if (snapshot.exists()) {
+          snapshot.forEach((childSnapshot) => {
+            const userKey = childSnapshot.key; // Retrieve the key of each child node
+            const userData = childSnapshot.val(); // Retrieve the data of each child node
+            console.log("User Key:", userKey);
+            console.log("User Data:", userData);
+            const requiredUserData = {
+              ["Display Name"]: userData.displayName,
+              ["First Name"]: userData.firstName,
+              ["Last Name"]: userData.lastName,
+              ["Email"]: userData.email,
+            };
+            setUserData(requiredUserData); //only take those required
+            setUserKey(userKey);
+
+            // use uid to find profile url
+            const profilePhotoRef = ref(
+              realTimeDatabase,
+              `${DB_USER_FOLDER_NAME}/${uid}/${userKey}/profileUrl`
+            );
+
+            onValue(profilePhotoRef, (snapshot) => {
+              setProfilePhotoURL(snapshot.val());
+            });
+          });
+        } else {
+          console.log("No data available");
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   }, [uid]);
 
   console.log(`isLoggedIn: ${isLoggedIn}`);
@@ -95,18 +126,23 @@ const App = () => {
                     }
                     id="basic-nav-dropdown"
                   >
-                    <NavDropdown.Item href="/profile">Profile</NavDropdown.Item>
                     {isLoggedIn ? (
-                      <NavDropdown.Item
-                        onClick={(e) => {
-                          setIsLoggedIn(false);
-                          signOut(auth);
-                          setUser({});
-                          setProfilePhotoURL("");
-                        }}
-                      >
-                        Logout
-                      </NavDropdown.Item>
+                      <>
+                        <NavDropdown.Item href="/profile">
+                          Profile
+                        </NavDropdown.Item>
+                        <NavDropdown.Item
+                          onClick={(e) => {
+                            setIsLoggedIn(false);
+                            signOut(auth);
+                            setUser({});
+                            setProfilePhotoURL("");
+                            navigate("/mapexpenses");
+                          }}
+                        >
+                          Logout
+                        </NavDropdown.Item>
+                      </>
                     ) : (
                       <>
                         <NavDropdown.Item href="/authform">
@@ -133,11 +169,7 @@ const App = () => {
         <Route
           path="/profile"
           element={
-            <Profile
-              isLoggedIn={isLoggedIn}
-              uid={uid}
-              profilePhotoURL={profilePhotoURL}
-            />
+            <Profile userData={userData} profilePhotoURL={profilePhotoURL} />
           }
         />
         <Route

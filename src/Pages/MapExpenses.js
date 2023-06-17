@@ -3,14 +3,16 @@ import Map from "../Components/Map";
 import ListExpenses from "../Components/ListExpenses";
 import Welcome from "./Welcome";
 
-export default function MapExpenses({ isLoggedIn }) {
+export default function MapExpenses({ isLoggedIn, uid }) {
+  console.log(isLoggedIn);
+  console.log(uid);
   return (
     <div>
       {" "}
       {isLoggedIn ? (
         <div className="App">
           <Map />
-          <ListExpenses />
+          <ListExpenses uid={uid} />
         </div>
       ) : (
         <div className="App">
