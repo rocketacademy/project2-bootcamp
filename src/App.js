@@ -1,27 +1,26 @@
 import React from "react";
-import logo from "./logo.png";
 import "./App.css";
-import ImageTile from "./components/ImageTile";
 import ResponsiveAppBar from "./components/ResponsiveAppBar";
-import SearchBar from "./components/SearchBar";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+
+//routes
+import AdminUpload from "./components/AdminUpload";
+import Home from "./components/Home";
 
 class App extends React.Component {
   render() {
     return (
-      <div className="App">
-        <ResponsiveAppBar/>
-        <div>
-        <SearchBar/>
-        </div>  
-        <header className="App-header">
-        <meta name="viewport" content="initial-scale=1, width=device-width" />
-        <div className="Gallery-img">
-        <ImageTile/>
+      <BrowserRouter>
+        <div className="App">
+          <ResponsiveAppBar />
+          <div>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route exact path="/admin" element={<AdminUpload />} />
+            </Routes>
+          </div>
         </div>
-        
-        </header>
-        
-      </div>
+      </BrowserRouter>
     );
   }
 }
