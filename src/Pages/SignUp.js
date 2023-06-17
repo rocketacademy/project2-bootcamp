@@ -35,6 +35,7 @@ export default function SignUp({ isLoggedIn, username }) {
           `${DB_USER_FOLDER_NAME}/${userCredential.user.uid}`
         );
         const newUserRef = push(userRef);
+        const newUserRefKey = newUserRef.key;
         set(newUserRef, {
           firstName: firstName,
           lastName: lastName,
@@ -53,7 +54,7 @@ export default function SignUp({ isLoggedIn, username }) {
             // update user db with profile photo url
             const currUserRef = ref(
               realTimeDatabase,
-              `${DB_USER_FOLDER_NAME}/${userCredential.user.uid}/profileUrl`
+              `${DB_USER_FOLDER_NAME}/${userCredential.user.uid}/${newUserRefKey}/profileUrl`
             );
             set(currUserRef, profileUrl);
           });
