@@ -29,56 +29,57 @@ export default function SignUp({ isLoggedIn, username }) {
   const signUp = async (e) => {
     e.preventDefault();
 
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        const userRef = ref(
-          realTimeDatabase,
-          `${DB_USER_FOLDER_NAME}/${userCredential.user.uid}`
-        );
-        const newUserRef = push(userRef);
-        const newUserRefKey = newUserRef.key;
-        set(newUserRef, {
-          firstName: firstName,
-          lastName: lastName,
-          email: email,
-          displayName: displayName,
-          // UID: userCredential.user.uid,
-        });
-        // Store images in an images folder in Firebase Storage
-        const fileRef = storageRef(
-          storage,
-          ` ${STORAGE_PROFILE_FOLDER_NAME}/${userCredential.user.uid}/${fileInputFile.name}`
-        );
-
-        uploadBytes(fileRef, fileInputFile).then((snapshot) => {
-          getDownloadURL(snapshot.ref).then((profileUrl) => {
-            // update user db with profile photo url
-            const currUserRef = ref(
-              realTimeDatabase,
-              `${DB_USER_FOLDER_NAME}/${userCredential.user.uid}/${newUserRefKey}/profileUrl`
-            );
-            set(currUserRef, profileUrl);
-          });
-        });
-        navigate("/mapexpenses");
-        setEmail("");
-        setPassword("");
-        setFirstName("");
-        setLastName("");
-        setFileInputFile("");
-        setFileInputValue("");
-      })
-      .catch((error) => {
-        console.log("Error getting download URL:", error);
-        // alert(error);
-      });
-
     const form = e.currentTarget;
     if (form.checkValidity() === false) {
-      e.preventDefault();
       e.stopPropagation();
-    }
+    } else {
+      createUserWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          const userRef = ref(
+            realTimeDatabase,
+            `${DB_USER_FOLDER_NAME}/${userCredential.user.uid}`
+          );
+          const newUserRef = push(userRef);
+          const newUserRefKey = newUserRef.key;
+          set(newUserRef, {
+            firstName: firstName,
+            lastName: lastName,
+            UID: userCredential.user.uid,
+            email: email,
+            displayName: displayName,
+          });
+          // Store images in an images folder in Firebase Storage
+          const fileRef = storageRef(
+            storage,
+            ` ${STORAGE_PROFILE_FOLDER_NAME}/${userCredential.user.uid}/${fileInputFile.name}`
+          );
 
+          uploadBytes(fileRef, fileInputFile).then((snapshot) => {
+            getDownloadURL(snapshot.ref).then((profileUrl) => {
+              // update user db with profile photo url
+              const currUserRef = ref(
+                realTimeDatabase,
+                `${DB_USER_FOLDER_NAME}/${userCredential.user.uid}/${newUserRefKey}/profileUrl`
+              );
+              set(currUserRef, profileUrl);
+            });
+          });
+          navigate("/mapexpenses");
+          // setEmail("");
+          // setPassword("");
+          // setFirstName("");
+          // setLastName("");
+          // setFileInputFile("");
+          // setFileInputValue("");
+        })
+        .catch((error) => {
+          console.log("Error getting download URL:", error);
+          // alert(error);
+        });
+      //reset form fields
+      // form.reset();
+      setValidated(false);
+    }
     setValidated(true);
   };
 
@@ -112,6 +113,8 @@ export default function SignUp({ isLoggedIn, username }) {
                           setFirstName(e.target.value);
                         }}
                         required
+                        // isInvalid={validated && !firstName}
+                        // isValid={validated && firstName}
                       />
                     </Col>
                     <Col>
