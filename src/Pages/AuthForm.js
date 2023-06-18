@@ -11,10 +11,22 @@ export default function AuthForm({ isLoggedIn, username }) {
   const navigate = useNavigate();
 
   const signIn = async () => {
-    signInWithEmailAndPassword(auth, email, password);
-    setEmail("");
-    setPassword("");
-    navigate("/mapexpenses");
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        console.log(user);
+        navigate("/mapexpenses");
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        // alert(errorCode);
+        if (errorCode === "auth/user-not-found") {
+          alert("Oops! Invalid email address. ");
+        } else if (errorCode === "auth/wrong-password") {
+          alert("Oops! Invalid password.");
+        }
+      });
   };
 
   return (
@@ -57,7 +69,6 @@ export default function AuthForm({ isLoggedIn, username }) {
 
                 <Button
                   variant="primary"
-                  type="submit"
                   onClick={signIn}
                   style={{ width: "100%" }}
                 >

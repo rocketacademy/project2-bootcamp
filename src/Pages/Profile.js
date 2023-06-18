@@ -1,5 +1,6 @@
 // File to contain 'Profile' items like edit and update name, profile picture, email address, bio, etc
 import "../App.css";
+import patchQuestionFillSvg from "../Icons/patch-question-fill.svg";
 
 export default function Profile({ userData, profilePhotoURL }) {
   const userInfo = Object.entries(userData).map(([key, value]) => (
@@ -16,7 +17,15 @@ export default function Profile({ userData, profilePhotoURL }) {
         <div>
           <h1>Profile Page</h1>
           <br />
-          <img src={profilePhotoURL} alt={profilePhotoURL} />
+          {profilePhotoURL ? (
+            <img src={profilePhotoURL} alt="user" />
+          ) : (
+            <>
+              <img src={patchQuestionFillSvg} alt="user" />
+              <br />
+              <h6>-No image-</h6>
+            </>
+          )}
           <br />
           <h1>{userData.displayName}</h1>
           {userInfo}
