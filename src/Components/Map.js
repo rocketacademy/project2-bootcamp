@@ -61,32 +61,37 @@ const Map = () => {
   const [infoWindowData, setInfoWindowData] = useState();
   const [userLocation, setUserLocation] = useState(null);
 
-  // const center = useMemo(() => Singapore, []);
-
   // when functional component is loaded, ask for user's location
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          setUserLocation({
+          const currentLocation = {
             lat: position.coords.latitude,
             lng: position.coords.longitude,
-          });
-
-          console.log(userLocation);
+          };
+          setUserLocation(currentLocation);
+          if (mapRef) {
+            mapRef.panTo(currentLocation);
+          }
         },
         (error) => {
-          console.log(error);
+          console.error(error);
         }
       );
     } else {
       console.error("Geolocation is not supported by this browser.");
     }
-  }, []);
+  }, [mapRef]);
+
+  const center = useMemo(() => userLocation, []);
 
   // when map loads, determine the boundaries based on the location of the markers
   const onMapLoad = (map) => {
     setMapRef(map);
+    if (userLocation) {
+      map.panTo(userLocation);
+    }
     // const bounds = new google.maps.LatLngBounds();
     // markers?.forEach(({ lat, lng }) => bounds.extend({ lat, lng }));
     // map.fitBounds(bounds);
@@ -102,6 +107,7 @@ const Map = () => {
 
   return (
     <div className="map-container">
+      {/* <button onClick={getUserLocation}>Get User Location</button> */}
       {!isLoaded || !userLocation ? (
         <h1>Loading...</h1>
       ) : (
@@ -112,7 +118,8 @@ const Map = () => {
           onLoad={onMapLoad}
           // when map is clicked, change setIsOpen state to false
           onClick={() => setIsOpen(false)}
-          center={userLocation}
+          center={center}
+          zoom={15}
         >
           {/* code to render markers */}
           {markers.map(({ lat, lng, dollarAmount }, index) => (
