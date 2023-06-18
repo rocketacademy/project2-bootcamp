@@ -7,7 +7,7 @@ import {
   MarkerF,
   useLoadScript,
 } from "@react-google-maps/api";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import "../App.css";
 
 const Singapore = { lat: 1.3521, lng: 103.8198 };
@@ -59,14 +59,37 @@ const Map = () => {
   const [mapRef, setMapRef] = useState();
   const [isOpen, setIsOpen] = useState(false);
   const [infoWindowData, setInfoWindowData] = useState();
+  const [userLocation, setUserLocation] = useState(null);
+
   // const center = useMemo(() => Singapore, []);
+
+  // when functional component is loaded, ask for user's location
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setUserLocation({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          });
+
+          console.log(userLocation);
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
+    } else {
+      console.error("Geolocation is not supported by this browser.");
+    }
+  }, []);
 
   // when map loads, determine the boundaries based on the location of the markers
   const onMapLoad = (map) => {
     setMapRef(map);
-    const bounds = new google.maps.LatLngBounds();
-    markers?.forEach(({ lat, lng }) => bounds.extend({ lat, lng }));
-    map.fitBounds(bounds);
+    // const bounds = new google.maps.LatLngBounds();
+    // markers?.forEach(({ lat, lng }) => bounds.extend({ lat, lng }));
+    // map.fitBounds(bounds);
   };
 
   // when a marker is clicked, pan the map to the marker location
@@ -79,7 +102,7 @@ const Map = () => {
 
   return (
     <div className="map-container">
-      {!isLoaded ? (
+      {!isLoaded || !userLocation ? (
         <h1>Loading...</h1>
       ) : (
         <GoogleMap
@@ -89,6 +112,7 @@ const Map = () => {
           onLoad={onMapLoad}
           // when map is clicked, change setIsOpen state to false
           onClick={() => setIsOpen(false)}
+          center={userLocation}
         >
           {/* code to render markers */}
           {markers.map(({ lat, lng, dollarAmount }, index) => (
