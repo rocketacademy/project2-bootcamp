@@ -52,50 +52,57 @@ function getDollarAmountCategory(dollarAmount) {
   return 3;
 }
 
-const Map = () => {
+const Map = ({
+  profilePhotoURL,
+  userLocation,
+  setUserLocation,
+  mapRef,
+  setMapRef,
+  onMapLoad,
+}) => {
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: process.env.REACT_APP_API_KEY,
   });
-  const [mapRef, setMapRef] = useState();
+  // const [mapRef, setMapRef] = useState();
   const [isOpen, setIsOpen] = useState(false);
   const [infoWindowData, setInfoWindowData] = useState();
-  const [userLocation, setUserLocation] = useState(null);
+  // const [userLocation, setUserLocation] = useState(null);
 
   // when functional component is loaded, ask for user's location
-  useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const currentLocation = {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-          };
-          setUserLocation(currentLocation);
-          if (mapRef) {
-            mapRef.panTo(currentLocation);
-          }
-        },
-        (error) => {
-          console.error(error);
-        }
-      );
-    } else {
-      console.error("Geolocation is not supported by this browser.");
-    }
-  }, [mapRef]);
+  // useEffect(() => {
+  //   if (navigator.geolocation) {
+  //     navigator.geolocation.getCurrentPosition(
+  //       (position) => {
+  //         const currentLocation = {
+  //           lat: position.coords.latitude,
+  //           lng: position.coords.longitude,
+  //         };
+  //         setUserLocation(currentLocation);
+  //         if (mapRef) {
+  //           mapRef.panTo(currentLocation);
+  //         }
+  //       },
+  //       (error) => {
+  //         console.error(error);
+  //       }
+  //     );
+  //   } else {
+  //     console.error("Geolocation is not supported by this browser.");
+  //   }
+  // }, [mapRef]);
 
   const center = useMemo(() => userLocation, []);
 
   // when map loads, determine the boundaries based on the location of the markers
-  const onMapLoad = (map) => {
-    setMapRef(map);
-    if (userLocation) {
-      map.panTo(userLocation);
-    }
-    // const bounds = new google.maps.LatLngBounds();
-    // markers?.forEach(({ lat, lng }) => bounds.extend({ lat, lng }));
-    // map.fitBounds(bounds);
-  };
+  // const onMapLoad = (map) => {
+  //   setMapRef(map);
+  //   if (userLocation) {
+  //     map.panTo(userLocation);
+  //   }
+  //   // const bounds = new google.maps.LatLngBounds();
+  //   // markers?.forEach(({ lat, lng }) => bounds.extend({ lat, lng }));
+  //   // map.fitBounds(bounds);
+  // };
 
   // when a marker is clicked, pan the map to the marker location
   const handleMarkerClick = (id, lat, lng, dollarAmount) => {
@@ -143,6 +150,10 @@ const Map = () => {
               )}
             </MarkerF>
           ))}
+          <MarkerF
+            position={userLocation}
+            // onClick={mapRef?.panTo(userLocation)}
+          ></MarkerF>
         </GoogleMap>
       )}
     </div>

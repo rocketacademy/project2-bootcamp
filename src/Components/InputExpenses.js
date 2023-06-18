@@ -1,5 +1,5 @@
 import "../App.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button, Form, Modal, InputGroup, Col } from "react-bootstrap";
 import { realTimeDatabase, storage } from "../firebase";
 import { push, ref, set } from "firebase/database";
@@ -8,11 +8,19 @@ import {
   uploadBytes,
   getDownloadURL,
 } from "firebase/storage";
+import { useLoadScript, StandaloneSearchBox } from "@react-google-maps/api";
+import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 
 const DB_EXPENSES_FOLDER_NAME = "expenses";
 const STORAGE_EXPENSES_FOLDER_NAME = "receiptPhoto";
 
-export default function InputExpenses({ uid }) {
+export default function InputExpenses({
+  uid,
+  userLocation,
+  setUserLocation,
+  mapRef,
+  setMapRef,
+}) {
   const [show, setShow] = useState(false);
   const [category, setCategory] = useState("");
   const [currency, setCurrency] = useState("");
@@ -24,6 +32,8 @@ export default function InputExpenses({ uid }) {
   const [date, setDate] = useState(currentDate);
   const [receiptFile, setReceiptFile] = useState("");
   const [receiptFileValue, setReceiptFileValue] = useState("");
+
+  const [selectedLocation, setSelectedLocation] = useState();
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -81,6 +91,17 @@ export default function InputExpenses({ uid }) {
     handleClose();
     handleNewInput();
   };
+
+  useEffect(() => {
+    if (selectedLocation) {
+      const newLocation = {
+        lat: selectedLocation.value.geometry.location.lat(),
+        lng: selectedLocation.value.geometry.location.lng(),
+      };
+      setUserLocation(newLocation);
+      mapRef.panTo(newLocation);
+    }
+  }, [selectedLocation, mapRef]);
 
   return (
     <div>
@@ -156,13 +177,15 @@ export default function InputExpenses({ uid }) {
               controlId="exampleForm.ControlTextarea1"
             >
               <Form.Label>Location</Form.Label>
-              <Form.Control
-                as="textarea"
-                rows={1}
-                type="text"
-                placeholder="Location"
-                value={location}
-                onChange={(e) => setLocation(e.target.value)}
+              <GooglePlacesAutocomplete
+                apiKey={process.env.REACT_APP_API_KEY}
+                selectProps={{
+                  value: userLocation,
+                  onChange: setSelectedLocation,
+                }}
+                initialValue={
+                  userLocation ? `${userLocation.lat}, ${userLocation.lng}` : ""
+                }
               />
             </Form.Group>
 
