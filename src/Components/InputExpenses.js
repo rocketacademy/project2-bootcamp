@@ -19,7 +19,7 @@ export default function InputExpenses({ uid }) {
   const [amount, setAmount] = useState("");
   const [location, setLocation] = useState("");
   const [description, setDescription] = useState("");
-  const currentDate = new Date().toISOString().substr(0, 10); // Get current date in yyyy-MM-dd format
+  const currentDate = new Date().toISOString().substring(0, 10); // Get current date in yyyy-MM-dd format
 
   const [date, setDate] = useState(currentDate);
   const [receiptFile, setReceiptFile] = useState("");
@@ -175,7 +175,7 @@ export default function InputExpenses({ uid }) {
                 as="textarea"
                 rows={2}
                 type="text"
-                placeholder="description"
+                placeholder="Description"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
               />

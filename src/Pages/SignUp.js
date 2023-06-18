@@ -40,9 +40,9 @@ export default function SignUp({ isLoggedIn, username }) {
         set(newUserRef, {
           firstName: firstName,
           lastName: lastName,
-          userId: userCredential.user.uid,
           email: email,
           displayName: displayName,
+          // UID: userCredential.user.uid,
         });
         // Store images in an images folder in Firebase Storage
         const fileRef = storageRef(
