@@ -24,6 +24,7 @@ export default function SignUp({ isLoggedIn, username }) {
   const [fileInputFile, setFileInputFile] = useState("");
   const [fileInputValue, setFileInputValue] = useState("");
   const navigate = useNavigate();
+  const [validated, setValidated] = useState(false);
 
   const signUp = async (e) => {
     e.preventDefault();
@@ -59,18 +60,26 @@ export default function SignUp({ isLoggedIn, username }) {
             set(currUserRef, profileUrl);
           });
         });
+        navigate("/mapexpenses");
+        setEmail("");
+        setPassword("");
+        setFirstName("");
+        setLastName("");
+        setFileInputFile("");
+        setFileInputValue("");
       })
       .catch((error) => {
         console.log("Error getting download URL:", error);
+        // alert(error);
       });
 
-    setEmail("");
-    setPassword("");
-    setFirstName("");
-    setLastName("");
-    setFileInputFile("");
-    setFileInputValue("");
-    navigate("/mapexpenses");
+    const form = e.currentTarget;
+    if (form.checkValidity() === false) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
+    setValidated(true);
   };
 
   return (
@@ -82,12 +91,15 @@ export default function SignUp({ isLoggedIn, username }) {
         {isLoggedIn ? (
           <div>
             <h2>Welcome {displayName}</h2>
-            <h5>Click on the top navigator to start posting!</h5>
+            <h5>
+              Click on <Link to="/mapexpenses">MapExpenses </Link>
+              to start tracking your expenses!
+            </h5>
           </div>
         ) : (
           <Row>
             <Col>
-              <Form>
+              <Form noValidate validated={validated}>
                 <Form.Group className="mb-3">
                   <Row>
                     <Col>
@@ -136,6 +148,7 @@ export default function SignUp({ isLoggedIn, username }) {
                     placeholder="Enter email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                    required
                   />
                   <Form.Text className="text-muted">
                     We'll never share your email with anyone else.
@@ -149,10 +162,11 @@ export default function SignUp({ isLoggedIn, username }) {
                     placeholder="Password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
+                    required
                   />
                 </Form.Group>
                 <Form.Group controlId="formFile" className="mb-3">
-                  <Form.Label>Upload profile photo</Form.Label>
+                  <Form.Label>Upload profile photo (optional)</Form.Label>
                   <Form.Control
                     type="file"
                     value={fileInputValue}
