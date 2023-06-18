@@ -165,7 +165,6 @@ export default function SignUp({ isLoggedIn, username }) {
 
                 <Button
                   variant="primary"
-                  type="submit"
                   onClick={signUp}
                   style={{ width: "100%" }}
                 >
