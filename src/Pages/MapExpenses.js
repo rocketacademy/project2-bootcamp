@@ -84,6 +84,7 @@ export default function MapExpenses({ isLoggedIn, uid }) {
             setExpenseCounter={setExpenseCounter}
             userLocation={userLocation}
             expenses={expenses}
+            setExpenses={setExpenses}
           />
         </div>
       ) : (

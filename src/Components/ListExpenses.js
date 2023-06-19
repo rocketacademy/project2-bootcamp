@@ -109,7 +109,7 @@ export default function ListExpenses({ uid }) {
 
   // Render the list of expenses
   return (
-    <div>
+    <div className="list-container">
       <div className="card-header">
         <InputExpenses uid={uid} />
       </div>

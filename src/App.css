@@ -39,7 +39,9 @@
 
 .map-container {
   height: 100%;
+  max-height: 91svh;
   width: 100%;
+
   background-color: red;
   border-radius: 10px;
 }
@@ -52,11 +54,12 @@
 .list-container {
   display: flex; /* Use flexbox to align items */
   flex-direction: column; /* Stack child elements vertically */
-  align-items: center; /* Center items horizontally */
+  /* align-items: center; Center items horizontally */
   justify-content: space-between;
+  overflow-y: scroll;
 
   /* height: 100svh -63.78px - 1rem; */
-  max-height: 100%;
+  max-height: 91svh;
   width: 100%;
   background-color: #e8e8e8;
   color: black;
@@ -80,13 +83,12 @@
   text-align: center;
 }
 
-
 .addExpense {
   margin: 0 auto 20px;
+}
 
 .card-content {
   display: flex;
   justify-content: space-between;
   align-items: center;
-
 }
