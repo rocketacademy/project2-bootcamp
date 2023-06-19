@@ -17,7 +17,7 @@ import patchQuestionFillSvg from "./Icons/patch-question-fill.svg";
 
 const DB_USER_FOLDER_NAME = "user";
 
-const App = () => {
+export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState({});
   const [uid, setUID] = useState("");
@@ -86,7 +86,11 @@ const App = () => {
     <>
       <Navbar bg="light" fixed="top">
         <Container
-          style={{ maxWidth: "1025px", paddingLeft: "0", paddingRight: "0" }}
+          style={{
+            maxWidth: "1025px",
+            paddingLeft: "0",
+            paddingRight: "0",
+          }}
         >
           <Container>
             <Navbar.Brand href="#home">
@@ -189,6 +193,4 @@ const App = () => {
       ;
     </>
   );
-};
-
-export default App;
+}

@@ -122,14 +122,15 @@ export default function InputExpenses({
 
   return (
     <div>
-      <Button
-        className="rounded-rectangle "
-        variant="outline-dark"
-        onClick={handleShow}
-      >
-        + Add Expense
-      </Button>
-
+      <div className="addExpense">
+        <Button
+          className="rounded-rectangle"
+          variant="outline-dark"
+          onClick={handleShow}
+        >
+          + Add Expense
+        </Button>
+      </div>
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>Input Expenses</Modal.Title>

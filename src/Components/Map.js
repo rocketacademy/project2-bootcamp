@@ -29,14 +29,21 @@ function getDollarAmountCategory(dollarAmount) {
   return 3;
 }
 
-export default function Map({ uid, expenseCounter, userLocation }) {
-  const { isLoaded } = useLoadScript({
-    googleMapsApiKey: process.env.REACT_APP_API_KEY,
-  });
-  const [mapRef, setMapRef] = useState();
+export default function Map({
+  uid,
+  expenseCounter,
+  userLocation,
+  mapRef,
+  setMapRef,
+  expRef,
+  expenses,
+  setExpenses,
+  isLoaded,
+}) {
+  // const [mapRef, setMapRef] = useState();
   const [isOpen, setIsOpen] = useState(false);
   const [infoWindowData, setInfoWindowData] = useState();
-  const [expenses, setExpenses] = useState([]);
+  // const [expenses, setExpenses] = useState([]);
   const center = useMemo(() => ({ lat: 1.3521, lng: 103.8198 }), []);
 
   // when map loads, determine the boundaries based on the location of the markers
@@ -54,28 +61,15 @@ export default function Map({ uid, expenseCounter, userLocation }) {
   };
 
   // Retrieve expenses when the map is rendered
-  useEffect(() => {
-    const expRef = ref(realTimeDatabase, `${DB_EXPENSES_FOLDER_NAME}/${uid}`);
-    console.log(`expRef: ${expRef}`);
-    console.log(`pathname: ${DB_EXPENSES_FOLDER_NAME}/${uid}`);
+  // useEffect(() => {
+  //   mapRef.panTo(getLatestExpLocation());
 
-    onValue(expRef, (snapshot) => {
-      const expensesData = snapshot.val();
-      if (expensesData) {
-        const expensesArray = Object.values(expensesData);
-        console.log(expensesArray);
-        setExpenses(expensesArray);
-      }
-      mapRef.panTo(getLatestExpLocation());
-      console.log(expenses);
-    });
-
-    // Clean up the listener when the component unmounts
-    return () => {
-      off(expRef);
-      setExpenses([]);
-    };
-  }, [uid, mapRef, expenseCounter]);
+  //   // Clean up the listener when the component unmounts
+  //   return () => {
+  //     off(expRef);
+  //     setExpenses([]);
+  //   };
+  // }, [uid, mapRef, expenseCounter]);
 
   // when a marker is clicked, pan the map to the marker location
   const handleMarkerClick = (
