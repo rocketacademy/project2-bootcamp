@@ -7,7 +7,7 @@
 }
 
 .App {
-  text-align: center;
+  /* text-align: center; */
   font-size: calc(10px + 2vmin);
   margin: auto;
   margin-top: 63.78px;
@@ -80,6 +80,13 @@
   text-align: center;
 }
 
+
 .addExpense {
   margin: 0 auto 20px;
+
+.card-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
 }

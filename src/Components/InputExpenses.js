@@ -127,6 +127,7 @@ export default function InputExpenses({
           className="rounded-rectangle"
           variant="outline-dark"
           onClick={handleShow}
+          title="Click to add new expenses"
         >
           + Add Expense
         </Button>
@@ -163,6 +164,7 @@ export default function InputExpenses({
               <option value="🚗 Transport">🚗 Transport</option>
               <option value="🏠 Home">🏠 Home</option>
               <option value="🌏 Holiday">🌏 Holiday</option>
+              <option value="🎬 Entertainment">🎬 Entertainment</option>
               <option value="🤷 Others">🤷 Others</option>
             </Form.Select>
             <br />
