@@ -17,7 +17,7 @@ const STORAGE_EXPENSES_FOLDER_NAME = "receiptPhoto";
 export default function InputExpenses({ uid }) {
   const [show, setShow] = useState(false);
   const [category, setCategory] = useState("");
-  const [currency, setCurrency] = useState("");
+  const [currency, setCurrency] = useState("SGD");
   const [amount, setAmount] = useState("");
   const [location, setLocation] = useState("");
   const [description, setDescription] = useState("");
@@ -49,7 +49,6 @@ export default function InputExpenses({ uid }) {
 
   const handleNewInput = () => {
     setCategory("");
-    setCurrency("");
     setAmount("");
     setLocation("");
     setDescription("");
