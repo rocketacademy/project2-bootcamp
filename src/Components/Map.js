@@ -2,7 +2,6 @@
 
 import {
   GoogleMap,
-  InfoWindow,
   InfoWindowF,
   MarkerF,
   useLoadScript,
@@ -52,7 +51,12 @@ function getDollarAmountCategory(dollarAmount) {
   return 3;
 }
 
-const Map = () => {
+export default function Map() {
+  // userLocation,
+  // setUserLocation,
+  // mapRef,
+  // setMapRef
+  // onMapLoad
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: process.env.REACT_APP_API_KEY,
   });
@@ -60,6 +64,7 @@ const Map = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [infoWindowData, setInfoWindowData] = useState();
   // const center = useMemo(() => Singapore, []);
+  // const center = useMemo(() => userLocation, []);
 
   // when map loads, determine the boundaries based on the location of the markers
   const onMapLoad = (map) => {
@@ -116,6 +121,4 @@ const Map = () => {
       )}
     </div>
   );
-};
-
-export default Map;
+}
