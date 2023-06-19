@@ -8,6 +8,8 @@ import {
   uploadBytes,
   getDownloadURL,
 } from "firebase/storage";
+import { GoogleMap, MarkerF } from "@react-google-maps/api";
+import Geocode from "react-geocode";
 
 const DB_EXPENSES_FOLDER_NAME = "expenses";
 const STORAGE_EXPENSES_FOLDER_NAME = "receiptPhoto";
@@ -20,10 +22,27 @@ export default function InputExpenses({ uid }) {
   const [location, setLocation] = useState("");
   const [description, setDescription] = useState("");
   const currentDate = new Date().toISOString().substring(0, 10); // Get current date in yyyy-MM-dd format
+  const [lng, setLng] = useState(0);
+  const [lat, setLat] = useState(0);
+  const [address, setAddress] = useState("");
 
   const [date, setDate] = useState(currentDate);
   const [receiptFile, setReceiptFile] = useState("");
   const [receiptFileValue, setReceiptFileValue] = useState("");
+
+  const getLatLng = () =>
+    Geocode.fromAddress(address, process.env.REACT_APP_API_KEY).then(
+      (response) => {
+        const { lat, lng } = response.results[0].geometry.location;
+        setLat(lat);
+        setLng(lng);
+      },
+      (error) => {
+        console.error(error);
+        setLat(null);
+        setLng(null);
+      }
+    );
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -151,7 +170,7 @@ export default function InputExpenses({ uid }) {
               />
             </InputGroup>
 
-            <Form.Group
+            {/* <Form.Group
               className="mb-3"
               controlId="exampleForm.ControlTextarea1"
             >
@@ -164,6 +183,74 @@ export default function InputExpenses({ uid }) {
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
               />
+            </Form.Group> */}
+
+            <Form.Group className="form-group">
+              <Form.Label className="compact-label">Location</Form.Label>
+
+              {lat && lng ? (
+                <div className="coordinates-display green">
+                  {lat.toFixed(4)}, {lng.toFixed(4)}
+                </div>
+              ) : (
+                <div
+                  className="coordinates-display grey-italics"
+                  style={{ color: "red" }}
+                >
+                  <em>Location not found, please enter another location</em>
+                </div>
+              )}
+              <div id="address-look-up">
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <Form.Control
+                    type="text"
+                    size="sm"
+                    value={address}
+                    placeholder="Enter address or click on the map"
+                    onChange={(e) => setAddress(e.target.value)}
+                  />
+                  <Button
+                    variant="outline-secondary"
+                    size="sm"
+                    id="look-up-btn"
+                    onClick={getLatLng}
+                    style={{
+                      flexShrink: 1,
+                      overflow: "hidden",
+                      whiteSpace: "nowrap",
+                      textOverflow: "ellipsis",
+                      minWidth: 0,
+                    }}
+                  >
+                    Look up
+                  </Button>
+                </div>
+              </div>
+
+              <div id="loc-option-2">
+                <GoogleMap
+                  onClick={(e) => {
+                    setLat(e.latLng.lat());
+                    setLng(e.latLng.lng());
+                  }}
+                  mapContainerStyle={{
+                    width: "100%",
+                    height: "30vh",
+                  }}
+                  center={
+                    lat && lng
+                      ? { lat: lat, lng: lng }
+                      : {
+                          lat: 1.365,
+                          lng: 103.815,
+                        }
+                  }
+                  zoom={11}
+                >
+                  <MarkerF position={{ lat: lat, lng: lng }} />
+                </GoogleMap>
+                <br />
+              </div>
             </Form.Group>
 
             <Form.Group
