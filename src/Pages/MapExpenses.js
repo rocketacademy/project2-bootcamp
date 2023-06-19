@@ -3,16 +3,22 @@ import Map from "../Components/Map";
 import ListExpenses from "../Components/ListExpenses";
 import Welcome from "./Welcome";
 import { useState, useEffect } from "react";
+import { realTimeDatabase } from "../firebase";
+import { onValue, ref, off } from "firebase/database";
+import { useLoadScript } from "@react-google-maps/api";
 
-// const libraries = ["places"];
+const DB_EXPENSES_FOLDER_NAME = "expenses";
 
 export default function MapExpenses({ isLoggedIn, uid }) {
   console.log(isLoggedIn);
   console.log(uid);
-
+  const [expenseCounter, setExpenseCounter] = useState(0);
   const [userLocation, setUserLocation] = useState(null);
+  const [expenses, setExpenses] = useState([]);
   const [mapRef, setMapRef] = useState();
+  const [expRef, setExpRef] = useState();
 
+  // Get user's location and to recenter the map based on that location when map is rendered
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -22,9 +28,6 @@ export default function MapExpenses({ isLoggedIn, uid }) {
             lng: position.coords.longitude,
           };
           setUserLocation(currentLocation);
-          if (mapRef) {
-            mapRef.panTo(currentLocation);
-          }
         },
         (error) => {
           console.error(error);
@@ -33,14 +36,31 @@ export default function MapExpenses({ isLoggedIn, uid }) {
     } else {
       console.error("Geolocation is not supported by this browser.");
     }
-  }, [mapRef]);
+  }, [expenseCounter]);
 
-  const onMapLoad = (map) => {
-    setMapRef(map);
-    if (userLocation) {
-      map.panTo(userLocation);
+  useEffect(() => {
+    setExpRef(ref(realTimeDatabase, `${DB_EXPENSES_FOLDER_NAME}/${uid}`));
+    if (expRef) {
+      onValue(expRef, (snapshot) => {
+        const expensesData = snapshot.val();
+        if (expensesData) {
+          const expensesArray = Object.values(expensesData);
+          console.log(expensesArray);
+          setExpenses(expensesArray);
+        }
+      });
     }
-  };
+    return () => {
+      if (expRef) {
+        off(expRef);
+        setExpenses([]);
+      }
+    };
+  }, [uid, mapRef, expenseCounter]);
+
+  const { isLoaded } = useLoadScript({
+    googleMapsApiKey: process.env.REACT_APP_API_KEY,
+  });
 
   return (
     <div>
@@ -48,13 +68,23 @@ export default function MapExpenses({ isLoggedIn, uid }) {
       {isLoggedIn ? (
         <div className="App">
           <Map
+            uid={uid}
+            expenseCounter={expenseCounter}
             userLocation={userLocation}
-            setUserLocation={setUserLocation}
+            expenses={expenses}
+            setExpenses={setExpenses}
             mapRef={mapRef}
             setMapRef={setMapRef}
-            onMapLoad={onMapLoad}
+            expRef={expRef}
+            isLoaded={isLoaded}
           />
-          <ListExpenses uid={uid} />
+          <ListExpenses
+            uid={uid}
+            expenseCounter={expenseCounter}
+            setExpenseCounter={setExpenseCounter}
+            userLocation={userLocation}
+            expenses={expenses}
+          />
         </div>
       ) : (
         <div className="App">

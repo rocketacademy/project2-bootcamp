@@ -10,30 +10,38 @@
   /* text-align: center; */
   font-size: calc(10px + 2vmin);
   margin: auto;
-  margin-top: 56px;
+  margin-top: 63.78px;
 
   background-color: grey;
   color: rgb(0, 0, 0);
 
-  min-height: 93svh;
+  min-height: 91svh;
   max-width: 1025px;
+  border-radius: 10px;
 
   display: grid;
-  /* flex-direction: column;
-  align-items: center;
-  justify-content: center; */
+  grid-template-columns: 1fr;
+  grid-template-rows: 1.5fr 1fr;
 }
 
-@media (min-width: 600px) {
+@media (min-width: 700px) {
   .App {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 2fr 1fr;
+    grid-template-rows: 1fr;
+  }
+  .map-container {
+    height: 100%;
+  }
+  .list-container {
+    height: 100%;
   }
 }
 
 .map-container {
-  /* height: 50svh; */
+  height: 100%;
   width: 100%;
   background-color: red;
+  border-radius: 10px;
 }
 
 .map {
@@ -42,19 +50,26 @@
 }
 
 .list-container {
-  /* height: 50svh; */
+  display: flex; /* Use flexbox to align items */
+  flex-direction: column; /* Stack child elements vertically */
+  align-items: center; /* Center items horizontally */
+  justify-content: space-between;
+
+  /* height: 100svh -63.78px - 1rem; */
+  max-height: 100%;
   width: 100%;
-  background-color: rgb(107, 98, 98);
-  color: white;
+  background-color: #e8e8e8;
+  color: black;
+  /* border-radius: 10px; */
 }
 
 .temporary-box {
   min-height: 100svh;
   /* max-width: 1025px; */
-  font-size: calc(10px + 2vmin);
+  font-size: 1.25rem;
 
-  color: rgb(255, 255, 255);
-  background-color: rgb(137, 179, 137);
+  color: black;
+  background-color: #e8e8e8;
 
   border-width: 1rem;
   border-color: red;
@@ -65,8 +80,13 @@
   text-align: center;
 }
 
+
+.addExpense {
+  margin: 0 auto 20px;
+
 .card-content {
   display: flex;
   justify-content: space-between;
   align-items: center;
+
 }

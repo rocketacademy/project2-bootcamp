@@ -1,5 +1,5 @@
 import "../App.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button, Form, Modal, InputGroup, Col } from "react-bootstrap";
 import { realTimeDatabase, storage } from "../firebase";
 import { push, ref, set } from "firebase/database";
@@ -10,25 +10,38 @@ import {
 } from "firebase/storage";
 import { GoogleMap, MarkerF } from "@react-google-maps/api";
 import Geocode from "react-geocode";
+import currencies from "./Currencies";
 
 const DB_EXPENSES_FOLDER_NAME = "expenses";
 const STORAGE_EXPENSES_FOLDER_NAME = "receiptPhoto";
 
-export default function InputExpenses({ uid }) {
+export default function InputExpenses({
+  uid,
+  expenseCounter,
+  setExpenseCounter,
+  userLocation,
+}) {
   const [show, setShow] = useState(false);
   const [category, setCategory] = useState("");
-  const [currency, setCurrency] = useState("");
-  const [amount, setAmount] = useState("");
-  const [location, setLocation] = useState("");
-  const [description, setDescription] = useState("");
+  const [currency, setCurrency] = useState("SGD");
+  const [amount, setAmount] = useState(0);
+  const [description, setDescription] = useState("-");
   const currentDate = new Date().toISOString().substring(0, 10); // Get current date in yyyy-MM-dd format
-  const [lng, setLng] = useState(0);
   const [lat, setLat] = useState(0);
+  const [lng, setLng] = useState(0);
   const [address, setAddress] = useState("");
 
   const [date, setDate] = useState(currentDate);
   const [receiptFile, setReceiptFile] = useState("");
   const [receiptFileValue, setReceiptFileValue] = useState("");
+
+  useEffect(() => {
+    if (userLocation) {
+      setLat(userLocation.lat);
+      setLng(userLocation.lng);
+      setAddress("Current Location");
+    }
+  }, [expenseCounter]);
 
   const getLatLng = () =>
     Geocode.fromAddress(address, process.env.REACT_APP_API_KEY).then(
@@ -49,10 +62,9 @@ export default function InputExpenses({ uid }) {
 
   const handleNewInput = () => {
     setCategory("");
-    setCurrency("");
-    setAmount("");
-    setLocation("");
-    setDescription("");
+    setAmount(0);
+    setAddress("");
+    setDescription("-");
     setDate(currentDate);
     setReceiptFile("");
     setReceiptFileValue("");
@@ -65,7 +77,6 @@ export default function InputExpenses({ uid }) {
     console.log(category);
     console.log(currency);
     console.log(amount);
-    console.log(location);
     console.log(description);
     console.log(date);
 
@@ -73,14 +84,17 @@ export default function InputExpenses({ uid }) {
     const expRef = ref(realTimeDatabase, `${DB_EXPENSES_FOLDER_NAME}/${uid}`);
     const newExpRef = push(expRef);
     const newExpenseKey = newExpRef.key;
+    // data to write to expense reference location
     set(newExpRef, {
       category: category,
       currency: currency,
       amount: amount,
-      location: location,
+      lat: lat,
+      lng: lng,
       description: description,
       date: date,
     });
+
     const expFileRef = storageRef(
       storage,
       ` ${STORAGE_EXPENSES_FOLDER_NAME}/${uid}/${receiptFile.name}`
@@ -99,19 +113,25 @@ export default function InputExpenses({ uid }) {
 
     handleClose();
     handleNewInput();
+    setExpenseCounter((prevExpenseCounter) => prevExpenseCounter + 1);
+  };
+
+  const handleUseLocation = (e) => {
+    setExpenseCounter((prevExpenseCounter) => prevExpenseCounter + 1);
   };
 
   return (
     <div>
-      <Button
-        className="rounded-circle"
-        variant="outline-info"
-        onClick={handleShow}
-        style={{ margin: "10px" }}
-        title="Click to add new expenses"
-      >
-        +
-      </Button>
+      <div className="addExpense">
+        <Button
+          className="rounded-rectangle"
+          variant="outline-dark"
+          onClick={handleShow}
+          title="Click to add new expenses"
+        >
+          + Add Expense
+        </Button>
+      </div>
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>Input Expenses</Modal.Title>
@@ -139,12 +159,13 @@ export default function InputExpenses({ uid }) {
               <option value="" disabled>
                 Category
               </option>
-              <option value="🍔Food">🍔Food</option>
-              <option value="💸Bills">💸Bills</option>
-              <option value="🚗Transport">🚗Transport</option>
-              <option value="🏠Home">🏠Home</option>
-              <option value="🎬Entertainment">🎬Entertainment</option>
-              <option value="Others">Others</option>
+              <option value="🍔 Food">🍔 Food</option>
+              <option value="💸 Bills">💸 Bills</option>
+              <option value="🚗 Transport">🚗 Transport</option>
+              <option value="🏠 Home">🏠 Home</option>
+              <option value="🌏 Holiday">🌏 Holiday</option>
+              <option value="🎬 Entertainment">🎬 Entertainment</option>
+              <option value="🤷 Others">🤷 Others</option>
             </Form.Select>
             <br />
 
@@ -160,32 +181,19 @@ export default function InputExpenses({ uid }) {
                 <option value="" disabled>
                   Currency
                 </option>
-                <option value="SGD">SGD</option>
-                <option value="USD">USD</option>
+                {currencies.map((currency) => (
+                  <option key={currency.code} value={currency.code}>
+                    {currency.code}
+                  </option>
+                ))}
               </Form.Select>
-              <InputGroup.Text>$</InputGroup.Text>
               <Form.Control
-                type="text"
-                placeholder="0.00"
+                type="number"
+                placeholder="0"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
               />
             </InputGroup>
-
-            {/* <Form.Group
-              className="mb-3"
-              controlId="exampleForm.ControlTextarea1"
-            >
-              <Form.Label>Location</Form.Label>
-              <Form.Control
-                as="textarea"
-                rows={1}
-                type="text"
-                placeholder="Location"
-                value={location}
-                onChange={(e) => setLocation(e.target.value)}
-              />
-            </Form.Group> */}
 
             <Form.Group className="form-group">
               <Form.Label className="compact-label">Location</Form.Label>
@@ -287,7 +295,11 @@ export default function InputExpenses({ uid }) {
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          <Button variant="primary" onClick={handleSubmit}>
+          <Button
+            variant="primary"
+            onClick={handleSubmit}
+            disabled={category === "" || amount === 0}
+          >
             Add item
           </Button>
         </Modal.Footer>
