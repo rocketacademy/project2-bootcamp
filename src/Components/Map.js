@@ -6,7 +6,7 @@ import {
   MarkerF,
   useLoadScript,
 } from "@react-google-maps/api";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import "../App.css";
 import { realTimeDatabase } from "../firebase";
 import { onValue, ref, off } from "firebase/database";
@@ -38,17 +38,11 @@ export default function Map({ uid }) {
   const [infoWindowData, setInfoWindowData] = useState();
   const [userLocation, setUserLocation] = useState(null);
   const [expenses, setExpenses] = useState([]);
+  const center = useMemo(() => ({ lat: 1.3521, lng: 103.8198 }), []);
 
   // when map loads, determine the boundaries based on the location of the markers
   const onMapLoad = (map) => {
     setMapRef(map);
-    if (userLocation) {
-      map.panTo(userLocation);
-    } else {
-      const bounds = new google.maps.LatLngBounds();
-      expenses?.forEach(({ lat, lng }) => bounds.extend({ lat, lng }));
-      map.fitBounds(bounds);
-    }
   };
 
   // Get user's location and to recenter the map based on that location when map is rendered
@@ -61,10 +55,11 @@ export default function Map({ uid }) {
             lng: position.coords.longitude,
           };
           setUserLocation(currentLocation);
-          console.log(`Current location: ${userLocation}`);
-          if (mapRef) {
-            mapRef.panTo(currentLocation);
-          }
+
+          // if (mapRef) {
+          //   mapRef.panTo(currentLocation);
+          //   mapRef.setZoom(15);
+          // }
         },
         (error) => {
           console.error(error);
@@ -73,7 +68,16 @@ export default function Map({ uid }) {
     } else {
       console.error("Geolocation is not supported by this browser.");
     }
-  }, [mapRef]);
+  });
+
+  const getLatestExpLocation = (expenses) => {
+    const array = Object.values(expenses);
+    const lastItem = array[array.length - 1];
+    const lat = lastItem.lat;
+    const lng = lastItem.lng;
+    const lastCenter = { lat, lng };
+    return lastCenter;
+  };
 
   // Retrieve expenses when the map is rendered
   useEffect(() => {
@@ -85,8 +89,10 @@ export default function Map({ uid }) {
       const expensesData = snapshot.val();
       if (expensesData) {
         const expensesArray = Object.values(expensesData);
+        console.log(expensesArray);
         setExpenses(expensesArray);
       }
+      mapRef.panTo(getLatestExpLocation(expenses));
       console.log(expenses);
     });
 
@@ -95,7 +101,7 @@ export default function Map({ uid }) {
       off(expRef);
       setExpenses([]);
     };
-  }, [uid]);
+  }, [uid, mapRef]);
 
   // when a marker is clicked, pan the map to the marker location
   const handleMarkerClick = (
@@ -126,7 +132,8 @@ export default function Map({ uid }) {
           onLoad={onMapLoad}
           // when map is clicked, change setIsOpen state to false
           onClick={() => setIsOpen(false)}
-          zoom={15}
+          center={center}
+          zoom={11}
         >
           {/* code to render markers */}
           {uid !== ""

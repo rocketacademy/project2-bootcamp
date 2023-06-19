@@ -19,7 +19,7 @@ export default function InputExpenses({ uid }) {
   const [show, setShow] = useState(false);
   const [category, setCategory] = useState("");
   const [currency, setCurrency] = useState("SGD");
-  const [amount, setAmount] = useState("");
+  const [amount, setAmount] = useState(0);
   const [description, setDescription] = useState("");
   const currentDate = new Date().toISOString().substring(0, 10); // Get current date in yyyy-MM-dd format
   const [lat, setLat] = useState(0);
@@ -75,7 +75,8 @@ export default function InputExpenses({ uid }) {
 
   const handleNewInput = () => {
     setCategory("");
-    setAmount("");
+    setAmount(0);
+    setAddress("");
     setDescription("");
     setDate(currentDate);
     setReceiptFile("");
@@ -130,11 +131,11 @@ export default function InputExpenses({ uid }) {
   return (
     <div>
       <Button
-        className="rounded-circle "
+        className="rounded-rectangle "
         variant="outline-info"
         onClick={handleShow}
       >
-        +
+        + Add Expense
       </Button>
 
       <Modal show={show} onHide={handleClose}>
@@ -298,7 +299,11 @@ export default function InputExpenses({ uid }) {
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          <Button variant="primary" onClick={handleSubmit}>
+          <Button
+            variant="primary"
+            onClick={handleSubmit}
+            disabled={category === "" && amount === 0}
+          >
             Add item
           </Button>
         </Modal.Footer>
