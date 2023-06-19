@@ -98,38 +98,3 @@ export default function ListExpenses({ uid }) {
     </div>
   );
 }
-
-// get(child(dbRef, `${DB_EXPENSES_FOLDER_NAME}/${uid}`))
-//   .then((snapshot) => {
-//     if (snapshot.exists()) {
-//       snapshot.forEach((childSnapshot) => {
-//         const userKey = childSnapshot.key; // Retrieve the key of each child node
-//         const userData = childSnapshot.val(); // Retrieve the data of each child node
-//         console.log("User Key:", userKey);
-//         console.log("User Data:", userData);
-//         const requiredUserData = {
-//           ["Display Name"]: userData.displayName,
-//           ["First Name"]: userData.firstName,
-//           ["Last Name"]: userData.lastName,
-//           ["Email"]: userData.email,
-//         };
-//         setUserData(requiredUserData); //only take those required
-//         setUserKey(userKey);
-
-//         // use uid to find profile url
-//         const profilePhotoRef = ref(
-//           realTimeDatabase,
-//           `${DB_USER_FOLDER_NAME}/${uid}/${userKey}/profileUrl`
-//         );
-
-//         onValue(profilePhotoRef, (snapshot) => {
-//           setProfilePhotoURL(snapshot.val());
-//         });
-//       });
-//     } else {
-//       console.log("No data available");
-//     }
-//   })
-//   .catch((error) => {
-//     console.error(error);
-//   });
