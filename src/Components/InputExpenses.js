@@ -20,11 +20,10 @@ export default function InputExpenses({ uid }) {
   const [category, setCategory] = useState("");
   const [currency, setCurrency] = useState("SGD");
   const [amount, setAmount] = useState("");
-  const [location, setLocation] = useState("");
   const [description, setDescription] = useState("");
   const currentDate = new Date().toISOString().substring(0, 10); // Get current date in yyyy-MM-dd format
-  const [lng, setLng] = useState(0);
   const [lat, setLat] = useState(0);
+  const [lng, setLng] = useState(0);
   const [address, setAddress] = useState("");
 
   const [date, setDate] = useState(currentDate);
@@ -39,7 +38,10 @@ export default function InputExpenses({ uid }) {
           (position) => {
             const { latitude, longitude } = position.coords;
             // Set the user's location to the 'address' state
-            setAddress(`Latitude: ${latitude}, Longitude: ${longitude}`);
+            setAddress("Current Location");
+            // setAddress(`Latitude: ${latitude}, Longitude: ${longitude}`);
+            setLat(latitude);
+            setLng(longitude);
           },
           (error) => {
             console.error("Error getting user location:", error);
@@ -74,7 +76,6 @@ export default function InputExpenses({ uid }) {
   const handleNewInput = () => {
     setCategory("");
     setAmount("");
-    setLocation("");
     setDescription("");
     setDate(currentDate);
     setReceiptFile("");
@@ -88,7 +89,6 @@ export default function InputExpenses({ uid }) {
     console.log(category);
     console.log(currency);
     console.log(amount);
-    console.log(location);
     console.log(description);
     console.log(date);
 
@@ -100,7 +100,8 @@ export default function InputExpenses({ uid }) {
       category: category,
       currency: currency,
       amount: amount,
-      location: location,
+      lat: lat,
+      lng: lng,
       description: description,
       date: date,
     });
