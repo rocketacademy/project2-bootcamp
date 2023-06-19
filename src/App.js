@@ -166,7 +166,13 @@ const App = () => {
         <Route path="/" element={<Welcome isLoggedIn={isLoggedIn} />} />
         <Route
           path="/mapexpenses"
-          element={<MapExpenses isLoggedIn={isLoggedIn} uid={uid} />}
+          element={
+            <MapExpenses
+              isLoggedIn={isLoggedIn}
+              uid={uid}
+              profilePhotoURL={profilePhotoURL}
+            />
+          }
         />
         <Route
           path="/profile"

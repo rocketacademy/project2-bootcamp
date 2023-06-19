@@ -64,3 +64,8 @@
   justify-content: center;
   text-align: center;
 }
+
+.combobox-input {
+  width: 100%;
+  padding: 0.5 rem;
+}

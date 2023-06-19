@@ -7,6 +7,7 @@ export default function ListExpenses({
   setUserLocation,
   mapRef,
   setMapRef,
+  // isLoaded,
 }) {
   return (
     <div className="list-container">
@@ -16,6 +17,7 @@ export default function ListExpenses({
         setUserLocation={setUserLocation}
         mapRef={mapRef}
         setMapRef={setMapRef}
+        // isLoaded={isLoaded}
       />
       List Component
     </div>

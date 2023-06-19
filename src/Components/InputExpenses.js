@@ -9,7 +9,19 @@ import {
   getDownloadURL,
 } from "firebase/storage";
 import { useLoadScript, StandaloneSearchBox } from "@react-google-maps/api";
-import GooglePlacesAutocomplete from "react-google-places-autocomplete";
+import usePlacesAutocomplete, {
+  getGeocode,
+  getLatLng,
+} from "use-places-autocomplete";
+import {
+  Combobox,
+  ComboboxInput,
+  ComboboxPopover,
+  ComboboxList,
+  ComboboxOption,
+} from "@reach/combobox";
+import "@reach/combobox/styles.css";
+import { useLoaderData } from "react-router-dom";
 
 const DB_EXPENSES_FOLDER_NAME = "expenses";
 const STORAGE_EXPENSES_FOLDER_NAME = "receiptPhoto";
@@ -20,6 +32,7 @@ export default function InputExpenses({
   setUserLocation,
   mapRef,
   setMapRef,
+  // isLoaded,
 }) {
   const [show, setShow] = useState(false);
   const [category, setCategory] = useState("");
@@ -33,7 +46,7 @@ export default function InputExpenses({
   const [receiptFile, setReceiptFile] = useState("");
   const [receiptFileValue, setReceiptFileValue] = useState("");
 
-  const [selectedLocation, setSelectedLocation] = useState();
+  const [selected, setSelected] = useState();
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -92,16 +105,48 @@ export default function InputExpenses({
     handleNewInput();
   };
 
-  useEffect(() => {
-    if (selectedLocation) {
-      const newLocation = {
-        lat: selectedLocation.value.geometry.location.lat(),
-        lng: selectedLocation.value.geometry.location.lng(),
-      };
-      setUserLocation(newLocation);
-      mapRef.panTo(newLocation);
-    }
-  }, [selectedLocation, mapRef]);
+  // code to cause map to pan to selected location
+  // useEffect(() => {
+  //   if (selected) {
+  //     const newLocation = {
+  //       lat: selected.value.geometry.location.lat(),
+  //       lng: selected.value.geometry.location.lng(),
+  //     };
+  //     setUserLocation(newLocation);
+  //     mapRef.panTo(newLocation);
+  //   }
+  // }, [selected, mapRef]);
+
+  // code which causes an input field to try to autocomplete a user's search to return a place
+  const PlacesAutocomplete = ({ setSelected }) => {
+    const {
+      ready,
+      value,
+      setValue,
+      suggestions: { status, data },
+      clearSuggestions,
+    } = usePlacesAutocomplete();
+
+    return (
+      <Combobox>
+        <ComboboxInput
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+          disabled={!ready}
+          className="combobox-input"
+          placeholder="Search an address"
+        />
+        <ComboboxPopover>
+          <ComboboxList>
+            {status === "OK" &&
+              data.map(({ place_id, description }) => (
+                <ComboboxOption key={place_id} value={description} />
+              ))}
+          </ComboboxList>
+        </ComboboxPopover>
+      </Combobox>
+    );
+  };
 
   return (
     <div>
@@ -172,7 +217,7 @@ export default function InputExpenses({
               />
             </InputGroup>
 
-            <Form.Group
+            {/* <Form.Group
               className="mb-3"
               controlId="exampleForm.ControlTextarea1"
             >
@@ -181,13 +226,15 @@ export default function InputExpenses({
                 apiKey={process.env.REACT_APP_API_KEY}
                 selectProps={{
                   value: userLocation,
-                  onChange: setSelectedLocation,
+                  onChange: setSelected,
                 }}
                 initialValue={
                   userLocation ? `${userLocation.lat}, ${userLocation.lng}` : ""
                 }
               />
-            </Form.Group>
+            </Form.Group> */}
+
+            {/* {true ? <PlacesAutocomplete setSelected={setSelected} /> : null} */}
 
             <Form.Group
               className="mb-3"

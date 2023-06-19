@@ -2,13 +2,24 @@
 
 import {
   GoogleMap,
-  InfoWindow,
   InfoWindowF,
   MarkerF,
   useLoadScript,
 } from "@react-google-maps/api";
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import "../App.css";
+// import usePlacesAutocomplete, {
+//   getGeocode,
+//   getLatLng,
+// } from "use-places-autocomplete";
+// import {
+//   Combobox,
+//   ComboboxInput,
+//   ComboboxPopover,
+//   ComboboxList,
+//   ComboboxOption,
+// } from "@reach/combobox";
+// import "@reach/combobox/styles.css";
 
 const Singapore = { lat: 1.3521, lng: 103.8198 };
 
@@ -52,46 +63,22 @@ function getDollarAmountCategory(dollarAmount) {
   return 3;
 }
 
-const Map = ({
+export default function Map({
   profilePhotoURL,
   userLocation,
   setUserLocation,
   mapRef,
   setMapRef,
   onMapLoad,
-}) => {
-  const { isLoaded } = useLoadScript({
-    googleMapsApiKey: process.env.REACT_APP_API_KEY,
-  });
-  // const [mapRef, setMapRef] = useState();
+  // isLoaded,
+}) {
   const [isOpen, setIsOpen] = useState(false);
   const [infoWindowData, setInfoWindowData] = useState();
+  // const [mapRef, setMapRef] = useState();
   // const [userLocation, setUserLocation] = useState(null);
 
-  // when functional component is loaded, ask for user's location
-  // useEffect(() => {
-  //   if (navigator.geolocation) {
-  //     navigator.geolocation.getCurrentPosition(
-  //       (position) => {
-  //         const currentLocation = {
-  //           lat: position.coords.latitude,
-  //           lng: position.coords.longitude,
-  //         };
-  //         setUserLocation(currentLocation);
-  //         if (mapRef) {
-  //           mapRef.panTo(currentLocation);
-  //         }
-  //       },
-  //       (error) => {
-  //         console.error(error);
-  //       }
-  //     );
-  //   } else {
-  //     console.error("Geolocation is not supported by this browser.");
-  //   }
-  // }, [mapRef]);
-
   const center = useMemo(() => userLocation, []);
+  // const [selected, setSelected] = useState();
 
   // when map loads, determine the boundaries based on the location of the markers
   // const onMapLoad = (map) => {
@@ -112,52 +99,88 @@ const Map = ({
     setIsOpen(true);
   };
 
+  // const PlacesAutocomplete = ({ setSelected }) => {
+  //   const {
+  //     ready,
+  //     value,
+  //     setValue,
+  //     suggestions: { status, data },
+  //     clearSuggestions,
+  //   } = usePlacesAutocomplete();
+
+  //   return (
+  //     <Combobox>
+  //       <ComboboxInput
+  //         value={value}
+  //         onChange={(e) => setValue(e.target.value)}
+  //         disabled={!ready}
+  //         className="combobox-input"
+  //         placeholder="Search an address"
+  //       />
+  //       <ComboboxPopover>
+  //         <ComboboxList>
+  //           {status === "OK" &&
+  //             data.map(({ place_id, description }) => (
+  //               <ComboboxOption key={place_id} value={description} />
+  //             ))}
+  //         </ComboboxList>
+  //       </ComboboxPopover>
+  //     </Combobox>
+  //   );
+  // };
+
+  const { isLoaded } = useLoadScript({
+    googleMapsApiKey: process.env.REACT_APP_API_KEY,
+    // libraries: ["places"],
+  });
+
   return (
     <div className="map-container">
-      {/* <button onClick={getUserLocation}>Get User Location</button> */}
       {!isLoaded || !userLocation ? (
         <h1>Loading...</h1>
       ) : (
-        <GoogleMap
-          mapContainerClassName="map"
-          // hide the map and satellite overlay
-          options={{ mapTypeControl: false }}
-          onLoad={onMapLoad}
-          // when map is clicked, change setIsOpen state to false
-          onClick={() => setIsOpen(false)}
-          center={center}
-          zoom={15}
-        >
-          {/* code to render markers */}
-          {markers.map(({ lat, lng, dollarAmount }, index) => (
+        <div>
+          {" "}
+          <GoogleMap
+            mapContainerClassName="map"
+            // hide the map and satellite overlay
+            options={{ mapTypeControl: false }}
+            onLoad={onMapLoad}
+            // when map is clicked, change setIsOpen state to false
+            onClick={() => setIsOpen(false)}
+            center={center}
+            zoom={15}
+          >
+            {/* code to render markers */}
+            {markers.map(({ lat, lng, dollarAmount }, index) => (
+              <MarkerF
+                key={index}
+                position={{ lat, lng }}
+                onClick={() => {
+                  handleMarkerClick(index, lat, lng, dollarAmount);
+                }}
+                icon={markerImages[getDollarAmountCategory(dollarAmount)]}
+              >
+                {/* if marker is clicked, isOpen is set to true and infoWindow is rendered with dollar amount */}
+                {isOpen && infoWindowData?.id === index && (
+                  <InfoWindowF
+                    onCloseClick={() => {
+                      setIsOpen(false);
+                    }}
+                  >
+                    <h4>{infoWindowData.dollarAmount}</h4>
+                  </InfoWindowF>
+                )}
+              </MarkerF>
+            ))}
             <MarkerF
-              key={index}
-              position={{ lat, lng }}
-              onClick={() => {
-                handleMarkerClick(index, lat, lng, dollarAmount);
-              }}
-              icon={markerImages[getDollarAmountCategory(dollarAmount)]}
-            >
-              {/* if marker is clicked, isOpen is set to true and infoWindow is rendered with dollar amount */}
-              {isOpen && infoWindowData?.id === index && (
-                <InfoWindowF
-                  onCloseClick={() => {
-                    setIsOpen(false);
-                  }}
-                >
-                  <h4>{infoWindowData.dollarAmount}</h4>
-                </InfoWindowF>
-              )}
-            </MarkerF>
-          ))}
-          <MarkerF
-            position={userLocation}
-            // onClick={mapRef?.panTo(userLocation)}
-          ></MarkerF>
-        </GoogleMap>
+              position={userLocation}
+              // onClick={mapRef?.panTo(userLocation)}
+            ></MarkerF>
+          </GoogleMap>
+          {/* <PlacesAutocomplete setSelected={setSelected} /> */}
+        </div>
       )}
     </div>
   );
-};
-
-export default Map;
+}

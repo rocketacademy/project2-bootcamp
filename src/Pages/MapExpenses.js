@@ -2,7 +2,8 @@ import "../App.css";
 import Map from "../Components/Map";
 import ListExpenses from "../Components/ListExpenses";
 import Welcome from "./Welcome";
-import { useState, useMemo, useEffect } from "react";
+import { useState, useEffect } from "react";
+import { useLoadScript } from "@react-google-maps/api";
 
 export default function MapExpenses({ isLoggedIn, uid, profilePhotoURL }) {
   console.log(isLoggedIn);
@@ -43,6 +44,11 @@ export default function MapExpenses({ isLoggedIn, uid, profilePhotoURL }) {
     // map.fitBounds(bounds);
   };
 
+  // const { isLoaded } = useLoadScript({
+  //   googleMapsApiKey: process.env.REACT_APP_API_KEY,
+  //   libraries: ["places"],
+  // });
+
   return (
     <div>
       {" "}
@@ -55,11 +61,15 @@ export default function MapExpenses({ isLoggedIn, uid, profilePhotoURL }) {
             mapRef={mapRef}
             setMapRef={setMapRef}
             onMapLoad={onMapLoad}
+            // isLoaded={isLoaded}
           />
           <ListExpenses
             uid={uid}
             userLocation={userLocation}
             setUserLocation={setUserLocation}
+            mapRef={mapRef}
+            setMapRef={setMapRef}
+            // isLoaded={isLoaded}
           />
         </div>
       ) : (
