@@ -13,30 +13,6 @@ import { onValue, ref, off } from "firebase/database";
 
 const DB_EXPENSES_FOLDER_NAME = "expenses";
 
-// the json data which will be mapped out to render the markers
-const markers = [
-  {
-    lat: 1.3521,
-    lng: 103.8198,
-    amount: 5,
-  },
-  {
-    lat: 1.2806,
-    lng: 103.8505,
-    amount: 50,
-  },
-  {
-    lat: 1.2903,
-    lng: 103.8515,
-    amount: 500,
-  },
-  {
-    lat: 1.3187,
-    lng: 103.8444,
-    amount: 5000,
-  },
-];
-
 // paths to icons to mark expenses on the map
 const markerImages = [
   "https://i.imgur.com/ovmoJoo.png",
@@ -56,13 +32,24 @@ function getDollarAmountCategory(dollarAmount) {
 export default function Map({ uid }) {
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: process.env.REACT_APP_API_KEY,
-    // libraries: ["places"],
   });
   const [mapRef, setMapRef] = useState();
   const [isOpen, setIsOpen] = useState(false);
   const [infoWindowData, setInfoWindowData] = useState();
   const [userLocation, setUserLocation] = useState(null);
   const [expenses, setExpenses] = useState([]);
+
+  // when map loads, determine the boundaries based on the location of the markers
+  const onMapLoad = (map) => {
+    setMapRef(map);
+    if (userLocation) {
+      map.panTo(userLocation);
+    } else {
+      const bounds = new google.maps.LatLngBounds();
+      expenses?.forEach(({ lat, lng }) => bounds.extend({ lat, lng }));
+      map.fitBounds(bounds);
+    }
+  };
 
   // Get user's location and to recenter the map based on that location when map is rendered
   useEffect(() => {
@@ -74,6 +61,7 @@ export default function Map({ uid }) {
             lng: position.coords.longitude,
           };
           setUserLocation(currentLocation);
+          console.log(`Current location: ${userLocation}`);
           if (mapRef) {
             mapRef.panTo(currentLocation);
           }
@@ -105,20 +93,9 @@ export default function Map({ uid }) {
     // Clean up the listener when the component unmounts
     return () => {
       off(expRef);
+      setExpenses([]);
     };
-  }, []);
-
-  // when map loads, determine the boundaries based on the location of the markers
-  const onMapLoad = (map) => {
-    setMapRef(map);
-    if (userLocation) {
-      map.panTo(userLocation);
-    } else {
-      const bounds = new google.maps.LatLngBounds();
-      markers?.forEach(({ lat, lng }) => bounds.extend({ lat, lng }));
-      map.fitBounds(bounds);
-    }
-  };
+  }, [uid]);
 
   // when a marker is clicked, pan the map to the marker location
   const handleMarkerClick = (
@@ -149,47 +126,50 @@ export default function Map({ uid }) {
           onLoad={onMapLoad}
           // when map is clicked, change setIsOpen state to false
           onClick={() => setIsOpen(false)}
+          zoom={15}
         >
           {/* code to render markers */}
-          {expenses.map(
-            (
-              { lat, lng, amount, currency, category, description, date },
-              index
-            ) => (
-              <MarkerF
-                key={index}
-                position={{ lat, lng }}
-                onClick={() => {
-                  handleMarkerClick(
-                    index,
-                    lat,
-                    lng,
-                    amount,
-                    currency,
-                    category,
-                    description,
-                    date
-                  );
-                }}
-                icon={markerImages[getDollarAmountCategory(amount)]}
-              >
-                {/* if marker is clicked, isOpen is set to true and infoWindow is rendered with dollar amount */}
-                {isOpen && infoWindowData?.id === index && (
-                  <InfoWindowF
-                    onCloseClick={() => {
-                      setIsOpen(false);
+          {uid !== ""
+            ? expenses.map(
+                (
+                  { lat, lng, amount, currency, category, description, date },
+                  index
+                ) => (
+                  <MarkerF
+                    key={index}
+                    position={{ lat, lng }}
+                    onClick={() => {
+                      handleMarkerClick(
+                        index,
+                        lat,
+                        lng,
+                        amount,
+                        currency,
+                        category,
+                        description,
+                        date
+                      );
                     }}
+                    icon={markerImages[getDollarAmountCategory(amount)]}
                   >
-                    <p>
-                      {`${infoWindowData.currency} ${infoWindowData.amount} on ${infoWindowData.category}`}
-                      <br />
-                      <em>{`(${infoWindowData.date}: ${infoWindowData.description})`}</em>
-                    </p>
-                  </InfoWindowF>
-                )}
-              </MarkerF>
-            )
-          )}
+                    {/* if marker is clicked, isOpen is set to true and infoWindow is rendered with dollar amount */}
+                    {isOpen && infoWindowData?.id === index && (
+                      <InfoWindowF
+                        onCloseClick={() => {
+                          setIsOpen(false);
+                        }}
+                      >
+                        <p>
+                          {`${infoWindowData.currency} ${infoWindowData.amount} on ${infoWindowData.category}`}
+                          <br />
+                          <em>{`(${infoWindowData.date}: ${infoWindowData.description})`}</em>
+                        </p>
+                      </InfoWindowF>
+                    )}
+                  </MarkerF>
+                )
+              )
+            : null}
           <MarkerF position={userLocation}></MarkerF>
         </GoogleMap>
       )}
