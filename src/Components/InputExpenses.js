@@ -10,6 +10,7 @@ import {
 } from "firebase/storage";
 import { GoogleMap, MarkerF } from "@react-google-maps/api";
 import Geocode from "react-geocode";
+import currencies from "./Currencies";
 
 const DB_EXPENSES_FOLDER_NAME = "expenses";
 const STORAGE_EXPENSES_FOLDER_NAME = "receiptPhoto";
@@ -25,7 +26,6 @@ export default function InputExpenses({ uid }) {
   const [lng, setLng] = useState(0);
   const [lat, setLat] = useState(0);
   const [address, setAddress] = useState("");
-  const [currencies, setCurrencies] = useState([]);
 
   const [date, setDate] = useState(currentDate);
   const [receiptFile, setReceiptFile] = useState("");
@@ -101,38 +101,6 @@ export default function InputExpenses({ uid }) {
     handleNewInput();
   };
 
-  // Function to fetch currency data from an API or data source
-  const fetchCurrencyData = async () => {
-    // Make an API request or fetch the currency data from a data source
-    // Example:
-    const response = await fetch(
-      "https://v6.exchangerate-api.com/v6/" +
-        process.env.REACT_APP_EXCHANGE_API_KEY +
-        "/symbols"
-    );
-    const data = await response.json();
-
-    return data;
-  };
-
-  // Component
-  const CurrencySelection = () => {
-    useEffect(() => {
-      // Fetch currency data and update the state
-      fetchCurrencyData()
-        .then((data) => {
-          // Extract the currency codes from the data
-          const currencyCodes = data.map((currency) => currency.code);
-
-          // Update the currencies state with the list of currency codes
-          setCurrencies(currencyCodes);
-        })
-        .catch((error) => {
-          console.error("Failed to fetch currency data:", error);
-        });
-    }, []);
-  };
-
   return (
     <div>
       <Button
@@ -190,13 +158,12 @@ export default function InputExpenses({ uid }) {
                 <option value="" disabled>
                   Currency
                 </option>
-                {currencies.map((currencyCode) => (
-                  <option key={currencyCode} value={currencyCode}>
-                    {currencyCode}
+                {currencies.map((currency) => (
+                  <option key={currency.code} value={currency.code}>
+                    {currency.code}
                   </option>
                 ))}
               </Form.Select>
-              <InputGroup.Text>$</InputGroup.Text>
               <Form.Control
                 type="number"
                 placeholder="0"
@@ -204,21 +171,6 @@ export default function InputExpenses({ uid }) {
                 onChange={(e) => setAmount(e.target.value)}
               />
             </InputGroup>
-
-            {/* <Form.Group
-              className="mb-3"
-              controlId="exampleForm.ControlTextarea1"
-            >
-              <Form.Label>Location</Form.Label>
-              <Form.Control
-                as="textarea"
-                rows={1}
-                type="text"
-                placeholder="Location"
-                value={location}
-                onChange={(e) => setLocation(e.target.value)}
-              />
-            </Form.Group> */}
 
             <Form.Group className="form-group">
               <Form.Label className="compact-label">Location</Form.Label>
