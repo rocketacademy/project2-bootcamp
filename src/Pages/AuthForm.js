@@ -74,7 +74,7 @@ export default function AuthForm({ isLoggedIn, username }) {
                 >
                   Sign In
                 </Button>
-                <div className="text-center">
+                <div className="text-center" style={{ marginTop: "5px" }}>
                   <Link to="/signUp">
                     Don't have an account? Create one here!
                   </Link>

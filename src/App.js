@@ -85,81 +85,82 @@ const App = () => {
   return (
     <>
       <Navbar bg="light" fixed="top">
-        <Container>
-          <Navbar.Brand href="#home">
-            <img
-              alt="Money Stack Emoji"
-              src="https://em-content.zobj.net/thumbs/240/apple/354/dollar-banknote_1f4b5.png"
-              width="30"
-              height="30"
-              className="d-inline-block align-top"
-            />{" "}
-            Dollar Direction
-          </Navbar.Brand>
-          <Navbar.Toggle aria-controls="basic-navbar-nav" />
-          <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="mr-auto">
+        <Container
+          style={{ maxWidth: "1025px", paddingLeft: "0", paddingRight: "0" }}
+        >
+          <Container>
+            <Navbar.Brand href="#home">
+              <img
+                alt="Money Stack Emoji"
+                src="https://em-content.zobj.net/thumbs/240/apple/354/dollar-banknote_1f4b5.png"
+                width="30"
+                height="30"
+                className="d-inline-block align-top"
+              />{" "}
+              Dollar Direction
+            </Navbar.Brand>
+          </Container>
+          <Container style={{ display: "flex", justifyContent: "flex-end" }}>
+            <Nav className="ml-auto" style={{ fontSize: "1.25rem" }}>
               <Nav.Link as={Link} to="/mapexpenses">
-                MapExpenses
+                Home
               </Nav.Link>
-              <Nav.Link as={Link} to="/dashboard">
-                Dashboard
-              </Nav.Link>
-              <Navbar.Collapse id="basic-navbar-nav">
-                <Nav className="ml-auto">
-                  <NavDropdown
-                    title={
-                      profilePhotoURL ? (
-                        <img
-                          src={profilePhotoURL}
-                          alt="user"
-                          width="30"
-                          height="30"
-                        />
-                      ) : (
-                        <img
-                          src={patchQuestionFillSvg}
-                          alt="user"
-                          width="30"
-                          height="30"
-                        />
-                      )
-                    }
-                    id="basic-nav-dropdown"
-                  >
-                    {isLoggedIn ? (
-                      <>
-                        <NavDropdown.Item href="/profile">
-                          Profile
-                        </NavDropdown.Item>
-                        <NavDropdown.Item
-                          onClick={(e) => {
-                            setIsLoggedIn(false);
-                            signOut(auth);
-                            setUser({});
-                            setProfilePhotoURL("");
-                            setUID("");
-                            navigate("/mapexpenses");
-                          }}
-                        >
-                          Logout
-                        </NavDropdown.Item>
-                      </>
-                    ) : (
-                      <>
-                        <NavDropdown.Item href="/authform">
-                          SignIn
-                        </NavDropdown.Item>
-                        <NavDropdown.Item href="/signup">
-                          SignUp
-                        </NavDropdown.Item>
-                      </>
-                    )}
-                  </NavDropdown>
-                </Nav>
-              </Navbar.Collapse>
+              {uid ? (
+                <Nav.Link as={Link} to="/dashboard">
+                  Dashboard
+                </Nav.Link>
+              ) : null}
+              <NavDropdown
+                title={
+                  profilePhotoURL ? (
+                    <img
+                      class="rounded-circle"
+                      src={profilePhotoURL}
+                      alt="user"
+                      width="30"
+                      height="30"
+                    />
+                  ) : (
+                    <img
+                      src={patchQuestionFillSvg}
+                      alt="user"
+                      width="30"
+                      height="30"
+                    />
+                  )
+                }
+                id="basic-nav-dropdown"
+              >
+                {isLoggedIn ? (
+                  <>
+                    <NavDropdown.Item href="/profile">Profile</NavDropdown.Item>
+                    <NavDropdown.Item
+                      onClick={(e) => {
+                        setIsLoggedIn(false);
+                        signOut(auth);
+                        setUser({});
+                        setProfilePhotoURL("");
+                        setUID("");
+                        navigate("/mapexpenses");
+                      }}
+                    >
+                      Log Out
+                    </NavDropdown.Item>
+                  </>
+                ) : (
+                  <>
+                    <NavDropdown.Item href="/authform">
+                      Sign In
+                    </NavDropdown.Item>
+                    <NavDropdown.Item href="/signup">Sign Up</NavDropdown.Item>
+                  </>
+                )}
+              </NavDropdown>
             </Nav>
-          </Navbar.Collapse>
+            {/* <Navbar.Toggle aria-controls="basic-navbar-nav" />
+            <Navbar.Collapse id="basic-navbar-nav">
+            </Navbar.Collapse> */}
+          </Container>
         </Container>
       </Navbar>
       <Routes>

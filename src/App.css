@@ -19,14 +19,16 @@
   max-width: 1025px;
 
   display: grid;
+  grid-template-rows: 1.5fr 1fr;
   /* flex-direction: column;
   align-items: center;
   justify-content: center; */
 }
 
-@media (min-width: 600px) {
+@media (min-width: 700px) {
   .App {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 2fr 1fr;
+    grid-template-rows: 1fr;
   }
 }
 
@@ -47,17 +49,17 @@
   margin-top: 1svh;
   padding: 5svh;
   width: 100%;
-  background-color: rgb(107, 98, 98);
-  color: white;
+  background-color: #e8e8e8;
+  color: black;
 }
 
 .temporary-box {
   min-height: 100svh;
   /* max-width: 1025px; */
-  font-size: calc(10px + 2vmin);
+  font-size: 1.25rem;
 
-  color: rgb(255, 255, 255);
-  background-color: rgb(137, 179, 137);
+  color: black;
+  background-color: #e8e8e8;
 
   border-width: 1rem;
   border-color: red;

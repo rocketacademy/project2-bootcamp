@@ -15,12 +15,17 @@ import currencies from "./Currencies";
 const DB_EXPENSES_FOLDER_NAME = "expenses";
 const STORAGE_EXPENSES_FOLDER_NAME = "receiptPhoto";
 
-export default function InputExpenses({ uid }) {
+export default function InputExpenses({
+  uid,
+  expenseCounter,
+  setExpenseCounter,
+  userLocation,
+}) {
   const [show, setShow] = useState(false);
   const [category, setCategory] = useState("");
   const [currency, setCurrency] = useState("SGD");
   const [amount, setAmount] = useState(0);
-  const [description, setDescription] = useState("");
+  const [description, setDescription] = useState("-");
   const currentDate = new Date().toISOString().substring(0, 10); // Get current date in yyyy-MM-dd format
   const [lat, setLat] = useState(0);
   const [lng, setLng] = useState(0);
@@ -31,30 +36,12 @@ export default function InputExpenses({ uid }) {
   const [receiptFileValue, setReceiptFileValue] = useState("");
 
   useEffect(() => {
-    // Function to get user's location
-    const getUserLocation = () => {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            const { latitude, longitude } = position.coords;
-            // Set the user's location to the 'address' state
-            setAddress("Current Location");
-            // setAddress(`Latitude: ${latitude}, Longitude: ${longitude}`);
-            setLat(latitude);
-            setLng(longitude);
-          },
-          (error) => {
-            console.error("Error getting user location:", error);
-          }
-        );
-      } else {
-        console.error("Geolocation is not supported by this browser.");
-      }
-    };
-
-    // Call the function to get user's location on component mount
-    getUserLocation();
-  }, []);
+    if (userLocation) {
+      setLat(userLocation.lat);
+      setLng(userLocation.lng);
+      setAddress("Current Location");
+    }
+  }, [expenseCounter]);
 
   const getLatLng = () =>
     Geocode.fromAddress(address, process.env.REACT_APP_API_KEY).then(
@@ -77,7 +64,7 @@ export default function InputExpenses({ uid }) {
     setCategory("");
     setAmount(0);
     setAddress("");
-    setDescription("");
+    setDescription("-");
     setDate(currentDate);
     setReceiptFile("");
     setReceiptFileValue("");
@@ -126,13 +113,18 @@ export default function InputExpenses({ uid }) {
 
     handleClose();
     handleNewInput();
+    setExpenseCounter((prevExpenseCounter) => prevExpenseCounter + 1);
+  };
+
+  const handleUseLocation = (e) => {
+    setExpenseCounter((prevExpenseCounter) => prevExpenseCounter + 1);
   };
 
   return (
     <div>
       <Button
         className="rounded-rectangle "
-        variant="outline-info"
+        variant="outline-dark"
         onClick={handleShow}
       >
         + Add Expense
@@ -165,11 +157,12 @@ export default function InputExpenses({ uid }) {
               <option value="" disabled>
                 Category
               </option>
-              <option value="🍔Food">🍔Food</option>
-              <option value="💸Bills">💸Bills</option>
-              <option value="🚗Transport">🚗Transport</option>
-              <option value="🏠Home">🏠Home</option>
-              <option value="Others">Others</option>
+              <option value="🍔 Food">🍔 Food</option>
+              <option value="💸 Bills">💸 Bills</option>
+              <option value="🚗 Transport">🚗 Transport</option>
+              <option value="🏠 Home">🏠 Home</option>
+              <option value="🌏 Holiday">🌏 Holiday</option>
+              <option value="🤷 Others">🤷 Others</option>
             </Form.Select>
             <br />
 
@@ -302,7 +295,7 @@ export default function InputExpenses({ uid }) {
           <Button
             variant="primary"
             onClick={handleSubmit}
-            disabled={category === "" && amount === 0}
+            disabled={category === "" || amount === 0}
           >
             Add item
           </Button>

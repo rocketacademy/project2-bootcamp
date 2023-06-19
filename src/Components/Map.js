@@ -29,14 +29,13 @@ function getDollarAmountCategory(dollarAmount) {
   return 3;
 }
 
-export default function Map({ uid }) {
+export default function Map({ uid, expenseCounter, userLocation }) {
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: process.env.REACT_APP_API_KEY,
   });
   const [mapRef, setMapRef] = useState();
   const [isOpen, setIsOpen] = useState(false);
   const [infoWindowData, setInfoWindowData] = useState();
-  const [userLocation, setUserLocation] = useState(null);
   const [expenses, setExpenses] = useState([]);
   const center = useMemo(() => ({ lat: 1.3521, lng: 103.8198 }), []);
 
@@ -45,32 +44,7 @@ export default function Map({ uid }) {
     setMapRef(map);
   };
 
-  // Get user's location and to recenter the map based on that location when map is rendered
-  useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const currentLocation = {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-          };
-          setUserLocation(currentLocation);
-
-          // if (mapRef) {
-          //   mapRef.panTo(currentLocation);
-          //   mapRef.setZoom(15);
-          // }
-        },
-        (error) => {
-          console.error(error);
-        }
-      );
-    } else {
-      console.error("Geolocation is not supported by this browser.");
-    }
-  });
-
-  const getLatestExpLocation = (expenses) => {
+  const getLatestExpLocation = () => {
     const array = Object.values(expenses);
     const lastItem = array[array.length - 1];
     const lat = lastItem.lat;
@@ -92,7 +66,7 @@ export default function Map({ uid }) {
         console.log(expensesArray);
         setExpenses(expensesArray);
       }
-      mapRef.panTo(getLatestExpLocation(expenses));
+      mapRef.panTo(getLatestExpLocation());
       console.log(expenses);
     });
 
@@ -101,7 +75,7 @@ export default function Map({ uid }) {
       off(expRef);
       setExpenses([]);
     };
-  }, [uid, mapRef]);
+  }, [uid, mapRef, expenseCounter]);
 
   // when a marker is clicked, pan the map to the marker location
   const handleMarkerClick = (
