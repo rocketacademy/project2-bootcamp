@@ -14,17 +14,20 @@ export default function ListExpenses({
       <div
         style={{
           display: "grid",
-          padding: "5px",
+          // padding: "5px",
           gridRow: "auto",
           overflow: "scroll",
+          fontSize: "1.25rem",
+          marginTop: "20px",
         }}
       >
         {expenses.map((item) => (
           <Card key={item.id}>
             <Card.Body>
-              <Card.Title>{item.category}</Card.Title>
-              <Card.Text>{item.amount}</Card.Text>
-              <Card.Text>{item.description}</Card.Text>
+              <Card.Subtitle>
+                {item.category}: {item.amount}
+              </Card.Subtitle>
+              <Card.Subtitle>{item.description}</Card.Subtitle>
             </Card.Body>
           </Card>
         ))}
