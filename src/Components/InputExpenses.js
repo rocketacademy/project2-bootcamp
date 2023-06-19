@@ -104,13 +104,14 @@ export default function InputExpenses({ uid }) {
   return (
     <div>
       <Button
-        className="rounded-circle "
+        className="rounded-circle"
         variant="outline-info"
         onClick={handleShow}
+        style={{ margin: "10px" }}
+        title="Click to add new expenses"
       >
         +
       </Button>
-
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>Input Expenses</Modal.Title>
@@ -142,6 +143,7 @@ export default function InputExpenses({ uid }) {
               <option value="💸Bills">💸Bills</option>
               <option value="🚗Transport">🚗Transport</option>
               <option value="🏠Home">🏠Home</option>
+              <option value="🎬Entertainment">🎬Entertainment</option>
               <option value="Others">Others</option>
             </Form.Select>
             <br />
