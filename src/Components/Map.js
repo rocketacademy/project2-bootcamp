@@ -6,7 +6,7 @@ import {
   MarkerF,
   useLoadScript,
 } from "@react-google-maps/api";
-import { useState, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import "../App.css";
 
 const Singapore = { lat: 1.3521, lng: 103.8198 };
@@ -63,15 +63,42 @@ export default function Map() {
   const [mapRef, setMapRef] = useState();
   const [isOpen, setIsOpen] = useState(false);
   const [infoWindowData, setInfoWindowData] = useState();
+  const [userLocation, setUserLocation] = useState(null);
   // const center = useMemo(() => Singapore, []);
   // const center = useMemo(() => userLocation, []);
+
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const currentLocation = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          };
+          setUserLocation(currentLocation);
+          if (mapRef) {
+            mapRef.panTo(currentLocation);
+          }
+        },
+        (error) => {
+          console.error(error);
+        }
+      );
+    } else {
+      console.error("Geolocation is not supported by this browser.");
+    }
+  }, [mapRef]);
 
   // when map loads, determine the boundaries based on the location of the markers
   const onMapLoad = (map) => {
     setMapRef(map);
-    const bounds = new google.maps.LatLngBounds();
-    markers?.forEach(({ lat, lng }) => bounds.extend({ lat, lng }));
-    map.fitBounds(bounds);
+    if (userLocation) {
+      map.panTo(userLocation);
+    } else {
+      const bounds = new google.maps.LatLngBounds();
+      markers?.forEach(({ lat, lng }) => bounds.extend({ lat, lng }));
+      map.fitBounds(bounds);
+    }
   };
 
   // when a marker is clicked, pan the map to the marker location
@@ -117,6 +144,7 @@ export default function Map() {
               )}
             </MarkerF>
           ))}
+          <MarkerF position={userLocation}></MarkerF>
         </GoogleMap>
       )}
     </div>
