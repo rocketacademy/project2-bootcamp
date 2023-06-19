@@ -31,6 +31,29 @@ export default function InputExpenses({ uid }) {
   const [receiptFile, setReceiptFile] = useState("");
   const [receiptFileValue, setReceiptFileValue] = useState("");
 
+  useEffect(() => {
+    // Function to get user's location
+    const getUserLocation = () => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const { latitude, longitude } = position.coords;
+            // Set the user's location to the 'address' state
+            setAddress(`Latitude: ${latitude}, Longitude: ${longitude}`);
+          },
+          (error) => {
+            console.error("Error getting user location:", error);
+          }
+        );
+      } else {
+        console.error("Geolocation is not supported by this browser.");
+      }
+    };
+
+    // Call the function to get user's location on component mount
+    getUserLocation();
+  }, []);
+
   const getLatLng = () =>
     Geocode.fromAddress(address, process.env.REACT_APP_API_KEY).then(
       (response) => {
