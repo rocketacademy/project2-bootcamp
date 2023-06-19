@@ -59,6 +59,7 @@ export default function Map() {
   // onMapLoad
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: process.env.REACT_APP_API_KEY,
+    // libraries: ["places"],
   });
   const [mapRef, setMapRef] = useState();
   const [isOpen, setIsOpen] = useState(false);
