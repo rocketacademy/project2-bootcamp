@@ -72,6 +72,10 @@ export default function Map({
   onMapLoad,
   // isLoaded,
 }) {
+  const { isLoaded } = useLoadScript({
+    googleMapsApiKey: process.env.REACT_APP_API_KEY,
+    libraries: ["places"],
+  });
   const [isOpen, setIsOpen] = useState(false);
   const [infoWindowData, setInfoWindowData] = useState();
   // const [mapRef, setMapRef] = useState();
@@ -128,11 +132,6 @@ export default function Map({
   //     </Combobox>
   //   );
   // };
-
-  const { isLoaded } = useLoadScript({
-    googleMapsApiKey: process.env.REACT_APP_API_KEY,
-    // libraries: ["places"],
-  });
 
   return (
     <div className="map-container">
