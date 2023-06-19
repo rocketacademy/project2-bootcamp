@@ -1,5 +1,5 @@
 import "../App.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button, Form, Modal, InputGroup, Col } from "react-bootstrap";
 import { realTimeDatabase, storage } from "../firebase";
 import { push, ref, set } from "firebase/database";
@@ -25,6 +25,7 @@ export default function InputExpenses({ uid }) {
   const [lng, setLng] = useState(0);
   const [lat, setLat] = useState(0);
   const [address, setAddress] = useState("");
+  const [currencies, setCurrencies] = useState([]);
 
   const [date, setDate] = useState(currentDate);
   const [receiptFile, setReceiptFile] = useState("");
@@ -100,6 +101,38 @@ export default function InputExpenses({ uid }) {
     handleNewInput();
   };
 
+  // Function to fetch currency data from an API or data source
+  const fetchCurrencyData = async () => {
+    // Make an API request or fetch the currency data from a data source
+    // Example:
+    const response = await fetch(
+      "https://v6.exchangerate-api.com/v6/" +
+        process.env.REACT_APP_EXCHANGE_API_KEY +
+        "/symbols"
+    );
+    const data = await response.json();
+
+    return data;
+  };
+
+  // Component
+  const CurrencySelection = () => {
+    useEffect(() => {
+      // Fetch currency data and update the state
+      fetchCurrencyData()
+        .then((data) => {
+          // Extract the currency codes from the data
+          const currencyCodes = data.map((currency) => currency.code);
+
+          // Update the currencies state with the list of currency codes
+          setCurrencies(currencyCodes);
+        })
+        .catch((error) => {
+          console.error("Failed to fetch currency data:", error);
+        });
+    }, []);
+  };
+
   return (
     <div>
       <Button
@@ -157,13 +190,16 @@ export default function InputExpenses({ uid }) {
                 <option value="" disabled>
                   Currency
                 </option>
-                <option value="SGD">SGD</option>
-                <option value="USD">USD</option>
+                {currencies.map((currencyCode) => (
+                  <option key={currencyCode} value={currencyCode}>
+                    {currencyCode}
+                  </option>
+                ))}
               </Form.Select>
               <InputGroup.Text>$</InputGroup.Text>
               <Form.Control
-                type="text"
-                placeholder="0.00"
+                type="number"
+                placeholder="0"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
               />
