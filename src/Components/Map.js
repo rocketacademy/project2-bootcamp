@@ -6,32 +6,34 @@ import {
   MarkerF,
   useLoadScript,
 } from "@react-google-maps/api";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import "../App.css";
+import { realTimeDatabase } from "../firebase";
+import { onValue, ref, off } from "firebase/database";
 
-const Singapore = { lat: 1.3521, lng: 103.8198 };
+const DB_EXPENSES_FOLDER_NAME = "expenses";
 
 // the json data which will be mapped out to render the markers
 const markers = [
   {
     lat: 1.3521,
     lng: 103.8198,
-    dollarAmount: 5,
+    amount: 5,
   },
   {
     lat: 1.2806,
     lng: 103.8505,
-    dollarAmount: 50,
+    amount: 50,
   },
   {
     lat: 1.2903,
     lng: 103.8515,
-    dollarAmount: 500,
+    amount: 500,
   },
   {
     lat: 1.3187,
     lng: 103.8444,
-    dollarAmount: 5000,
+    amount: 5000,
   },
 ];
 
@@ -51,12 +53,7 @@ function getDollarAmountCategory(dollarAmount) {
   return 3;
 }
 
-export default function Map() {
-  // userLocation,
-  // setUserLocation,
-  // mapRef,
-  // setMapRef
-  // onMapLoad
+export default function Map({ uid }) {
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: process.env.REACT_APP_API_KEY,
     // libraries: ["places"],
@@ -65,9 +62,9 @@ export default function Map() {
   const [isOpen, setIsOpen] = useState(false);
   const [infoWindowData, setInfoWindowData] = useState();
   const [userLocation, setUserLocation] = useState(null);
-  // const center = useMemo(() => Singapore, []);
-  // const center = useMemo(() => userLocation, []);
+  const [expenses, setExpenses] = useState([]);
 
+  // Get user's location and to recenter the map based on that location when map is rendered
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -90,6 +87,27 @@ export default function Map() {
     }
   }, [mapRef]);
 
+  // Retrieve expenses when the map is rendered
+  useEffect(() => {
+    const expRef = ref(realTimeDatabase, `${DB_EXPENSES_FOLDER_NAME}/${uid}`);
+    console.log(`expRef: ${expRef}`);
+    console.log(`pathname: ${DB_EXPENSES_FOLDER_NAME}/${uid}`);
+
+    onValue(expRef, (snapshot) => {
+      const expensesData = snapshot.val();
+      if (expensesData) {
+        const expensesArray = Object.values(expensesData);
+        setExpenses(expensesArray);
+      }
+      console.log(expenses);
+    });
+
+    // Clean up the listener when the component unmounts
+    return () => {
+      off(expRef);
+    };
+  }, []);
+
   // when map loads, determine the boundaries based on the location of the markers
   const onMapLoad = (map) => {
     setMapRef(map);
@@ -103,10 +121,19 @@ export default function Map() {
   };
 
   // when a marker is clicked, pan the map to the marker location
-  const handleMarkerClick = (id, lat, lng, dollarAmount) => {
+  const handleMarkerClick = (
+    id,
+    lat,
+    lng,
+    amount,
+    currency,
+    category,
+    description,
+    date
+  ) => {
     setIsOpen(false);
     mapRef?.panTo({ lat, lng });
-    setInfoWindowData({ id, dollarAmount });
+    setInfoWindowData({ id, amount, currency, category, description, date });
     setIsOpen(true);
   };
 
@@ -124,27 +151,45 @@ export default function Map() {
           onClick={() => setIsOpen(false)}
         >
           {/* code to render markers */}
-          {markers.map(({ lat, lng, dollarAmount }, index) => (
-            <MarkerF
-              key={index}
-              position={{ lat, lng }}
-              onClick={() => {
-                handleMarkerClick(index, lat, lng, dollarAmount);
-              }}
-              icon={markerImages[getDollarAmountCategory(dollarAmount)]}
-            >
-              {/* if marker is clicked, isOpen is set to true and infoWindow is rendered with dollar amount */}
-              {isOpen && infoWindowData?.id === index && (
-                <InfoWindowF
-                  onCloseClick={() => {
-                    setIsOpen(false);
-                  }}
-                >
-                  <h4>{infoWindowData.dollarAmount}</h4>
-                </InfoWindowF>
-              )}
-            </MarkerF>
-          ))}
+          {expenses.map(
+            (
+              { lat, lng, amount, currency, category, description, date },
+              index
+            ) => (
+              <MarkerF
+                key={index}
+                position={{ lat, lng }}
+                onClick={() => {
+                  handleMarkerClick(
+                    index,
+                    lat,
+                    lng,
+                    amount,
+                    currency,
+                    category,
+                    description,
+                    date
+                  );
+                }}
+                icon={markerImages[getDollarAmountCategory(amount)]}
+              >
+                {/* if marker is clicked, isOpen is set to true and infoWindow is rendered with dollar amount */}
+                {isOpen && infoWindowData?.id === index && (
+                  <InfoWindowF
+                    onCloseClick={() => {
+                      setIsOpen(false);
+                    }}
+                  >
+                    <p>
+                      {`${infoWindowData.currency} ${infoWindowData.amount} on ${infoWindowData.category}`}
+                      <br />
+                      <em>{`(${infoWindowData.date}: ${infoWindowData.description})`}</em>
+                    </p>
+                  </InfoWindowF>
+                )}
+              </MarkerF>
+            )
+          )}
           <MarkerF position={userLocation}></MarkerF>
         </GoogleMap>
       )}

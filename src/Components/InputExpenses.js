@@ -96,6 +96,7 @@ export default function InputExpenses({ uid }) {
     const expRef = ref(realTimeDatabase, `${DB_EXPENSES_FOLDER_NAME}/${uid}`);
     const newExpRef = push(expRef);
     const newExpenseKey = newExpRef.key;
+    // data to write to expense reference location
     set(newExpRef, {
       category: category,
       currency: currency,
@@ -105,6 +106,7 @@ export default function InputExpenses({ uid }) {
       description: description,
       date: date,
     });
+
     const expFileRef = storageRef(
       storage,
       ` ${STORAGE_EXPENSES_FOLDER_NAME}/${uid}/${receiptFile.name}`
