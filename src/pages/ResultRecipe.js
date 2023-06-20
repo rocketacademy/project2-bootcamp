@@ -54,15 +54,15 @@ const StyledIngredients = styled.h3`
 function ResultRecipe() {
   const [details, setDetails] = useState({});
   const [activeTab, setActiveTab] = useState("Instructions");
-  let params = useParams();
+  let { recipeName } = useParams();
 
   useEffect(() => {
     const fetchResultRecipe = async () => {
       try {
         const response = await axios.get(
-          `https://api.spoonacular.com/recipes/${params.name}/information?apiKey=${process.env.REACT_APP_API_KEY}`
+          `https://api.spoonacular.com/recipes/${recipeName}/information?apiKey=${process.env.REACT_APP_API_KEY2}`
         );
-        const recipe = response.data.recipes[0];
+        const recipe = response.data;
         setDetails(recipe);
         console.log(recipe);
       } catch (error) {
@@ -71,7 +71,7 @@ function ResultRecipe() {
     };
 
     fetchResultRecipe();
-  }, [params.name]);
+  }, [recipeName]);
 
   return (
     <DetailWrapper>

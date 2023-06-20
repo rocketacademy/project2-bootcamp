@@ -12,9 +12,10 @@ function Trending() {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `https://api.spoonacular.com/recipes/random?apiKey=${process.env.REACT_APP_API_KEY}&number=1`
+          `https://api.spoonacular.com/recipes/random?apiKey=${process.env.REACT_APP_API_KEY2}&number=1`
         );
         console.log(response.data);
+        
         setRecipes(response.data.recipes);
       } catch (error) {
         console.error("Error fetching recipes:", error);

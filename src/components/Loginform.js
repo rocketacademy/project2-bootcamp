@@ -1,10 +1,75 @@
-import React from "react";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../config";
 
 const Login = () => {
+  const [inputEmail, inputEmailValue] = useState("");
+  const [inputPwd, inputPwdValue] = useState("");
+  const navigate = useNavigate();
+
+  const logInWithEmailAndPassword = async (email, password) => {
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+    } catch (err) {
+      console.error(err);
+      alert(err.message);
+    }
+  };
+
+  const handleChange = (e) => {
+    if (e.target.name === "inputEmailValue") {
+      inputEmailValue(e.target.value);
+    } else if (e.target.name === "inputPwdValue") {
+      inputPwdValue(e.target.value);
+    }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    logInWithEmailAndPassword(inputEmail, inputPwd)
+      .then(() => {
+        inputEmailValue("");
+        inputPwdValue("");
+        navigate("/");
+      })
+      .catch((error) => {
+        console.log(error);
+        alert(error.message);
+      });
+  };
+
   return (
-    <div>
-      <h2>You are inside the Login Component</h2>
-      <h4>URL: localhost:3000/auth/login</h4>
+    <div className="centered">
+      <p style={{ textAlign: "right", fontSize: 10 }}>
+        To Register an account. Click <Link to="/auth/register">here</Link>.
+      </p>
+      <h1>Login</h1>
+      <h4>Login using your account</h4>
+      <form className="form" onSubmit={handleSubmit}>
+        <TextField
+          id="outlined-basic"
+          label="Email Address"
+          variant="outlined"
+          type="email"
+          name="inputEmailValue"
+          value={inputEmail}
+          onChange={handleChange}
+        />
+        <TextField
+          label="Password"
+          variant="outlined"
+          type="password"
+          name="inputPwdValue"
+          value={inputPwd}
+          onChange={handleChange}
+        />
+        <Button variant="outlined" type="submit">
+          Login
+        </Button>
+      </form>
     </div>
   );
 };
