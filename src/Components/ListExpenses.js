@@ -7,16 +7,17 @@ export default function ListExpenses({ uid, expenses }) {
   const [selectedExpense, setSelectedExpense] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
-  const handleButtonClick = (expense) => {
+  const handleShowReceiptClick = (expense) => {
     setSelectedExpense(expense);
     setShowModal(true);
   };
 
-  const closeModal = () => {
+  const closeReceiptModal = () => {
     setSelectedExpense(null);
     setShowModal(false);
   };
 
+  // Map through expenses array and render each one as a card
   const allExp = expenses.map((expense) => (
     <div>
       <Card key={expense.key}>
@@ -38,7 +39,7 @@ export default function ListExpenses({ uid, expenses }) {
 
             <Button
               variant="info"
-              onClick={() => handleButtonClick(expense)}
+              onClick={() => handleShowReceiptClick(expense)}
               title="Click to view receipt"
             >
               Show Receipt
@@ -56,7 +57,7 @@ export default function ListExpenses({ uid, expenses }) {
         <InputExpenses uid={uid} />
       </div>
       {allExp}
-      <Modal show={showModal} onHide={closeModal}>
+      <Modal show={showModal} onHide={closeReceiptModal}>
         <Modal.Header closeButton>
           <Modal.Title>Receipt Picture</Modal.Title>
         </Modal.Header>
@@ -70,7 +71,7 @@ export default function ListExpenses({ uid, expenses }) {
           )}
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={closeModal}>
+          <Button variant="secondary" onClick={closeReceiptModal}>
             Close
           </Button>
         </Modal.Footer>
