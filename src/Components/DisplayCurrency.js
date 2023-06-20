@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, Form, Modal, InputGroup, Col } from "react-bootstrap";
+import { Button, Form, Modal, InputGroup } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Typeahead } from "react-bootstrap-typeahead";
 import "react-bootstrap-typeahead/css/Typeahead.css";
@@ -18,8 +18,6 @@ export default function DisplayCurrency({
   const handleClose = () => {
     setShowCurrencyModal(false);
   };
-
-  const handleCurrencyChange = () => {};
 
   const handleSubmit = (e) => {
     e.preventDefault();

@@ -4,7 +4,7 @@ import ListExpenses from "../Components/ListExpenses";
 import Welcome from "./Welcome";
 import { useState, useEffect } from "react";
 import { realTimeDatabase } from "../firebase";
-import { onValue, ref, off } from "firebase/database";
+import { get, ref } from "firebase/database";
 import { useLoadScript } from "@react-google-maps/api";
 
 const DB_EXPENSES_FOLDER_NAME = "expenses";
@@ -20,6 +20,7 @@ export default function MapExpenses({ isLoggedIn, uid }) {
   const [highlighted, setHighlighted] = useState(null);
   const [lat, setLat] = useState(0);
   const [lng, setLng] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Get user's location and assign coordinates to states
   useEffect(() => {
@@ -45,27 +46,27 @@ export default function MapExpenses({ isLoggedIn, uid }) {
 
   // updates expenses array with each additional expense
   useEffect(() => {
-    setExpRef(ref(realTimeDatabase, `${DB_EXPENSES_FOLDER_NAME}/${uid}`));
-    if (expRef) {
-      onValue(expRef, (snapshot) => {
-        const expensesData = snapshot.val();
-        if (expensesData) {
-          const expensesArray = Object.entries(expensesData).map(
-            ([key, value]) => ({
-              id: key,
-              ...value,
-            })
-          );
-          console.log(expensesArray);
-          setExpenses(expensesArray);
-        }
-      });
-    }
-    return () => {
-      if (expRef) {
-        off(expRef);
-        setExpenses([]);
+    const fetchExpenses = async () => {
+      const expRef = ref(realTimeDatabase, `${DB_EXPENSES_FOLDER_NAME}/${uid}`);
+      const snapshot = await get(expRef);
+      const expensesData = snapshot.val();
+      if (expensesData) {
+        const expensesArray = Object.entries(expensesData).map(
+          ([key, value]) => ({
+            id: key,
+            ...value,
+          })
+        );
+        console.log(expensesArray);
+        setExpenses(expensesArray);
+        setIsLoading(false);
       }
+    };
+
+    fetchExpenses();
+
+    return () => {
+      setExpenses([]);
     };
   }, [uid, mapRef, expenseCounter]);
 
@@ -121,6 +122,7 @@ export default function MapExpenses({ isLoggedIn, uid }) {
             highlighted={highlighted}
             setHighlighted={setHighlighted}
             handleOnSelect={handleOnSelect}
+            isLoading={isLoading}
           />
         </div>
       ) : (

@@ -17,6 +17,7 @@ export default function ListExpenses({
   formatter,
   highlighted,
   handleOnSelect,
+  isLoading,
 }) {
   const [selectedExpense, setSelectedExpense] = useState(null);
   const [showModal, setShowModal] = useState(false);
@@ -108,7 +109,9 @@ export default function ListExpenses({
           />
         </div>
       </div>
-      <div className="allExp-container">{allExp}</div>
+      <div className="allExp-container">
+        {isLoading ? <h1>Loading</h1> : allExp}
+      </div>
       <Modal show={showModal} onHide={closeReceiptModal}>
         <Modal.Header closeButton>
           <Modal.Title>Receipt Picture</Modal.Title>
