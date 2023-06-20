@@ -21,7 +21,12 @@ export default function ListExpenses({
 }) {
   const [selectedExpense, setSelectedExpense] = useState(null);
   const [showModal, setShowModal] = useState(false);
+
   const [displayCurrency, setDisplayCurrency] = useState("SGD");
+
+  const [total, setTotal] = useState(0);
+  const highlightedCardRef = useRef(null); // Create reference for highlighted card
+
 
   const handleShowReceiptClick = (expense) => {
     setSelectedExpense(expense);
@@ -33,8 +38,11 @@ export default function ListExpenses({
     setShowModal(false);
   };
 
-  // Create reference for highlighted card
-  const highlightedCardRef = useRef(null);
+  const totalAmount = expenses.reduce(
+    (accumulator, expense) => accumulator + parseInt(expense.amount),
+    0
+  );
+  console.log(totalAmount);
 
   // Map through expenses array and render each one as a card
   const allExp = expenses.map((expense) => (
@@ -91,11 +99,13 @@ export default function ListExpenses({
   return (
     <div className="list-container">
       <div className="card-header">
+
         <div className="mini-navbar">
           <DisplayCurrency
             displayCurrency={displayCurrency}
             setDisplayCurrency={setDisplayCurrency}
           />
+                 {totalAmount}
           <InputExpenses
             uid={uid}
             mapRef={mapRef}
@@ -111,6 +121,20 @@ export default function ListExpenses({
       </div>
       <div className="allExp-container">
         {isLoading ? <h1>Loading</h1> : expenses.length === 0 ? null : allExp}
+
+
+        <InputExpenses
+          uid={uid}
+          mapRef={mapRef}
+          lat={lat}
+          setLat={setLat}
+          lng={lng}
+          setLng={setLng}
+          expenses={expenses}
+          expenseCounter={expenseCounter}
+          setExpenseCounter={setExpenseCounter}
+        />
+
       </div>
       <Modal show={showModal} onHide={closeReceiptModal}>
         <Modal.Header closeButton>
