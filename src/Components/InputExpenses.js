@@ -68,7 +68,6 @@ export default function InputExpenses({
   const handleClose = () => setShow(false);
   const handleShow = () => {
     setShow(true);
-    setExpenseCounter((prevExpenseCounter) => prevExpenseCounter + 1);
   };
 
   // reset to prepare states for next input
