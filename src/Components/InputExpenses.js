@@ -10,7 +10,8 @@ import {
 } from "firebase/storage";
 import { GoogleMap, MarkerF } from "@react-google-maps/api";
 import Geocode from "react-geocode";
-import currencies from "./Currencies";
+import { Typeahead } from "react-bootstrap-typeahead";
+import "react-bootstrap-typeahead/css/Typeahead.css";
 
 const DB_EXPENSES_FOLDER_NAME = "expenses";
 const STORAGE_EXPENSES_FOLDER_NAME = "receiptPhoto";
@@ -26,6 +27,7 @@ export default function InputExpenses({
   expenseCounter,
   setExpenseCounter,
   userLocation,
+  currenciesList,
 }) {
   const [show, setShow] = useState(false);
   const [category, setCategory] = useState("");
@@ -180,7 +182,7 @@ export default function InputExpenses({
             <br />
 
             <InputGroup className="mb-3">
-              <Form.Select
+              {/* <Form.Select
                 aria-label="Default select example"
                 as={Col}
                 md="6"
@@ -196,7 +198,15 @@ export default function InputExpenses({
                     {currency.code}
                   </option>
                 ))}
-              </Form.Select>
+              </Form.Select> */}
+              <Typeahead
+                id="currency-typeahead"
+                labelKey="currency"
+                placeholder="Search currency"
+                onChange={(selected) => setCurrency(selected)}
+                options={currenciesList}
+              ></Typeahead>
+
               <Form.Control
                 type="number"
                 placeholder="0"

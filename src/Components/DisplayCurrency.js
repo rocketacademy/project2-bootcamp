@@ -3,15 +3,14 @@ import { Button, Form, Modal, InputGroup } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Typeahead } from "react-bootstrap-typeahead";
 import "react-bootstrap-typeahead/css/Typeahead.css";
-import currencies from "./Currencies";
 
 export default function DisplayCurrency({
   displayCurrency,
   setDisplayCurrency,
   totalAmount,
+  currenciesList,
 }) {
   const [showCurrencyModal, setShowCurrencyModal] = useState(false);
-  const [currenciesList, setCurrencies] = useState([]);
 
   const handleShow = () => {
     setShowCurrencyModal(true);
@@ -25,16 +24,6 @@ export default function DisplayCurrency({
 
     handleClose();
   };
-
-  const currencyList = () => {
-    const array = [];
-    currencies.map((currency) => array.push(currency.code));
-    return array;
-  };
-
-  useEffect(() => {
-    setCurrencies(currencyList());
-  }, []);
 
   return (
     <div>
