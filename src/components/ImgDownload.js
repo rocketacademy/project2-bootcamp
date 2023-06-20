@@ -1,42 +1,60 @@
 import React, { useState } from "react";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
+import {Button} from "@mui/material";
+import DownloadIcon from '@mui/icons-material/Download';
+
+//Firebase
+const IMAGES_FOLDER_NAME = "images"; //Images folder name
 
 const ImgDownload = (props) => {
   const [imgUrl, setimgUrl] = useState(null);
 
-  const handleDownload = (imageUrls) => {
+  const downloadFilesAsZip = async (fileUrls) => {
     const zip = new JSZip();
-    // const imageUrls = ['image1.jpg', 'image2.png', 'image3.gif']; // Replace with the URLs or file paths of your images
-    const addImagesToZip = async () => {
-      const imagePromises = imgUrl.map((url) => {
-        return fetch(url)
-          .then((response) => response.blob())
-          .then((blob) => {
-            const filename = url.substring(url.lastIndexOf("/") + 1);
-            zip.file(filename, blob);
-          });
-      });
+  
+    // Loop through the array of file URLs
+    for (let i = 0; i < fileUrls.length; i++) {
+      const fileUrl = fileUrls[i];
+      try {
+        // Fetch each file as an array buffer
+        const response = await fetch(fileUrl);
+        const fileData = await response.arrayBuffer();
+  
+        // Get the file name from the URL
+        const fileName = decodeURIComponent(fileUrl.split('images%2F')[1].split('?')[0]);
+  
+        // Add the file to the ZIP
+        zip.file(fileName, fileData);
+      } catch (error) {
+        console.log(`Error downloading file at ${fileUrl}:`, error);
+      }
+    }
 
-      await Promise.all(imagePromises);
-      const zipBlob = await zip.generateAsync({ type: "blob" });
-      saveAs(zipBlob, "pixfolio-images.zip");
-    };
-
-    addImagesToZip();
-  };
+    try {
+      // Generate the ZIP file
+      const zipBlob = await zip.generateAsync({ type: 'blob' });
+  
+      // Save the ZIP file
+      saveAs(zipBlob, 'files.zip');
+    } catch (error) {
+      console.log('Error generating ZIP file:', error);
+    }}
 
   const mapDownload = () => {
     //map into an arrage of img links for download
     const objectList = props.ImageObjects;
-    const imageUrls = objectList.map((imageObject) => imageObject.img);
-    setimgUrl(imageUrls); //set the state for downloads
-    handleDownload(imageUrls);
+    const urlArray = objectList.map(({ img }) => img);
+    console.log(urlArray);
+    setimgUrl(urlArray); //set the state for downloads
+    downloadFilesAsZip(urlArray);
   };
 
   return (
-    <div>
-      <button onClick={mapDownload}>Download Images</button>
+    <div className="download-button">
+      <Button onClick={mapDownload} variant="contained" endIcon={<DownloadIcon />}>
+          Download
+        </Button>
     </div>
   );
 };

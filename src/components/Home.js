@@ -1,62 +1,50 @@
-import React from "react";
+import React,{useEffect,useState} from "react";
 import ImageTile from "./ImageTile";
 import SearchBar from "./SearchBar";
 import ImgDownload from "./ImgDownload";
 
-class App extends React.Component {
-  render() {
-    //To be replaced by image data from server
-    const itemData = [
-      {
-        img: "https://images.unsplash.com/photo-1551963831-b3b1ca40c98e",
-        title: "Breakfast",
-      },
-      {
-        img: "https://images.unsplash.com/photo-1551782450-a2132b4ba21d",
-        title: "Burger",
-      },
-      {
-        img: "https://images.unsplash.com/photo-1522770179533-24471fcdba45",
-        title: "Camera",
-      },
-      {
-        img: "https://images.unsplash.com/photo-1444418776041-9c7e33cc5a9c",
-        title: "Coffee",
-      },
-      {
-        img: "https://images.unsplash.com/photo-1533827432537-70133748f5c8",
-        title: "Hats",
-      },
-      {
-        img: "https://images.unsplash.com/photo-1558642452-9d2a7deb7f62",
-        title: "Honey",
-        author: "@arwinneil",
-      },
-      {
-        img: "https://images.unsplash.com/photo-1516802273409-68526ee1bdd6",
-        title: "Basketball",
-      },
-      {
-        img: "https://images.unsplash.com/photo-1518756131217-31eb79b20e8f",
-        title: "Fern",
-      },
-      {
-        img: "https://images.unsplash.com/photo-1597645587822-e99fa5d45d25",
-        title: "Mushrooms",
-      },
-      {
-        img: "https://images.unsplash.com/photo-1567306301408-9b74779a11af",
-        title: "Tomato basil",
-      },
-      {
-        img: "https://images.unsplash.com/photo-1471357674240-e1a485acb3e1",
-        title: "Sea star",
-      },
-      {
-        img: "https://images.unsplash.com/photo-1589118949245-7d38baf380d6",
-        title: "Bike",
-      },
-    ];
+//Firebase - Pull data from server
+import { onChildAdded, ref as databaseRef } from "firebase/database";
+import { database} from "../firebase";
+
+const IMAGEOBJECT_FOLDER_NAME = "imageObjects";
+
+const Home = () => {
+  const [imageObjects, setImageObjects] = useState([]);
+
+  useEffect(() => {
+     
+    // This effect will run when the component mounts and whenever the 'yourCollection' data changes in Firebase.
+    // You can perform any necessary operations here, such as updating state, manipulating the data, etc.
+    // Make sure to handle any cleanup if required (return a cleanup function).
+    const imgListRef = databaseRef(database, IMAGEOBJECT_FOLDER_NAME);
+    // Subscribe to the Firebase listener
+    //console.log(imgListRef);
+    
+    return () => {
+      // This code will run when the component unmounts
+      // You can perform any necessary cleanup here
+      onChildAdded(imgListRef, (data) => {
+        // Add the subsequent child to local component state, initialising a new array to trigger re-render
+        //console.log(data.val().imgurl)
+        setImageObjects((preImageObjects) => 
+          // Store message key so we can use it as a key in our list items when rendering messages
+          [...preImageObjects, 
+            { key: data.key,
+              imgurl: data.val().imgurl, 
+              tagsarray: data.val().tagsarray,
+              email:data.val().email,
+              name:data.val().name,
+              pass:data.val().pass,
+            }], //key-value pair
+        )});
+    };
+    
+  },[]);
+
+  // console.log(imageObjects)
+  const itemData = imageObjects.map(({key,imgurl}) => ({key:key,img:imgurl,title:null}));
+  
 
     return (
       <div>
@@ -71,6 +59,5 @@ class App extends React.Component {
       </div>
     );
   }
-}
 
-export default App;
+export default Home;
