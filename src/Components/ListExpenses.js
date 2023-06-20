@@ -3,7 +3,14 @@ import InputExpenses from "./InputExpenses";
 import { useState } from "react";
 import { Card, Button, Modal } from "react-bootstrap";
 
-export default function ListExpenses({ uid, expenses, formatter }) {
+export default function ListExpenses({
+  uid,
+  expenses,
+  formatter,
+  highlighted,
+  setHighlighted,
+  handleOnSelect,
+}) {
   const [selectedExpense, setSelectedExpense] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
@@ -19,15 +26,16 @@ export default function ListExpenses({ uid, expenses, formatter }) {
 
   // Map through expenses array and render each one as a card
   const allExp = expenses.map((expense) => (
-    <div>
-      <Card key={expense.key}>
+    <div key={expense.id}>
+      <Card onClick={() => handleOnSelect(expense)}>
         <Card.Header>{expense.date}</Card.Header>
 
         <Card.Body>
           <div className="card-content">
             <div>
               <Card.Title>
-                {expense.category} - {expense.location}
+                {expense.category}
+                {/* - {expense.location} */}
               </Card.Title>
               <Card.Subtitle className="mb-2 text-muted">
                 {expense.description}

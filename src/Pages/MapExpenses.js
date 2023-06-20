@@ -17,7 +17,7 @@ export default function MapExpenses({ isLoggedIn, uid }) {
   const [expenses, setExpenses] = useState([]);
   const [mapRef, setMapRef] = useState();
   const [expRef, setExpRef] = useState();
-  const [highlighted, setHighlighted] = useState(false);
+  const [highlighted, setHighlighted] = useState(null);
 
   // Get user's location and to recenter the map based on that location when map is rendered
   useEffect(() => {
@@ -46,7 +46,12 @@ export default function MapExpenses({ isLoggedIn, uid }) {
       onValue(expRef, (snapshot) => {
         const expensesData = snapshot.val();
         if (expensesData) {
-          const expensesArray = Object.values(expensesData);
+          const expensesArray = Object.entries(expensesData).map(
+            ([key, value]) => ({
+              id: key,
+              ...value,
+            })
+          );
           console.log(expensesArray);
           setExpenses(expensesArray);
         }
@@ -68,6 +73,11 @@ export default function MapExpenses({ isLoggedIn, uid }) {
     style: "decimal",
   });
 
+  const handleOnSelect = (expense) => {
+    setHighlighted(expense.id);
+    console.log(highlighted);
+  };
+
   return (
     <div>
       {" "}
@@ -84,6 +94,8 @@ export default function MapExpenses({ isLoggedIn, uid }) {
             expRef={expRef}
             isLoaded={isLoaded}
             formatter={formatter}
+            highlighted={highlighted}
+            setHighlighted={setHighlighted}
           />
           <ListExpenses
             uid={uid}
@@ -93,6 +105,9 @@ export default function MapExpenses({ isLoggedIn, uid }) {
             expenses={expenses}
             setExpenses={setExpenses}
             formatter={formatter}
+            highlighted={highlighted}
+            setHighlighted={setHighlighted}
+            handleOnSelect={handleOnSelect}
           />
         </div>
       ) : (

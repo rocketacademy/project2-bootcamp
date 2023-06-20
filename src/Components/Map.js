@@ -28,6 +28,8 @@ export default function Map({
   expenses,
   isLoaded,
   formatter,
+  highlighted,
+  setHighlighted,
 }) {
   // const [mapRef, setMapRef] = useState();
   const [isOpen, setIsOpen] = useState(false);
@@ -81,6 +83,27 @@ export default function Map({
     setIsOpen(true);
   };
 
+  // listens for changes to the highlighted state and triggers the handleMarkerClick function to open the infoWindow of highlighted expense
+  useEffect(() => {
+    const highlightedExpense = expenses.find(
+      (expense) => expense.id === highlighted
+    );
+    if (highlightedExpense) {
+      const { id, lat, lng, amount, currency, category, description, date } =
+        highlightedExpense;
+      handleMarkerClick(
+        id,
+        lat,
+        lng,
+        amount,
+        currency,
+        category,
+        description,
+        date
+      );
+    }
+  }, [highlighted]);
+
   return (
     <div className="map-container">
       {!isLoaded ? (
@@ -99,16 +122,22 @@ export default function Map({
           {/* code to render markers */}
           {uid !== ""
             ? expenses.map(
-                (
-                  { lat, lng, amount, currency, category, description, date },
-                  index
-                ) => (
+                ({
+                  id,
+                  lat,
+                  lng,
+                  amount,
+                  currency,
+                  category,
+                  description,
+                  date,
+                }) => (
                   <MarkerF
-                    key={index}
+                    key={id}
                     position={{ lat, lng }}
                     onClick={() => {
                       handleMarkerClick(
-                        index,
+                        id,
                         lat,
                         lng,
                         amount,
@@ -120,8 +149,20 @@ export default function Map({
                     }}
                     icon={markerImages[getDollarAmountCategory(amount)]}
                   >
+                    {/* {highlighted === id
+                      ? handleMarkerClick(
+                          id,
+                          lat,
+                          lng,
+                          amount,
+                          currency,
+                          category,
+                          description,
+                          date
+                        )
+                      : null} */}
                     {/* if marker is clicked, isOpen is set to true and infoWindow is rendered with dollar amount */}
-                    {isOpen && infoWindowData?.id === index && (
+                    {isOpen && infoWindowData?.id === id && (
                       <InfoWindowF
                         onCloseClick={() => {
                           setIsOpen(false);
