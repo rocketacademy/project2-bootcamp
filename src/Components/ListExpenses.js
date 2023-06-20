@@ -91,7 +91,10 @@ export default function ListExpenses({
     <div className="list-container">
       <div className="card-header">
         <div className="mini-navbar">
-          <DisplayCurrency displayCurrency={displayCurrency} />
+          <DisplayCurrency
+            displayCurrency={displayCurrency}
+            setDisplayCurrency={setDisplayCurrency}
+          />
           <InputExpenses
             uid={uid}
             mapRef={mapRef}
