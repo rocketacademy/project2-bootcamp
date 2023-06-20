@@ -1,4 +1,5 @@
 import "../App.css";
+import DisplayCurrency from "./DisplayCurrency";
 import InputExpenses from "./InputExpenses";
 import { useState, useRef, useEffect } from "react";
 import { Card, Button, Modal } from "react-bootstrap";
@@ -16,11 +17,16 @@ export default function ListExpenses({
   formatter,
   highlighted,
   handleOnSelect,
+  isLoading,
 }) {
   const [selectedExpense, setSelectedExpense] = useState(null);
   const [showModal, setShowModal] = useState(false);
+
+  const [displayCurrency, setDisplayCurrency] = useState("SGD");
+
   const [total, setTotal] = useState(0);
   const highlightedCardRef = useRef(null); // Create reference for highlighted card
+
 
   const handleShowReceiptClick = (expense) => {
     setSelectedExpense(expense);
@@ -93,7 +99,30 @@ export default function ListExpenses({
   return (
     <div className="list-container">
       <div className="card-header">
-        <h1>{totalAmount}</h1>
+
+        <div className="mini-navbar">
+          <DisplayCurrency
+            displayCurrency={displayCurrency}
+            setDisplayCurrency={setDisplayCurrency}
+          />
+                 {totalAmount}
+          <InputExpenses
+            uid={uid}
+            mapRef={mapRef}
+            lat={lat}
+            setLat={setLat}
+            lng={lng}
+            setLng={setLng}
+            expenses={expenses}
+            expenseCounter={expenseCounter}
+            setExpenseCounter={setExpenseCounter}
+          />
+        </div>
+      </div>
+      <div className="allExp-container">
+        {isLoading ? <h1>Loading</h1> : expenses.length === 0 ? null : allExp}
+
+
         <InputExpenses
           uid={uid}
           mapRef={mapRef}
@@ -105,8 +134,8 @@ export default function ListExpenses({
           expenseCounter={expenseCounter}
           setExpenseCounter={setExpenseCounter}
         />
+
       </div>
-      <div className="allExp-container">{allExp}</div>
       <Modal show={showModal} onHide={closeReceiptModal}>
         <Modal.Header closeButton>
           <Modal.Title>Receipt Picture</Modal.Title>

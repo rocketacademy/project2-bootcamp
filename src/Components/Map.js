@@ -42,30 +42,6 @@ export default function Map({
     setMapRef(map);
   };
 
-  const getLatestExpLocation = () => {
-    const array = Object.values(expenses);
-    const lastItem = array[array.length - 1];
-    const lat = lastItem.lat;
-    const lng = lastItem.lng;
-    const lastCenter = { lat, lng };
-    return lastCenter;
-  };
-
-  // Retrieve expenses when the map is rendered
-  // useEffect(() => {
-  //   if (expenses) {
-  //     mapRef.panTo(getLatestExpLocation());
-  //   }
-
-  //   // Clean up the listener when the component unmounts
-  //   // return () => {
-  //   //   if (expenses) {
-  //   //     off(expRef);
-  //   //     setExpenses([]);
-  //   //   }
-  //   // };
-  // }, [uid, mapRef, expenseCounter]);
-
   // when a marker is clicked, pan the map to the marker location
   const handleMarkerClick = (
     id,
