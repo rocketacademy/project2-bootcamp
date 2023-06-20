@@ -56,7 +56,7 @@ export default function ListExpenses({ uid, expenses }) {
       <div className="card-header">
         <InputExpenses uid={uid} />
       </div>
-      {allExp}
+      <div className="allExp-container">{allExp}</div>
       <Modal show={showModal} onHide={closeReceiptModal}>
         <Modal.Header closeButton>
           <Modal.Title>Receipt Picture</Modal.Title>

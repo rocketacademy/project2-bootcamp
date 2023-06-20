@@ -40,7 +40,6 @@
   display: flex; /* Use flexbox to align items */
   flex-direction: column;
   justify-content: space-between;
-  overflow-y: scroll;
 
   max-height: 45.5svh;
   width: 100%;
@@ -48,6 +47,10 @@
   color: black;
 
   font-size: 1rem;
+}
+
+.allExp-container {
+  overflow-y: scroll;
 }
 
 .temporary-box {
@@ -68,7 +71,7 @@
 }
 
 .addExpense {
-  margin: 10px 10px 10px 0;
+  margin: 10px 25px 10px 0;
   display: flex;
   justify-content: flex-end;
   align-items: center;
