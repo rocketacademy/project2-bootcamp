@@ -85,22 +85,24 @@ export default function Map({
 
   // listens for changes to the highlighted state and triggers the handleMarkerClick function to open the infoWindow of highlighted expense
   useEffect(() => {
-    const highlightedExpense = expenses.find(
-      (expense) => expense.id === highlighted
-    );
-    if (highlightedExpense) {
-      const { id, lat, lng, amount, currency, category, description, date } =
-        highlightedExpense;
-      handleMarkerClick(
-        id,
-        lat,
-        lng,
-        amount,
-        currency,
-        category,
-        description,
-        date
+    if (expenses) {
+      const highlightedExpense = expenses.find(
+        (expense) => expense.id === highlighted
       );
+      if (highlightedExpense) {
+        const { id, lat, lng, amount, currency, category, description, date } =
+          highlightedExpense;
+        handleMarkerClick(
+          id,
+          lat,
+          lng,
+          amount,
+          currency,
+          category,
+          description,
+          date
+        );
+      }
     }
   }, [highlighted]);
 

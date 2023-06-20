@@ -8,7 +8,6 @@ export default function ListExpenses({
   expenses,
   formatter,
   highlighted,
-  setHighlighted,
   handleOnSelect,
 }) {
   const [selectedExpense, setSelectedExpense] = useState(null);
