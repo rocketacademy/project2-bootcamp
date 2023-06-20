@@ -4,11 +4,11 @@ import "../App.css";
 export default function Welcome({ isLoggedIn }) {
   const navigate = useNavigate();
   return (
-    <div>
+    <div className="welcome-container">
       {isLoggedIn ? (
         navigate("/mapexpenses")
       ) : (
-        <div className="temporary-box">
+        <div>
           <div>
             <h1>Welcome to DollarDirection!</h1>
             <br />

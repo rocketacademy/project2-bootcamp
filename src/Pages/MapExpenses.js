@@ -124,7 +124,13 @@ export default function MapExpenses({ isLoggedIn, uid }) {
         </div>
       ) : (
         <div className="App">
-          <Map />
+          <Map
+            uid={uid}
+            mapRef={mapRef}
+            setMapRef={setMapRef}
+            isLoaded={isLoaded}
+            userLocation={userLocation}
+          />
           <Welcome />
         </div>
       )}

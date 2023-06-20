@@ -4,9 +4,6 @@
   font-size: 1.25rem;
 }
 
-#basic-nav-dropdown {
-}
-
 .App {
   font-size: 1.25rem;
   margin: auto;
@@ -24,8 +21,8 @@
 }
 
 .map-container {
-  height: 100%;
   max-height: 45.5svh;
+  height: 100%;
   width: 100%;
 
   background-color: red;
@@ -54,10 +51,26 @@
   cursor: pointer;
 }
 
+.welcome-container {
+  max-height: 45.5svh;
+  max-width: 1025px;
+  font-size: 1.25rem;
+
+  padding: 10px;
+
+  color: black;
+  background-color: #e8e8e8;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
 .temporary-box {
   margin: auto;
   margin-top: 63.78px;
-  min-height: 91svh;
+  max-height: 45.5svh;
   max-width: 1025px;
   font-size: 1.25rem;
 
@@ -111,6 +124,14 @@
     max-height: 91svh;
   }
   .list-container {
+    height: 100%;
+    max-height: 91svh;
+  }
+  .welcome-container {
+    height: 100%;
+    max-height: 91svh;
+  }
+  .temporary-box {
     height: 100%;
     max-height: 91svh;
   }
