@@ -208,7 +208,7 @@ export default function InputExpenses({
                   className="coordinates-display grey-italics"
                   style={{ color: "red" }}
                 >
-                  <em>Location not found, please enter another location</em>
+                  <em>Please input address</em>
                 </div>
               )}
               <div id="address-look-up">
