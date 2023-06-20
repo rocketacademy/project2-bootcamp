@@ -36,7 +36,7 @@
 .list-container {
   display: flex; /* Use flexbox to align items */
   flex-direction: column;
-  justify-content: space-between;
+  /* justify-content: space-between; */
 
   max-height: 45.5svh;
   width: 100%;
@@ -49,25 +49,6 @@
 .allExp-container {
   overflow-y: scroll;
   cursor: pointer;
-}
-
-.gradient-overlay {
-  position: relative;
-  overflow: auto;
-}
-
-.gradient-overlay::after {
-  content: "";
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  height: 100px;
-  background: linear-gradient(transparent, rgb(255, 255, 255));
-  pointer-events: none;
-}
-
-.gradient-overlay.hide-overlay::after {
-  opacity: 0;
 }
 
 .welcome-container {
