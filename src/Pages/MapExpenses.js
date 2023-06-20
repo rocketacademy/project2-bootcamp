@@ -18,8 +18,10 @@ export default function MapExpenses({ isLoggedIn, uid }) {
   const [mapRef, setMapRef] = useState();
   const [expRef, setExpRef] = useState();
   const [highlighted, setHighlighted] = useState(null);
+  const [lat, setLat] = useState(0);
+  const [lng, setLng] = useState(0);
 
-  // Get user's location and to recenter the map based on that location when map is rendered
+  // Get user's location and assign coordinates to states
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -29,6 +31,8 @@ export default function MapExpenses({ isLoggedIn, uid }) {
             lng: position.coords.longitude,
           };
           setUserLocation(currentLocation);
+          setLat(position.coords.latitude);
+          setLng(position.coords.longitude);
         },
         (error) => {
           console.error(error);
@@ -103,6 +107,10 @@ export default function MapExpenses({ isLoggedIn, uid }) {
           />
           <ListExpenses
             uid={uid}
+            lat={lat}
+            setLat={setLat}
+            lng={lng}
+            setLng={setLng}
             expenseCounter={expenseCounter}
             setExpenseCounter={setExpenseCounter}
             userLocation={userLocation}
