@@ -104,8 +104,8 @@ export default function App() {
               Dollar Direction
             </Navbar.Brand>
           </Container>
-          <Container style={{ display: "flex", justifyContent: "flex-end" }}>
-            <Nav className="ml-auto" style={{ fontSize: "1.25rem" }}>
+          <Container className="navbar-home-container">
+            <Nav>
               <Nav.Link as={Link} to="/mapexpenses">
                 Home
               </Nav.Link>
@@ -161,9 +161,6 @@ export default function App() {
                 )}
               </NavDropdown>
             </Nav>
-            {/* <Navbar.Toggle aria-controls="basic-navbar-nav" />
-            <Navbar.Collapse id="basic-navbar-nav">
-            </Navbar.Collapse> */}
           </Container>
         </Container>
       </Navbar>

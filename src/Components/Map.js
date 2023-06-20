@@ -1,17 +1,8 @@
 /* global google */
 
-import {
-  GoogleMap,
-  InfoWindowF,
-  MarkerF,
-  useLoadScript,
-} from "@react-google-maps/api";
-import { useState, useEffect, useMemo } from "react";
+import { GoogleMap, InfoWindowF, MarkerF } from "@react-google-maps/api";
+import { useState, useMemo } from "react";
 import "../App.css";
-import { realTimeDatabase } from "../firebase";
-import { onValue, ref, off } from "firebase/database";
-
-const DB_EXPENSES_FOLDER_NAME = "expenses";
 
 // paths to icons to mark expenses on the map
 const markerImages = [
@@ -31,13 +22,10 @@ function getDollarAmountCategory(dollarAmount) {
 
 export default function Map({
   uid,
-  expenseCounter,
   userLocation,
   mapRef,
   setMapRef,
-  expRef,
   expenses,
-  setExpenses,
   isLoaded,
 }) {
   // const [mapRef, setMapRef] = useState();

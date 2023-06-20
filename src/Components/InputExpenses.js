@@ -43,6 +43,7 @@ export default function InputExpenses({
     }
   }, [expenseCounter]);
 
+  // Get lat and lng coordinates on 'look up' button press
   const getLatLng = () =>
     Geocode.fromAddress(address, process.env.REACT_APP_API_KEY).then(
       (response) => {
