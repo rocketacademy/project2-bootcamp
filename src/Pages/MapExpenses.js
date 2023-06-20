@@ -84,6 +84,8 @@ export default function MapExpenses({ isLoggedIn, uid }) {
             expRef={expRef}
             isLoaded={isLoaded}
             formatter={formatter}
+            highlighted={highlighted}
+            setHighlighted={setHighlighted}
           />
           <ListExpenses
             uid={uid}
@@ -93,6 +95,8 @@ export default function MapExpenses({ isLoggedIn, uid }) {
             expenses={expenses}
             setExpenses={setExpenses}
             formatter={formatter}
+            highlighted={highlighted}
+            setHighlighted={setHighlighted}
           />
         </div>
       ) : (

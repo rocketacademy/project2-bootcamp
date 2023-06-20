@@ -28,6 +28,8 @@ export default function Map({
   expenses,
   isLoaded,
   formatter,
+  highlighted,
+  setHighlighted,
 }) {
   // const [mapRef, setMapRef] = useState();
   const [isOpen, setIsOpen] = useState(false);

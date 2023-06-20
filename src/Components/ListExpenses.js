@@ -3,7 +3,13 @@ import InputExpenses from "./InputExpenses";
 import { useState } from "react";
 import { Card, Button, Modal } from "react-bootstrap";
 
-export default function ListExpenses({ uid, expenses, formatter }) {
+export default function ListExpenses({
+  uid,
+  expenses,
+  formatter,
+  highlighted,
+  setHighlighted,
+}) {
   const [selectedExpense, setSelectedExpense] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
