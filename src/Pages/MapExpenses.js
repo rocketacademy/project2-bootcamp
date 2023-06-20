@@ -38,6 +38,7 @@ export default function MapExpenses({ isLoggedIn, uid }) {
     }
   }, [expenseCounter]);
 
+  // updates expenses array with each additional expense
   useEffect(() => {
     setExpRef(ref(realTimeDatabase, `${DB_EXPENSES_FOLDER_NAME}/${uid}`));
     if (expRef) {

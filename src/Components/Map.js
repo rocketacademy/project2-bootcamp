@@ -62,12 +62,16 @@ export default function Map({
 
   // Retrieve expenses when the map is rendered
   // useEffect(() => {
-  //   mapRef.panTo(getLatestExpLocation());
+  //   if (expenses) {
+  //     mapRef.panTo(getLatestExpLocation());
+  //   }
 
   //   // Clean up the listener when the component unmounts
   //   return () => {
-  //     off(expRef);
-  //     setExpenses([]);
+  //     if (expenses) {
+  //       off(expRef);
+  //       setExpenses([]);
+  //     }
   //   };
   // }, [uid, mapRef, expenseCounter]);
 
