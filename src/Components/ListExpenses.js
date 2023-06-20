@@ -5,6 +5,7 @@ import { Card, Button, Modal } from "react-bootstrap";
 
 export default function ListExpenses({
   uid,
+  mapRef,
   lat,
   lng,
   setLat,
@@ -107,10 +108,12 @@ export default function ListExpenses({
       <div className="card-header">
         <InputExpenses
           uid={uid}
+          mapRef={mapRef}
           lat={lat}
           setLat={setLat}
           lng={lng}
           setLng={setLng}
+          expenses={expenses}
           expenseCounter={expenseCounter}
           setExpenseCounter={setExpenseCounter}
         />
