@@ -25,9 +25,9 @@ export default function ListExpenses({
   };
 
   // Map through expenses array and render each one as a card
-  const allExp = expenses.map((expense, index) => (
-    <div key={index}>
-      <Card onClick={() => handleOnSelect(expense, index)}>
+  const allExp = expenses.map((expense) => (
+    <div key={expense.id}>
+      <Card onClick={() => handleOnSelect(expense)}>
         <Card.Header>{expense.date}</Card.Header>
 
         <Card.Body>
