@@ -86,9 +86,9 @@
 }
 
 .mini-navbar {
+  width: 100%;
   margin: 10px 0;
   display: flex;
-  justify-content: flex-end;
   align-items: center;
   justify-content: space-around;
 }
