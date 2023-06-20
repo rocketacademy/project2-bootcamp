@@ -102,6 +102,8 @@ export default function Map({
           description,
           date
         );
+      } else {
+        setIsOpen(false);
       }
     }
   }, [highlighted]);
@@ -117,9 +119,12 @@ export default function Map({
           options={{ mapTypeControl: false }}
           onLoad={onMapLoad}
           // when map is clicked, change setIsOpen state to false
-          onClick={() => setIsOpen(false)}
+          onClick={() => {
+            setIsOpen(false);
+            setHighlighted(null);
+          }}
           center={center}
-          zoom={11}
+          zoom={12}
         >
           {/* code to render markers */}
           {uid !== ""
@@ -148,21 +153,10 @@ export default function Map({
                         description,
                         date
                       );
+                      setHighlighted(id);
                     }}
                     icon={markerImages[getDollarAmountCategory(amount)]}
                   >
-                    {/* {highlighted === id
-                      ? handleMarkerClick(
-                          id,
-                          lat,
-                          lng,
-                          amount,
-                          currency,
-                          category,
-                          description,
-                          date
-                        )
-                      : null} */}
                     {/* if marker is clicked, isOpen is set to true and infoWindow is rendered with dollar amount */}
                     {isOpen && infoWindowData?.id === id && (
                       <InfoWindowF

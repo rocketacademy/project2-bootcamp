@@ -74,8 +74,12 @@ export default function MapExpenses({ isLoggedIn, uid }) {
   });
 
   const handleOnSelect = (expense) => {
-    setHighlighted(expense.id);
-    console.log(highlighted);
+    if (highlighted === expense.id) {
+      setHighlighted(null);
+    } else {
+      setHighlighted(expense.id);
+      console.log(highlighted);
+    }
   };
 
   return (
