@@ -36,7 +36,7 @@ export default function ListExpenses({
   const allExp = expenses.map((expense) => (
     <div
       key={expense.id}
-      className={expense.id === highlighted ? "highlighted-card" : ""}
+      className={`${expense.id === highlighted ? "highlighted-card" : ""}`}
       ref={expense.id === highlighted ? highlightedCardRef : null}
     >
       <Card onClick={() => handleOnSelect(expense)}>
@@ -80,6 +80,27 @@ export default function ListExpenses({
     }
   }, [highlighted]);
 
+  const componentRef = useRef(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (
+        componentRef.current &&
+        componentRef.current.scrollTop + componentRef.current.clientHeight >=
+          componentRef.current.scrollHeight
+      ) {
+        componentRef.current.classList.add("hide-overlay");
+      } else {
+        componentRef.current.classList.remove("hide-overlay");
+      }
+    };
+
+    componentRef.current.addEventListener("scroll", handleScroll);
+    return () => {
+      componentRef.current.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   // Render the list of expenses
   return (
     <div className="list-container">
@@ -94,7 +115,9 @@ export default function ListExpenses({
           setExpenseCounter={setExpenseCounter}
         />
       </div>
-      <div className="allExp-container">{allExp}</div>
+      <div className="allExp-container gradient-overlay" ref={componentRef}>
+        {allExp}
+      </div>
       <Modal show={showModal} onHide={closeReceiptModal}>
         <Modal.Header closeButton>
           <Modal.Title>Receipt Picture</Modal.Title>
