@@ -17,6 +17,10 @@ const STORAGE_EXPENSES_FOLDER_NAME = "receiptPhoto";
 
 export default function InputExpenses({
   uid,
+  lat,
+  setLat,
+  lng,
+  setLng,
   expenseCounter,
   setExpenseCounter,
   userLocation,
@@ -27,21 +31,12 @@ export default function InputExpenses({
   const [amount, setAmount] = useState(0);
   const [description, setDescription] = useState("-");
   const currentDate = new Date().toISOString().substring(0, 10); // Get current date in yyyy-MM-dd format
-  const [lat, setLat] = useState(0);
-  const [lng, setLng] = useState(0);
+
   const [address, setAddress] = useState("");
 
   const [date, setDate] = useState(currentDate);
   const [receiptFile, setReceiptFile] = useState("");
   const [receiptFileValue, setReceiptFileValue] = useState("");
-
-  useEffect(() => {
-    if (userLocation) {
-      setLat(userLocation.lat);
-      setLng(userLocation.lng);
-      setAddress("Current Location");
-    }
-  }, [expenseCounter]);
 
   // Get lat and lng coordinates on 'look up' button press
   const getLatLng = () =>
@@ -59,8 +54,12 @@ export default function InputExpenses({
     );
 
   const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  const handleShow = () => {
+    setShow(true);
+    setExpenseCounter((prevExpenseCounter) => prevExpenseCounter + 1);
+  };
 
+  // reset to prepare states for next input
   const handleNewInput = () => {
     setCategory("");
     setAmount(0);
@@ -114,10 +113,6 @@ export default function InputExpenses({
 
     handleClose();
     handleNewInput();
-    setExpenseCounter((prevExpenseCounter) => prevExpenseCounter + 1);
-  };
-
-  const handleUseLocation = (e) => {
     setExpenseCounter((prevExpenseCounter) => prevExpenseCounter + 1);
   };
 
@@ -217,7 +212,7 @@ export default function InputExpenses({
                     type="text"
                     size="sm"
                     value={address}
-                    placeholder="Enter address or click on the map"
+                    placeholder="Enter address, click on map, ignore to use current location"
                     onChange={(e) => setAddress(e.target.value)}
                   />
                   <Button
@@ -246,7 +241,7 @@ export default function InputExpenses({
                   }}
                   mapContainerStyle={{
                     width: "100%",
-                    height: "30vh",
+                    height: "20vh",
                   }}
                   center={
                     lat && lng

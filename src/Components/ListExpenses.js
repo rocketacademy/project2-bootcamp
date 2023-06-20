@@ -5,7 +5,13 @@ import { Card, Button, Modal } from "react-bootstrap";
 
 export default function ListExpenses({
   uid,
+  lat,
+  lng,
+  setLat,
+  setLng,
   expenses,
+  expenseCounter,
+  setExpenseCounter,
   formatter,
   highlighted,
   handleOnSelect,
@@ -78,7 +84,15 @@ export default function ListExpenses({
   return (
     <div className="list-container">
       <div className="card-header">
-        <InputExpenses uid={uid} />
+        <InputExpenses
+          uid={uid}
+          lat={lat}
+          setLat={setLat}
+          lng={lng}
+          setLng={setLng}
+          expenseCounter={expenseCounter}
+          setExpenseCounter={setExpenseCounter}
+        />
       </div>
       <div className="allExp-container">{allExp}</div>
       <Modal show={showModal} onHide={closeReceiptModal}>
