@@ -3,7 +3,7 @@ import InputExpenses from "./InputExpenses";
 import { useState } from "react";
 import { Card, Button, Modal } from "react-bootstrap";
 
-export default function ListExpenses({ uid, expenses }) {
+export default function ListExpenses({ uid, expenses, formatter }) {
   const [selectedExpense, setSelectedExpense] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
@@ -32,7 +32,7 @@ export default function ListExpenses({ uid, expenses }) {
               <Card.Subtitle className="mb-2 text-muted">
                 {expense.description}
                 <br />
-                {expense.currency} {expense.amount}
+                {expense.currency} {formatter.format(expense.amount)}
               </Card.Subtitle>
               {/* <Card.Text></Card.Text> */}
             </div>
