@@ -51,6 +51,7 @@
 
 .allExp-container {
   overflow-y: scroll;
+  cursor: pointer;
 }
 
 .temporary-box {
