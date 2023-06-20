@@ -86,6 +86,10 @@
   align-items: center;
 }
 
+.highlighted-card {
+  border: 2px solid blue;
+}
+
 .profile-picture {
   width: 150px;
   height: 150px;
