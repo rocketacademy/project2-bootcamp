@@ -8,7 +8,7 @@
 }
 
 .App {
-  font-size: calc(10px + 2vmin);
+  font-size: 1.25rem;
   margin: auto;
   margin-top: 63.78px;
 
@@ -54,8 +54,10 @@
 }
 
 .temporary-box {
-  min-height: 100svh;
-  /* max-width: 1025px; */
+  margin: auto;
+  margin-top: 63.78px;
+  min-height: 91svh;
+  max-width: 1025px;
   font-size: 1.25rem;
 
   color: black;
@@ -81,6 +83,15 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.profile-picture {
+  width: 150px;
+  height: 150px;
+  overflow: hidden;
+  border-radius: 50%;
+  background-size: "cover";
+  background-position: "50% 50%";
 }
 
 /* if viewport width is greater than 700px */

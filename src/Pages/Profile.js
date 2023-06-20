@@ -15,13 +15,15 @@ export default function Profile({ userData, profilePhotoURL }) {
       {" "}
       <div className="temporary-box">
         <div>
-          <h1>Profile Page</h1>
-          <br />
           {profilePhotoURL ? (
-            <img src={profilePhotoURL} alt="user" />
+            <img src={profilePhotoURL} alt="user" className="profile-picture" />
           ) : (
             <>
-              <img src={patchQuestionFillSvg} alt="user" />
+              <img
+                src={patchQuestionFillSvg}
+                alt="user"
+                className="profile-picture"
+              />
               <br />
               <h6>-No image-</h6>
             </>
