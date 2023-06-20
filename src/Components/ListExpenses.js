@@ -25,7 +25,10 @@ export default function ListExpenses({
 
   // Map through expenses array and render each one as a card
   const allExp = expenses.map((expense) => (
-    <div key={expense.id}>
+    <div
+      key={expense.id}
+      className={expense.id === highlighted ? "highlighted-card" : ""}
+    >
       <Card onClick={() => handleOnSelect(expense)}>
         <Card.Header>{expense.date}</Card.Header>
 

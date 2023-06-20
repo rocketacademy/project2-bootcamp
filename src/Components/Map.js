@@ -102,6 +102,8 @@ export default function Map({
           description,
           date
         );
+      } else {
+        setIsOpen(false);
       }
     }
   }, [highlighted]);
@@ -117,7 +119,10 @@ export default function Map({
           options={{ mapTypeControl: false }}
           onLoad={onMapLoad}
           // when map is clicked, change setIsOpen state to false
-          onClick={() => setIsOpen(false)}
+          onClick={() => {
+            setIsOpen(false);
+            setHighlighted(null);
+          }}
           center={center}
           zoom={11}
         >
@@ -148,6 +153,7 @@ export default function Map({
                         description,
                         date
                       );
+                      setHighlighted(id);
                     }}
                     icon={markerImages[getDollarAmountCategory(amount)]}
                   >
