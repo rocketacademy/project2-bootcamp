@@ -1,6 +1,6 @@
 import "../App.css";
 import InputExpenses from "./InputExpenses";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Card, Button, Modal } from "react-bootstrap";
 
 export default function ListExpenses({
@@ -23,11 +23,15 @@ export default function ListExpenses({
     setShowModal(false);
   };
 
+  // Create reference for highlighted card
+  const highlightedCardRef = useRef(null);
+
   // Map through expenses array and render each one as a card
   const allExp = expenses.map((expense) => (
     <div
       key={expense.id}
       className={expense.id === highlighted ? "highlighted-card" : ""}
+      ref={expense.id === highlighted ? highlightedCardRef : null}
     >
       <Card onClick={() => handleOnSelect(expense)}>
         <Card.Header>{expense.date}</Card.Header>
@@ -59,6 +63,16 @@ export default function ListExpenses({
       </Card>
     </div>
   ));
+
+  // useEffect to cause highlighted card to scroll into view
+  useEffect(() => {
+    if (highlightedCardRef.current) {
+      highlightedCardRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+      });
+    }
+  }, [highlighted]);
 
   // Render the list of expenses
   return (
