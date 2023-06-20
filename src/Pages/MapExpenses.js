@@ -17,6 +17,7 @@ export default function MapExpenses({ isLoggedIn, uid }) {
   const [expenses, setExpenses] = useState([]);
   const [mapRef, setMapRef] = useState();
   const [expRef, setExpRef] = useState();
+  const [highlighted, setHighlighted] = useState(false);
 
   // Get user's location and to recenter the map based on that location when map is rendered
   useEffect(() => {
@@ -63,6 +64,10 @@ export default function MapExpenses({ isLoggedIn, uid }) {
     googleMapsApiKey: process.env.REACT_APP_API_KEY,
   });
 
+  const formatter = new Intl.NumberFormat("en-US", {
+    style: "decimal",
+  });
+
   return (
     <div>
       {" "}
@@ -78,6 +83,7 @@ export default function MapExpenses({ isLoggedIn, uid }) {
             setMapRef={setMapRef}
             expRef={expRef}
             isLoaded={isLoaded}
+            formatter={formatter}
           />
           <ListExpenses
             uid={uid}
@@ -86,6 +92,7 @@ export default function MapExpenses({ isLoggedIn, uid }) {
             userLocation={userLocation}
             expenses={expenses}
             setExpenses={setExpenses}
+            formatter={formatter}
           />
         </div>
       ) : (

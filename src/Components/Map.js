@@ -1,7 +1,7 @@
 /* global google */
 
 import { GoogleMap, InfoWindowF, MarkerF } from "@react-google-maps/api";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import "../App.css";
 
 // paths to icons to mark expenses on the map
@@ -27,6 +27,7 @@ export default function Map({
   setMapRef,
   expenses,
   isLoaded,
+  formatter,
 }) {
   // const [mapRef, setMapRef] = useState();
   const [isOpen, setIsOpen] = useState(false);
@@ -55,12 +56,12 @@ export default function Map({
   //   }
 
   //   // Clean up the listener when the component unmounts
-  //   return () => {
-  //     if (expenses) {
-  //       off(expRef);
-  //       setExpenses([]);
-  //     }
-  //   };
+  //   // return () => {
+  //   //   if (expenses) {
+  //   //     off(expRef);
+  //   //     setExpenses([]);
+  //   //   }
+  //   // };
   // }, [uid, mapRef, expenseCounter]);
 
   // when a marker is clicked, pan the map to the marker location
@@ -127,7 +128,9 @@ export default function Map({
                         }}
                       >
                         <p>
-                          {`${infoWindowData.currency} ${infoWindowData.amount} on ${infoWindowData.category}`}
+                          <b>{`${infoWindowData.currency} ${formatter.format(
+                            infoWindowData.amount
+                          )} on ${infoWindowData.category}`}</b>
                           <br />
                           <em>{`(${infoWindowData.date}: ${infoWindowData.description})`}</em>
                         </p>
