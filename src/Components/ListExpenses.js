@@ -37,9 +37,12 @@ export default function ListExpenses({
   const allExp = expenses.map((expense) => (
     <div
       key={expense.id}
+      // styles highlighted expense
       className={`${expense.id === highlighted ? "highlighted-card" : ""}`}
+      // tells app that this is the ref component that i need it to scroll into view
       ref={expense.id === highlighted ? highlightedCardRef : null}
     >
+      {/* onclick function stores expense.id into the highlighted state */}
       <Card onClick={() => handleOnSelect(expense)}>
         <Card.Header>{expense.date}</Card.Header>
 
@@ -81,27 +84,6 @@ export default function ListExpenses({
     }
   }, [highlighted]);
 
-  const componentRef = useRef(null);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (
-        componentRef.current &&
-        componentRef.current.scrollTop + componentRef.current.clientHeight >=
-          componentRef.current.scrollHeight
-      ) {
-        componentRef.current.classList.add("hide-overlay");
-      } else {
-        componentRef.current.classList.remove("hide-overlay");
-      }
-    };
-
-    componentRef.current.addEventListener("scroll", handleScroll);
-    return () => {
-      componentRef.current.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
-
   // Render the list of expenses
   return (
     <div className="list-container">
@@ -118,9 +100,7 @@ export default function ListExpenses({
           setExpenseCounter={setExpenseCounter}
         />
       </div>
-      <div className="allExp-container gradient-overlay" ref={componentRef}>
-        {allExp}
-      </div>
+      <div className="allExp-container">{allExp}</div>
       <Modal show={showModal} onHide={closeReceiptModal}>
         <Modal.Header closeButton>
           <Modal.Title>Receipt Picture</Modal.Title>
