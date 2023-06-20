@@ -23,10 +23,9 @@ export default function ListExpenses({
 }) {
   const [selectedExpense, setSelectedExpense] = useState(null);
   const [showModal, setShowModal] = useState(false);
-
   const [displayCurrency, setDisplayCurrency] = useState("SGD");
+  const [currenciesList, setCurrencies] = useState([]);
 
-  const [total, setTotal] = useState(0);
   const highlightedCardRef = useRef(null); // Create reference for highlighted card
 
   const handleShowReceiptClick = (expense) => {
@@ -96,14 +95,13 @@ export default function ListExpenses({
     }
   }, [highlighted]);
 
-  const [currenciesList, setCurrencies] = useState([]);
-
   const currencyList = () => {
     const array = [];
     currencies.map((currency) => array.push(currency.code));
     return array;
   };
 
+  // useEffect to convert currencies from array of objects to array of strings
   useEffect(() => {
     setCurrencies(currencyList());
   }, []);

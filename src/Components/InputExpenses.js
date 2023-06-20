@@ -202,7 +202,7 @@ export default function InputExpenses({
               <Typeahead
                 id="currency-typeahead"
                 labelKey="currency"
-                placeholder="Search currency"
+                placeholder={currency}
                 onChange={(selected) => setCurrency(selected)}
                 options={currenciesList}
               ></Typeahead>
