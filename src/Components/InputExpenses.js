@@ -17,10 +17,12 @@ const STORAGE_EXPENSES_FOLDER_NAME = "receiptPhoto";
 
 export default function InputExpenses({
   uid,
+  mapRef,
   lat,
   setLat,
   lng,
   setLng,
+  expenses,
   expenseCounter,
   setExpenseCounter,
   userLocation,
@@ -37,6 +39,16 @@ export default function InputExpenses({
   const [date, setDate] = useState(currentDate);
   const [receiptFile, setReceiptFile] = useState("");
   const [receiptFileValue, setReceiptFileValue] = useState("");
+
+  // map to pan to most recently added expense
+  const getLatestExpLocation = () => {
+    const array = Object.values(expenses);
+    const lastItem = array[array.length - 1];
+    const lat = lastItem.lat;
+    const lng = lastItem.lng;
+    const lastCenter = { lat, lng };
+    return lastCenter;
+  };
 
   // Get lat and lng coordinates on 'look up' button press
   const getLatLng = () =>
@@ -113,8 +125,25 @@ export default function InputExpenses({
 
     handleClose();
     handleNewInput();
+    mapRef.panTo(getLatestExpLocation());
+    console.log(getLatestExpLocation());
     setExpenseCounter((prevExpenseCounter) => prevExpenseCounter + 1);
   };
+
+  // Retrieve expenses when the map is rendered
+  // useEffect(() => {
+  //   if (expenses) {
+  //     mapRef.panTo(getLatestExpLocation());
+  //   }
+
+  //   // Clean up the listener when the component unmounts
+  //   // return () => {
+  //   //   if (expenses) {
+  //   //     off(expRef);
+  //   //     setExpenses([]);
+  //   //   }
+  //   // };
+  // }, [uid, mapRef, expenseCounter]);
 
   return (
     <div>

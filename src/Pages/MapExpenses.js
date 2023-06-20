@@ -107,6 +107,7 @@ export default function MapExpenses({ isLoggedIn, uid }) {
           />
           <ListExpenses
             uid={uid}
+            mapRef={mapRef}
             lat={lat}
             setLat={setLat}
             lng={lng}
