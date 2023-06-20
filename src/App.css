@@ -55,7 +55,6 @@
   max-height: 45.5svh;
   max-width: 1025px;
   font-size: 1.25rem;
-
   padding: 10px;
 
   color: black;
@@ -90,6 +89,12 @@
   margin: 10px 25px 10px 0;
   display: flex;
   justify-content: flex-end;
+  align-items: center;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
   align-items: center;
 }
 

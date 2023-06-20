@@ -19,6 +19,8 @@ export default function ListExpenses({
 }) {
   const [selectedExpense, setSelectedExpense] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [total, setTotal] = useState(0);
+  const highlightedCardRef = useRef(null); // Create reference for highlighted card
 
   const handleShowReceiptClick = (expense) => {
     setSelectedExpense(expense);
@@ -30,8 +32,11 @@ export default function ListExpenses({
     setShowModal(false);
   };
 
-  // Create reference for highlighted card
-  const highlightedCardRef = useRef(null);
+  const totalAmount = expenses.reduce(
+    (accumulator, expense) => accumulator + parseInt(expense.amount),
+    0
+  );
+  console.log(totalAmount);
 
   // Map through expenses array and render each one as a card
   const allExp = expenses.map((expense) => (
@@ -88,6 +93,7 @@ export default function ListExpenses({
   return (
     <div className="list-container">
       <div className="card-header">
+        <h1>{totalAmount}</h1>
         <InputExpenses
           uid={uid}
           mapRef={mapRef}
