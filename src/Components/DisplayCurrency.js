@@ -8,6 +8,7 @@ import currencies from "./Currencies";
 export default function DisplayCurrency({
   displayCurrency,
   setDisplayCurrency,
+  totalAmount,
 }) {
   const [showCurrencyModal, setShowCurrencyModal] = useState(false);
   const [currenciesList, setCurrencies] = useState([]);
@@ -43,7 +44,7 @@ export default function DisplayCurrency({
           variant="secondary"
           onClick={handleShow}
         >
-          {displayCurrency}
+          {displayCurrency} {totalAmount}
         </Button>
       </div>
       <Modal show={showCurrencyModal} onHide={handleClose}>
@@ -57,7 +58,7 @@ export default function DisplayCurrency({
               <Typeahead
                 id="currency-typeahead"
                 labelKey="currency"
-                value={displayCurrency}
+                placeholder="Search currency"
                 onChange={(selected) => setDisplayCurrency(selected)}
                 options={currenciesList}
               ></Typeahead>
