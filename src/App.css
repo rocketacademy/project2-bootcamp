@@ -86,11 +86,12 @@
   text-align: center;
 }
 
-.addExpense {
-  margin: 10px 25px 10px 0;
+.mini-navbar {
+  margin: 10px 0;
   display: flex;
   justify-content: flex-end;
   align-items: center;
+  justify-content: space-around;
 }
 
 .card-content {

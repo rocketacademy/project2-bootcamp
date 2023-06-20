@@ -1,4 +1,5 @@
 import "../App.css";
+import DisplayCurrency from "./DisplayCurrency";
 import InputExpenses from "./InputExpenses";
 import { useState, useRef, useEffect } from "react";
 import { Card, Button, Modal } from "react-bootstrap";
@@ -19,6 +20,7 @@ export default function ListExpenses({
 }) {
   const [selectedExpense, setSelectedExpense] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [displayCurrency, setDisplayCurrency] = useState("SGD");
 
   const handleShowReceiptClick = (expense) => {
     setSelectedExpense(expense);
@@ -88,17 +90,20 @@ export default function ListExpenses({
   return (
     <div className="list-container">
       <div className="card-header">
-        <InputExpenses
-          uid={uid}
-          mapRef={mapRef}
-          lat={lat}
-          setLat={setLat}
-          lng={lng}
-          setLng={setLng}
-          expenses={expenses}
-          expenseCounter={expenseCounter}
-          setExpenseCounter={setExpenseCounter}
-        />
+        <div className="mini-navbar">
+          <DisplayCurrency displayCurrency={displayCurrency} />
+          <InputExpenses
+            uid={uid}
+            mapRef={mapRef}
+            lat={lat}
+            setLat={setLat}
+            lng={lng}
+            setLng={setLng}
+            expenses={expenses}
+            expenseCounter={expenseCounter}
+            setExpenseCounter={setExpenseCounter}
+          />
+        </div>
       </div>
       <div className="allExp-container">{allExp}</div>
       <Modal show={showModal} onHide={closeReceiptModal}>

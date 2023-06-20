@@ -29,6 +29,7 @@ export default function InputExpenses({
 }) {
   const [show, setShow] = useState(false);
   const [category, setCategory] = useState("");
+  // inputCurrency
   const [currency, setCurrency] = useState("SGD");
   const [amount, setAmount] = useState(0);
   const [description, setDescription] = useState("-");
@@ -129,24 +130,9 @@ export default function InputExpenses({
     setExpenseCounter((prevExpenseCounter) => prevExpenseCounter + 1);
   };
 
-  // Retrieve expenses when the map is rendered
-  // useEffect(() => {
-  //   if (expenses) {
-  //     mapRef.panTo(getLatestExpLocation());
-  //   }
-
-  //   // Clean up the listener when the component unmounts
-  //   // return () => {
-  //   //   if (expenses) {
-  //   //     off(expRef);
-  //   //     setExpenses([]);
-  //   //   }
-  //   // };
-  // }, [uid, mapRef, expenseCounter]);
-
   return (
     <div>
-      <div className="addExpense">
+      <div>
         <Button
           className="rounded-rectangle"
           variant="outline-dark"
