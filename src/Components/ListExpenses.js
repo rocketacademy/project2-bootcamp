@@ -42,46 +42,67 @@ export default function ListExpenses({
     (accumulator, expense) => accumulator + parseInt(expense.amount),
     0
   );
-  console.log(totalAmount);
+
+  // sort expenses by date, with the earliest at the top of the list
+  const sortedExpenses = expenses.sort(
+    (a, b) => new Date(a.date) - new Date(b.date)
+  );
+
+  // Group expenses by date
+  const groupedExpenses = {};
+  sortedExpenses.forEach((expense) => {
+    const date = expense.date;
+    if (!groupedExpenses[date]) {
+      groupedExpenses[date] = [];
+    }
+    groupedExpenses[date].push(expense);
+  });
 
   // Map through expenses array and render each one as a card
-  const allExp = expenses.map((expense) => (
-    <div
-      key={expense.id}
-      // styles highlighted expense
-      className={`${expense.id === highlighted ? "highlighted-card" : ""}`}
-      // tells app that this is the ref component that i need it to scroll into view
-      ref={expense.id === highlighted ? highlightedCardRef : null}
-    >
-      {/* onclick function stores expense.id into the highlighted state */}
-      <Card onClick={() => handleOnSelect(expense)}>
-        <Card.Header>{expense.date}</Card.Header>
-
-        <Card.Body>
-          <div className="card-content">
-            <div>
-              <Card.Title>
-                {expense.category}
-                {/* - {expense.location} */}
-              </Card.Title>
-              <Card.Subtitle className="mb-2 text-muted">
-                {expense.description}
-                <br />
-                {expense.currency} {formatter.format(expense.amount)}
-              </Card.Subtitle>
-              {/* <Card.Text></Card.Text> */}
-            </div>
-
-            <Button
-              variant="info"
-              onClick={() => handleShowReceiptClick(expense)}
-              title="Click to view receipt"
-            >
-              Show Receipt
-            </Button>
-          </div>
-        </Card.Body>
-      </Card>
+  const allExp = Object.entries(groupedExpenses).map(([date, expenses]) => (
+    <div key={date}>
+      {/*overall date header */}
+      <Card.Header>{date}</Card.Header>
+      {expenses.map((expense) => (
+        <div
+          key={expense.id}
+          // styles highlighted expense
+          className={`${expense.id === highlighted ? "highlighted-card" : ""}`}
+          // tells app that this is the ref component that i need it to scroll into view
+          ref={expense.id === highlighted ? highlightedCardRef : null}
+        >
+          {/* onclick function stores expense.id into the highlighted state */}
+          <Card onClick={() => handleOnSelect(expense)}>
+            <Card.Body>
+              <div className="card-content">
+                <div>
+                  <Card.Title>
+                    {expense.category}
+                    {/* - {expense.location} */}
+                  </Card.Title>
+                  <Card.Subtitle className="mb-2 text-muted">
+                    {expense.description}
+                    <br />
+                    {expense.currency} {formatter.format(expense.amount)}
+                  </Card.Subtitle>
+                  {/* <Card.Text></Card.Text> */}
+                </div>
+                {expense.receiptUrl ? (
+                  <Button
+                    variant="info"
+                    onClick={() => handleShowReceiptClick(expense)}
+                    title="Click to view receipt"
+                  >
+                    Show Receipt
+                  </Button>
+                ) : (
+                  []
+                )}
+              </div>
+            </Card.Body>
+          </Card>
+        </div>
+      ))}
     </div>
   ));
 
