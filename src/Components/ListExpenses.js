@@ -25,7 +25,6 @@ export default function ListExpenses({
   const [showModal, setShowModal] = useState(false);
   const [displayCurrency, setDisplayCurrency] = useState("SGD");
   const [currenciesList, setCurrencies] = useState([]);
-
   const highlightedCardRef = useRef(null); // Create reference for highlighted card
 
   const handleShowReceiptClick = (expense) => {
@@ -57,6 +56,7 @@ export default function ListExpenses({
     }
     groupedExpenses[date].push(expense);
   });
+  console.log(groupedExpenses);
 
   // Map through expenses array and render each one as a card
   const allExp = Object.entries(groupedExpenses).map(([date, expenses]) => (
