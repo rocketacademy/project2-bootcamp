@@ -93,6 +93,7 @@ export default function InputExpenses({
     console.log(amount);
     console.log(description);
     console.log(date);
+    console.log(receiptFile);
 
     // get ref key
     const expRef = ref(realTimeDatabase, `${DB_EXPENSES_FOLDER_NAME}/${uid}`);
@@ -109,21 +110,23 @@ export default function InputExpenses({
       date: date,
     });
 
-    const expFileRef = storageRef(
-      storage,
-      ` ${STORAGE_EXPENSES_FOLDER_NAME}/${uid}/${receiptFile.name}`
-    );
+    if (receiptFile) {
+      const expFileRef = storageRef(
+        storage,
+        ` ${STORAGE_EXPENSES_FOLDER_NAME}/${uid}/${receiptFile.name}`
+      );
 
-    uploadBytes(expFileRef, receiptFile).then((snapshot) => {
-      getDownloadURL(snapshot.ref).then((receiptUrl) => {
-        // update expenses db with expenses photo url
-        const currExpRef = ref(
-          realTimeDatabase,
-          `${DB_EXPENSES_FOLDER_NAME}/${uid}/${newExpenseKey}/receiptUrl`
-        );
-        set(currExpRef, receiptUrl);
+      uploadBytes(expFileRef, receiptFile).then((snapshot) => {
+        getDownloadURL(snapshot.ref).then((receiptUrl) => {
+          // update expenses db with expenses photo url
+          const currExpRef = ref(
+            realTimeDatabase,
+            `${DB_EXPENSES_FOLDER_NAME}/${uid}/${newExpenseKey}/receiptUrl`
+          );
+          set(currExpRef, receiptUrl);
+        });
       });
-    });
+    }
 
     handleClose();
     handleNewInput();
