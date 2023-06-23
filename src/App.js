@@ -8,11 +8,14 @@ import SearchPage from "./pages/SearchPage";
 
 const App = () => {
   return (
-    <div className="App">
+    <div>
       <ResponsiveAppBar />
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-
+      <br />
+      <br />
+      <br />
+      <header>
+        {/* <header className="App-header"> */}
+        {/* <img src={logo} className="App-logo" alt="logo" /> */}
         <Search />
         <SearchPage />
         <br />
