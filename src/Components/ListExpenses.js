@@ -158,7 +158,13 @@ export default function ListExpenses({
         </div>
       </div>
       <div className="allExp-container">
-        {isLoading ? <h1>Loading</h1> : expenses.length === 0 ? null : allExp}
+        {isLoading ? (
+          <p style={{ textAlign: "center" }}>
+            <em>Your expenses will appear here</em>
+          </p>
+        ) : expenses.length === 0 ? null : (
+          allExp
+        )}
       </div>
       <Modal show={showModal} onHide={closeReceiptModal}>
         <Modal.Header closeButton>
