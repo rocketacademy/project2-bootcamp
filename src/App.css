@@ -119,6 +119,31 @@
   background-position: "50% 50%";
 }
 
+.dashboard {
+  margin: auto;
+  margin-top: 63.78px;
+
+  display: grid;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  /* max-width: 500px;
+  scroll-behavior: auto; */
+}
+
+.dashboard-header {
+  padding: 20px;
+}
+
+.chart-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 400px; /* Adjust the height as needed */
+  width: 100%; /* Adjust the width as needed */
+  margin-bottom: 20px;
+}
+
 /* if viewport width is greater than 700px */
 @media (min-width: 700px) {
   .App {
@@ -141,4 +166,10 @@
     height: 100%;
     max-height: 91svh;
   }
+}
+
+.Custom-Tooltip {
+  background-color: white;
+  padding: 10px;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.1), 0 10px 10px rgba(0, 0, 0, 0.1);
 }
