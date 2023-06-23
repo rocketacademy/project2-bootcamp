@@ -15,16 +15,20 @@ import { Container, Row, Col, Form, Button } from "react-bootstrap";
 const DB_USER_FOLDER_NAME = "user";
 const STORAGE_PROFILE_FOLDER_NAME = "profilePhoto";
 
-export default function SignUp({ isLoggedIn }) {
+export default function SignUp({
+  isLoggedIn,
+  fileInputFile,
+  setFileInputFile,
+  fileInputValue,
+  setFileInputValue,
+}) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [displayName, setDisplayName] = useState("");
-  const [fileInputFile, setFileInputFile] = useState("");
-  const [fileInputValue, setFileInputValue] = useState("");
-  const navigate = useNavigate();
   const [validated, setValidated] = useState(false);
+  const navigate = useNavigate();
 
   const signUp = async (e) => {
     e.preventDefault();
@@ -48,22 +52,32 @@ export default function SignUp({ isLoggedIn }) {
             // set default display currency for all new users to SGD
             displayCurrency: "SGD",
           });
-          // Store images in an images folder in Firebase Storage
-          const fileRef = storageRef(
-            storage,
-            ` ${STORAGE_PROFILE_FOLDER_NAME}/${userCredential.user.uid}/${fileInputFile.name}`
-          );
 
-          uploadBytes(fileRef, fileInputFile).then((snapshot) => {
-            getDownloadURL(snapshot.ref).then((profileUrl) => {
-              // update user db with profile photo url
-              const currUserRef = ref(
-                realTimeDatabase,
-                `${DB_USER_FOLDER_NAME}/${userCredential.user.uid}/profileUrl`
-              );
-              set(currUserRef, profileUrl);
+          if (fileInputFile) {
+            // Store images in an images folder in Firebase Storage
+            const fileRef = storageRef(
+              storage,
+              ` ${STORAGE_PROFILE_FOLDER_NAME}/${userCredential.user.uid}/${fileInputFile.name}`
+            );
+
+            uploadBytes(fileRef, fileInputFile).then((snapshot) => {
+              getDownloadURL(snapshot.ref).then((profileUrl) => {
+                // update user db with profile photo url
+                const currUserRef = ref(
+                  realTimeDatabase,
+                  `${DB_USER_FOLDER_NAME}/${userCredential.user.uid}/profileUrl`
+                );
+                set(currUserRef, profileUrl);
+              });
             });
-          });
+          } else {
+            const currUserRef = ref(
+              realTimeDatabase,
+              `${DB_USER_FOLDER_NAME}/${userCredential.user.uid}/profileUrl`
+            );
+            set(currUserRef, null);
+          }
+
           navigate("/mapexpenses");
           // setEmail("");
           // setPassword("");

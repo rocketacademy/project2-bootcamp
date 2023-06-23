@@ -139,6 +139,6 @@
   }
   .temporary-box {
     height: 100%;
-    max-height: 91svh;
+    min-height: 91svh;
   }
 }

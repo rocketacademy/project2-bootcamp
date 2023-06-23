@@ -23,6 +23,8 @@ export default function App() {
   const [uid, setUID] = useState("");
   const [profilePhotoURL, setProfilePhotoURL] = useState("");
   const [userData, setUserData] = useState("");
+  const [fileInputFile, setFileInputFile] = useState("");
+  const [fileInputValue, setFileInputValue] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -58,7 +60,9 @@ export default function App() {
               );
 
               onValue(profilePhotoRef, (snapshot) => {
-                setProfilePhotoURL(snapshot.val());
+                if (snapshot.val() !== null) {
+                  setProfilePhotoURL(snapshot.val());
+                }
               });
             } else {
               console.log("No data available");
@@ -115,7 +119,7 @@ export default function App() {
               ) : null}
               <NavDropdown
                 title={
-                  profilePhotoURL ? (
+                  profilePhotoURL !== null ? (
                     <img
                       class="rounded-circle"
                       src={profilePhotoURL}
@@ -126,7 +130,7 @@ export default function App() {
                   ) : (
                     <img
                       src={patchQuestionFillSvg}
-                      alt="user"
+                      alt=""
                       width="30"
                       height="30"
                     />
@@ -178,14 +182,32 @@ export default function App() {
         <Route
           path="/profile"
           element={
-            <Profile userData={userData} profilePhotoURL={profilePhotoURL} />
+            <Profile
+              userData={userData}
+              profilePhotoURL={profilePhotoURL}
+              fileInputFile={fileInputFile}
+              setFileInputFile={setFileInputFile}
+              fileInputValue={fileInputValue}
+              setFileInputValue={setFileInputValue}
+            />
           }
         />
         <Route
           path="/dashboard"
           element={<Dashboard isLoggedIn={isLoggedIn} uid={uid} />}
         />
-        <Route path="/signup" element={<SignUp isLoggedIn={isLoggedIn} />} />
+        <Route
+          path="/signup"
+          element={
+            <SignUp
+              isLoggedIn={isLoggedIn}
+              fileInputFile={fileInputFile}
+              setFileInputFile={setFileInputFile}
+              fileInputValue={fileInputValue}
+              setFileInputValue={setFileInputValue}
+            />
+          }
+        />
         <Route
           path="/authform"
           element={<AuthForm isLoggedIn={isLoggedIn} />}
