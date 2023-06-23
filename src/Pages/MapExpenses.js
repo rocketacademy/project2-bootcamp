@@ -4,7 +4,7 @@ import ListExpenses from "../Components/ListExpenses";
 import Welcome from "./Welcome";
 import { useState, useEffect } from "react";
 import { realTimeDatabase } from "../firebase";
-import { get, ref, update } from "firebase/database";
+import { get, onValue, off, ref, update } from "firebase/database";
 import { useLoadScript } from "@react-google-maps/api";
 
 const DB_EXPENSES_FOLDER_NAME = "expenses";
@@ -48,26 +48,31 @@ export default function MapExpenses({ isLoggedIn, uid, userData }) {
 
   // updates expenses array with each additional expense
   useEffect(() => {
-    const fetchExpenses = async () => {
-      const expRef = ref(realTimeDatabase, `${DB_EXPENSES_FOLDER_NAME}/${uid}`);
-      const snapshot = await get(expRef);
-      const expensesData = snapshot.val();
-      if (expensesData) {
-        const expensesArray = Object.entries(expensesData).map(
-          ([key, value]) => ({
-            id: key,
-            ...value,
-          })
-        );
-        console.log(expensesArray);
-        setExpenses(expensesArray);
-        setIsLoading(false);
-      }
-    };
+    const expRef = ref(realTimeDatabase, `${DB_EXPENSES_FOLDER_NAME}/${uid}`);
 
-    fetchExpenses();
+    const listener = onValue(
+      expRef,
+      (snapshot) => {
+        const expensesData = snapshot.val();
+        if (expensesData) {
+          const expensesArray = Object.entries(expensesData).map(
+            ([key, value]) => ({
+              id: key,
+              ...value,
+            })
+          );
+          console.log(expensesArray);
+          setExpenses(expensesArray);
+          setIsLoading(false);
+        }
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
 
     return () => {
+      off(expRef, listener);
       setExpenses([]);
     };
   }, [uid, mapRef, expenseCounter]);
@@ -80,10 +85,10 @@ export default function MapExpenses({ isLoggedIn, uid, userData }) {
   }, [userData]);
 
   // useEffect to update the displayCurrency in the database
-  // useEffect(() => {
-  //   const userRef = ref(realTimeDatabase, `${DB_USERS_FOLDER_NAME}/${uid}`);
-  //   update(userRef, { displayCurrency: displayCurrency });
-  // }, [displayCurrency]);
+  useEffect(() => {
+    const userRef = ref(realTimeDatabase, `${DB_USERS_FOLDER_NAME}/${uid}`);
+    update(userRef, { displayCurrency: displayCurrency });
+  }, [displayCurrency]);
 
   // create isLoaded variable and assign it the results of useLoadScript + google maps API
   const { isLoaded } = useLoadScript({
@@ -124,6 +129,7 @@ export default function MapExpenses({ isLoggedIn, uid, userData }) {
             formatter={formatter}
             highlighted={highlighted}
             setHighlighted={setHighlighted}
+            isLoading={isLoading}
           />
           <ListExpenses
             uid={uid}

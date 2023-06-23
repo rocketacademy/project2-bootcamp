@@ -22,7 +22,6 @@ export default function App() {
   const [user, setUser] = useState({});
   const [uid, setUID] = useState("");
   const [profilePhotoURL, setProfilePhotoURL] = useState("");
-  const [userKey, setUserKey] = useState("");
   const [userData, setUserData] = useState("");
   const navigate = useNavigate();
 
@@ -34,34 +33,32 @@ export default function App() {
         setUID(user.uid);
         console.log("user exist" + user);
 
-        const dbRef = ref(realTimeDatabase);
-        get(child(dbRef, `${DB_USER_FOLDER_NAME}/${uid}`))
+        const userDataRef = ref(
+          realTimeDatabase,
+          `${DB_USER_FOLDER_NAME}/${uid}`
+        );
+        get(userDataRef)
           .then((snapshot) => {
             if (snapshot.exists()) {
-              snapshot.forEach((childSnapshot) => {
-                const userKey = childSnapshot.key; // Retrieve the key of each child node
-                const userData = childSnapshot.val(); // Retrieve the data of each child node
-                console.log("User Key:", userKey);
-                console.log("User Data:", userData);
-                const requiredUserData = {
-                  ["Display Name"]: userData.displayName,
-                  ["First Name"]: userData.firstName,
-                  ["Last Name"]: userData.lastName,
-                  ["Email"]: userData.email,
-                  ["Display Currency"]: userData.displayCurrency,
-                };
-                setUserData(requiredUserData); //only take those required
-                setUserKey(userKey);
+              const userData = snapshot.val(); // Retrieve the data of the node
+              console.log("User Data:", userData);
+              const requiredUserData = {
+                ["Display Name"]: userData.displayName,
+                ["First Name"]: userData.firstName,
+                ["Last Name"]: userData.lastName,
+                ["Email"]: userData.email,
+                ["Display Currency"]: userData.displayCurrency,
+              };
+              setUserData(requiredUserData); //only take those required
 
-                // use uid to find profile url
-                const profilePhotoRef = ref(
-                  realTimeDatabase,
-                  `${DB_USER_FOLDER_NAME}/${uid}/${userKey}/profileUrl`
-                );
+              // use uid to find profile url
+              const profilePhotoRef = ref(
+                realTimeDatabase,
+                `${DB_USER_FOLDER_NAME}/${uid}/profileUrl`
+              );
 
-                onValue(profilePhotoRef, (snapshot) => {
-                  setProfilePhotoURL(snapshot.val());
-                });
+              onValue(profilePhotoRef, (snapshot) => {
+                setProfilePhotoURL(snapshot.val());
               });
             } else {
               console.log("No data available");
@@ -81,6 +78,7 @@ export default function App() {
 
   console.log(`isLoggedIn: ${isLoggedIn}`);
   console.log(user);
+  console.log(userData);
   console.log(`uid: ${uid}`);
   console.log(`profilePhotoURL: ${profilePhotoURL}`);
   return (

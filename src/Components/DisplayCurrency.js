@@ -48,7 +48,7 @@ export default function DisplayCurrency({
                 id="currency-typeahead"
                 labelKey="currency"
                 placeholder="Search currency"
-                onChange={(selected) => setDisplayCurrency(selected)}
+                onChange={(selected) => setDisplayCurrency(selected[0])}
                 options={currenciesList}
               ></Typeahead>
             </InputGroup>

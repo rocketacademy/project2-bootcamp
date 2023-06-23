@@ -30,6 +30,7 @@ export default function Map({
   formatter,
   highlighted,
   setHighlighted,
+  isLoading,
 }) {
   // const [mapRef, setMapRef] = useState();
   const [isOpen, setIsOpen] = useState(false);
@@ -163,19 +164,37 @@ export default function Map({
                     {/* if marker is clicked, isOpen is set to true and infoWindow is rendered with dollar amount */}
                     {isOpen && infoWindowData?.id === id && (
                       <InfoWindowF
+                        position={{ lat, lng }}
                         onCloseClick={() => {
                           setIsOpen(false);
                         }}
                       >
-                        <p>
-                          <b>{`${
-                            infoWindowData.displayCurrency
-                          } ${formatter.format(
-                            infoWindowData.displayAmount
-                          )} on ${infoWindowData.category}`}</b>
-                          <br />
-                          <em>{`(${infoWindowData.date}: ${infoWindowData.description})`}</em>
-                        </p>
+                        <div>
+                          <p>
+                            <b>
+                              <u>{`${infoWindowData.date}`}</u>
+                              <br />
+                              {`${
+                                infoWindowData.displayCurrency
+                              } ${formatter.format(
+                                infoWindowData.displayAmount
+                              )} 
+                            on ${infoWindowData.category}`}
+                            </b>
+                            {infoWindowData.currency !==
+                            infoWindowData.displayCurrency ? (
+                              <>
+                                <br />
+                                <em>{`${infoWindowData.currency}: ${infoWindowData.amount}`}</em>
+                              </>
+                            ) : null}
+                            {infoWindowData.description !== "-" ? (
+                              <>
+                                <br /> {infoWindowData.description}
+                              </>
+                            ) : null}
+                          </p>
+                        </div>
                       </InfoWindowF>
                     )}
                   </MarkerF>
