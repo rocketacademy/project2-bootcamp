@@ -30,6 +30,7 @@ export default function Map({
   formatter,
   highlighted,
   setHighlighted,
+  isLoading,
 }) {
   // const [mapRef, setMapRef] = useState();
   const [isOpen, setIsOpen] = useState(false);
@@ -51,11 +52,22 @@ export default function Map({
     currency,
     category,
     description,
-    date
+    date,
+    displayAmount,
+    displayCurrency
   ) => {
     setIsOpen(false);
     mapRef?.panTo({ lat, lng });
-    setInfoWindowData({ id, amount, currency, category, description, date });
+    setInfoWindowData({
+      id,
+      amount,
+      currency,
+      category,
+      description,
+      date,
+      displayAmount,
+      displayCurrency,
+    });
     setIsOpen(true);
   };
 
@@ -66,8 +78,18 @@ export default function Map({
         (expense) => expense.id === highlighted
       );
       if (highlightedExpense) {
-        const { id, lat, lng, amount, currency, category, description, date } =
-          highlightedExpense;
+        const {
+          id,
+          lat,
+          lng,
+          amount,
+          currency,
+          category,
+          description,
+          date,
+          displayAmount,
+          displayCurrency,
+        } = highlightedExpense;
         handleMarkerClick(
           id,
           lat,
@@ -76,7 +98,9 @@ export default function Map({
           currency,
           category,
           description,
-          date
+          date,
+          displayAmount,
+          displayCurrency
         );
       } else {
         setIsOpen(false);
@@ -114,6 +138,8 @@ export default function Map({
                   category,
                   description,
                   date,
+                  displayAmount,
+                  displayCurrency,
                 }) => (
                   <MarkerF
                     key={id}
@@ -127,26 +153,48 @@ export default function Map({
                         currency,
                         category,
                         description,
-                        date
+                        date,
+                        displayAmount,
+                        displayCurrency
                       );
                       setHighlighted(id);
                     }}
-                    icon={markerImages[getDollarAmountCategory(amount)]}
+                    icon={markerImages[getDollarAmountCategory(displayAmount)]}
                   >
                     {/* if marker is clicked, isOpen is set to true and infoWindow is rendered with dollar amount */}
                     {isOpen && infoWindowData?.id === id && (
                       <InfoWindowF
+                        position={{ lat, lng }}
                         onCloseClick={() => {
                           setIsOpen(false);
                         }}
                       >
-                        <p>
-                          <b>{`${infoWindowData.currency} ${formatter.format(
-                            infoWindowData.amount
-                          )} on ${infoWindowData.category}`}</b>
-                          <br />
-                          <em>{`(${infoWindowData.date}: ${infoWindowData.description})`}</em>
-                        </p>
+                        <div>
+                          <p>
+                            <b>
+                              <u>{`${infoWindowData.date}`}</u>
+                              <br />
+                              {`${
+                                infoWindowData.displayCurrency
+                              } ${formatter.format(
+                                infoWindowData.displayAmount
+                              )} 
+                            on ${infoWindowData.category}`}
+                            </b>
+                            {infoWindowData.currency !==
+                            infoWindowData.displayCurrency ? (
+                              <>
+                                <br />
+                                <em>{`${infoWindowData.currency}: ${infoWindowData.amount}`}</em>
+                              </>
+                            ) : null}
+                            {infoWindowData.description !== "-" ? (
+                              <>
+                                <br /> {infoWindowData.description}
+                              </>
+                            ) : null}
+                          </p>
+                        </div>
                       </InfoWindowF>
                     )}
                   </MarkerF>

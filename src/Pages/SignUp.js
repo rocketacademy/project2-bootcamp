@@ -2,7 +2,7 @@ import "../App.css";
 import React, { useState } from "react";
 import { realTimeDatabase, storage, auth } from "../firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { push, ref, set } from "firebase/database";
+import { ref, set } from "firebase/database";
 import {
   ref as storageRef,
   uploadBytes,
@@ -15,7 +15,7 @@ import { Container, Row, Col, Form, Button } from "react-bootstrap";
 const DB_USER_FOLDER_NAME = "user";
 const STORAGE_PROFILE_FOLDER_NAME = "profilePhoto";
 
-export default function SignUp({ isLoggedIn, username }) {
+export default function SignUp({ isLoggedIn }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [firstName, setFirstName] = useState("");
@@ -39,14 +39,14 @@ export default function SignUp({ isLoggedIn, username }) {
             realTimeDatabase,
             `${DB_USER_FOLDER_NAME}/${userCredential.user.uid}`
           );
-          const newUserRef = push(userRef);
-          const newUserRefKey = newUserRef.key;
-          set(newUserRef, {
+          set(userRef, {
             firstName: firstName,
             lastName: lastName,
             UID: userCredential.user.uid,
             email: email,
             displayName: displayName,
+            // set default display currency for all new users to SGD
+            displayCurrency: "SGD",
           });
           // Store images in an images folder in Firebase Storage
           const fileRef = storageRef(
@@ -59,7 +59,7 @@ export default function SignUp({ isLoggedIn, username }) {
               // update user db with profile photo url
               const currUserRef = ref(
                 realTimeDatabase,
-                `${DB_USER_FOLDER_NAME}/${userCredential.user.uid}/${newUserRefKey}/profileUrl`
+                `${DB_USER_FOLDER_NAME}/${userCredential.user.uid}/profileUrl`
               );
               set(currUserRef, profileUrl);
             });

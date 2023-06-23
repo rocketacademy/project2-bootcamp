@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Button, Form, Modal, InputGroup } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Typeahead } from "react-bootstrap-typeahead";
@@ -48,7 +48,7 @@ export default function DisplayCurrency({
                 id="currency-typeahead"
                 labelKey="currency"
                 placeholder="Search currency"
-                onChange={(selected) => setDisplayCurrency(selected)}
+                onChange={(selected) => setDisplayCurrency(selected[0])}
                 options={currenciesList}
               ></Typeahead>
             </InputGroup>

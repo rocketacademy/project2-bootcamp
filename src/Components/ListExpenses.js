@@ -20,10 +20,11 @@ export default function ListExpenses({
   highlighted,
   handleOnSelect,
   isLoading,
+  displayCurrency,
+  setDisplayCurrency,
 }) {
   const [selectedExpense, setSelectedExpense] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  const [displayCurrency, setDisplayCurrency] = useState("SGD");
   const [currenciesList, setCurrencies] = useState([]);
   const highlightedCardRef = useRef(null); // Create reference for highlighted card
 
@@ -37,14 +38,15 @@ export default function ListExpenses({
     setShowModal(false);
   };
 
+  // function to sum up the total expenses
   const totalAmount = expenses.reduce(
-    (accumulator, expense) => accumulator + parseInt(expense.amount),
+    (accumulator, expense) => accumulator + parseInt(expense.displayAmount),
     0
   );
 
-  // sort expenses by date, with the earliest at the top of the list
+  // sort expenses by date, with the latest at the top of the list
   const sortedExpenses = expenses.sort(
-    (a, b) => new Date(a.date) - new Date(b.date)
+    (a, b) => new Date(b.date) - new Date(a.date)
   );
 
   // Group expenses by date
@@ -63,46 +65,47 @@ export default function ListExpenses({
     <div key={date}>
       {/*overall date header */}
       <Card.Header>{date}</Card.Header>
-      {expenses.map((expense) => (
-        <div
-          key={expense.id}
-          // styles highlighted expense
-          className={`${expense.id === highlighted ? "highlighted-card" : ""}`}
-          // tells app that this is the ref component that i need it to scroll into view
-          ref={expense.id === highlighted ? highlightedCardRef : null}
-        >
-          {/* onclick function stores expense.id into the highlighted state */}
-          <Card onClick={() => handleOnSelect(expense)}>
-            <Card.Body>
-              <div className="card-content">
-                <div>
-                  <Card.Title>
-                    {expense.category}
-                    {/* - {expense.location} */}
-                  </Card.Title>
-                  <Card.Subtitle className="mb-2 text-muted">
-                    {expense.description}
-                    <br />
-                    {expense.currency} {formatter.format(expense.amount)}
-                  </Card.Subtitle>
-                  {/* <Card.Text></Card.Text> */}
-                </div>
-                {expense.receiptUrl ? (
-                  <Button
-                    variant="info"
-                    onClick={() => handleShowReceiptClick(expense)}
-                    title="Click to view receipt"
-                  >
-                    Show Receipt
-                  </Button>
-                ) : (
-                  []
-                )}
-              </div>
-            </Card.Body>
-          </Card>
-        </div>
-      ))}
+      {expenses.map(
+        (expense) =>
+          expense.displayAmount !== undefined && (
+            <div
+              key={expense.id}
+              className={`${
+                expense.id === highlighted ? "highlighted-card" : ""
+              }`}
+              ref={expense.id === highlighted ? highlightedCardRef : null}
+            >
+              <Card onClick={() => handleOnSelect(expense)}>
+                <Card.Body>
+                  <div className="card-content">
+                    <div>
+                      <Card.Title>{expense.category}</Card.Title>
+                      <Card.Subtitle className="mb-2 text-muted">
+                        {expense.description}
+                        <br />
+                        {expense.displayCurrency || expense.currency}{" "}
+                        {formatter.format(
+                          expense.displayAmount || expense.amount
+                        )}
+                      </Card.Subtitle>
+                    </div>
+                    {expense.receiptUrl ? (
+                      <Button
+                        variant="info"
+                        onClick={() => handleShowReceiptClick(expense)}
+                        title="Click to view receipt"
+                      >
+                        Show Receipt
+                      </Button>
+                    ) : (
+                      []
+                    )}
+                  </div>
+                </Card.Body>
+              </Card>
+            </div>
+          )
+      )}
     </div>
   ));
 
@@ -116,13 +119,13 @@ export default function ListExpenses({
     }
   }, [highlighted]);
 
+  // function + useEffect to convert currencies from array of objects to array of strings
   const currencyList = () => {
     const array = [];
     currencies.map((currency) => array.push(currency.code));
     return array;
   };
 
-  // useEffect to convert currencies from array of objects to array of strings
   useEffect(() => {
     setCurrencies(currencyList());
   }, []);
@@ -149,12 +152,19 @@ export default function ListExpenses({
             expenseCounter={expenseCounter}
             setExpenseCounter={setExpenseCounter}
             currenciesList={currenciesList}
+            displayCurrency={displayCurrency}
           />
           <Filter />
         </div>
       </div>
       <div className="allExp-container">
-        {isLoading ? <h1>Loading</h1> : expenses.length === 0 ? null : allExp}
+        {isLoading ? (
+          <p style={{ textAlign: "center" }}>
+            <em>Your expenses will appear here</em>
+          </p>
+        ) : expenses.length === 0 ? null : (
+          allExp
+        )}
       </div>
       <Modal show={showModal} onHide={closeReceiptModal}>
         <Modal.Header closeButton>
