@@ -1,6 +1,6 @@
 import "../App.css";
-import { useState, useEffect } from "react";
-import { Button, Form, Modal, InputGroup, Col } from "react-bootstrap";
+import { useEffect, useState } from "react";
+import { Button, Form, Modal, InputGroup } from "react-bootstrap";
 import { realTimeDatabase, storage } from "../firebase";
 import { push, ref, set } from "firebase/database";
 import {
@@ -28,6 +28,7 @@ export default function InputExpenses({
   setExpenseCounter,
   userLocation,
   currenciesList,
+  displayCurrency,
 }) {
   const [show, setShow] = useState(false);
   const [category, setCategory] = useState("");
@@ -45,13 +46,22 @@ export default function InputExpenses({
 
   // map to pan to most recently added expense
   const getLatestExpLocation = () => {
-    const array = Object.values(expenses);
-    const lastItem = array[array.length - 1];
-    const lat = lastItem.lat;
-    const lng = lastItem.lng;
-    const lastCenter = { lat, lng };
-    return lastCenter;
+    const expensesArray = Object.values(expenses);
+    const lastExpense = expensesArray[expensesArray.length - 1];
+    return lastExpense ? { lat: lastExpense.lat, lng: lastExpense.lng } : null;
   };
+
+  // useEffect to pan to latest expense location once extracted
+  useEffect(() => {
+    const fetchAndPanToLatestLocation = async () => {
+      const location = await getLatestExpLocation();
+      if (location) {
+        mapRef.panTo(location);
+      }
+    };
+
+    fetchAndPanToLatestLocation();
+  }, [expenses]);
 
   // Get lat and lng coordinates on 'look up' button press
   const getLatLng = () =>
@@ -68,6 +78,7 @@ export default function InputExpenses({
       }
     );
 
+  // functions to show / hide inputExpenses modal
   const handleClose = () => setShow(false);
   const handleShow = () => {
     setShow(true);
@@ -103,6 +114,7 @@ export default function InputExpenses({
     set(newExpRef, {
       category: category,
       currency: currency,
+      displayCurrency: displayCurrency,
       amount: amount,
       lat: lat,
       lng: lng,
@@ -130,8 +142,6 @@ export default function InputExpenses({
 
     handleClose();
     handleNewInput();
-    mapRef.panTo(getLatestExpLocation());
-    console.log(getLatestExpLocation());
     setExpenseCounter((prevExpenseCounter) => prevExpenseCounter + 1);
   };
 
@@ -206,7 +216,7 @@ export default function InputExpenses({
                 id="currency-typeahead"
                 labelKey="currency"
                 placeholder={currency}
-                onChange={(selected) => setCurrency(selected)}
+                onChange={(selected) => setCurrency(selected[0])}
                 options={currenciesList}
               ></Typeahead>
 

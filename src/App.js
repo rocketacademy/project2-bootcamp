@@ -48,6 +48,7 @@ export default function App() {
                   ["First Name"]: userData.firstName,
                   ["Last Name"]: userData.lastName,
                   ["Email"]: userData.email,
+                  ["Display Currency"]: userData.displayCurrency,
                 };
                 setUserData(requiredUserData); //only take those required
                 setUserKey(userKey);
@@ -168,7 +169,13 @@ export default function App() {
         <Route path="/" element={<Welcome isLoggedIn={isLoggedIn} />} />
         <Route
           path="/mapexpenses"
-          element={<MapExpenses isLoggedIn={isLoggedIn} uid={uid} />}
+          element={
+            <MapExpenses
+              isLoggedIn={isLoggedIn}
+              uid={uid}
+              userData={userData}
+            />
+          }
         />
         <Route
           path="/profile"

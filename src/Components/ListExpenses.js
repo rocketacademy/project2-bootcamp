@@ -20,10 +20,11 @@ export default function ListExpenses({
   highlighted,
   handleOnSelect,
   isLoading,
+  displayCurrency,
+  setDisplayCurrency,
 }) {
   const [selectedExpense, setSelectedExpense] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  const [displayCurrency, setDisplayCurrency] = useState("SGD");
   const [currenciesList, setCurrencies] = useState([]);
   const highlightedCardRef = useRef(null); // Create reference for highlighted card
 
@@ -37,8 +38,9 @@ export default function ListExpenses({
     setShowModal(false);
   };
 
+  // function to sum up the total expenses
   const totalAmount = expenses.reduce(
-    (accumulator, expense) => accumulator + parseInt(expense.amount),
+    (accumulator, expense) => accumulator + parseInt(expense.displayAmount),
     0
   );
 
@@ -83,7 +85,8 @@ export default function ListExpenses({
                   <Card.Subtitle className="mb-2 text-muted">
                     {expense.description}
                     <br />
-                    {expense.currency} {formatter.format(expense.amount)}
+                    {expense.displayCurrency || expense.currency}{" "}
+                    {formatter.format(expense.displayAmount || expense.amount)}
                   </Card.Subtitle>
                   {/* <Card.Text></Card.Text> */}
                 </div>
@@ -116,13 +119,13 @@ export default function ListExpenses({
     }
   }, [highlighted]);
 
+  // function + useEffect to convert currencies from array of objects to array of strings
   const currencyList = () => {
     const array = [];
     currencies.map((currency) => array.push(currency.code));
     return array;
   };
 
-  // useEffect to convert currencies from array of objects to array of strings
   useEffect(() => {
     setCurrencies(currencyList());
   }, []);
@@ -149,6 +152,7 @@ export default function ListExpenses({
             expenseCounter={expenseCounter}
             setExpenseCounter={setExpenseCounter}
             currenciesList={currenciesList}
+            displayCurrency={displayCurrency}
           />
           <Filter />
         </div>

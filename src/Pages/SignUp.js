@@ -47,6 +47,8 @@ export default function SignUp({ isLoggedIn, username }) {
             UID: userCredential.user.uid,
             email: email,
             displayName: displayName,
+            // set default display currency for all new users to SGD
+            displayCurrency: "SGD",
           });
           // Store images in an images folder in Firebase Storage
           const fileRef = storageRef(
