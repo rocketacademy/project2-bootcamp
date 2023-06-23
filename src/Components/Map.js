@@ -171,32 +171,26 @@ export default function Map({
                       >
                         <div>
                           <p>
-                            <b>
-                              <u>{`${infoWindowData.date}`}</u>
-                              <br />
-                              {`${
-                                infoWindowData.displayCurrency
-                              } ${formatter.format(
-                                infoWindowData.displayAmount
-                              )} 
-                            on ${infoWindowData.category}`}
-                            </b>
-                            {infoWindowData.currency !==
-                            infoWindowData.displayCurrency ? (
-                              <>
-                                <br />
-                                <em>{`${
-                                  infoWindowData.currency
-                                }: ${formatter.format(
-                                  infoWindowData.amount
-                                )}`}</em>
-                              </>
-                            ) : null}
+                            <u>{`${infoWindowData.date}`}</u>
+                            <br />
+                            {`${infoWindowData.category}`}
                             {infoWindowData.description !== "-" ? (
                               <>
                                 <br /> {infoWindowData.description}
                               </>
                             ) : null}
+                            <br />
+                            {`${
+                              infoWindowData.displayCurrency
+                            } ${formatter.format(
+                              infoWindowData.displayAmount
+                            )}`}
+                            {infoWindowData.currency !==
+                            infoWindowData.displayCurrency
+                              ? ` (${
+                                  infoWindowData.currency
+                                }: ${formatter.format(infoWindowData.amount)})`
+                              : null}
                           </p>
                         </div>
                       </InfoWindowF>
