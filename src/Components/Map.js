@@ -185,7 +185,11 @@ export default function Map({
                             infoWindowData.displayCurrency ? (
                               <>
                                 <br />
-                                <em>{`${infoWindowData.currency}: ${infoWindowData.amount}`}</em>
+                                <em>{`${
+                                  infoWindowData.currency
+                                }: ${formatter.format(
+                                  infoWindowData.amount
+                                )}`}</em>
                               </>
                             ) : null}
                             {infoWindowData.description !== "-" ? (

@@ -81,12 +81,21 @@ export default function ListExpenses({
                     <div>
                       <Card.Title>{expense.category}</Card.Title>
                       <Card.Subtitle className="mb-2 text-muted">
-                        {expense.description}
-                        <br />
+                        {expense.description !== "-" ? (
+                          <>
+                            {expense.description}
+                            <br />
+                          </>
+                        ) : null}
                         {expense.displayCurrency || expense.currency}{" "}
                         {formatter.format(
                           expense.displayAmount || expense.amount
                         )}
+                        {expense.displayCurrency !== expense.currency
+                          ? ` (${expense.currency} ${formatter.format(
+                              expense.amount
+                            )})`
+                          : null}
                       </Card.Subtitle>
                     </div>
                     {expense.receiptUrl ? (
