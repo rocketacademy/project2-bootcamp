@@ -18,16 +18,20 @@ import { Container, Row, Col, Form, Button } from "react-bootstrap";
 const DB_USER_FOLDER_NAME = "user";
 const STORAGE_PROFILE_FOLDER_NAME = "profilePhoto";
 
-export default function SignUp({ isLoggedIn }) {
+export default function SignUp({
+  isLoggedIn,
+  fileInputFile,
+  setFileInputFile,
+  fileInputValue,
+  setFileInputValue,
+}) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [displayName, setDisplayName] = useState("");
-  const [fileInputFile, setFileInputFile] = useState("");
-  const [fileInputValue, setFileInputValue] = useState("");
-  const navigate = useNavigate();
   const [validated, setValidated] = useState(false);
+  const navigate = useNavigate();
   const [validationError, setValidationError] = useState(false);
 
   const signUp = async (e) => {
@@ -83,6 +87,7 @@ export default function SignUp({ isLoggedIn }) {
                 console.log("Error creating user:", error);
               });
           }
+
         })
         .catch((error) => {
           console.log("Error fetching sign-in methods:", error);
