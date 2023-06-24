@@ -87,7 +87,6 @@ export default function SignUp({
                 console.log("Error creating user:", error);
               });
           }
-
         })
         .catch((error) => {
           console.log("Error fetching sign-in methods:", error);
@@ -128,8 +127,6 @@ export default function SignUp({
                           setFirstName(e.target.value);
                         }}
                         required
-                        // isInvalid={validated && !firstName}
-                        // isValid={validated && firstName}
                       />
                     </Col>
                     <Col>

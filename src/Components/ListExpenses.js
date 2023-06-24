@@ -4,7 +4,6 @@ import Filter from "./Filter";
 import InputExpenses from "./InputExpenses";
 import { useState, useRef, useEffect } from "react";
 import { Card, Button, Modal } from "react-bootstrap";
-import currencies from "./Currencies";
 
 export default function ListExpenses({
   uid,
@@ -22,10 +21,10 @@ export default function ListExpenses({
   isLoading,
   displayCurrency,
   setDisplayCurrency,
+  currenciesList,
 }) {
   const [selectedExpense, setSelectedExpense] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  const [currenciesList, setCurrencies] = useState([]);
   const highlightedCardRef = useRef(null); // Create reference for highlighted card
 
   const handleShowReceiptClick = (expense) => {
@@ -127,17 +126,6 @@ export default function ListExpenses({
       });
     }
   }, [highlighted]);
-
-  // function + useEffect to convert currencies from array of objects to array of strings
-  const currencyList = () => {
-    const array = [];
-    currencies.map((currency) => array.push(currency.code));
-    return array;
-  };
-
-  useEffect(() => {
-    setCurrencies(currencyList());
-  }, []);
 
   // Render the list of expenses
   return (

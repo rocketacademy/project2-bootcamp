@@ -47,7 +47,7 @@ export default function InputExpenses({
   // map to pan to most recently added expense
   const getLatestExpLocation = () => {
     const expensesArray = Object.values(expenses);
-    const lastExpense = expensesArray[expensesArray.length - 1];
+    const lastExpense = expensesArray[0];
     return lastExpense ? { lat: lastExpense.lat, lng: lastExpense.lng } : null;
   };
 
@@ -195,23 +195,6 @@ export default function InputExpenses({
             <br />
 
             <InputGroup className="mb-3">
-              {/* <Form.Select
-                aria-label="Default select example"
-                as={Col}
-                md="6"
-                value={currency}
-                onChange={(e) => setCurrency(e.target.value)}
-                required
-              >
-                <option value="" disabled>
-                  Currency
-                </option>
-                {currencies.map((currency) => (
-                  <option key={currency.code} value={currency.code}>
-                    {currency.code}
-                  </option>
-                ))}
-              </Form.Select> */}
               <Typeahead
                 id="currency-typeahead"
                 labelKey="currency"
