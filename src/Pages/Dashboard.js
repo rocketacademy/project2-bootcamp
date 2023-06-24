@@ -117,9 +117,7 @@ export default function Dashboard({ uid, isLoggedIn }) {
     }
     return null;
   };
-  // const handleClick = (data, index) => {
-  //   setSelectedDate(chartData[index].date);
-  // };
+
   return (
     <div className="dashboard">
       <h1 className="dashboard-header">Total spending </h1>
@@ -170,7 +168,6 @@ export default function Dashboard({ uid, isLoggedIn }) {
                     ? "#8884d8"
                     : "rgba(43, 92, 231, 0.2)"
                 }
-                // for this, we make the hovered colour #2B5CE7, else its opacity decreases to 20%
               />
             ))}
           </Bar>

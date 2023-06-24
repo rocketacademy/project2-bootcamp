@@ -1,8 +1,17 @@
 import React from "react";
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend } from "recharts";
-const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
+const COLORS = [
+  "#0088FE",
+  "#00C49F",
+  "#FFBB28",
+  "#FF8042",
+  "#8884d8",
+  "#c4babd",
+  "#ef97ae",
+];
 export default function ExpPieChart({ expensesList, selectedDate }) {
   // Filter expenses based on the selected date
+  // if selectedDate is not null, filter expensesList such that expense.date is equiv to selectedDate, else show all
   const filteredExpenses = selectedDate
     ? expensesList.filter((expense) => expense.date === selectedDate)
     : expensesList;
@@ -33,7 +42,7 @@ export default function ExpPieChart({ expensesList, selectedDate }) {
         <Pie
           data={pieChartData}
           cx={190}
-          cy={100}
+          cy={105}
           innerRadius={60}
           outerRadius={80}
           fill="#8884d8"
