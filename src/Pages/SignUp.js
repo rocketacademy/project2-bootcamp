@@ -81,13 +81,11 @@ export default function SignUp({ isLoggedIn }) {
               })
               .catch((error) => {
                 console.log("Error creating user:", error);
-                // Perform appropriate action (e.g., show an error message)
               });
           }
         })
         .catch((error) => {
           console.log("Error fetching sign-in methods:", error);
-          // Perform appropriate action (e.g., show an error message)
         });
       setValidated(false);
     }
