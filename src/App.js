@@ -14,6 +14,7 @@ import Error from "./Components/Error";
 import MapExpenses from "./Pages/MapExpenses";
 import { Navbar, Nav, Container, NavDropdown } from "react-bootstrap";
 import patchQuestionFillSvg from "./Icons/patch-question-fill.svg";
+import currencies from "./Components/Currencies";
 
 const DB_USER_FOLDER_NAME = "user";
 
@@ -26,6 +27,7 @@ export default function App() {
   const [fileInputFile, setFileInputFile] = useState("");
   const [fileInputValue, setFileInputValue] = useState("");
   const navigate = useNavigate();
+  const [currenciesList, setCurrencies] = useState([]);
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
@@ -79,6 +81,17 @@ export default function App() {
       }
     });
   }, [uid]);
+
+  // function + useEffect to convert currencies from array of objects to array of strings
+  const currencyList = () => {
+    const array = [];
+    currencies.map((currency) => array.push(currency.code));
+    return array;
+  };
+
+  useEffect(() => {
+    setCurrencies(currencyList());
+  }, []);
 
   console.log(`isLoggedIn: ${isLoggedIn}`);
   console.log(user);
@@ -176,6 +189,7 @@ export default function App() {
               isLoggedIn={isLoggedIn}
               uid={uid}
               userData={userData}
+              currenciesList={currenciesList}
             />
           }
         />
@@ -184,11 +198,14 @@ export default function App() {
           element={
             <Profile
               userData={userData}
+              setUserData={setUserData}
               profilePhotoURL={profilePhotoURL}
               fileInputFile={fileInputFile}
               setFileInputFile={setFileInputFile}
               fileInputValue={fileInputValue}
               setFileInputValue={setFileInputValue}
+              uid={uid}
+              currenciesList={currenciesList}
             />
           }
         />

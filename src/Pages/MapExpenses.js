@@ -10,7 +10,12 @@ import { useLoadScript } from "@react-google-maps/api";
 const DB_EXPENSES_FOLDER_NAME = "expenses";
 const DB_USERS_FOLDER_NAME = "user";
 
-export default function MapExpenses({ isLoggedIn, uid, userData }) {
+export default function MapExpenses({
+  isLoggedIn,
+  uid,
+  userData,
+  currenciesList,
+}) {
   console.log(isLoggedIn);
   console.log(uid);
   const [expenseCounter, setExpenseCounter] = useState(0);
@@ -150,6 +155,7 @@ export default function MapExpenses({ isLoggedIn, uid, userData }) {
             isLoading={isLoading}
             displayCurrency={displayCurrency}
             setDisplayCurrency={setDisplayCurrency}
+            currenciesList={currenciesList}
           />
         </div>
       ) : (
