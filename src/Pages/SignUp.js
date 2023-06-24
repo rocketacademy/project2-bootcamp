@@ -1,7 +1,10 @@
 import "../App.css";
 import React, { useState } from "react";
 import { realTimeDatabase, storage, auth } from "../firebase";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  fetchSignInMethodsForEmail,
+} from "firebase/auth";
 import { ref, set } from "firebase/database";
 import {
   ref as storageRef,
@@ -29,6 +32,7 @@ export default function SignUp({
   const [displayName, setDisplayName] = useState("");
   const [validated, setValidated] = useState(false);
   const navigate = useNavigate();
+  const [validationError, setValidationError] = useState(false);
 
   const signUp = async (e) => {
     e.preventDefault();
@@ -37,63 +41,60 @@ export default function SignUp({
     if (form.checkValidity() === false) {
       e.stopPropagation();
     } else {
-      createUserWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-          const userRef = ref(
-            realTimeDatabase,
-            `${DB_USER_FOLDER_NAME}/${userCredential.user.uid}`
-          );
-          set(userRef, {
-            firstName: firstName,
-            lastName: lastName,
-            UID: userCredential.user.uid,
-            email: email,
-            displayName: displayName,
-            // set default display currency for all new users to SGD
-            displayCurrency: "SGD",
-          });
-
-          if (fileInputFile) {
-            // Store images in an images folder in Firebase Storage
-            const fileRef = storageRef(
-              storage,
-              ` ${STORAGE_PROFILE_FOLDER_NAME}/${userCredential.user.uid}/${fileInputFile.name}`
-            );
-
-            uploadBytes(fileRef, fileInputFile).then((snapshot) => {
-              getDownloadURL(snapshot.ref).then((profileUrl) => {
-                // update user db with profile photo url
-                const currUserRef = ref(
-                  realTimeDatabase,
-                  `${DB_USER_FOLDER_NAME}/${userCredential.user.uid}/profileUrl`
-                );
-                set(currUserRef, profileUrl);
-              });
-            });
+      // Check if the email is already in use
+      fetchSignInMethodsForEmail(auth, email)
+        .then((signInMethods) => {
+          if (signInMethods.length > 0) {
+            // Email is already in use
+            console.log("Email is already in use");
+            setValidationError(true);
           } else {
-            const currUserRef = ref(
-              realTimeDatabase,
-              `${DB_USER_FOLDER_NAME}/${userCredential.user.uid}/profileUrl`
-            );
-            set(currUserRef, null);
+            // Email is valid and not in use
+            createUserWithEmailAndPassword(auth, email, password)
+              .then((userCredential) => {
+                const userRef = ref(
+                  realTimeDatabase,
+                  `${DB_USER_FOLDER_NAME}/${userCredential.user.uid}`
+                );
+                set(userRef, {
+                  firstName: firstName,
+                  lastName: lastName,
+                  UID: userCredential.user.uid,
+                  email: email,
+                  displayName: displayName,
+                  // set default display currency for all new users to SGD
+                  displayCurrency: "SGD",
+                });
+                // Store images in an images folder in Firebase Storage
+                const fileRef = storageRef(
+                  storage,
+                  ` ${STORAGE_PROFILE_FOLDER_NAME}/${userCredential.user.uid}/${fileInputFile.name}`
+                );
+
+                uploadBytes(fileRef, fileInputFile).then((snapshot) => {
+                  getDownloadURL(snapshot.ref).then((profileUrl) => {
+                    // update user db with profile photo url
+                    const currUserRef = ref(
+                      realTimeDatabase,
+                      `${DB_USER_FOLDER_NAME}/${userCredential.user.uid}/profileUrl`
+                    );
+                    set(currUserRef, profileUrl);
+                  });
+                });
+                navigate("/mapexpenses");
+              })
+              .catch((error) => {
+                console.log("Error creating user:", error);
+              });
           }
 
-          navigate("/mapexpenses");
-          // setEmail("");
-          // setPassword("");
-          // setFirstName("");
-          // setLastName("");
-          // setFileInputFile("");
-          // setFileInputValue("");
         })
         .catch((error) => {
-          console.log("Error getting download URL:", error);
-          // alert(error);
+          console.log("Error fetching sign-in methods:", error);
         });
-      //reset form fields
-      // form.reset();
       setValidated(false);
     }
+
     setValidated(true);
   };
 
@@ -166,10 +167,19 @@ export default function SignUp({
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
+                    style={{
+                      borderColor: validationError ? "red" : "",
+                    }}
                   />
-                  <Form.Text className="text-muted">
-                    We'll never share your email with anyone else.
-                  </Form.Text>
+                  {validationError ? (
+                    <span style={{ color: "red" }}>
+                      Email is already in use
+                    </span>
+                  ) : (
+                    <Form.Text className="text-muted">
+                      We'll never share your email with anyone else.
+                    </Form.Text>
+                  )}
                 </Form.Group>
 
                 <Form.Group className="mb-3" controlId="formBasicPassword">

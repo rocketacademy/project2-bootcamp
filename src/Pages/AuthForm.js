@@ -19,8 +19,6 @@ export default function AuthForm({ isLoggedIn, username }) {
       })
       .catch((error) => {
         const errorCode = error.code;
-        const errorMessage = error.message;
-        // alert(errorCode);
         if (errorCode === "auth/user-not-found") {
           alert("Oops! Invalid email address. ");
         } else if (errorCode === "auth/wrong-password") {
