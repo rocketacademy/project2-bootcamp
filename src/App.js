@@ -1,20 +1,33 @@
-import React from "react";
-import logo from "./assets/logo.png";
+import React, { useEffect, useState } from "react";
 import "./App.css";
-import defineRoutesHere from "./routes/routes";
 import ResponsiveAppBar from "./components/Navbar";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "./config";
+import DefineRoutesHere from "./routes/routes";
 
 const App = () => {
+  const [loggedInUser, setLoggedInUser] = useState();
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (userObj) => {
+      // If user is logged in, save logged-in user to state
+      if (userObj) {
+        setLoggedInUser(userObj);
+        return;
+      }
+      // Else set logged-in user in state to null
+      setLoggedInUser(null);
+    });
+  }, [loggedInUser]);
+
   return (
     <div className="App">
-      <ResponsiveAppBar/>
+      {loggedInUser !== null && (
+        <ResponsiveAppBar loggedInUser={loggedInUser} />
+      )}
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <br/>
-        {defineRoutesHere()}
+        <br />
+        <DefineRoutesHere />
       </header>
     </div>
   );

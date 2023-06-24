@@ -1,0 +1,18 @@
+#outlined-basic {
+  width: 500px;
+}
+
+.form {
+  padding: 2rem;
+  display: grid;
+  gap: 2rem;
+}
+
+/* If you want the content centered horizontally and vertically */
+.centered {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: left;
+}
