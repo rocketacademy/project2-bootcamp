@@ -145,12 +145,11 @@ export default function Dashboard({ uid, isLoggedIn }) {
             left: 20,
             bottom: 5,
           }}
-          onMouseMove={(event) => {
-            const { activeTooltipIndex } = event;
-            if (activeTooltipIndex !== null) {
-              setFocusBar(activeTooltipIndex);
+          onMouseMove={(state) => {
+            if (state.isTooltipActive) {
+              setFocusBar(state.activeTooltipIndex);
               setMouseLeave(false);
-              const { date } = chartData[activeTooltipIndex];
+              const { date } = chartData[state.activeTooltipIndex];
               setSelectedDate(date);
             } else {
               setFocusBar(null);
