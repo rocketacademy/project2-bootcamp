@@ -47,7 +47,7 @@ export default function InputExpenses({
   // map to pan to most recently added expense
   const getLatestExpLocation = () => {
     const expensesArray = Object.values(expenses);
-    const lastExpense = expensesArray[expensesArray.length - 1];
+    const lastExpense = expensesArray[0];
     return lastExpense ? { lat: lastExpense.lat, lng: lastExpense.lng } : null;
   };
 
