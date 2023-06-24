@@ -24,32 +24,32 @@ export default function Profile({
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  const handleUpload = () => {
-    if (fileInputFile) {
-      // Store images in an images folder in Firebase Storage
-      const fileRef = storageRef(
-        storage,
-        ` ${STORAGE_PROFILE_FOLDER_NAME}/${userCredential.user.uid}/${fileInputFile.name}`
-      );
+  // const handleUpload = () => {
+  //   if (fileInputFile) {
+  //     // Store images in an images folder in Firebase Storage
+  //     const fileRef = storageRef(
+  //       storage,
+  //       ` ${STORAGE_PROFILE_FOLDER_NAME}/${userCredential.user.uid}/${fileInputFile.name}`
+  //     );
 
-      uploadBytes(fileRef, fileInputFile).then((snapshot) => {
-        getDownloadURL(snapshot.ref).then((profileUrl) => {
-          // update user db with profile photo url
-          const currUserRef = ref(
-            realTimeDatabase,
-            `${DB_USER_FOLDER_NAME}/${userCredential.user.uid}/profileUrl`
-          );
-          set(currUserRef, profileUrl);
-        });
-      });
-    } else {
-      const currUserRef = ref(
-        realTimeDatabase,
-        `${DB_USER_FOLDER_NAME}/${userCredential.user.uid}/profileUrl`
-      );
-      set(currUserRef, null);
-    }
-  };
+  //     uploadBytes(fileRef, fileInputFile).then((snapshot) => {
+  //       getDownloadURL(snapshot.ref).then((profileUrl) => {
+  //         // update user db with profile photo url
+  //         const currUserRef = ref(
+  //           realTimeDatabase,
+  //           `${DB_USER_FOLDER_NAME}/${userCredential.user.uid}/profileUrl`
+  //         );
+  //         set(currUserRef, profileUrl);
+  //       });
+  //     });
+  //   } else {
+  //     const currUserRef = ref(
+  //       realTimeDatabase,
+  //       `${DB_USER_FOLDER_NAME}/${userCredential.user.uid}/profileUrl`
+  //     );
+  //     set(currUserRef, null);
+  //   }
+  // };
 
   return (
     <div>
@@ -99,7 +99,10 @@ export default function Profile({
             <Button variant="secondary" onClick={handleClose}>
               Close
             </Button>
-            <Button variant="primary" onClick={handleUpload}>
+            <Button
+              variant="primary"
+              // onClick={handleUpload}
+            >
               Upload
             </Button>
           </Modal.Footer>
