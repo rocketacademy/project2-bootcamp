@@ -1,6 +1,8 @@
 import React from "react";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
+import Search from "../components/SearchBar";
 
 // mui styling
 import Card from "@mui/material/Card";
@@ -9,37 +11,27 @@ import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 import { CardActionArea } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2";
-import Search from "../components/SearchBar";
 
 function SearchPage() {
   const [searchedRecipes, setSearchedRecipes] = useState([]);
 
   let params = useParams();
-  console.log(searchedRecipes)
+
+  const getSearchResults = async (name) => {
+    const data = await fetch(
+      `https://api.spoonacular.com/recipes/complexSearch?apiKey=${process.env.REACT_APP_API_KEY2}&query=${name}&number=4`
+    );
+    const recipes = await data.json();
+    setSearchedRecipes(recipes.results);
+  };
+
   useEffect(() => {
-    const getSearchResults = async (name) => {
-      const data = await fetch(
-        `https://api.spoonacular.com/recipes/complexSearch?apiKey=${process.env.REACT_APP_API_KEY2}&query=${name}&number=4`
-      );
-      const recipes = await data.json();
-      setSearchedRecipes(recipes.results);
-    };
     getSearchResults(params.search);
   }, [params.search]);
 
   return (
-    // <Grid>
-    //   {searchedRecipes.map((item) => {
-    //     return (
-    //       <Card key={item.id}>
-    //         <img src={item.image} alt="" />
-    //         <h4>{item.title}</h4>
-    //       </Card>
-    //     );
-    //   })}
-    // </Grid>
     <div>
-      <Search />
+      <Search></Search>
       <Grid container spacing={2}>
         {searchedRecipes.map((item) => {
           return (
@@ -51,7 +43,11 @@ function SearchPage() {
               alignItems="center"
             >
               <Card sx={{ maxWidth: 345 }} key={item.id}>
-                <CardActionArea>
+                <CardActionArea
+                  component={Link}
+                  to={`/recipe/${item.id}`}
+                  key={item.id}
+                >
                   <CardMedia component="img" src={item.image} alt="" />
                   <CardContent>
                     <Typography gutterBottom variant="h5" component="div">
