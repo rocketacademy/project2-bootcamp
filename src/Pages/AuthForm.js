@@ -4,6 +4,7 @@ import { auth } from "../firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useNavigate, Link } from "react-router-dom";
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
+import { CenterFocusStrong } from "@mui/icons-material";
 
 export default function AuthForm({ isLoggedIn, username }) {
   const [email, setEmail] = useState("");
@@ -30,11 +31,14 @@ export default function AuthForm({ isLoggedIn, username }) {
   return (
     <>
       <Container
-        className="d-flex align-items-center justify-content-center"
+        className="d-flex flex-column align-items-center justify-content-center "
         style={{ height: "100vh" }}
       >
+        {/* {" "}
+        <h2>Sign In</h2>
+        <br /> */}
         {isLoggedIn ? (
-          <div>
+          <div style={{ textAlign: "center" }}>
             <h2>Welcome </h2>
             <h5>Click on the top navigator to start posting!</h5>
           </div>
@@ -75,6 +79,10 @@ export default function AuthForm({ isLoggedIn, username }) {
                 <div className="text-center" style={{ marginTop: "5px" }}>
                   <Link to="/signUp">
                     Don't have an account? Create one here!
+                  </Link>
+                  <br />
+                  <Link to="/resetpassword">
+                    Otherwise, click here to reset your password.
                   </Link>
                 </div>
               </Form>

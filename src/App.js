@@ -15,6 +15,7 @@ import MapExpenses from "./Pages/MapExpenses";
 import { Navbar, Nav, Container, NavDropdown } from "react-bootstrap";
 import patchQuestionFillSvg from "./Icons/patch-question-fill.svg";
 import currencies from "./Components/Currencies";
+import ResetPassword from "./Pages/ResetPassword";
 
 const DB_USER_FOLDER_NAME = "user";
 
@@ -193,6 +194,7 @@ export default function App() {
             />
           }
         />
+
         <Route
           path="/profile"
           element={
@@ -209,10 +211,12 @@ export default function App() {
             />
           }
         />
+
         <Route
           path="/dashboard"
           element={<Dashboard isLoggedIn={isLoggedIn} uid={uid} />}
         />
+
         <Route
           path="/signup"
           element={
@@ -225,13 +229,19 @@ export default function App() {
             />
           }
         />
+
         <Route
           path="/authform"
           element={<AuthForm isLoggedIn={isLoggedIn} />}
         />
+
+        <Route
+          path="/resetpassword"
+          element={<ResetPassword isLoggedIn={isLoggedIn} />}
+        />
+
         <Route path="*" element={<Error />} />
       </Routes>
-      ;
     </>
   );
 }

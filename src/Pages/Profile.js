@@ -12,6 +12,7 @@ import {
 } from "firebase/storage";
 import { Typeahead } from "react-bootstrap-typeahead";
 import "react-bootstrap-typeahead/css/Typeahead.css";
+import { Link } from "react-router-dom";
 
 const DB_USER_FOLDER_NAME = "user";
 const STORAGE_PROFILE_FOLDER_NAME = "profilePhoto";
@@ -153,9 +154,21 @@ export default function Profile({
           <h1>{userData.displayName}</h1>
           {userInfo}
           <br />
-          <Button onClick={handleShow2} variant="secondary">
-            Update profile
-          </Button>
+
+          <div style={{ display: "flex" }}>
+            <Button
+              onClick={handleShow2}
+              variant="secondary"
+              style={{ marginRight: "10px" }}
+            >
+              Update profile
+            </Button>
+            <Button variant="danger">
+              <Link to="/resetpassword" style={{ color: "white" }}>
+                Reset password
+              </Link>
+            </Button>
+          </div>
         </div>
       </div>
       <div>
