@@ -51,7 +51,7 @@ export default function MapExpenses({
     }
   }, [expenseCounter]);
 
-  // updates expenses array with each additional expense
+  // Fetches latest expenses array, triggered with every additional expense
   useEffect(() => {
     const expRef = ref(realTimeDatabase, `${DB_EXPENSES_FOLDER_NAME}/${uid}`);
 
@@ -82,31 +82,31 @@ export default function MapExpenses({
     };
   }, [uid, mapRef, expenseCounter]);
 
-  // useEffect to fetch from the database and update the displayCurrency state
+  // Fetches displayCurrency from the database and update the client-side state i.e. Database > Client
   useEffect(() => {
     if (userData && userData.displayCurrency) {
       setDisplayCurrency(userData.displayCurrency);
     }
   }, [userData]);
 
-  // useEffect to update the displayCurrency in the database
+  // Update the displayCurrency in the database whenever there is a change in client-side state i.e., Client > Database
   useEffect(() => {
     const userRef = ref(realTimeDatabase, `${DB_USERS_FOLDER_NAME}/${uid}`);
     update(userRef, { displayCurrency: displayCurrency });
   }, [displayCurrency]);
 
-  // create isLoaded variable and assign it the results of useLoadScript + google maps API
+  // For GoogleMap: Create isLoaded variable and assign it the results of useLoadScript + google maps API
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: process.env.REACT_APP_API_KEY,
   });
 
-  // function to format numbers to the decimal format i.e., add a comma for every thousand and decimal places if applicable
+  // Format numbers to the decimal format i.e., add a comma for every thousand and decimal places if applicable
   const formatter = new Intl.NumberFormat("en-US", {
     style: "decimal",
     maximumFractionDigits: 2,
   });
 
-  // function to handle when an expense is selected - pushes expenseId into the state
+  // Note which expense is 'selected' or 'highlighted', and to style it accordingly
   const handleOnSelect = (expense) => {
     if (highlighted === expense.id) {
       setHighlighted(null);
@@ -115,6 +115,12 @@ export default function MapExpenses({
       console.log(highlighted);
     }
   };
+
+  // Updates details of expenses in the database; function is passed to ListExpenses component, prefer to keep the function here to use the realtime database imports and ref's
+  const handleEditExpenses = () => {};
+
+  // Deletes the expense in the database; function is passed to ListExpenses component, prefer to keep the function here to use the realtime database imports and ref's
+  const handleDeleteExpenses = () => {};
 
   return (
     <div>
