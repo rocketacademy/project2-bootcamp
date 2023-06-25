@@ -156,6 +156,8 @@ export default function Profile({
           <Button onClick={handleShow2} variant="secondary">
             Update profile
           </Button>
+          <br />
+          <Link to="/resetpassword">Click here to reset your password.</Link>
         </div>
       </div>
       <div>

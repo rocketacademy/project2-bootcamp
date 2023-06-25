@@ -76,6 +76,9 @@ export default function AuthForm({ isLoggedIn, username }) {
                   <Link to="/signUp">
                     Don't have an account? Create one here!
                   </Link>
+                  <Link to="/resetpassword">
+                    Otherwise, click here to reset your password.
+                  </Link>
                 </div>
               </Form>
             </Col>
