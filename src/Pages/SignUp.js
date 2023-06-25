@@ -100,9 +100,12 @@ export default function SignUp({
   return (
     <>
       <Container
-        className="d-flex align-items-center justify-content-center"
+        className="d-flex flex-column align-items-center justify-content-center"
         style={{ height: "100vh" }}
       >
+        {" "}
+        <h2>Sign Up</h2>
+        <br />
         {isLoggedIn ? (
           <div>
             <h2>Welcome {displayName}</h2>

@@ -30,9 +30,12 @@ export default function AuthForm({ isLoggedIn, username }) {
   return (
     <>
       <Container
-        className="d-flex align-items-center justify-content-center"
+        className="d-flex flex-column align-items-center justify-content-center "
         style={{ height: "100vh" }}
       >
+        {" "}
+        <h2>Sign In</h2>
+        <br />
         {isLoggedIn ? (
           <div>
             <h2>Welcome </h2>
@@ -76,6 +79,7 @@ export default function AuthForm({ isLoggedIn, username }) {
                   <Link to="/signUp">
                     Don't have an account? Create one here!
                   </Link>
+                  <br />
                   <Link to="/resetpassword">
                     Otherwise, click here to reset your password.
                   </Link>
