@@ -4,6 +4,7 @@ import { auth } from "../firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useNavigate, Link } from "react-router-dom";
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
+import { CenterFocusStrong } from "@mui/icons-material";
 
 export default function AuthForm({ isLoggedIn, username }) {
   const [email, setEmail] = useState("");
@@ -33,11 +34,11 @@ export default function AuthForm({ isLoggedIn, username }) {
         className="d-flex flex-column align-items-center justify-content-center "
         style={{ height: "100vh" }}
       >
-        {" "}
+        {/* {" "}
         <h2>Sign In</h2>
-        <br />
+        <br /> */}
         {isLoggedIn ? (
-          <div>
+          <div style={{ textAlign: "center" }}>
             <h2>Welcome </h2>
             <h5>Click on the top navigator to start posting!</h5>
           </div>

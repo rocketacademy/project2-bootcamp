@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { auth } from "../firebase";
+import { sendPasswordResetEmail } from "firebase/auth";
 import { Form, Button, InputGroup } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import "../App.css";
@@ -16,8 +17,7 @@ export default function PasswordResetForm() {
   const handleResetPassword = (e) => {
     e.preventDefault();
 
-    auth
-      .sendPasswordResetEmail(email)
+    sendPasswordResetEmail(auth, email)
       .then(() => {
         setResetSent(true);
       })
@@ -35,7 +35,7 @@ export default function PasswordResetForm() {
           <p>A password reset link has been sent to your email address.</p>
         ) : (
           <div>
-            <Form onSumit={handleResetPassword}>
+            <Form onSubmit={handleResetPassword}>
               <InputGroup
                 className="mb-3"
                 controlId="exampleForm.ControlInput1"
