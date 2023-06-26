@@ -9,8 +9,23 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
-import { CardActionArea } from "@mui/material";
+import { CardActionArea, CardActions } from "@mui/material";
+import BookmarkAddIcon from "@mui/icons-material/BookmarkAdd";
+import ShareIcon from "@mui/icons-material/Share";
+import IconButton from "@mui/material/IconButton";
 import Grid from "@mui/material/Unstable_Grid2";
+import ListItemButton from "@mui/material/ListItemButton";
+import Popper from "@mui/material/Popper";
+import PopupState, { bindToggle, bindPopper } from "material-ui-popup-state";
+import Fade from "@mui/material/Fade";
+import Paper from "@mui/material/Paper";
+// import { fade } from "@mui/material/styles/colorManipulator";
+
+import List from "@mui/material/List";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
+import FacebookIcon from "@mui/icons-material/Facebook";
+import LinkIcon from "@mui/icons-material/Link";
 
 function SearchPage() {
   const [searchedRecipes, setSearchedRecipes] = useState([]);
@@ -19,7 +34,7 @@ function SearchPage() {
 
   const getSearchResults = async (name) => {
     const data = await fetch(
-      `https://api.spoonacular.com/recipes/complexSearch?apiKey=${process.env.REACT_APP_API_KEY2}&query=${name}&number=4`
+      `https://api.spoonacular.com/recipes/complexSearch?apiKey=${process.env.REACT_APP_API_KEY}&query=${name}&number=4`
     );
     const recipes = await data.json();
     setSearchedRecipes(recipes.results);
@@ -28,6 +43,18 @@ function SearchPage() {
   useEffect(() => {
     getSearchResults(params.search);
   }, [params.search]);
+
+  const handleShare = (event, item) => {
+    event.preventDefault();
+    const recipeURL = `/recipe/${item.id}`;
+
+    if (event.currentTarget.id === "facebook") {
+      const link = `https://www.facebook.com/sharer/sharer.php?u=${recipeURL}`;
+      window.open(link, "_blank");
+    } else if (event.currentTarget.id === "copy") {
+      navigator.clipboard.writeText(recipeURL);
+    }
+  };
 
   return (
     <div>
@@ -55,6 +82,54 @@ function SearchPage() {
                     </Typography>
                   </CardContent>
                 </CardActionArea>
+                <CardActions>
+                  <IconButton aria-label="add to favorites">
+                    <BookmarkAddIcon />
+                  </IconButton>
+
+                  <PopupState variant="popper" popupId="demo-popup-popper">
+                    {(popupState) => (
+                      <div>
+                        <IconButton color="inherit" {...bindToggle(popupState)}>
+                          <ShareIcon />
+                        </IconButton>
+                        <Popper {...bindPopper(popupState)} transition>
+                          {({ TransitionProps }) => (
+                            <Fade {...TransitionProps} timeout={350}>
+                              <Paper>
+                                <List dense={true}>
+                                  <ListItemButton
+                                    id="facebook"
+                                    onClick={(event) =>
+                                      handleShare(event, item)
+                                    }
+                                  >
+                                    <ListItemIcon>
+                                      <FacebookIcon />
+                                    </ListItemIcon>
+                                    <ListItemText primary="Facebook" />
+                                  </ListItemButton>
+
+                                  <ListItemButton
+                                    id="copy"
+                                    onClick={(event) =>
+                                      handleShare(event, item)
+                                    }
+                                  >
+                                    <ListItemIcon>
+                                      <LinkIcon />
+                                    </ListItemIcon>
+                                    <ListItemText primary="Copy Link" />
+                                  </ListItemButton>
+                                </List>
+                              </Paper>
+                            </Fade>
+                          )}
+                        </Popper>
+                      </div>
+                    )}
+                  </PopupState>
+                </CardActions>
               </Card>
             </Grid>
           );
@@ -63,25 +138,5 @@ function SearchPage() {
     </div>
   );
 }
-
-// const Grid = styled.div`
-//   display: grid;
-//   grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
-//   grip-gap: 3rem;
-// `;
-
-// const Card = styled.div`
-// img
-//   {
-//   width:100%
-//   border-radius: 2rem;
-// }
-// a
-// {
-//   text-decoration:none;}
-// h4
-// {text-align:center;
-// padding: 1 rem;
-// }`;
 
 export default SearchPage;
