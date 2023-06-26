@@ -59,14 +59,15 @@ function AdminUpload(props) {
     
     // 'file' comes from the Blob or File API; On Click: Send file to firebase
     // For loop throught the array of uploaded files
-    files.forEach(file => {
+    files.forEach((file,index) => {
     // Handle if the file is null
     if (file !=null){
     // PART A: Upload file into storage
     let fileRef = storageRef(storage, `${IMAGES_FOLDER_NAME}/${file.name}`);
     // PART B: Upload ImageObject
     // Uploading object for posts to the Firebase if there is a file
-    uploadBytes(fileRef, file).then(() => {
+    uploadBytes(fileRef, file)
+    .then(() => {
         getDownloadURL(fileRef).then((downloadUrl) => { //get download URL for the given file
         
         //Writing data into the database
@@ -83,7 +84,14 @@ function AdminUpload(props) {
           })
         }
         )
-      })
+        console.log(`Uploading ${file.name} ...`);
+      }
+      
+      )
+      .catch((error) => {
+        // Handle upload error
+        console.log('Error uploading data:', error);
+      });
     }});   
 
       // Submit the form
