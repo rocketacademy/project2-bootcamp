@@ -118,9 +118,6 @@ export default function MapExpenses({
     }
   };
 
-  // Updates details of expenses in the database; function is passed to ListExpenses component, prefer to keep the function here to use the realtime database imports and ref's
-  const handleEditExpenses = () => {};
-
   // Deletes the expense in the database; function is passed to ListExpenses component, prefer to keep the function here to use the realtime database imports and ref's
   const handleDeleteExpenses = (expenseId) => {
     if (window.confirm("Are you sure you want to delete this expense?")) {

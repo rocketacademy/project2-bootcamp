@@ -1,5 +1,6 @@
 import "../App.css";
 import DisplayCurrency from "./DisplayCurrency";
+import EditExpenses from "./EditExpenses";
 import Filter from "./Filter";
 import InputExpenses from "./InputExpenses";
 import { useState, useRef, useEffect } from "react";
@@ -100,22 +101,25 @@ export default function ListExpenses({
                           : null}
                       </Card.Subtitle>
                     </div>
-                    {expense.receiptUrl ? (
-                      <Button
-                        variant="info"
-                        onClick={() => handleShowReceiptClick(expense)}
-                        title="Click to view receipt"
-                      >
-                        Show Receipt
-                      </Button>
-                    ) : (
-                      []
-                    )}
                     <div>
+                      {expense.receiptUrl ? (
+                        <Button
+                          variant="info"
+                          onClick={() => handleShowReceiptClick(expense)}
+                          title="Click to view receipt"
+                          style={{ margin: "5px" }}
+                        >
+                          Show Receipt
+                        </Button>
+                      ) : (
+                        []
+                      )}
+                      <EditExpenses />
                       <Button
                         variant="danger"
                         onClick={() => handleDeleteExpenses(expense.id)}
                         title="Click to delete expense"
+                        style={{ margin: "5px" }}
                       >
                         Delete
                       </Button>
