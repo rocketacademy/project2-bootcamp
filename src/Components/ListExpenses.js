@@ -22,6 +22,7 @@ export default function ListExpenses({
   displayCurrency,
   setDisplayCurrency,
   currenciesList,
+  handleDeleteExpenses,
 }) {
   const [selectedExpense, setSelectedExpense] = useState(null);
   const [showModal, setShowModal] = useState(false);
@@ -110,6 +111,15 @@ export default function ListExpenses({
                     ) : (
                       []
                     )}
+                    <div>
+                      <Button
+                        variant="danger"
+                        onClick={() => handleDeleteExpenses(expense.id)}
+                        title="Click to delete expense"
+                      >
+                        Delete
+                      </Button>
+                    </div>
                   </div>
                 </Card.Body>
               </Card>
@@ -164,6 +174,8 @@ export default function ListExpenses({
           allExp
         )}
       </div>
+
+      {/* Modal to display receipt */}
       <Modal show={showModal} onHide={closeReceiptModal}>
         <Modal.Header closeButton>
           <Modal.Title>Receipt Picture</Modal.Title>

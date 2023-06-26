@@ -4,8 +4,9 @@ import ListExpenses from "../Components/ListExpenses";
 import Welcome from "./Welcome";
 import { useState, useEffect } from "react";
 import { realTimeDatabase } from "../firebase";
-import { get, onValue, off, ref, update } from "firebase/database";
+import { get, onValue, off, ref, update, remove } from "firebase/database";
 import { useLoadScript } from "@react-google-maps/api";
+import { Toast } from "react-bootstrap";
 
 const DB_EXPENSES_FOLDER_NAME = "expenses";
 const DB_USERS_FOLDER_NAME = "user";
@@ -28,6 +29,7 @@ export default function MapExpenses({
   const [lng, setLng] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [displayCurrency, setDisplayCurrency] = useState("SGD");
+  const [showToast, setShowToast] = useState(false);
 
   // Get user's location and assign coordinates to states
   useEffect(() => {
@@ -120,11 +122,37 @@ export default function MapExpenses({
   const handleEditExpenses = () => {};
 
   // Deletes the expense in the database; function is passed to ListExpenses component, prefer to keep the function here to use the realtime database imports and ref's
-  const handleDeleteExpenses = () => {};
+  const handleDeleteExpenses = (expenseId) => {
+    if (window.confirm("Are you sure you want to delete this expense?")) {
+      const expRef = ref(
+        realTimeDatabase,
+        `${DB_EXPENSES_FOLDER_NAME}/${uid}/${expenseId}`
+      );
+      remove(expRef)
+        .then(() => {
+          setShowToast(true);
+        })
+        .catch((error) => {
+          console.error("Error deleting expense:", error);
+        });
+    }
+  };
 
   return (
     <div>
-      {" "}
+      {/* Toast to notify user once expense has been successfully deleted */}
+      <Toast
+        className="center-toast"
+        onClose={() => setShowToast(false)}
+        show={showToast}
+        delay={1500}
+        autohide
+      >
+        <Toast.Header>
+          <strong className="mr-auto">Notification</strong>
+        </Toast.Header>
+        <Toast.Body>Expense deleted successfully!</Toast.Body>
+      </Toast>{" "}
       {isLoggedIn ? (
         <div className="App">
           <Map
@@ -162,6 +190,7 @@ export default function MapExpenses({
             displayCurrency={displayCurrency}
             setDisplayCurrency={setDisplayCurrency}
             currenciesList={currenciesList}
+            handleDeleteExpenses={handleDeleteExpenses}
           />
         </div>
       ) : (

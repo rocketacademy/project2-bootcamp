@@ -51,6 +51,14 @@
   cursor: pointer;
 }
 
+.center-toast {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+}
+
 .welcome-container {
   max-height: 45.5svh;
   max-width: 1025px;
