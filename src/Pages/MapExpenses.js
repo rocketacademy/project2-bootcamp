@@ -4,8 +4,9 @@ import ListExpenses from "../Components/ListExpenses";
 import Welcome from "./Welcome";
 import { useState, useEffect } from "react";
 import { realTimeDatabase } from "../firebase";
-import { get, onValue, off, ref, update } from "firebase/database";
+import { get, onValue, off, ref, update, remove } from "firebase/database";
 import { useLoadScript } from "@react-google-maps/api";
+import { Toast } from "react-bootstrap";
 
 const DB_EXPENSES_FOLDER_NAME = "expenses";
 const DB_USERS_FOLDER_NAME = "user";
@@ -28,6 +29,7 @@ export default function MapExpenses({
   const [lng, setLng] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [displayCurrency, setDisplayCurrency] = useState("SGD");
+  const [showToast, setShowToast] = useState(false);
 
   // Get user's location and assign coordinates to states
   useEffect(() => {
@@ -51,7 +53,7 @@ export default function MapExpenses({
     }
   }, [expenseCounter]);
 
-  // updates expenses array with each additional expense
+  // Fetches latest expenses array, triggered with every additional expense
   useEffect(() => {
     const expRef = ref(realTimeDatabase, `${DB_EXPENSES_FOLDER_NAME}/${uid}`);
 
@@ -82,31 +84,31 @@ export default function MapExpenses({
     };
   }, [uid, mapRef, expenseCounter]);
 
-  // useEffect to fetch from the database and update the displayCurrency state
+  // Fetches displayCurrency from the database and update the client-side state i.e. Database > Client
   useEffect(() => {
     if (userData && userData.displayCurrency) {
       setDisplayCurrency(userData.displayCurrency);
     }
   }, [userData]);
 
-  // useEffect to update the displayCurrency in the database
+  // Update the displayCurrency in the database whenever there is a change in client-side state i.e., Client > Database
   useEffect(() => {
     const userRef = ref(realTimeDatabase, `${DB_USERS_FOLDER_NAME}/${uid}`);
     update(userRef, { displayCurrency: displayCurrency });
   }, [displayCurrency]);
 
-  // create isLoaded variable and assign it the results of useLoadScript + google maps API
+  // For GoogleMap: Create isLoaded variable and assign it the results of useLoadScript + google maps API
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: process.env.REACT_APP_API_KEY,
   });
 
-  // function to format numbers to the decimal format i.e., add a comma for every thousand and decimal places if applicable
+  // Format numbers to the decimal format i.e., add a comma for every thousand and decimal places if applicable
   const formatter = new Intl.NumberFormat("en-US", {
     style: "decimal",
     maximumFractionDigits: 2,
   });
 
-  // function to handle when an expense is selected - pushes expenseId into the state
+  // Note which expense is 'selected' or 'highlighted', and to style it accordingly
   const handleOnSelect = (expense) => {
     if (highlighted === expense.id) {
       setHighlighted(null);
@@ -116,9 +118,41 @@ export default function MapExpenses({
     }
   };
 
+  // Updates details of expenses in the database; function is passed to ListExpenses component, prefer to keep the function here to use the realtime database imports and ref's
+  const handleEditExpenses = () => {};
+
+  // Deletes the expense in the database; function is passed to ListExpenses component, prefer to keep the function here to use the realtime database imports and ref's
+  const handleDeleteExpenses = (expenseId) => {
+    if (window.confirm("Are you sure you want to delete this expense?")) {
+      const expRef = ref(
+        realTimeDatabase,
+        `${DB_EXPENSES_FOLDER_NAME}/${uid}/${expenseId}`
+      );
+      remove(expRef)
+        .then(() => {
+          setShowToast(true);
+        })
+        .catch((error) => {
+          console.error("Error deleting expense:", error);
+        });
+    }
+  };
+
   return (
     <div>
-      {" "}
+      {/* Toast to notify user once expense has been successfully deleted */}
+      <Toast
+        className="center-toast"
+        onClose={() => setShowToast(false)}
+        show={showToast}
+        delay={1500}
+        autohide
+      >
+        <Toast.Header>
+          <strong className="mr-auto">Notification</strong>
+        </Toast.Header>
+        <Toast.Body>Expense deleted successfully!</Toast.Body>
+      </Toast>{" "}
       {isLoggedIn ? (
         <div className="App">
           <Map
@@ -156,6 +190,7 @@ export default function MapExpenses({
             displayCurrency={displayCurrency}
             setDisplayCurrency={setDisplayCurrency}
             currenciesList={currenciesList}
+            handleDeleteExpenses={handleDeleteExpenses}
           />
         </div>
       ) : (

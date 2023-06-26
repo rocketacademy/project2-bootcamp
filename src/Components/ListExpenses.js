@@ -22,28 +22,31 @@ export default function ListExpenses({
   displayCurrency,
   setDisplayCurrency,
   currenciesList,
+  handleDeleteExpenses,
 }) {
   const [selectedExpense, setSelectedExpense] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const highlightedCardRef = useRef(null); // Create reference for highlighted card
 
+  // Display receipt when showReceipt button is clicked
   const handleShowReceiptClick = (expense) => {
     setSelectedExpense(expense);
     setShowModal(true);
   };
 
+  // Hide receipt when button is clicked
   const closeReceiptModal = () => {
     setSelectedExpense(null);
     setShowModal(false);
   };
 
-  // function to sum up the total expenses
+  // Sum up the totalAmount for all expenses to be displayed
   const totalAmount = expenses.reduce(
     (accumulator, expense) => accumulator + parseInt(expense.displayAmount),
     0
   );
 
-  // sort expenses by date, with the latest at the top of the list
+  // Sort expenses by date, with the latest at the top of the list
   const sortedExpenses = expenses.sort(
     (a, b) => new Date(b.date) - new Date(a.date)
   );
@@ -108,6 +111,15 @@ export default function ListExpenses({
                     ) : (
                       []
                     )}
+                    <div>
+                      <Button
+                        variant="danger"
+                        onClick={() => handleDeleteExpenses(expense.id)}
+                        title="Click to delete expense"
+                      >
+                        Delete
+                      </Button>
+                    </div>
                   </div>
                 </Card.Body>
               </Card>
@@ -127,7 +139,6 @@ export default function ListExpenses({
     }
   }, [highlighted]);
 
-  // Render the list of expenses
   return (
     <div className="list-container">
       <div className="card-header">
@@ -163,6 +174,8 @@ export default function ListExpenses({
           allExp
         )}
       </div>
+
+      {/* Modal to display receipt */}
       <Modal show={showModal} onHide={closeReceiptModal}>
         <Modal.Header closeButton>
           <Modal.Title>Receipt Picture</Modal.Title>
