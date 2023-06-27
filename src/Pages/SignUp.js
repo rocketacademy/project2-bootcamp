@@ -5,7 +5,7 @@ import {
   createUserWithEmailAndPassword,
   fetchSignInMethodsForEmail,
 } from "firebase/auth";
-import { ref, set } from "firebase/database";
+import { ref, set, push } from "firebase/database";
 import {
   ref as storageRef,
   uploadBytes,
@@ -18,6 +18,7 @@ import categoriesData from "../Reference/categories.json";
 // Save the Firebase post folder name as a constant to avoid bugs due to misspelling
 const DB_USER_FOLDER_NAME = "user";
 const STORAGE_PROFILE_FOLDER_NAME = "profilePhoto";
+const DB_CATEGORY_FOLDER_NAME = "categories";
 
 export default function SignUp({
   isLoggedIn,
@@ -66,8 +67,24 @@ export default function SignUp({
                   // set default display currency for all new users to SGD
                   displayCurrency: "SGD",
                   // set category colour selection default for each user
-                  categoriesData: categoriesData,
+                  // categoriesData: categoriesData,
                 });
+
+                // Firebase path to the user's categories.
+                const catRef = ref(
+                  realTimeDatabase,
+                  `${DB_CATEGORY_FOLDER_NAME}/${userCredential.user.uid}`
+                );
+                categoriesData.forEach((category) => {
+                  push(catRef, category)
+                    .then(() => {
+                      console.log("Category saved successfully.");
+                    })
+                    .catch((error) => {
+                      console.error("Error saving category: ", error);
+                    });
+                });
+
                 // Store images in an images folder in Firebase Storage
                 const fileRef = storageRef(
                   storage,
