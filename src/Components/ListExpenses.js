@@ -24,6 +24,9 @@ export default function ListExpenses({
   setDisplayCurrency,
   currenciesList,
   handleDeleteExpenses,
+  readyToShow,
+  setReadyToShow,
+  groupedExpenses,
 }) {
   const [selectedExpense, setSelectedExpense] = useState(null);
   const [showModal, setShowModal] = useState(false);
@@ -46,22 +49,6 @@ export default function ListExpenses({
     (accumulator, expense) => accumulator + parseInt(expense.displayAmount),
     0
   );
-
-  // Sort expenses by date, with the latest at the top of the list
-  const sortedExpenses = expenses.sort(
-    (a, b) => new Date(b.date) - new Date(a.date)
-  );
-
-  // Group expenses by date
-  const groupedExpenses = {};
-  sortedExpenses.forEach((expense) => {
-    const date = expense.date;
-    if (!groupedExpenses[date]) {
-      groupedExpenses[date] = [];
-    }
-    groupedExpenses[date].push(expense);
-  });
-  console.log(groupedExpenses);
 
   // Map through expenses array and render each one as a card
   const allExp = Object.entries(groupedExpenses).map(([date, expenses]) => (
@@ -117,6 +104,7 @@ export default function ListExpenses({
                       <EditExpenses
                         expense={expense}
                         currenciesList={currenciesList}
+                        setExpenseCounter={setExpenseCounter}
                       />
                       <Button
                         id="delete-button"
@@ -136,6 +124,30 @@ export default function ListExpenses({
       )}
     </div>
   ));
+
+  // Pan to latest expense location whenever there's a change in expenses
+  useEffect(() => {
+    // map to pan to most recently added expense
+    const getLatestExpLocation = () => {
+      const expensesArray = Object.values(expenses);
+      const lastExpense = expensesArray[0];
+      if (lastExpense && !isNaN(lastExpense.lat) && !isNaN(lastExpense.lng)) {
+        return { lat: lastExpense.lat, lng: lastExpense.lng };
+      } else {
+        return null;
+      }
+    };
+
+    // Pan to latest expense location once extracted
+    const fetchAndPanToLatestLocation = async () => {
+      const location = await getLatestExpLocation();
+      if (location !== null && isLoading === false) {
+        mapRef.panTo(location);
+      }
+    };
+
+    fetchAndPanToLatestLocation();
+  }, [expenses]);
 
   // useEffect to cause highlighted card to scroll into view
   useEffect(() => {
@@ -169,6 +181,7 @@ export default function ListExpenses({
             setExpenseCounter={setExpenseCounter}
             currenciesList={currenciesList}
             displayCurrency={displayCurrency}
+            setReadyToShow={setReadyToShow}
           />
           <Filter />
         </div>
@@ -178,9 +191,9 @@ export default function ListExpenses({
           <p style={{ textAlign: "center" }}>
             <em>Your expenses will appear here</em>
           </p>
-        ) : expenses.length === 0 ? null : (
+        ) : expenses.length !== 0 && readyToShow ? (
           allExp
-        )}
+        ) : null}
       </div>
 
       {/* Modal to display receipt */}

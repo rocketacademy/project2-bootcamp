@@ -135,7 +135,7 @@ export default function App() {
                 title={
                   profilePhotoURL !== null ? (
                     <img
-                      class="rounded-circle"
+                      className="rounded-circle"
                       src={profilePhotoURL}
                       alt="user"
                       width="30"

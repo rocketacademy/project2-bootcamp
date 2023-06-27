@@ -73,11 +73,11 @@ export default function EditExpenses({
   const handleUpdate = (e) => {
     e.preventDefault();
     // Access the selected category value
-    // console.log(category);
-    // console.log(currency);
-    // console.log(amount);
-    // console.log(description);
-    // console.log(date);
+    console.log(category);
+    console.log(currency);
+    console.log(amount);
+    console.log(description);
+    console.log(date);
     // console.log(receiptFile);
 
     // Get ref key

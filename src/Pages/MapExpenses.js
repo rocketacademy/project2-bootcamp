@@ -4,7 +4,7 @@ import ListExpenses from "../Components/ListExpenses";
 import Welcome from "./Welcome";
 import { useState, useEffect } from "react";
 import { realTimeDatabase } from "../firebase";
-import { get, onValue, off, ref, update, remove } from "firebase/database";
+import { onValue, off, ref, update, remove } from "firebase/database";
 import { useLoadScript } from "@react-google-maps/api";
 import { Toast } from "react-bootstrap";
 
@@ -21,7 +21,6 @@ export default function MapExpenses({
   console.log(uid);
   const [expenseCounter, setExpenseCounter] = useState(0);
   const [userLocation, setUserLocation] = useState(null);
-  const [expenses, setExpenses] = useState([]);
   const [mapRef, setMapRef] = useState();
   const [expRef, setExpRef] = useState();
   const [highlighted, setHighlighted] = useState(null);
@@ -31,6 +30,8 @@ export default function MapExpenses({
   const [displayCurrency, setDisplayCurrency] = useState("SGD");
   const [showToast, setShowToast] = useState(false);
   const [readyToShow, setReadyToShow] = useState(false);
+  const [expenses, setExpenses] = useState([]);
+  const [groupedExpenses, setGroupedExpenses] = useState([]);
 
   // Get user's location and assign coordinates to states
   useEffect(() => {
@@ -72,6 +73,23 @@ export default function MapExpenses({
           console.log(expensesArray);
           setExpenses(expensesArray);
           setIsLoading(false);
+
+          // Sort expenses by date, with the latest at the top of the list
+          const sortedExpenses = expensesArray.sort(
+            (a, b) => new Date(b.date) - new Date(a.date)
+          );
+
+          // Group expenses by date
+          const groupedExpenses = {};
+          sortedExpenses.forEach((expense) => {
+            const date = expense.date;
+            if (!groupedExpenses[date]) {
+              groupedExpenses[date] = [];
+            }
+            groupedExpenses[date].push(expense);
+          });
+
+          setGroupedExpenses(groupedExpenses);
           setReadyToShow(true);
         }
       },
@@ -153,49 +171,48 @@ export default function MapExpenses({
         <Toast.Body>Expense deleted successfully!</Toast.Body>
       </Toast>{" "}
       {isLoggedIn ? (
-        readyToShow ? (
-          <div className="App">
-            <Map
-              uid={uid}
-              expenseCounter={expenseCounter}
-              userLocation={userLocation}
-              expenses={expenses}
-              setExpenses={setExpenses}
-              mapRef={mapRef}
-              setMapRef={setMapRef}
-              expRef={expRef}
-              isLoaded={isLoaded}
-              formatter={formatter}
-              highlighted={highlighted}
-              setHighlighted={setHighlighted}
-              isLoading={isLoading}
-            />
-            <ListExpenses
-              uid={uid}
-              mapRef={mapRef}
-              lat={lat}
-              setLat={setLat}
-              lng={lng}
-              setLng={setLng}
-              expenseCounter={expenseCounter}
-              setExpenseCounter={setExpenseCounter}
-              userLocation={userLocation}
-              expenses={expenses}
-              setExpenses={setExpenses}
-              formatter={formatter}
-              highlighted={highlighted}
-              setHighlighted={setHighlighted}
-              handleOnSelect={handleOnSelect}
-              isLoading={isLoading}
-              displayCurrency={displayCurrency}
-              setDisplayCurrency={setDisplayCurrency}
-              currenciesList={currenciesList}
-              handleDeleteExpenses={handleDeleteExpenses}
-            />
-          </div>
-        ) : (
-          <h2>Loading</h2>
-        )
+        <div className="App">
+          <Map
+            uid={uid}
+            expenseCounter={expenseCounter}
+            userLocation={userLocation}
+            expenses={expenses}
+            setExpenses={setExpenses}
+            mapRef={mapRef}
+            setMapRef={setMapRef}
+            expRef={expRef}
+            isLoaded={isLoaded}
+            formatter={formatter}
+            highlighted={highlighted}
+            setHighlighted={setHighlighted}
+            isLoading={isLoading}
+          />
+          <ListExpenses
+            uid={uid}
+            mapRef={mapRef}
+            lat={lat}
+            setLat={setLat}
+            lng={lng}
+            setLng={setLng}
+            expenseCounter={expenseCounter}
+            setExpenseCounter={setExpenseCounter}
+            userLocation={userLocation}
+            expenses={expenses}
+            setExpenses={setExpenses}
+            formatter={formatter}
+            highlighted={highlighted}
+            setHighlighted={setHighlighted}
+            handleOnSelect={handleOnSelect}
+            isLoading={isLoading}
+            displayCurrency={displayCurrency}
+            setDisplayCurrency={setDisplayCurrency}
+            currenciesList={currenciesList}
+            handleDeleteExpenses={handleDeleteExpenses}
+            readyToShow={readyToShow}
+            setReadyToShow={setReadyToShow}
+            groupedExpenses={groupedExpenses}
+          />
+        </div>
       ) : (
         <div className="App">
           <Map
