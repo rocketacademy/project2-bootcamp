@@ -121,20 +121,14 @@ export default function EditExpenses({
 
   return (
     <>
-      {/* <Button
-        id="edit-button"
-        variant="warning"
-        onClick={handleShow}
-        title="Click to edit expense"
-      >
-        Edit
-      </Button> */}
-      <PencilSquare
+      <span
         id="edit-button"
         title="Click to edit expense"
         onClick={handleShow}
         style={{ margin: "5px", cursor: "pointer" }}
-      />
+      >
+        ✏️
+      </span>
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>

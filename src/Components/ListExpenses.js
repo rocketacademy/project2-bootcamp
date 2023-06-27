@@ -180,26 +180,36 @@ export default function ListExpenses({
     <div className="list-container">
       <div className="card-header">
         <div className="mini-navbar">
-          <DisplayCurrency
-            displayCurrency={displayCurrency}
-            setDisplayCurrency={setDisplayCurrency}
-            totalAmount={formatter.format(totalAmount)}
-            currenciesList={currenciesList}
-          />
-          <InputExpenses
-            uid={uid}
-            mapRef={mapRef}
-            lat={lat}
-            setLat={setLat}
-            lng={lng}
-            setLng={setLng}
-            expenses={expenses}
-            expenseCounter={expenseCounter}
-            setExpenseCounter={setExpenseCounter}
-            currenciesList={currenciesList}
-            displayCurrency={displayCurrency}
-          />
-          <Filter />
+          <div>
+            <DisplayCurrency
+              displayCurrency={displayCurrency}
+              setDisplayCurrency={setDisplayCurrency}
+              totalAmount={formatter.format(totalAmount)}
+              currenciesList={currenciesList}
+            />
+          </div>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-around",
+              width: "5svw",
+            }}
+          >
+            <InputExpenses
+              uid={uid}
+              mapRef={mapRef}
+              lat={lat}
+              setLat={setLat}
+              lng={lng}
+              setLng={setLng}
+              expenses={expenses}
+              expenseCounter={expenseCounter}
+              setExpenseCounter={setExpenseCounter}
+              currenciesList={currenciesList}
+              displayCurrency={displayCurrency}
+            />
+            <Filter style={{ cursor: "pointer" }} />
+          </div>
         </div>
       </div>
       <div className="allExp-container">
@@ -232,7 +242,6 @@ export default function ListExpenses({
               readyToShow={readyToShow}
               setReadyToShow={setReadyToShow}
             />
-            <>is loaded</>
           </div>
         ) : (
           <p>Loading</p>

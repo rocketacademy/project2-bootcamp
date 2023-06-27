@@ -19,10 +19,10 @@ export default function AllExpenses({
   const [displayEntries, setDisplayEntries] = useState([]);
   const [tick, setTick] = useState(0); // Add this state variable
 
-  console.log(`Grouped expenses: ${JSON.stringify(groupedExpenses, null, 2)}`);
-  console.log(
-    `Display entries before: ${JSON.stringify(displayEntries, null, 2)}`
-  );
+  // console.log(`Grouped expenses: ${JSON.stringify(groupedExpenses, null, 2)}`);
+  // console.log(
+  //   `Display entries before: ${JSON.stringify(displayEntries, null, 2)}`
+  // );
 
   useEffect(() => {
     if (Object.keys(groupedExpenses).length !== 0) {
@@ -34,18 +34,19 @@ export default function AllExpenses({
     }
   }, [groupedExpenses]);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setTick(tick + 1); // Update the state to force a re-render
-    }, 5000); // 5000ms = 5s
+  // useEffect(() => {
+  //   const timer = setTimeout(() => {
+  //     setTick(tick + 1); // Update the state to force a re-render
+  //   }, 5000); // 5000ms = 5s
 
-    // Cleanup function to clear the timer when the component unmounts
-    return () => clearTimeout(timer);
-  }, [tick]); // Depend on 'tick' so the effect runs each time 'tick' changes
+  //   // Cleanup function to clear the timer when the component unmounts
+  //   return () => clearTimeout(timer);
+  // }, [tick]); // Depend on 'tick' so the effect runs each time 'tick' changes
 
-  console.log(
-    `Display entries after: ${JSON.stringify(displayEntries, null, 2)}`
-  );
+  // console.log(
+  //   `Display entries after: ${JSON.stringify(displayEntries, null, 2)}`
+  // );
+
   return (
     <div>
       {Object.keys(displayEntries).length === 0 ? (
@@ -93,28 +94,34 @@ export default function AllExpenses({
                           </div>
                           <div>
                             {expense.receiptUrl ? (
-                              <FileImage
+                              <span
                                 variant="info"
                                 onClick={() => handleShowReceiptClick(expense)}
                                 title="Click to view receipt"
                                 style={{ margin: "5px" }}
-                              />
+                              >
+                                🖼️
+                              </span>
                             ) : (
                               []
                             )}
+
                             <EditExpenses
                               uid={uid}
                               expense={expense}
                               currenciesList={currenciesList}
                               setExpenseCounter={setExpenseCounter}
                             />
-                            <Trash
+
+                            <span
                               id="delete-button"
                               variant="danger"
                               onClick={() => handleDeleteExpenses(expense.id)}
                               title="Click to delete expense"
                               style={{ margin: "5px" }}
-                            />
+                            >
+                              🗑️
+                            </span>
                           </div>
                         </div>
                       </Card.Body>
