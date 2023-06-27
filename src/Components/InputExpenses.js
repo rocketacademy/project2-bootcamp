@@ -137,15 +137,16 @@ export default function InputExpenses({
   return (
     <div>
       <div>
-        <Button
+        <span
           id="add-expenses"
           className="rounded-rectangle"
           variant="outline-dark"
           onClick={handleShow}
           title="Click to add new expenses"
+          style={{ cursor: "pointer" }}
         >
-          + Add Expense
-        </Button>
+          💸
+        </span>
       </div>
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
