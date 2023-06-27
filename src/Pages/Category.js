@@ -126,6 +126,7 @@ export default function Category({ uid, isLoggedIn }) {
       >
         + Add Category
       </Button>
+      {/* loop through and show each category as a card */}
       {categoriesData.map((category, index) => (
         <Card
           key={index}
@@ -156,6 +157,7 @@ export default function Category({ uid, isLoggedIn }) {
                   marginLeft: "auto",
                   cursor: "pointer",
                 }}
+                //emoji pencil to edit each category
                 onClick={(e) => {
                   e.stopPropagation();
                   handleShowCatModal(category);
@@ -168,7 +170,7 @@ export default function Category({ uid, isLoggedIn }) {
         </Card>
       ))}
 
-      {/* Modal to key in new category  */}
+      {/* Modal to key in new category and update category */}
       <Modal show={showCatModal} onHide={handleCloseCatModal}>
         <Modal.Header closeButton>
           <Modal.Title>
