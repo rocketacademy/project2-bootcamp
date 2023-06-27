@@ -29,7 +29,6 @@ export default function MapExpenses({
   const [isLoading, setIsLoading] = useState(true);
   const [displayCurrency, setDisplayCurrency] = useState("SGD");
   const [showToast, setShowToast] = useState(false);
-  const [readyToShow, setReadyToShow] = useState(false);
   const [expenses, setExpenses] = useState([]);
   const [groupedExpenses, setGroupedExpenses] = useState([]);
 
@@ -89,8 +88,11 @@ export default function MapExpenses({
             groupedExpenses[date].push(expense);
           });
 
+          console.log(
+            `Grouped expenses: ${JSON.stringify(groupedExpenses, null, 2)}`
+          );
+
           setGroupedExpenses(groupedExpenses);
-          setReadyToShow(true);
         }
       },
       (error) => {
@@ -207,8 +209,6 @@ export default function MapExpenses({
             setDisplayCurrency={setDisplayCurrency}
             currenciesList={currenciesList}
             handleDeleteExpenses={handleDeleteExpenses}
-            readyToShow={readyToShow}
-            setReadyToShow={setReadyToShow}
             groupedExpenses={groupedExpenses}
           />
         </div>
