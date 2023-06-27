@@ -2,7 +2,7 @@ import "../App.css";
 import { useEffect, useState } from "react";
 import { Button, Form, Modal, InputGroup } from "react-bootstrap";
 import { realTimeDatabase, storage } from "../firebase";
-import { push, ref, set } from "firebase/database";
+import { push, ref, set, get, child, onValue } from "firebase/database";
 import {
   ref as storageRef,
   uploadBytes,
@@ -15,6 +15,7 @@ import "react-bootstrap-typeahead/css/Typeahead.css";
 
 const DB_EXPENSES_FOLDER_NAME = "expenses";
 const STORAGE_EXPENSES_FOLDER_NAME = "receiptPhoto";
+const DB_CATEGORY_FOLDER_NAME = "categories";
 
 export default function InputExpenses({
   uid,
@@ -32,18 +33,29 @@ export default function InputExpenses({
   setReadyToShow,
 }) {
   const [show, setShow] = useState(false);
-  const [category, setCategory] = useState("");
-  // inputCurrency
-  const [currency, setCurrency] = useState("SGD");
+  const [category, setCategory] = useState({ category: "", emoji: "" });
+
+  const [currency, setCurrency] = useState("SGD"); // inputCurrency
   const [amount, setAmount] = useState(0);
   const [description, setDescription] = useState("-");
   const currentDate = new Date().toISOString().substring(0, 10); // Get current date in yyyy-MM-dd format
-
   const [address, setAddress] = useState("");
-
   const [date, setDate] = useState(currentDate);
   const [receiptFile, setReceiptFile] = useState("");
   const [receiptFileValue, setReceiptFileValue] = useState("");
+  const [categoryList, setCategoryList] = useState([]); // Initialize category list state
+
+  useEffect(() => {
+    const categoriesRef = ref(
+      realTimeDatabase,
+      `${DB_CATEGORY_FOLDER_NAME}/${uid}`
+    );
+    onValue(categoriesRef, (snapshot) => {
+      const data = snapshot.val();
+      setCategoryList(Object.values(data)); // convert object to array
+      console.log("categoryList", categoryList);
+    });
+  }, []);
 
   // Get lat and lng coordinates on 'look up' button press
   const getLatLng = () =>
@@ -68,7 +80,7 @@ export default function InputExpenses({
 
   // reset to prepare states for next input
   const handleNewInput = () => {
-    setCategory("");
+    setCategory({ category: "", emoji: "" });
     setAmount(0);
     setAddress("");
     setDescription("-");
@@ -80,13 +92,15 @@ export default function InputExpenses({
   // add to db
   const handleSubmit = (e) => {
     e.preventDefault();
+    console.log("category:", category);
     // get ref key
     const expRef = ref(realTimeDatabase, `${DB_EXPENSES_FOLDER_NAME}/${uid}`);
     const newExpRef = push(expRef);
     const newExpenseKey = newExpRef.key;
     // data to write to expense reference location
     set(newExpRef, {
-      category: category,
+      categoryName: category.category, // save the category name
+      categoryEmoji: category.emoji, // save the category emoji
       currency: currency,
       displayCurrency: displayCurrency,
       amount: amount,
@@ -153,20 +167,27 @@ export default function InputExpenses({
 
             <Form.Select
               aria-label="Default select example"
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
+              onChange={(e) => {
+                const selectedCategory = categoryList.find(
+                  (categoryObj) =>
+                    `${categoryObj.emoji} ${categoryObj.category}` ===
+                    e.target.value
+                );
+                setCategory(selectedCategory);
+              }}
               required
             >
               <option value="" disabled>
                 Category
               </option>
-              <option value="🍔 Food">🍔 Food</option>
-              <option value="💸 Bills">💸 Bills</option>
-              <option value="🚗 Transport">🚗 Transport</option>
-              <option value="🏠 Home">🏠 Home</option>
-              <option value="🌏 Holiday">🌏 Holiday</option>
-              <option value="🎬 Entertainment">🎬 Entertainment</option>
-              <option value="🤷 Others">🤷 Others</option>
+              {categoryList.map((categoryObj, index) => (
+                <option
+                  key={index}
+                  value={`${categoryObj.emoji} ${categoryObj.category}`}
+                >
+                  {categoryObj.emoji} {categoryObj.category}
+                </option>
+              ))}
             </Form.Select>
             <br />
 

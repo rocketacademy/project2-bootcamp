@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { realTimeDatabase } from "../firebase";
-import { ref, off, update, onValue, set, push, get } from "firebase/database";
+import { ref, update, onValue, set, push } from "firebase/database";
 import { Card, Button, Modal, Row, Col, Form } from "react-bootstrap";
 import { SketchPicker } from "react-color";
 import EmojiPicker from "emoji-picker-react";
@@ -17,24 +17,36 @@ export default function Category({ uid, isLoggedIn }) {
   const [displayEmojiPicker, setDisplayEmojiPicker] = useState(false);
   const [selectedCategoryId, setSelectedCategoryId] = useState(null);
 
-  // useEffect to trigger getting and updating of userData with each update click
   useEffect(() => {
-    const userDataRef = ref(
+    const userCatRef = ref(
       realTimeDatabase,
       `${DB_CATEGORY_FOLDER_NAME}/${uid}`
     );
-    get(userDataRef).then((snapshot) => {
-      const catData = snapshot.val();
-      console.log(catData);
-      if (catData) {
-        const catArray = Object.entries(catData).map(([key, value]) => ({
-          id: key,
-          ...value,
-        }));
-        console.log(catArray);
-        setCategoriesData(catArray);
+    // Attach an asynchronous callback to read the data at our categories reference
+    const unsubscribe = onValue(
+      userCatRef,
+      (snapshot) => {
+        const catData = snapshot.val();
+        console.log(catData);
+        if (catData) {
+          const catArray = Object.entries(catData).map(([key, value]) => ({
+            id: key,
+            ...value,
+          }));
+
+          setCategoriesData(catArray);
+          console.log("catArray:", catArray);
+        }
+      },
+      (errorObject) => {
+        console.log("The read failed: " + errorObject.name);
       }
-    });
+    );
+
+    return () => {
+      // Remove the listener when the component unmounts
+      unsubscribe();
+    };
   }, [uid]);
 
   // function to allow user to add new category
@@ -42,9 +54,14 @@ export default function Category({ uid, isLoggedIn }) {
     e.preventDefault();
     // update user's profile with the new category
     const catRef = ref(realTimeDatabase, `${DB_CATEGORY_FOLDER_NAME}/${uid}`);
+    console.log("selectedCategoryId:", selectedCategoryId);
     if (selectedCategoryId) {
       // Updating an existing category
-      const catUpdateRef = ref(catRef, selectedCategoryId);
+      const catUpdateRef = ref(
+        realTimeDatabase,
+        `${DB_CATEGORY_FOLDER_NAME}/${uid}/${selectedCategoryId}`
+      );
+      console.log("catUpdateRef:", catUpdateRef);
       update(catUpdateRef, {
         category: category,
         color: color,
