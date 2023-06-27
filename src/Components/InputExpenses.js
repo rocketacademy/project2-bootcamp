@@ -34,7 +34,6 @@ export default function InputExpenses({
 }) {
   const [show, setShow] = useState(false);
   const [category, setCategory] = useState({ category: "", emoji: "" });
-
   const [currency, setCurrency] = useState("SGD"); // inputCurrency
   const [amount, setAmount] = useState(0);
   const [description, setDescription] = useState("-");
@@ -80,7 +79,7 @@ export default function InputExpenses({
 
   // reset to prepare states for next input
   const handleNewInput = () => {
-    setCategory({ category: "", emoji: "" });
+    setCategory({ category: "", color: "", emoji: "" });
     setAmount(0);
     setAddress("");
     setDescription("-");
@@ -100,7 +99,8 @@ export default function InputExpenses({
     // data to write to expense reference location
     set(newExpRef, {
       categoryName: category.category, // save the category name
-      categoryEmoji: category.emoji, // save the category emoji
+      // categoryEmoji: category.emoji, // save the category emoji
+      // categoryColor: category.color, // save the category color
       currency: currency,
       displayCurrency: displayCurrency,
       amount: amount,

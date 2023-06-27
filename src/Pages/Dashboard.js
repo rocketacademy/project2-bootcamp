@@ -39,6 +39,7 @@ export default function Dashboard({ uid, isLoggedIn }) {
             expensesList.push({ id: expKey, ...expData });
           });
           setExpensesList(expensesList);
+          console.log("expensesList:", expensesList);
         }
       } catch (error) {
         console.log("Error retrieving expense data:", error);
@@ -48,17 +49,22 @@ export default function Dashboard({ uid, isLoggedIn }) {
       fetchData();
     }
   }, [uid, isLoggedIn]);
+
   // Calculate the sum of amounts by date
-  const amountByDate = {};
+  const displayAmountByDate = {};
   expensesList.forEach((expense) => {
     const date = expense.date;
-    const amount = parseFloat(expense.amount);
-    if (!amountByDate[date]) {
-      amountByDate[date] = 0;
+    const displayAmount = parseFloat(expense.displayAmount);
+    if (!displayAmountByDate[date]) {
+      displayAmountByDate[date] = 0;
     }
-    amountByDate[date] += amount;
+    displayAmountByDate[date] += displayAmount;
+    displayAmountByDate[date] = parseFloat(
+      displayAmountByDate[date].toFixed(2)
+    ); // round to 2dp
   });
-  // console.log(amountByDate);
+  // console.log(displayAmountByDate);
+
   // Find the maximum date in expensesList
   let endDate = null;
   expensesList.forEach((expense) => {
@@ -69,6 +75,7 @@ export default function Dashboard({ uid, isLoggedIn }) {
   });
   endDate = new Date(endDate);
   // console.log(`end date: ${endDate}`);
+
   // Find the minimum date in expensesList
   let startDate = null;
   expensesList.forEach((expense) => {
@@ -79,6 +86,7 @@ export default function Dashboard({ uid, isLoggedIn }) {
   });
   startDate = new Date(startDate);
   // console.log(`start date: ${startDate}`);
+
   const generateDatesInRange = (startDate, endDate) => {
     const dates = [];
     const currentDate = new Date(endDate);
@@ -89,22 +97,24 @@ export default function Dashboard({ uid, isLoggedIn }) {
     return dates;
   };
   const allDates = generateDatesInRange(startDate, endDate);
-  console.log(allDates);
+
   // Fill in missing dates with a value of 0
   allDates.forEach((date) => {
-    if (!amountByDate[date]) {
-      amountByDate[date] = 0;
+    if (!displayAmountByDate[date]) {
+      displayAmountByDate[date] = 0;
     }
   });
-  // console.log(amountByDate);
+  // console.log(displayAmountByDate);
+
   // Transform amountByDate into an array of objects with 'date' and 'amount' keys
   const chartData = allDates.map((date) => ({
     date,
-    amount: amountByDate[date],
+    displayAmount: displayAmountByDate[date],
   }));
   // Sort the chartData array based on the date values
   chartData.sort((a, b) => new Date(a.date) - new Date(b.date));
-  console.log(chartData);
+  console.log("chartData:", chartData);
+
   const CustomTooltip = ({ payload, label, active }) => {
     if (active) {
       return (
@@ -158,9 +168,9 @@ export default function Dashboard({ uid, isLoggedIn }) {
         >
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="date" />
-          <YAxis domain={[0, "dataMax + 100"]} />
+          <YAxis domain={[0, "dataMax"]} />
           <Tooltip cursor={false} content={<CustomTooltip />} />
-          <Bar dataKey="amount" fill="#8884d8">
+          <Bar dataKey="displayAmount" fill="#8884d8">
             {chartData.map((entry, index) => (
               <Cell
                 fill={
@@ -174,7 +184,12 @@ export default function Dashboard({ uid, isLoggedIn }) {
         </BarChart>
       </div>
       <div className="chart-container">
-        <ExpPieChart expensesList={expensesList} selectedDate={selectedDate} />
+        <ExpPieChart
+          isLoggedIn={isLoggedIn}
+          uid={uid}
+          expensesList={expensesList}
+          selectedDate={selectedDate}
+        />
       </div>
     </div>
   );
