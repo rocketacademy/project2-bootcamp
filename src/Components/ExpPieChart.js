@@ -2,15 +2,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import { realTimeDatabase } from "../firebase";
 import { ref, get, child, onValue } from "firebase/database";
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend } from "recharts";
-const COLORS = [
-  "#0088FE",
-  "#00C49F",
-  "#FFBB28",
-  "#FF8042",
-  "#8884d8",
-  "#c4babd",
-  "#ef97ae",
-];
+
 export default function ExpPieChart({
   expensesList,
   selectedDate,

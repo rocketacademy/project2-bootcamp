@@ -77,12 +77,13 @@
 .temporary-box {
   margin: auto;
   margin-top: 63.78px;
-  max-height: 45.5svh;
+  min-height: 91svh;
+  /* max-height: 45.5svh; */
   max-width: 1025px;
   font-size: 1.25rem;
 
   color: black;
-  background-color: #e8e8e8;
+  background-color: white;
 
   border-width: 1rem;
   border-color: red;
