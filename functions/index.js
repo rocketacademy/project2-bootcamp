@@ -28,16 +28,36 @@ const apiKey = functions.config().exchangerate.key;
 
 exports.convertCurrency = functions.database
     .ref("/expenses/{userId}/{expenseId}")
-    .onCreate(async (snap, context) => {
-      const expense = snap.val();
+    .onWrite(async (change, context) => {
+    // Exit when the data is deleted.
+      if (!change.after.exists()) {
+        return null;
+      }
+
+      const expense = change.after.val();
+
+      // Check if relevant fields have changed b4 fetching the fx
+      if (change.before.exists()) {
+        const beforeExpense = change.before.val();
+        if (
+          expense.amount === beforeExpense.amount &&
+        expense.currency === beforeExpense.currency &&
+        expense.displayCurrency === beforeExpense.displayCurrency
+        ) {
+          console.log("Expense data unchanged, no need to convert currency");
+          return null;
+        }
+      }
+
       const response = await fetch(
-          `https://v6.exchangerate-api.com/v6/${apiKey}/latest/USD`);
+          `https://v6.exchangerate-api.com/v6/${apiKey}/latest/USD`,
+      );
       const data = await response.json();
       const exchangeRates = data.conversion_rates;
       const rateFrom = exchangeRates[expense.currency];
       const rateTo = exchangeRates[expense.displayCurrency];
       const displayAmount = (expense.amount / rateFrom) * rateTo;
-      return snap.ref.child("displayAmount").set(displayAmount);
+      return change.after.ref.child("displayAmount").set(displayAmount);
     });
 
 exports.onDisplayCurrencyChange = functions.database
@@ -46,7 +66,8 @@ exports.onDisplayCurrencyChange = functions.database
       const displayCurrency = change.after.val();
 
       const response = await fetch(
-          `https://v6.exchangerate-api.com/v6/${apiKey}/latest/USD`);
+          `https://v6.exchangerate-api.com/v6/${apiKey}/latest/USD`,
+      );
       const data = await response.json();
       const exchangeRates = data.conversion_rates;
 
@@ -60,9 +81,11 @@ exports.onDisplayCurrencyChange = functions.database
           const rateFrom = exchangeRates[expense.currency];
           const rateTo = exchangeRates[displayCurrency];
           const displayAmount = (expense.amount / rateFrom) * rateTo;
-          await expensesRef.child(`${expenseId}/displayAmount`)
+          await expensesRef
+              .child(`${expenseId}/displayAmount`)
               .set(displayAmount);
-          await expensesRef.child(`${expenseId}/displayCurrency`)
+          await expensesRef
+              .child(`${expenseId}/displayCurrency`)
               .set(displayCurrency);
         }
       }

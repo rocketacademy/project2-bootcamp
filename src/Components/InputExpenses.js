@@ -132,6 +132,7 @@ export default function InputExpenses({
     <div>
       <div>
         <Button
+          id="add-expenses"
           className="rounded-rectangle"
           variant="outline-dark"
           onClick={handleShow}

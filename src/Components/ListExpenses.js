@@ -5,6 +5,7 @@ import Filter from "./Filter";
 import InputExpenses from "./InputExpenses";
 import { useState, useRef, useEffect } from "react";
 import { Card, Button, Modal } from "react-bootstrap";
+import { Trash, FileImage } from "react-bootstrap-icons";
 
 export default function ListExpenses({
   uid,
@@ -90,31 +91,28 @@ export default function ListExpenses({
                     </div>
                     <div>
                       {expense.receiptUrl ? (
-                        <Button
+                        <FileImage
                           variant="info"
                           onClick={() => handleShowReceiptClick(expense)}
                           title="Click to view receipt"
                           style={{ margin: "5px" }}
-                        >
-                          Show Receipt
-                        </Button>
+                        />
                       ) : (
                         []
                       )}
                       <EditExpenses
+                        uid={uid}
                         expense={expense}
                         currenciesList={currenciesList}
                         setExpenseCounter={setExpenseCounter}
                       />
-                      <Button
+                      <Trash
                         id="delete-button"
                         variant="danger"
                         onClick={() => handleDeleteExpenses(expense.id)}
                         title="Click to delete expense"
                         style={{ margin: "5px" }}
-                      >
-                        Delete
-                      </Button>
+                      />
                     </div>
                   </div>
                 </Card.Body>
@@ -124,6 +122,7 @@ export default function ListExpenses({
       )}
     </div>
   ));
+  console.log(`allExp: ${allExp}`);
 
   // Pan to latest expense location whenever there's a change in expenses
   useEffect(() => {
@@ -191,8 +190,11 @@ export default function ListExpenses({
           <p style={{ textAlign: "center" }}>
             <em>Your expenses will appear here</em>
           </p>
-        ) : expenses.length !== 0 && readyToShow ? (
-          allExp
+        ) : groupedExpenses.length !== 0 && readyToShow ? (
+          <div>
+            <>{allExp}</>
+            <>is loaded</>
+          </div>
         ) : null}
       </div>
 

@@ -185,7 +185,6 @@ export default function MapExpenses({
             formatter={formatter}
             highlighted={highlighted}
             setHighlighted={setHighlighted}
-            isLoading={isLoading}
           />
           <ListExpenses
             uid={uid}

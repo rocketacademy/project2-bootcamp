@@ -1,8 +1,8 @@
 import "../App.css";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button, Form, Modal, InputGroup } from "react-bootstrap";
 import { realTimeDatabase, storage } from "../firebase";
-import { push, ref, update } from "firebase/database";
+import { ref, set, update } from "firebase/database";
 import {
   ref as storageRef,
   uploadBytes,
@@ -12,6 +12,7 @@ import { GoogleMap, MarkerF } from "@react-google-maps/api";
 import Geocode from "react-geocode";
 import { Typeahead } from "react-bootstrap-typeahead";
 import "react-bootstrap-typeahead/css/Typeahead.css";
+import { PencilSquare } from "react-bootstrap-icons";
 
 const DB_EXPENSES_FOLDER_NAME = "expenses";
 const STORAGE_EXPENSES_FOLDER_NAME = "receiptPhoto";
@@ -36,17 +37,8 @@ export default function EditExpenses({
   const [lng, setLng] = useState(expense.lng);
 
   const [address, setAddress] = useState("");
-  // const [receiptFile, setReceiptFile] = useState("");
-  // const [receiptFileValue, setReceiptFileValue] = useState("");
-
-  // useEffect to pan to latest expense location once extracted
-  // useEffect(() => {
-  //   const fetchAndPanToLatestLocation = async () => {
-  //     mapRef.panTo({ lat, lng });
-  //   };
-
-  //   fetchAndPanToLatestLocation();
-  // }, [lat, lng]);
+  const [receiptFile, setReceiptFile] = useState("");
+  const [receiptFileValue, setReceiptFileValue] = useState("");
 
   // Get lat and lng coordinates on 'look up' button press
   const getLatLng = () =>
@@ -64,7 +56,11 @@ export default function EditExpenses({
     );
 
   // Show / hide modal
-  const handleClose = () => setShow(false);
+  const handleClose = () => {
+    setShow(false);
+    setReceiptFile("");
+    setReceiptFileValue("");
+  };
   const handleShow = () => {
     setShow(true);
   };
@@ -96,39 +92,49 @@ export default function EditExpenses({
       date: date,
     });
 
-    // if (receiptFile) {
-    //   const expFileRef = storageRef(
-    //     storage,
-    //     ` ${STORAGE_EXPENSES_FOLDER_NAME}/${uid}/${receiptFile.name}`
-    //   );
+    console.log(`expRef: ${expRef}`);
 
-    //   uploadBytes(expFileRef, receiptFile).then((snapshot) => {
-    //     getDownloadURL(snapshot.ref).then((receiptUrl) => {
-    //       // update expenses db with expenses photo url
-    //       const currExpRef = ref(
-    //         realTimeDatabase,
-    //         `${DB_EXPENSES_FOLDER_NAME}/${uid}/${expense.id}/receiptUrl`
-    //       );
-    //       update(currExpRef, receiptUrl);
-    //     });
-    //   });
-    // }
+    if (receiptFile) {
+      const expFileRef = storageRef(
+        storage,
+        ` ${STORAGE_EXPENSES_FOLDER_NAME}/${uid}/${receiptFile.name}`
+      );
+
+      uploadBytes(expFileRef, receiptFile).then((snapshot) => {
+        getDownloadURL(snapshot.ref).then((receiptUrl) => {
+          // update expenses db with expenses photo url
+          const currExpRef = ref(
+            realTimeDatabase,
+            `${DB_EXPENSES_FOLDER_NAME}/${uid}/${expense.id}/receiptUrl`
+          );
+          set(currExpRef, receiptUrl);
+        });
+      });
+    }
 
     // Increase expense counter so map in the main page will pan to latest expense location
     setExpenseCounter((prevExpenseCounter) => prevExpenseCounter + 1);
+    setReceiptFile("");
+    setReceiptFileValue("");
     handleClose();
   };
 
   return (
     <>
-      <Button
+      {/* <Button
         id="edit-button"
         variant="warning"
         onClick={handleShow}
         title="Click to edit expense"
       >
         Edit
-      </Button>
+      </Button> */}
+      <PencilSquare
+        id="edit-button"
+        title="Click to edit expense"
+        onClick={handleShow}
+        style={{ margin: "5px", cursor: "pointer" }}
+      />
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
@@ -267,7 +273,7 @@ export default function EditExpenses({
               />
             </Form.Group>
 
-            {/* <Form.Group controlId="formFile" className="mb-3">
+            <Form.Group controlId="formFile" className="mb-3">
               <Form.Label>Upload receipt</Form.Label>
               <Form.Control
                 type="file"
@@ -277,7 +283,7 @@ export default function EditExpenses({
                   setReceiptFileValue(e.target.value);
                 }}
               />
-            </Form.Group> */}
+            </Form.Group>
           </Form>
         </Modal.Body>
         <Modal.Footer>
