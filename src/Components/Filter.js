@@ -1,7 +1,9 @@
+import { FilterCircle } from "react-bootstrap-icons";
+
 export default function Filter() {
   return (
     <div>
-      <img src="https://i.imgur.com/S0ruvDR.png" alt="Filter icon"></img>
+      <FilterCircle />
     </div>
   );
 }
