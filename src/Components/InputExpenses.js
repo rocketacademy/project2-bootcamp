@@ -98,14 +98,6 @@ export default function InputExpenses({
   // add to db
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Access the selected category value
-    console.log(category);
-    console.log(currency);
-    console.log(amount);
-    console.log(description);
-    console.log(date);
-    console.log(receiptFile);
-
     // get ref key
     const expRef = ref(realTimeDatabase, `${DB_EXPENSES_FOLDER_NAME}/${uid}`);
     const newExpRef = push(expRef);

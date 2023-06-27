@@ -16,6 +16,7 @@ import { Navbar, Nav, Container, NavDropdown } from "react-bootstrap";
 import patchQuestionFillSvg from "./Icons/patch-question-fill.svg";
 import currencies from "./Components/Currencies";
 import ResetPassword from "./Pages/ResetPassword";
+import Category from "./Pages/Category";
 
 const DB_USER_FOLDER_NAME = "user";
 
@@ -94,11 +95,6 @@ export default function App() {
     setCurrencies(currencyList());
   }, []);
 
-  console.log(`isLoggedIn: ${isLoggedIn}`);
-  console.log(user);
-  console.log(userData);
-  console.log(`uid: ${uid}`);
-  console.log(`profilePhotoURL: ${profilePhotoURL}`);
   return (
     <>
       <Navbar bg="light" fixed="top">
@@ -155,6 +151,9 @@ export default function App() {
                 {isLoggedIn ? (
                   <>
                     <NavDropdown.Item href="/profile">Profile</NavDropdown.Item>
+                    <NavDropdown.Item href="/category">
+                      Category
+                    </NavDropdown.Item>
                     <NavDropdown.Item
                       onClick={(e) => {
                         setIsLoggedIn(false);
@@ -210,6 +209,11 @@ export default function App() {
               currenciesList={currenciesList}
             />
           }
+        />
+
+        <Route
+          path="/category"
+          element={<Category uid={uid} isLoggedIn={isLoggedIn} />}
         />
 
         <Route
