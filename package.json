@@ -17,6 +17,7 @@
     "firebase-functions": "^4.4.1",
     "react": "^18.1.0",
     "react-bootstrap": "^2.7.4",
+    "react-bootstrap-icons": "^1.10.3",
     "react-bootstrap-typeahead": "^6.2.3",
     "react-color": "^2.19.3",
     "react-dom": "^18.1.0",

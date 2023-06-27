@@ -5,6 +5,7 @@ import Filter from "./Filter";
 import InputExpenses from "./InputExpenses";
 import { useState, useRef, useEffect } from "react";
 import { Card, Button, Modal } from "react-bootstrap";
+import { Trash, FileImage } from "react-bootstrap-icons";
 
 export default function ListExpenses({
   uid,
@@ -24,6 +25,9 @@ export default function ListExpenses({
   setDisplayCurrency,
   currenciesList,
   handleDeleteExpenses,
+  readyToShow,
+  setReadyToShow,
+  groupedExpenses,
 }) {
   const [selectedExpense, setSelectedExpense] = useState(null);
   const [showModal, setShowModal] = useState(false);
@@ -46,22 +50,6 @@ export default function ListExpenses({
     (accumulator, expense) => accumulator + parseInt(expense.displayAmount),
     0
   );
-
-  // Sort expenses by date, with the latest at the top of the list
-  const sortedExpenses = expenses.sort(
-    (a, b) => new Date(b.date) - new Date(a.date)
-  );
-
-  // Group expenses by date
-  const groupedExpenses = {};
-  sortedExpenses.forEach((expense) => {
-    const date = expense.date;
-    if (!groupedExpenses[date]) {
-      groupedExpenses[date] = [];
-    }
-    groupedExpenses[date].push(expense);
-  });
-  console.log(groupedExpenses);
 
   // Map through expenses array and render each one as a card
   const allExp = Object.entries(groupedExpenses).map(([date, expenses]) => (
@@ -103,30 +91,28 @@ export default function ListExpenses({
                     </div>
                     <div>
                       {expense.receiptUrl ? (
-                        <Button
+                        <FileImage
                           variant="info"
                           onClick={() => handleShowReceiptClick(expense)}
                           title="Click to view receipt"
                           style={{ margin: "5px" }}
-                        >
-                          Show Receipt
-                        </Button>
+                        />
                       ) : (
                         []
                       )}
                       <EditExpenses
+                        uid={uid}
                         expense={expense}
                         currenciesList={currenciesList}
+                        setExpenseCounter={setExpenseCounter}
                       />
-                      <Button
+                      <Trash
                         id="delete-button"
                         variant="danger"
                         onClick={() => handleDeleteExpenses(expense.id)}
                         title="Click to delete expense"
                         style={{ margin: "5px" }}
-                      >
-                        Delete
-                      </Button>
+                      />
                     </div>
                   </div>
                 </Card.Body>
@@ -136,6 +122,31 @@ export default function ListExpenses({
       )}
     </div>
   ));
+  console.log(`allExp: ${allExp}`);
+
+  // Pan to latest expense location whenever there's a change in expenses
+  useEffect(() => {
+    // map to pan to most recently added expense
+    const getLatestExpLocation = () => {
+      const expensesArray = Object.values(expenses);
+      const lastExpense = expensesArray[0];
+      if (lastExpense && !isNaN(lastExpense.lat) && !isNaN(lastExpense.lng)) {
+        return { lat: lastExpense.lat, lng: lastExpense.lng };
+      } else {
+        return null;
+      }
+    };
+
+    // Pan to latest expense location once extracted
+    const fetchAndPanToLatestLocation = async () => {
+      const location = await getLatestExpLocation();
+      if (location !== null && isLoading === false) {
+        mapRef.panTo(location);
+      }
+    };
+
+    fetchAndPanToLatestLocation();
+  }, [expenses]);
 
   // useEffect to cause highlighted card to scroll into view
   useEffect(() => {
@@ -169,6 +180,7 @@ export default function ListExpenses({
             setExpenseCounter={setExpenseCounter}
             currenciesList={currenciesList}
             displayCurrency={displayCurrency}
+            setReadyToShow={setReadyToShow}
           />
           <Filter />
         </div>
@@ -178,9 +190,12 @@ export default function ListExpenses({
           <p style={{ textAlign: "center" }}>
             <em>Your expenses will appear here</em>
           </p>
-        ) : expenses.length === 0 ? null : (
-          allExp
-        )}
+        ) : groupedExpenses.length !== 0 && readyToShow ? (
+          <div>
+            <>{allExp}</>
+            <>is loaded</>
+          </div>
+        ) : null}
       </div>
 
       {/* Modal to display receipt */}

@@ -30,7 +30,6 @@ export default function Map({
   formatter,
   highlighted,
   setHighlighted,
-  isLoading,
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [infoWindowData, setInfoWindowData] = useState();

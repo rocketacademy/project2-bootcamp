@@ -29,6 +29,7 @@ export default function InputExpenses({
   userLocation,
   currenciesList,
   displayCurrency,
+  setReadyToShow,
 }) {
   const [show, setShow] = useState(false);
   const [category, setCategory] = useState("");
@@ -43,25 +44,6 @@ export default function InputExpenses({
   const [date, setDate] = useState(currentDate);
   const [receiptFile, setReceiptFile] = useState("");
   const [receiptFileValue, setReceiptFileValue] = useState("");
-
-  // map to pan to most recently added expense
-  const getLatestExpLocation = () => {
-    const expensesArray = Object.values(expenses);
-    const lastExpense = expensesArray[0];
-    return lastExpense ? { lat: lastExpense.lat, lng: lastExpense.lng } : null;
-  };
-
-  // useEffect to pan to latest expense location once extracted
-  // useEffect(() => {
-  //   const fetchAndPanToLatestLocation = async () => {
-  //     const location = await getLatestExpLocation();
-  //     if (location !== null) {
-  //       mapRef.panTo(location);
-  //     }
-  //   };
-
-  //   fetchAndPanToLatestLocation();
-  // }, [expenses]);
 
   // Get lat and lng coordinates on 'look up' button press
   const getLatLng = () =>
@@ -132,15 +114,17 @@ export default function InputExpenses({
       });
     }
 
-    handleClose();
+    setReadyToShow(false);
     handleNewInput();
     setExpenseCounter((prevExpenseCounter) => prevExpenseCounter + 1);
+    handleClose();
   };
 
   return (
     <div>
       <div>
         <Button
+          id="add-expenses"
           className="rounded-rectangle"
           variant="outline-dark"
           onClick={handleShow}
