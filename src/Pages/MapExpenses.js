@@ -30,6 +30,7 @@ export default function MapExpenses({
   const [isLoading, setIsLoading] = useState(true);
   const [displayCurrency, setDisplayCurrency] = useState("SGD");
   const [showToast, setShowToast] = useState(false);
+  const [readyToShow, setReadyToShow] = useState(false);
 
   // Get user's location and assign coordinates to states
   useEffect(() => {
@@ -71,6 +72,7 @@ export default function MapExpenses({
           console.log(expensesArray);
           setExpenses(expensesArray);
           setIsLoading(false);
+          setReadyToShow(true);
         }
       },
       (error) => {
@@ -151,45 +153,49 @@ export default function MapExpenses({
         <Toast.Body>Expense deleted successfully!</Toast.Body>
       </Toast>{" "}
       {isLoggedIn ? (
-        <div className="App">
-          <Map
-            uid={uid}
-            expenseCounter={expenseCounter}
-            userLocation={userLocation}
-            expenses={expenses}
-            setExpenses={setExpenses}
-            mapRef={mapRef}
-            setMapRef={setMapRef}
-            expRef={expRef}
-            isLoaded={isLoaded}
-            formatter={formatter}
-            highlighted={highlighted}
-            setHighlighted={setHighlighted}
-            isLoading={isLoading}
-          />
-          <ListExpenses
-            uid={uid}
-            mapRef={mapRef}
-            lat={lat}
-            setLat={setLat}
-            lng={lng}
-            setLng={setLng}
-            expenseCounter={expenseCounter}
-            setExpenseCounter={setExpenseCounter}
-            userLocation={userLocation}
-            expenses={expenses}
-            setExpenses={setExpenses}
-            formatter={formatter}
-            highlighted={highlighted}
-            setHighlighted={setHighlighted}
-            handleOnSelect={handleOnSelect}
-            isLoading={isLoading}
-            displayCurrency={displayCurrency}
-            setDisplayCurrency={setDisplayCurrency}
-            currenciesList={currenciesList}
-            handleDeleteExpenses={handleDeleteExpenses}
-          />
-        </div>
+        readyToShow ? (
+          <div className="App">
+            <Map
+              uid={uid}
+              expenseCounter={expenseCounter}
+              userLocation={userLocation}
+              expenses={expenses}
+              setExpenses={setExpenses}
+              mapRef={mapRef}
+              setMapRef={setMapRef}
+              expRef={expRef}
+              isLoaded={isLoaded}
+              formatter={formatter}
+              highlighted={highlighted}
+              setHighlighted={setHighlighted}
+              isLoading={isLoading}
+            />
+            <ListExpenses
+              uid={uid}
+              mapRef={mapRef}
+              lat={lat}
+              setLat={setLat}
+              lng={lng}
+              setLng={setLng}
+              expenseCounter={expenseCounter}
+              setExpenseCounter={setExpenseCounter}
+              userLocation={userLocation}
+              expenses={expenses}
+              setExpenses={setExpenses}
+              formatter={formatter}
+              highlighted={highlighted}
+              setHighlighted={setHighlighted}
+              handleOnSelect={handleOnSelect}
+              isLoading={isLoading}
+              displayCurrency={displayCurrency}
+              setDisplayCurrency={setDisplayCurrency}
+              currenciesList={currenciesList}
+              handleDeleteExpenses={handleDeleteExpenses}
+            />
+          </div>
+        ) : (
+          <h2>Loading</h2>
+        )
       ) : (
         <div className="App">
           <Map

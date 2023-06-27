@@ -114,8 +114,12 @@ export default function ListExpenses({
                       ) : (
                         []
                       )}
-                      <EditExpenses />
+                      <EditExpenses
+                        expense={expense}
+                        currenciesList={currenciesList}
+                      />
                       <Button
+                        id="delete-button"
                         variant="danger"
                         onClick={() => handleDeleteExpenses(expense.id)}
                         title="Click to delete expense"

@@ -2,7 +2,7 @@ import "../App.css";
 import { useEffect, useState } from "react";
 import { Button, Form, Modal, InputGroup } from "react-bootstrap";
 import { realTimeDatabase, storage } from "../firebase";
-import { push, ref, set } from "firebase/database";
+import { push, ref, update } from "firebase/database";
 import {
   ref as storageRef,
   uploadBytes,
@@ -19,49 +19,34 @@ const STORAGE_EXPENSES_FOLDER_NAME = "receiptPhoto";
 export default function EditExpenses({
   uid,
   mapRef,
-  lat,
-  setLat,
-  lng,
-  setLng,
-  expenses,
-  expenseCounter,
   setExpenseCounter,
-  userLocation,
   currenciesList,
-  displayCurrency,
+  expense,
 }) {
+  // State to handle open and close of modal
   const [show, setShow] = useState(false);
-  const [category, setCategory] = useState("");
-  // inputCurrency
-  const [currency, setCurrency] = useState("SGD");
-  const [amount, setAmount] = useState(0);
-  const [description, setDescription] = useState("-");
-  const currentDate = new Date().toISOString().substring(0, 10); // Get current date in yyyy-MM-dd format
+
+  // States to store expense data
+  const [date, setDate] = useState(expense.date);
+  const [category, setCategory] = useState(expense.category);
+  const [currency, setCurrency] = useState(expense.currency);
+  const [amount, setAmount] = useState(expense.amount);
+  const [description, setDescription] = useState(expense.description);
+  const [lat, setLat] = useState(expense.lat);
+  const [lng, setLng] = useState(expense.lng);
 
   const [address, setAddress] = useState("");
-
-  const [date, setDate] = useState(currentDate);
-  const [receiptFile, setReceiptFile] = useState("");
-  const [receiptFileValue, setReceiptFileValue] = useState("");
-
-  // map to pan to most recently added expense
-  const getLatestExpLocation = () => {
-    const expensesArray = Object.values(expenses);
-    const lastExpense = expensesArray[0];
-    return lastExpense ? { lat: lastExpense.lat, lng: lastExpense.lng } : null;
-  };
+  // const [receiptFile, setReceiptFile] = useState("");
+  // const [receiptFileValue, setReceiptFileValue] = useState("");
 
   // useEffect to pan to latest expense location once extracted
-  useEffect(() => {
-    const fetchAndPanToLatestLocation = async () => {
-      const location = await getLatestExpLocation();
-      if (location) {
-        mapRef.panTo(location);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchAndPanToLatestLocation = async () => {
+  //     mapRef.panTo({ lat, lng });
+  //   };
 
-    fetchAndPanToLatestLocation();
-  }, [expenses]);
+  //   fetchAndPanToLatestLocation();
+  // }, [lat, lng]);
 
   // Get lat and lng coordinates on 'look up' button press
   const getLatLng = () =>
@@ -78,43 +63,32 @@ export default function EditExpenses({
       }
     );
 
-  // functions to show / hide inputExpenses modal
+  // Show / hide modal
   const handleClose = () => setShow(false);
   const handleShow = () => {
     setShow(true);
   };
 
-  // reset to prepare states for next input
-  const handleNewInput = () => {
-    setCategory("");
-    setAmount(0);
-    setAddress("");
-    setDescription("-");
-    setDate(currentDate);
-    setReceiptFile("");
-    setReceiptFileValue("");
-  };
-
-  // add to db
-  const handleSubmit = (e) => {
+  // Update data in db
+  const handleUpdate = (e) => {
     e.preventDefault();
     // Access the selected category value
-    console.log(category);
-    console.log(currency);
-    console.log(amount);
-    console.log(description);
-    console.log(date);
-    console.log(receiptFile);
+    // console.log(category);
+    // console.log(currency);
+    // console.log(amount);
+    // console.log(description);
+    // console.log(date);
+    // console.log(receiptFile);
 
-    // get ref key
-    const expRef = ref(realTimeDatabase, `${DB_EXPENSES_FOLDER_NAME}/${uid}`);
-    const newExpRef = push(expRef);
-    const newExpenseKey = newExpRef.key;
-    // data to write to expense reference location
-    set(newExpRef, {
+    // Get ref key
+    const expRef = ref(
+      realTimeDatabase,
+      `${DB_EXPENSES_FOLDER_NAME}/${uid}/${expense.id}`
+    );
+    // Update data at expense reference location
+    update(expRef, {
       category: category,
       currency: currency,
-      displayCurrency: displayCurrency,
       amount: amount,
       lat: lat,
       lng: lng,
@@ -122,32 +96,33 @@ export default function EditExpenses({
       date: date,
     });
 
-    if (receiptFile) {
-      const expFileRef = storageRef(
-        storage,
-        ` ${STORAGE_EXPENSES_FOLDER_NAME}/${uid}/${receiptFile.name}`
-      );
+    // if (receiptFile) {
+    //   const expFileRef = storageRef(
+    //     storage,
+    //     ` ${STORAGE_EXPENSES_FOLDER_NAME}/${uid}/${receiptFile.name}`
+    //   );
 
-      uploadBytes(expFileRef, receiptFile).then((snapshot) => {
-        getDownloadURL(snapshot.ref).then((receiptUrl) => {
-          // update expenses db with expenses photo url
-          const currExpRef = ref(
-            realTimeDatabase,
-            `${DB_EXPENSES_FOLDER_NAME}/${uid}/${newExpenseKey}/receiptUrl`
-          );
-          set(currExpRef, receiptUrl);
-        });
-      });
-    }
+    //   uploadBytes(expFileRef, receiptFile).then((snapshot) => {
+    //     getDownloadURL(snapshot.ref).then((receiptUrl) => {
+    //       // update expenses db with expenses photo url
+    //       const currExpRef = ref(
+    //         realTimeDatabase,
+    //         `${DB_EXPENSES_FOLDER_NAME}/${uid}/${expense.id}/receiptUrl`
+    //       );
+    //       update(currExpRef, receiptUrl);
+    //     });
+    //   });
+    // }
 
-    handleClose();
-    handleNewInput();
+    // Increase expense counter so map in the main page will pan to latest expense location
     setExpenseCounter((prevExpenseCounter) => prevExpenseCounter + 1);
+    handleClose();
   };
 
   return (
     <>
       <Button
+        id="edit-button"
         variant="warning"
         onClick={handleShow}
         title="Click to edit expense"
@@ -157,7 +132,7 @@ export default function EditExpenses({
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Input Expenses</Modal.Title>
+          <Modal.Title>Edit Expense</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
@@ -203,7 +178,7 @@ export default function EditExpenses({
 
               <Form.Control
                 type="number"
-                placeholder="0"
+                placeholder={amount}
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
               />
@@ -281,18 +256,18 @@ export default function EditExpenses({
               className="mb-3"
               controlId="exampleForm.ControlTextarea1"
             >
-              <Form.Label>Description of item</Form.Label>
+              <Form.Label>Description</Form.Label>
               <Form.Control
                 as="textarea"
                 rows={2}
                 type="text"
-                placeholder="Description"
+                placeholder={description}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
               />
             </Form.Group>
 
-            <Form.Group controlId="formFile" className="mb-3">
+            {/* <Form.Group controlId="formFile" className="mb-3">
               <Form.Label>Upload receipt</Form.Label>
               <Form.Control
                 type="file"
@@ -302,7 +277,7 @@ export default function EditExpenses({
                   setReceiptFileValue(e.target.value);
                 }}
               />
-            </Form.Group>
+            </Form.Group> */}
           </Form>
         </Modal.Body>
         <Modal.Footer>
@@ -311,10 +286,10 @@ export default function EditExpenses({
           </Button>
           <Button
             variant="primary"
-            onClick={handleSubmit}
+            onClick={handleUpdate}
             disabled={category === "" || amount === 0}
           >
-            Add item
+            Update
           </Button>
         </Modal.Footer>
       </Modal>

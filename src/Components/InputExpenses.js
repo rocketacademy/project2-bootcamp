@@ -52,16 +52,16 @@ export default function InputExpenses({
   };
 
   // useEffect to pan to latest expense location once extracted
-  useEffect(() => {
-    const fetchAndPanToLatestLocation = async () => {
-      const location = await getLatestExpLocation();
-      if (location) {
-        mapRef.panTo(location);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchAndPanToLatestLocation = async () => {
+  //     const location = await getLatestExpLocation();
+  //     if (location !== null) {
+  //       mapRef.panTo(location);
+  //     }
+  //   };
 
-    fetchAndPanToLatestLocation();
-  }, [expenses]);
+  //   fetchAndPanToLatestLocation();
+  // }, [expenses]);
 
   // Get lat and lng coordinates on 'look up' button press
   const getLatLng = () =>
