@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import { realTimeDatabase } from "../firebase";
-import { ref, get, update } from "firebase/database";
+import { ref, update, onValue, set, push } from "firebase/database";
 import { Card, Button, Modal, Row, Col, Form } from "react-bootstrap";
 import { SketchPicker } from "react-color";
 import EmojiPicker from "emoji-picker-react";
-const DB_USER_FOLDER_NAME = "user";
+
+const DB_CATEGORY_FOLDER_NAME = "categories";
+
 export default function Category({ uid, isLoggedIn }) {
   const [categoriesData, setCategoriesData] = useState([]);
   const [showCatModal, setShowCatModal] = useState(false);
@@ -13,49 +15,91 @@ export default function Category({ uid, isLoggedIn }) {
   const [chosenEmoji, setChosenEmoji] = useState({ emoji: "🙂" });
   const [displayColorPicker, setDisplayColorPicker] = useState(false);
   const [displayEmojiPicker, setDisplayEmojiPicker] = useState(false);
+  const [selectedCategoryId, setSelectedCategoryId] = useState(null);
 
-  // useEffect to trigger getting and updating of userData with each update click
   useEffect(() => {
-    const userDataRef = ref(realTimeDatabase, `${DB_USER_FOLDER_NAME}/${uid}`);
-    get(userDataRef)
-      .then((snapshot) => {
-        const userData = snapshot.val();
-        const categoriesData = Object.values(userData.categoriesData || {});
-        setCategoriesData(categoriesData);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    const userCatRef = ref(
+      realTimeDatabase,
+      `${DB_CATEGORY_FOLDER_NAME}/${uid}`
+    );
+    // Attach an asynchronous callback to read the data at our categories reference
+    const unsubscribe = onValue(
+      userCatRef,
+      (snapshot) => {
+        const catData = snapshot.val();
+        console.log(catData);
+        if (catData) {
+          const catArray = Object.entries(catData).map(([key, value]) => ({
+            id: key,
+            ...value,
+          }));
+
+          setCategoriesData(catArray);
+          console.log("catArray:", catArray);
+        }
+      },
+      (errorObject) => {
+        console.log("The read failed: " + errorObject.name);
+      }
+    );
+
+    return () => {
+      // Remove the listener when the component unmounts
+      unsubscribe();
+    };
   }, [uid]);
 
   // function to allow user to add new category
-  const handleSubmit = () => {
-    // Create a new category object
-    const newCategory = {
-      category: category,
-      color: color,
-      emoji: chosenEmoji.emoji,
-    };
-    // Add the new category to the existing categories data array
-    const updatedCategoriesData = [...categoriesData, newCategory];
-
-    // Update the state with the updated categories data array
-    setCategoriesData(updatedCategoriesData);
-    console.log(categoriesData);
-
+  const handleSubmit = (e) => {
+    e.preventDefault();
     // update user's profile with the new category
-    const userRef = ref(realTimeDatabase, `${DB_USER_FOLDER_NAME}/${uid}`);
-    update(userRef, {
-      categoriesData: categoriesData,
-    });
-
+    const catRef = ref(realTimeDatabase, `${DB_CATEGORY_FOLDER_NAME}/${uid}`);
+    console.log("selectedCategoryId:", selectedCategoryId);
+    if (selectedCategoryId) {
+      // Updating an existing category
+      const catUpdateRef = ref(
+        realTimeDatabase,
+        `${DB_CATEGORY_FOLDER_NAME}/${uid}/${selectedCategoryId}`
+      );
+      console.log("catUpdateRef:", catUpdateRef);
+      update(catUpdateRef, {
+        category: category,
+        color: color,
+        emoji: chosenEmoji.emoji,
+      });
+    } else {
+      // Creating a new category
+      const newCatRef = push(catRef);
+      set(newCatRef, {
+        category: category,
+        color: color,
+        emoji: chosenEmoji.emoji,
+      });
+    }
     // hide the modal after submission
     handleCloseCatModal();
   };
 
   // functions to show / hide inputExpenses modal
   const handleCloseCatModal = () => setShowCatModal(false);
-  const handleShowCatModal = () => {
+
+  const handleShowCatModal = (category) => {
+    if (category) {
+      setSelectedCategoryId(category.id);
+      setCategory(category.category);
+      setColor(category.color);
+      setChosenEmoji({ emoji: category.emoji });
+    } else {
+      setSelectedCategoryId(null);
+      setCategory("");
+      setColor("#000000");
+      setChosenEmoji({ emoji: "🙂" });
+    }
+
+    console.log(selectedCategoryId);
+    console.log(category);
+    console.log(color);
+    console.log(chosenEmoji);
     setShowCatModal(true);
   };
 
@@ -64,6 +108,7 @@ export default function Category({ uid, isLoggedIn }) {
     setChosenEmoji(emojiObject);
     setDisplayEmojiPicker(false); // Hide picker after selection
   };
+
   return (
     <div className="category">
       <h1>Categories</h1>
@@ -106,14 +151,29 @@ export default function Category({ uid, isLoggedIn }) {
                 {category.emoji}
               </span>
               <span style={{ marginLeft: "2rem" }}>{category.category}</span>
+              <span
+                style={{
+                  marginLeft: "auto",
+                  cursor: "pointer",
+                }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleShowCatModal(category);
+                }}
+              >
+                ✏️
+              </span>
             </div>
           </Card.Body>
         </Card>
       ))}
+
       {/* Modal to key in new category  */}
       <Modal show={showCatModal} onHide={handleCloseCatModal}>
         <Modal.Header closeButton>
-          <Modal.Title>Add New Category</Modal.Title>
+          <Modal.Title>
+            {selectedCategoryId ? "Update Category" : "Add New Category"}
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form.Group className="mb-3">
@@ -195,7 +255,7 @@ export default function Category({ uid, isLoggedIn }) {
             Close
           </Button>
           <Button variant="primary" onClick={handleSubmit}>
-            Add
+            {selectedCategoryId ? "Update" : "Add"}
           </Button>
         </Modal.Footer>
       </Modal>

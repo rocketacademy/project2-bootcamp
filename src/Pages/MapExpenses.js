@@ -17,8 +17,8 @@ export default function MapExpenses({
   userData,
   currenciesList,
 }) {
-  console.log(isLoggedIn);
-  console.log(uid);
+  console.log("islogged in", isLoggedIn);
+  console.log("uid:", uid);
   const [expenseCounter, setExpenseCounter] = useState(0);
   const [userLocation, setUserLocation] = useState(null);
   const [mapRef, setMapRef] = useState();

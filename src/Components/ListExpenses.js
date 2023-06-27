@@ -70,7 +70,10 @@ export default function ListExpenses({
                 <Card.Body>
                   <div className="card-content">
                     <div>
-                      <Card.Title>{expense.category}</Card.Title>
+                      <Card.Title>
+                        {expense.categoryEmoji}
+                        {expense.categoryName}
+                      </Card.Title>
                       <Card.Subtitle className="mb-2 text-muted">
                         {expense.description !== "-" ? (
                           <>
