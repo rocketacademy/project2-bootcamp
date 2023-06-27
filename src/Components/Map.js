@@ -32,10 +32,8 @@ export default function Map({
   setHighlighted,
   isLoading,
 }) {
-  // const [mapRef, setMapRef] = useState();
   const [isOpen, setIsOpen] = useState(false);
   const [infoWindowData, setInfoWindowData] = useState();
-  // const [expenses, setExpenses] = useState([]);
   const center = useMemo(() => ({ lat: 1.3521, lng: 103.8198 }), []);
 
   // when map loads, determine the boundaries based on the location of the markers
