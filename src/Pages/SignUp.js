@@ -13,6 +13,7 @@ import {
 } from "firebase/storage";
 import { useNavigate, Link } from "react-router-dom";
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
+import categoriesData from "../Reference/categories.json";
 
 // Save the Firebase post folder name as a constant to avoid bugs due to misspelling
 const DB_USER_FOLDER_NAME = "user";
@@ -64,6 +65,8 @@ export default function SignUp({
                   displayName: displayName,
                   // set default display currency for all new users to SGD
                   displayCurrency: "SGD",
+                  // set category colour selection default for each user
+                  categoriesData: categoriesData,
                 });
                 // Store images in an images folder in Firebase Storage
                 const fileRef = storageRef(

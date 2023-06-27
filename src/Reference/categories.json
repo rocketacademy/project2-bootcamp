@@ -1,0 +1,9 @@
+[
+  { "category": "Food", "color": "#12134", "emoji": "🍔" },
+  { "category": "Bills", "color": "#00C49F", "emoji": "💸" },
+  { "category": "Transport", "color": "#FFBB28", "emoji": "🚗" },
+  { "category": "Home", "color": "#FF8042", "emoji": "🏠" },
+  { "category": "Holiday", "color": "#8884d8", "emoji": "🌏" },
+  { "category": "Entertainment", "color": "#c4babd", "emoji": "🎬" },
+  { "category": "Others", "color": "#ef97ae", "emoji": "🤷" }
+]
