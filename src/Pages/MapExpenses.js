@@ -19,10 +19,11 @@ export default function MapExpenses({
   expensesCategory,
   categoriesData,
   isLoading,
+  expenseCounter,
+  setExpenseCounter,
 }) {
   // console.log("islogged in", isLoggedIn);
   // console.log("uid:", uid);
-  const [expenseCounter, setExpenseCounter] = useState(0);
   const [userLocation, setUserLocation] = useState(null);
   const [isHighlighted, setIsHighlighted] = useState(null);
   const [lat, setLat] = useState(0);
@@ -32,7 +33,6 @@ export default function MapExpenses({
   const [groupedExpenses, setGroupedExpenses] = useState([]);
 
   // not used in current component
-  const [expenses, setExpenses] = useState([]);
   const [expRef, setExpRef] = useState();
   const [mapRef, setMapRef] = useState();
 
@@ -160,7 +160,6 @@ export default function MapExpenses({
             setLat={setLat}
             lng={lng}
             setLng={setLng}
-            expenseCounter={expenseCounter}
             setExpenseCounter={setExpenseCounter}
             userLocation={userLocation}
             expensesCategory={expensesCategory}

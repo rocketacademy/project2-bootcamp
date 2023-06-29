@@ -33,7 +33,8 @@ export default function App() {
   const [categoriesData, setCategoriesData] = useState([]);
   const [currenciesList, setCurrenciesList] = useState([]);
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [expenseCounter, setExpenseCounter] = useState(0);
 
   // Fetch user data when logged in
   useEffect(() => {
@@ -70,7 +71,6 @@ export default function App() {
             console.error(error);
           });
       } else {
-        setIsLoggedIn(false);
         setUid("");
         setProfilePhotoURL("");
       }
@@ -95,12 +95,12 @@ export default function App() {
           const sortedExpenses = expensesArray.sort(
             (a, b) => new Date(b.date) - new Date(a.date)
           );
+          setIsLoading(false);
           setExpenses((prevExpenses) =>
             JSON.stringify(prevExpenses) !== JSON.stringify(sortedExpenses)
               ? sortedExpenses
               : prevExpenses
           );
-          setIsLoading(false);
         }
       },
       (error) => {
@@ -111,7 +111,8 @@ export default function App() {
       off(expRef, listener);
       setExpenses([]);
     };
-  }, [uid]);
+  }, [uid, expenseCounter]);
+  console.log("expenses", expenses);
 
   // Fetches latest category array, triggered with every change
   useEffect(() => {
@@ -143,12 +144,11 @@ export default function App() {
       unsubscribe();
     };
   }, [uid]);
+  console.log("categoriesData:", categoriesData);
 
-  // console.log("expenses", expenses);
-  // console.log("categoriesData:", categoriesData);
   // merge expenses and cateogory to add color and emoji to the expenses
   const expensesCategory = useMemo(() => {
-    return expenses.map((expense) => {
+    return expenses.map((expense, index) => {
       const category = categoriesData.find(
         (category) => category.category === expense.categoryName
       );
@@ -157,15 +157,16 @@ export default function App() {
         ? category
         : { category: "Unknown", color: "#000000", emoji: "❓" };
       return { ...expense, ...fallbackCategory };
+      // return { ...expense, ...category };
     });
   }, [expenses, categoriesData]);
-  // console.log("expensesCategory:", expensesCategory);
+  console.log("expensesCategory:", expensesCategory);
 
   // convert currencies from array of objects to array of strings
   useEffect(() => {
     const currencyList = currencies.map((currency) => currency.code);
     setCurrenciesList(currencyList);
-  }, []);
+  }, [expenses]);
   // console.log(currenciesList);
 
   return (
@@ -266,6 +267,8 @@ export default function App() {
               currenciesList={currenciesList}
               categoriesData={categoriesData}
               isLoading={isLoading}
+              expenseCounter={expenseCounter}
+              setExpenseCounter={setExpenseCounter}
             />
           }
         />

@@ -18,7 +18,6 @@ export default function ListExpenses({
   lng,
   setLat,
   setLng,
-  expenseCounter,
   setExpenseCounter,
   displayCurrency,
   setDisplayCurrency,
@@ -78,7 +77,7 @@ export default function ListExpenses({
     }
 
     fetchAndPanToLatestLocation();
-  }, [expensesCategory, groupedExpenses, mapRef, isLoading]);
+  }, [expensesCategory, groupedExpenses]);
 
   // useEffect to cause highlighted card to scroll into view
   useEffect(() => {
@@ -125,7 +124,6 @@ export default function ListExpenses({
               lng={lng}
               setLng={setLng}
               expensesCategory={expensesCategory}
-              expenseCounter={expenseCounter}
               setExpenseCounter={setExpenseCounter}
               currenciesList={currenciesList}
               displayCurrency={displayCurrency}

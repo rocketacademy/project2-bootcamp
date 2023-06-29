@@ -96,10 +96,10 @@ export default function Category({ uid, isLoggedIn }) {
       setChosenEmoji({ emoji: "🙂" });
     }
 
-    // console.log(selectedCategoryId);
-    // console.log(category);
-    // console.log(color);
-    // console.log(chosenEmoji);
+    console.log(selectedCategoryId);
+    console.log(category);
+    console.log(color);
+    console.log(chosenEmoji);
     setShowCatModal(true);
   };
 

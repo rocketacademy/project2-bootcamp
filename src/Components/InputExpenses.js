@@ -31,7 +31,7 @@ export default function InputExpenses({
   categoriesData,
 }) {
   const [show, setShow] = useState(false);
-  const [category, setCategory] = useState({ category: "", emoji: "" });
+  const [category, setCategory] = useState({ category: "initial", emoji: "" });
   const [currency, setCurrency] = useState("SGD"); // inputCurrency
   const [amount, setAmount] = useState(0);
   const [description, setDescription] = useState("-");
@@ -115,6 +115,13 @@ export default function InputExpenses({
     setExpenseCounter((prevExpenseCounter) => prevExpenseCounter + 1);
     handleClose();
   };
+
+  // to ensure that selection of the first element in the category will be shown. eg Food will be saved to db as category
+  useEffect(() => {
+    if (categoriesData.length > 0) {
+      setCategory(categoriesData[0]);
+    }
+  }, [categoriesData]);
 
   return (
     <div>
