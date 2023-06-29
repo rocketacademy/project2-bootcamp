@@ -17,12 +17,12 @@ export default function MapExpenses({
   userData,
   currenciesList,
 }) {
-  console.log("islogged in", isLoggedIn);
-  console.log("uid:", uid);
+  // console.log("islogged in", isLoggedIn);
+  // console.log("uid:", uid);
   const [expenseCounter, setExpenseCounter] = useState(0);
   const [userLocation, setUserLocation] = useState(null);
   const [mapRef, setMapRef] = useState();
-  const [expRef, setExpRef] = useState();
+  // const [expRef, setExpRef] = useState();
   const [highlighted, setHighlighted] = useState(null);
   const [lat, setLat] = useState(0);
   const [lng, setLng] = useState(0);
@@ -69,7 +69,7 @@ export default function MapExpenses({
               ...value,
             })
           );
-          console.log(expensesArray);
+          // console.log(expensesArray);
           setExpenses(expensesArray);
           setIsLoading(false);
 
@@ -88,9 +88,10 @@ export default function MapExpenses({
             groupedExpenses[date].push(expense);
           });
 
-          console.log(
-            `Grouped expenses: ${JSON.stringify(groupedExpenses, null, 2)}`
-          );
+          console
+            .log
+            // `Grouped expenses: ${JSON.stringify(groupedExpenses, null, 2)}`
+            ();
 
           setGroupedExpenses(groupedExpenses);
         }
@@ -136,7 +137,7 @@ export default function MapExpenses({
       setHighlighted(null);
     } else {
       setHighlighted(expense.id);
-      console.log(highlighted);
+      // console.log(highlighted);
     }
   };
 

@@ -35,11 +35,11 @@ export default function Dashboard({ uid, isLoggedIn }) {
           snapshot.forEach((childSnapshot) => {
             const expKey = childSnapshot.key;
             const expData = childSnapshot.val();
-            console.log("Exp Data:", expData);
+            // console.log("Exp Data:", expData);
             expensesList.push({ id: expKey, ...expData });
           });
           setExpensesList(expensesList);
-          console.log("expensesList:", expensesList);
+          // console.log("expensesList:", expensesList);
         }
       } catch (error) {
         console.log("Error retrieving expense data:", error);
@@ -113,7 +113,7 @@ export default function Dashboard({ uid, isLoggedIn }) {
   }));
   // Sort the chartData array based on the date values
   chartData.sort((a, b) => new Date(a.date) - new Date(b.date));
-  console.log("chartData:", chartData);
+  // console.log("chartData:", chartData);
 
   const CustomTooltip = ({ payload, label, active }) => {
     if (active) {

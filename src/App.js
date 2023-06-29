@@ -29,7 +29,7 @@ export default function App() {
   const [fileInputFile, setFileInputFile] = useState("");
   const [fileInputValue, setFileInputValue] = useState("");
   const navigate = useNavigate();
-  const [currenciesList, setCurrencies] = useState([]);
+  const [currenciesList, setCurrenciesList] = useState([]);
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
@@ -56,7 +56,7 @@ export default function App() {
                 ["Display Currency"]: userData.displayCurrency,
               };
               setUserData(requiredUserData); //only take those required
-
+              console.log("Required user Data:", userData);
               // use uid to find profile url
               const profilePhotoRef = ref(
                 realTimeDatabase,
@@ -92,7 +92,7 @@ export default function App() {
   };
 
   useEffect(() => {
-    setCurrencies(currencyList());
+    setCurrenciesList(currencyList());
   }, []);
 
   return (
@@ -180,6 +180,7 @@ export default function App() {
           </Container>
         </Container>
       </Navbar>
+
       <Routes>
         <Route path="/" element={<Welcome isLoggedIn={isLoggedIn} />} />
         <Route

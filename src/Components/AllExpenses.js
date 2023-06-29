@@ -17,7 +17,7 @@ export default function AllExpenses({
 }) {
   const highlightedCardRef = useRef(null); // Create reference for highlighted card
   const [displayEntries, setDisplayEntries] = useState([]);
-  const [tick, setTick] = useState(0); // Add this state variable
+  // const [tick, setTick] = useState(0); // Add this state variable
 
   // console.log(`Grouped expenses: ${JSON.stringify(groupedExpenses, null, 2)}`);
   // console.log(
@@ -28,9 +28,10 @@ export default function AllExpenses({
     if (Object.keys(groupedExpenses).length !== 0) {
       const expensesEntries = Object.entries(groupedExpenses);
       setDisplayEntries(expensesEntries);
-      console.log(
-        `Display entries during: ${JSON.stringify(displayEntries, null, 2)}`
-      );
+      // console
+      //   .log
+      //   `Display entries during: ${JSON.stringify(displayEntries, null, 2)}`
+      //   ();
     }
   }, [groupedExpenses]);
 
