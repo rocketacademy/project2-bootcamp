@@ -90,8 +90,8 @@ export default function ListExpenses({
   return (
     <div className="list-container">
       <div className="card-header">
-        <div className="mini-navbar">
-          <div>
+        <div className="mini-navbar" style={{ padding: "0 15px" }}>
+          <div id="display-currency">
             <DisplayCurrency
               displayCurrency={displayCurrency}
               setDisplayCurrency={setDisplayCurrency}
@@ -100,10 +100,11 @@ export default function ListExpenses({
             />
           </div>
           <div
+            id="add-sort-buttons"
             style={{
               display: "flex",
               justifyContent: "space-around",
-              width: "5svw",
+              padding: "10px",
             }}
           >
             <InputExpenses
