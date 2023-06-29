@@ -44,11 +44,19 @@ export default function ListExpenses({
     setShowModal(false);
   };
 
+  console.log("expensesCategory:", expensesCategory);
+
   // Sum up the totalAmount for all expenses to be displayed
   const totalAmount = expensesCategory.reduce(
-    (accumulator, expense) => accumulator + parseInt(expense.displayAmount),
+    (accumulator, expense) => accumulator + parseFloat(expense.displayAmount),
     0
   );
+  // const totalAmount = expensesCategory.reduce((accumulator, expense) => {
+  //   const amount = parseFloat(expense.displayAmount);
+  //   return isNaN(amount) ? console.log(amount, expense) : accumulator + amount;
+  // }, 0);
+
+  console.log("totalAmount", totalAmount);
 
   // Pan to latest expense location whenever there's a change in expenses
   useEffect(() => {

@@ -95,12 +95,12 @@ export default function App() {
           const sortedExpenses = expensesArray.sort(
             (a, b) => new Date(b.date) - new Date(a.date)
           );
-          setIsLoading(false);
           setExpenses((prevExpenses) =>
             JSON.stringify(prevExpenses) !== JSON.stringify(sortedExpenses)
               ? sortedExpenses
               : prevExpenses
           );
+          setIsLoading(false);
         }
       },
       (error) => {
@@ -157,10 +157,9 @@ export default function App() {
         ? category
         : { category: "Unknown", color: "#000000", emoji: "❓" };
       return { ...expense, ...fallbackCategory };
-      // return { ...expense, ...category };
     });
   }, [expenses, categoriesData]);
-  console.log("expensesCategory:", expensesCategory);
+  // console.log("expensesCategory:", expensesCategory);
 
   // convert currencies from array of objects to array of strings
   useEffect(() => {

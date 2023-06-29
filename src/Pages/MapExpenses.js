@@ -15,8 +15,8 @@ export default function MapExpenses({
   isLoggedIn,
   uid,
   userData,
-  currenciesList,
   expensesCategory,
+  currenciesList,
   categoriesData,
   isLoading,
   expenseCounter,
@@ -123,6 +123,8 @@ export default function MapExpenses({
         });
     }
   };
+
+  console.log("expensesCategory:", expensesCategory[0]["amount"]);
 
   return (
     <div>
