@@ -94,11 +94,16 @@
   align-items: center;
 }
 
-.overlay input {
+.overlay-on input {
   width: 200px;
   padding: 10px;
   font-size: 16px;
   border: none;
   border-radius: 5px;
   background-color: white;
+}
+
+
+.overlay-off {
+  visibility: hidden;
 }

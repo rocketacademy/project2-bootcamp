@@ -20,13 +20,15 @@ export default function ImageTile(props) {
   const [showInput, setShowInput]=React.useState(false);
   const [inputValue, setInputValue] = React.useState('');
   const inputRef = React.useRef(null);
+  const imgRef = React.useRef(null);
 
   const handleInputChange = (event) => {
     setInputValue(event.target.value); //Updating the texts of the component
   };
   
   const handleImageClick = () => {
-    setShowInput(true);
+    console.log("Image clicked")
+    setShowInput(!showInput);
   };
 
   const handleDelete = (chipToDelete) => () => {
@@ -34,9 +36,12 @@ export default function ImageTile(props) {
   };
 
   const handleClickOutside = (event) => {
-    if (inputRef.current && !inputRef.current.contains(event.target)) {
+    if (imgRef.current && !imgRef.current.contains(event.target) && inputRef.current && !inputRef.current.contains(event.target))
+    {    
+      console.log('clickedout')
+      console.log(showInput)
       setShowInput(false);
-    }
+    } 
   };
 
   React.useEffect(() => {
@@ -44,7 +49,7 @@ export default function ImageTile(props) {
     return () => {
       document.removeEventListener('click', handleClickOutside);
     };
-  }, []);
+  });
 
 
   //function to actually setup the sizes and image details for the tiling
@@ -67,6 +72,7 @@ export default function ImageTile(props) {
               {...srcset(props.item.img, 720, props.item.rows, props.item.cols)}
               alt={props.item.title}
               loading="lazy"
+              ref = {imgRef}
               onClick={handleImageClick}
             />
             {showInput && (
