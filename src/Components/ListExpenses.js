@@ -9,23 +9,24 @@ import { Button, Modal } from "react-bootstrap";
 
 export default function ListExpenses({
   uid,
+  groupedExpenses,
+  expensesCategory,
+  categoriesData,
+  currenciesList,
   mapRef,
   lat,
   lng,
   setLat,
   setLng,
-  expensesCategory,
   expenseCounter,
   setExpenseCounter,
-  formatter,
-  isHighlighted,
-  handleOnSelect,
-  isLoading,
   displayCurrency,
   setDisplayCurrency,
-  currenciesList,
+  handleOnSelect,
   handleDeleteExpenses,
-  groupedExpenses,
+  formatter,
+  isHighlighted,
+  isLoading,
 }) {
   const [selectedExpense, setSelectedExpense] = useState(null);
   const [showModal, setShowModal] = useState(false);
@@ -55,7 +56,7 @@ export default function ListExpenses({
     // map to pan to most recently added expense
     const getLatestExpLocation = () => {
       const expensesArray = Object.values(expensesCategory);
-      console.log(expensesArray[0]);
+      // console.log(expensesArray[0]);
       const lastExpense = expensesArray[0];
       if (lastExpense && !isNaN(lastExpense.lat) && !isNaN(lastExpense.lng)) {
         return { lat: lastExpense.lat, lng: lastExpense.lng };
@@ -77,7 +78,7 @@ export default function ListExpenses({
     }
 
     fetchAndPanToLatestLocation();
-  }, [expensesCategory, groupedExpenses]);
+  }, [expensesCategory, groupedExpenses, mapRef, isLoading]);
 
   // useEffect to cause highlighted card to scroll into view
   useEffect(() => {
@@ -128,6 +129,7 @@ export default function ListExpenses({
               setExpenseCounter={setExpenseCounter}
               currenciesList={currenciesList}
               displayCurrency={displayCurrency}
+              categoriesData={categoriesData}
             />
             <Filter style={{ cursor: "pointer" }} />
           </div>
@@ -145,7 +147,6 @@ export default function ListExpenses({
               currenciesList={currenciesList}
               groupedExpenses={groupedExpenses}
               expensesCategory={expensesCategory}
-              // expenseCounter={expenseCounter}
               setExpenseCounter={setExpenseCounter}
               isHighlighted={isHighlighted}
               formatter={formatter}

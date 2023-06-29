@@ -33,7 +33,7 @@ export default function App() {
   const [categoriesData, setCategoriesData] = useState([]);
   const [currenciesList, setCurrenciesList] = useState([]);
   const navigate = useNavigate();
-  // const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Fetch user data when logged in
   useEffect(() => {
@@ -100,7 +100,7 @@ export default function App() {
               ? sortedExpenses
               : prevExpenses
           );
-          // setIsLoading(false);
+          setIsLoading(false);
         }
       },
       (error) => {
@@ -159,7 +159,7 @@ export default function App() {
       return { ...expense, ...fallbackCategory };
     });
   }, [expenses, categoriesData]);
-  console.log("expensesCategory:", expensesCategory);
+  // console.log("expensesCategory:", expensesCategory);
 
   // convert currencies from array of objects to array of strings
   useEffect(() => {
@@ -264,6 +264,8 @@ export default function App() {
               userData={userData}
               expensesCategory={expensesCategory}
               currenciesList={currenciesList}
+              categoriesData={categoriesData}
+              isLoading={isLoading}
             />
           }
         />

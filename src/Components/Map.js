@@ -22,14 +22,14 @@ function getDollarAmountCategory(dollarAmount) {
 
 export default function Map({
   uid,
+  expensesCategory,
   userLocation,
-  mapRef,
-  setMapRef,
-  expenses,
   isLoaded,
   formatter,
-  highlighted,
-  setHighlighted,
+  mapRef,
+  setMapRef,
+  isHighlighted,
+  setIsHighlighted,
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [infoWindowData, setInfoWindowData] = useState();
@@ -70,9 +70,9 @@ export default function Map({
 
   // listens for changes to the highlighted state and triggers the handleMarkerClick function to open the infoWindow of highlighted expense
   useEffect(() => {
-    if (expenses) {
-      const highlightedExpense = expenses.find(
-        (expense) => expense.id === highlighted
+    if (expensesCategory) {
+      const highlightedExpense = expensesCategory.find(
+        (expense) => expense.id === isHighlighted
       );
       if (highlightedExpense) {
         const {
@@ -103,7 +103,7 @@ export default function Map({
         setIsOpen(false);
       }
     }
-  }, [highlighted]);
+  }, [isHighlighted]);
 
   return (
     <div className="map-container">
@@ -118,14 +118,14 @@ export default function Map({
           // when map is clicked, change setIsOpen state to false
           onClick={() => {
             setIsOpen(false);
-            setHighlighted(null);
+            setIsHighlighted(null);
           }}
           center={center}
           zoom={12}
         >
           {/* code to render markers */}
           {uid !== ""
-            ? expenses.map(
+            ? expensesCategory.map(
                 ({
                   id,
                   lat,
@@ -155,7 +155,7 @@ export default function Map({
                           displayAmount,
                           displayCurrency
                         );
-                        setHighlighted(id);
+                        setIsHighlighted(id);
                       }}
                       icon={
                         markerImages[getDollarAmountCategory(displayAmount)]

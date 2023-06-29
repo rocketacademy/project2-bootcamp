@@ -13,12 +13,11 @@ export default function AllExpenses({
   handleOnSelect,
   handleShowReceiptClick,
   handleDeleteExpenses,
-  expensesCategory,
 }) {
   const highlightedCardRef = useRef(null); // Create reference for highlighted card
 
-  console.log("groupedExpenses", groupedExpenses);
-
+  // console.log("groupedExpenses", groupedExpenses);
+  // console.log("groupedExpenses", groupedExpenses["2023-06-28"][0].id);
   return (
     <div>
       {Object.keys(groupedExpenses).length === 0 ? (

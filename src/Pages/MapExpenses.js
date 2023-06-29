@@ -17,15 +17,16 @@ export default function MapExpenses({
   userData,
   currenciesList,
   expensesCategory,
+  categoriesData,
+  isLoading,
 }) {
   // console.log("islogged in", isLoggedIn);
   // console.log("uid:", uid);
   const [expenseCounter, setExpenseCounter] = useState(0);
   const [userLocation, setUserLocation] = useState(null);
-  const [highlighted, setHighlighted] = useState(null);
+  const [isHighlighted, setIsHighlighted] = useState(null);
   const [lat, setLat] = useState(0);
   const [lng, setLng] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
   const [displayCurrency, setDisplayCurrency] = useState("SGD");
   const [showToast, setShowToast] = useState(false);
   const [groupedExpenses, setGroupedExpenses] = useState([]);
@@ -68,8 +69,6 @@ export default function MapExpenses({
       groupedExpenses[date].push(expense);
     });
     setGroupedExpenses(groupedExpenses);
-
-    // setIsLoading(false);
   }, [expensesCategory]);
   // console.log("Grouped expenses:", groupedExpenses);
 
@@ -98,12 +97,12 @@ export default function MapExpenses({
     maximumFractionDigits: 2,
   });
 
-  // if expense is 'selected', highlight it
+  // if expense is 'selected', highlight it. This needs to be used in both map and all expenses
   const handleOnSelect = (expense) => {
-    if (highlighted === expense.id) {
-      setHighlighted(null);
+    if (isHighlighted === expense.id) {
+      setIsHighlighted(null);
     } else {
-      setHighlighted(expense.id);
+      setIsHighlighted(expense.id);
       // console.log(highlighted);
     }
   };
@@ -144,17 +143,15 @@ export default function MapExpenses({
         <div className="App">
           <Map
             uid={uid}
+            expensesCategory={expensesCategory}
             expenseCounter={expenseCounter}
             userLocation={userLocation}
-            expenses={expenses}
-            setExpenses={setExpenses}
-            mapRef={mapRef}
-            setMapRef={setMapRef}
-            expRef={expRef}
             isLoaded={isLoaded}
             formatter={formatter}
-            highlighted={highlighted}
-            setHighlighted={setHighlighted}
+            mapRef={mapRef}
+            setMapRef={setMapRef}
+            isHighlighted={isHighlighted}
+            setIsHighlighted={setIsHighlighted}
           />
           <ListExpenses
             uid={uid}
@@ -168,8 +165,8 @@ export default function MapExpenses({
             userLocation={userLocation}
             expensesCategory={expensesCategory}
             formatter={formatter}
-            highlighted={highlighted}
-            setHighlighted={setHighlighted}
+            isHighlighted={isHighlighted}
+            setIsHighlighted={setIsHighlighted}
             handleOnSelect={handleOnSelect}
             isLoading={isLoading}
             displayCurrency={displayCurrency}
@@ -177,6 +174,7 @@ export default function MapExpenses({
             currenciesList={currenciesList}
             handleDeleteExpenses={handleDeleteExpenses}
             groupedExpenses={groupedExpenses}
+            categoriesData={categoriesData}
           />
         </div>
       ) : (
