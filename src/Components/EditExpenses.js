@@ -12,7 +12,6 @@ import { GoogleMap, MarkerF } from "@react-google-maps/api";
 import Geocode from "react-geocode";
 import { Typeahead } from "react-bootstrap-typeahead";
 import "react-bootstrap-typeahead/css/Typeahead.css";
-import { PencilSquare } from "react-bootstrap-icons";
 
 const DB_EXPENSES_FOLDER_NAME = "expenses";
 const STORAGE_EXPENSES_FOLDER_NAME = "receiptPhoto";

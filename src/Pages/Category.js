@@ -27,7 +27,7 @@ export default function Category({ uid, isLoggedIn }) {
       userCatRef,
       (snapshot) => {
         const catData = snapshot.val();
-        console.log(catData);
+        // console.log(catData);
         if (catData) {
           const catArray = Object.entries(catData).map(([key, value]) => ({
             id: key,
@@ -35,7 +35,7 @@ export default function Category({ uid, isLoggedIn }) {
           }));
 
           setCategoriesData(catArray);
-          console.log("catArray:", catArray);
+          // console.log("catArray:", catArray);
         }
       },
       (errorObject) => {
@@ -54,14 +54,14 @@ export default function Category({ uid, isLoggedIn }) {
     e.preventDefault();
     // update user's profile with the new category
     const catRef = ref(realTimeDatabase, `${DB_CATEGORY_FOLDER_NAME}/${uid}`);
-    console.log("selectedCategoryId:", selectedCategoryId);
+    // console.log("selectedCategoryId:", selectedCategoryId);
     if (selectedCategoryId) {
       // Updating an existing category
       const catUpdateRef = ref(
         realTimeDatabase,
         `${DB_CATEGORY_FOLDER_NAME}/${uid}/${selectedCategoryId}`
       );
-      console.log("catUpdateRef:", catUpdateRef);
+      // console.log("catUpdateRef:", catUpdateRef);
       update(catUpdateRef, {
         category: category,
         color: color,

@@ -23,7 +23,7 @@ export default function ExpPieChart({
       userCatRef,
       (snapshot) => {
         const catData = snapshot.val();
-        console.log(catData);
+        // console.log(catData);
         if (catData) {
           const catArray = Object.entries(catData).map(([key, value]) => ({
             id: key,
@@ -31,11 +31,11 @@ export default function ExpPieChart({
           }));
 
           setCategoriesData(catArray);
-          console.log("catArray:", catArray);
+          // console.log("catArray:", catArray);
         }
       },
       (errorObject) => {
-        console.log("The read failed: " + errorObject.name);
+        // console.log("The read failed: " + errorObject.name);
       }
     );
 
@@ -65,15 +65,15 @@ export default function ExpPieChart({
       displayAmountByCategory[categoryName].toFixed(2)
     );
   });
-  console.log("displayAmountByCategory", displayAmountByCategory);
+  // console.log("displayAmountByCategory", displayAmountByCategory);
   const pieChartData = Object.entries(displayAmountByCategory).map(
     ([categoryName, displayAmount]) => ({
       categoryName,
       displayAmount,
     })
   );
-  console.log("pieChartData", pieChartData);
-  console.log("categoriesData:", categoriesData);
+  // console.log("pieChartData", pieChartData);
+  // console.log("categoriesData:", categoriesData);
   const joinedPieChartData = useMemo(() => {
     return pieChartData.map((expense) => {
       const category = categoriesData.find(
@@ -86,7 +86,7 @@ export default function ExpPieChart({
       return { ...expense, ...fallbackCategory };
     });
   }, [pieChartData, categoriesData]);
-  console.log("joinedPieChartData:", joinedPieChartData);
+  // console.log("joinedPieChartData:", joinedPieChartData);
 
   return (
     <ResponsiveContainer>

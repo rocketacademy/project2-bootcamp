@@ -2,57 +2,28 @@ import "../App.css";
 import EditExpenses from "./EditExpenses";
 import { useState, useRef, useEffect } from "react";
 import { Card } from "react-bootstrap";
-import { Trash, FileImage } from "react-bootstrap-icons";
 
 export default function AllExpenses({
   uid,
-  setExpenseCounter,
-  formatter,
-  highlighted,
-  handleOnSelect,
   currenciesList,
-  handleDeleteExpenses,
   groupedExpenses,
+  setExpenseCounter,
+  isHighlighted,
+  formatter,
+  handleOnSelect,
   handleShowReceiptClick,
+  handleDeleteExpenses,
 }) {
   const highlightedCardRef = useRef(null); // Create reference for highlighted card
-  const [displayEntries, setDisplayEntries] = useState([]);
-  const [tick, setTick] = useState(0); // Add this state variable
 
-  // console.log(`Grouped expenses: ${JSON.stringify(groupedExpenses, null, 2)}`);
-  // console.log(
-  //   `Display entries before: ${JSON.stringify(displayEntries, null, 2)}`
-  // );
-
-  useEffect(() => {
-    if (Object.keys(groupedExpenses).length !== 0) {
-      const expensesEntries = Object.entries(groupedExpenses);
-      setDisplayEntries(expensesEntries);
-      console.log(
-        `Display entries during: ${JSON.stringify(displayEntries, null, 2)}`
-      );
-    }
-  }, [groupedExpenses]);
-
-  // useEffect(() => {
-  //   const timer = setTimeout(() => {
-  //     setTick(tick + 1); // Update the state to force a re-render
-  //   }, 5000); // 5000ms = 5s
-
-  //   // Cleanup function to clear the timer when the component unmounts
-  //   return () => clearTimeout(timer);
-  // }, [tick]); // Depend on 'tick' so the effect runs each time 'tick' changes
-
-  // console.log(
-  //   `Display entries after: ${JSON.stringify(displayEntries, null, 2)}`
-  // );
-
+  // console.log("groupedExpenses", groupedExpenses);
+  // console.log("groupedExpenses", groupedExpenses["2023-06-28"][0].id);
   return (
     <div>
-      {Object.keys(displayEntries).length === 0 ? (
+      {Object.keys(groupedExpenses).length === 0 ? (
         <p>Loading</p>
       ) : (
-        displayEntries.map(([date, expenses]) => (
+        Object.entries(groupedExpenses).map(([date, expenses]) => (
           <div key={date}>
             {/*overall date header */}
             <Card.Header>{date}</Card.Header>
@@ -62,18 +33,33 @@ export default function AllExpenses({
                   <div
                     key={expense.id}
                     className={`${
-                      expense.id === highlighted ? "highlighted-card" : ""
+                      expense.id === isHighlighted ? "highlighted-card" : ""
                     }`}
-                    ref={expense.id === highlighted ? highlightedCardRef : null}
+                    ref={
+                      expense.id === isHighlighted ? highlightedCardRef : null
+                    }
                   >
                     <Card onClick={() => handleOnSelect(expense)}>
                       <Card.Body>
                         <div className="card-content">
                           <div>
-                            <Card.Title>
-                              {expense.categoryEmoji}
-                              {expense.categoryName}
-                            </Card.Title>
+                            <div
+                              style={{
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                borderRadius: "50%",
+                                width: "3rem",
+                                height: "3rem",
+                                fontSize: "2rem",
+                                backgroundColor: expense.color,
+                              }}
+                            >
+                              {expense.emoji}
+                            </div>
+                          </div>
+                          <div>
+                            <Card.Title>{expense.category}</Card.Title>
                             <Card.Subtitle className="mb-2 text-muted">
                               {expense.description !== "-" ? (
                                 <>
@@ -81,7 +67,7 @@ export default function AllExpenses({
                                   <br />
                                 </>
                               ) : null}
-                              {expense.displayCurrency || expense.currency}{" "}
+                              {expense.displayCurrency || expense.currency}
                               {formatter.format(
                                 expense.displayAmount || expense.amount
                               )}
@@ -92,7 +78,9 @@ export default function AllExpenses({
                                 : null}
                             </Card.Subtitle>
                           </div>
-                          <div>
+                          <div
+                            style={{ display: "flex", alignItems: "center" }}
+                          >
                             {expense.receiptUrl ? (
                               <span
                                 variant="info"
@@ -105,14 +93,12 @@ export default function AllExpenses({
                             ) : (
                               []
                             )}
-
                             <EditExpenses
                               uid={uid}
                               expense={expense}
                               currenciesList={currenciesList}
                               setExpenseCounter={setExpenseCounter}
                             />
-
                             <span
                               id="delete-button"
                               variant="danger"

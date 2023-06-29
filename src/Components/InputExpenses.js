@@ -15,25 +15,23 @@ import "react-bootstrap-typeahead/css/Typeahead.css";
 
 const DB_EXPENSES_FOLDER_NAME = "expenses";
 const STORAGE_EXPENSES_FOLDER_NAME = "receiptPhoto";
-const DB_CATEGORY_FOLDER_NAME = "categories";
 
 export default function InputExpenses({
   uid,
-  mapRef,
   lat,
   setLat,
   lng,
   setLng,
-  expenses,
   expenseCounter,
   setExpenseCounter,
   userLocation,
   currenciesList,
   displayCurrency,
   setReadyToShow,
+  categoriesData,
 }) {
   const [show, setShow] = useState(false);
-  const [category, setCategory] = useState({ category: "", emoji: "" });
+  const [category, setCategory] = useState({ category: "initial", emoji: "" });
   const [currency, setCurrency] = useState("SGD"); // inputCurrency
   const [amount, setAmount] = useState(0);
   const [description, setDescription] = useState("-");
@@ -42,19 +40,6 @@ export default function InputExpenses({
   const [date, setDate] = useState(currentDate);
   const [receiptFile, setReceiptFile] = useState("");
   const [receiptFileValue, setReceiptFileValue] = useState("");
-  const [categoryList, setCategoryList] = useState([]); // Initialize category list state
-
-  useEffect(() => {
-    const categoriesRef = ref(
-      realTimeDatabase,
-      `${DB_CATEGORY_FOLDER_NAME}/${uid}`
-    );
-    onValue(categoriesRef, (snapshot) => {
-      const data = snapshot.val();
-      setCategoryList(Object.values(data)); // convert object to array
-      console.log("categoryList", categoryList);
-    });
-  }, []);
 
   // Get lat and lng coordinates on 'look up' button press
   const getLatLng = () =>
@@ -88,19 +73,16 @@ export default function InputExpenses({
     setReceiptFileValue("");
   };
 
-  // add to db
+  // add to expenses db and receipt storage
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("category:", category);
-    // get ref key
+    console.log("category:", category.category);
     const expRef = ref(realTimeDatabase, `${DB_EXPENSES_FOLDER_NAME}/${uid}`);
     const newExpRef = push(expRef);
     const newExpenseKey = newExpRef.key;
-    // data to write to expense reference location
     set(newExpRef, {
       categoryName: category.category, // save the category name
-      // categoryEmoji: category.emoji, // save the category emoji
-      // categoryColor: category.color, // save the category color
       currency: currency,
       displayCurrency: displayCurrency,
       amount: amount,
@@ -128,11 +110,18 @@ export default function InputExpenses({
       });
     }
 
-    setReadyToShow(false);
+    // setReadyToShow(false);
     handleNewInput();
     setExpenseCounter((prevExpenseCounter) => prevExpenseCounter + 1);
     handleClose();
   };
+
+  // to ensure that selection of the first element in the category will be shown. eg Food will be saved to db as category
+  useEffect(() => {
+    if (categoriesData.length > 0) {
+      setCategory(categoriesData[0]);
+    }
+  }, [categoriesData]);
 
   return (
     <div>
@@ -169,7 +158,7 @@ export default function InputExpenses({
             <Form.Select
               aria-label="Default select example"
               onChange={(e) => {
-                const selectedCategory = categoryList.find(
+                const selectedCategory = categoriesData.find(
                   (categoryObj) =>
                     `${categoryObj.emoji} ${categoryObj.category}` ===
                     e.target.value
@@ -181,7 +170,7 @@ export default function InputExpenses({
               <option value="" disabled>
                 Category
               </option>
-              {categoryList.map((categoryObj, index) => (
+              {categoriesData.map((categoryObj, index) => (
                 <option
                   key={index}
                   value={`${categoryObj.emoji} ${categoryObj.category}`}

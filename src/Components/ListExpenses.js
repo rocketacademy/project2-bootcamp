@@ -1,32 +1,31 @@
 import "../App.css";
 import AllExpenses from "./AllExpenses";
 import DisplayCurrency from "./DisplayCurrency";
-import EditExpenses from "./EditExpenses";
+// import EditExpenses from "./EditExpenses";
 import Filter from "./Filter";
 import InputExpenses from "./InputExpenses";
 import { useState, useRef, useEffect } from "react";
-import { Card, Button, Modal } from "react-bootstrap";
-import { Trash, FileImage } from "react-bootstrap-icons";
+import { Button, Modal } from "react-bootstrap";
 
 export default function ListExpenses({
   uid,
+  groupedExpenses,
+  expensesCategory,
+  categoriesData,
+  currenciesList,
   mapRef,
   lat,
   lng,
   setLat,
   setLng,
-  expenses,
-  expenseCounter,
   setExpenseCounter,
-  formatter,
-  highlighted,
-  handleOnSelect,
-  isLoading,
   displayCurrency,
   setDisplayCurrency,
-  currenciesList,
+  handleOnSelect,
   handleDeleteExpenses,
-  groupedExpenses,
+  formatter,
+  isHighlighted,
+  isLoading,
 }) {
   const [selectedExpense, setSelectedExpense] = useState(null);
   const [showModal, setShowModal] = useState(false);
@@ -45,96 +44,26 @@ export default function ListExpenses({
     setShowModal(false);
   };
 
+  console.log("expensesCategory:", expensesCategory);
+
   // Sum up the totalAmount for all expenses to be displayed
-  const totalAmount = expenses.reduce(
-    (accumulator, expense) => accumulator + parseInt(expense.displayAmount),
+  const totalAmount = expensesCategory.reduce(
+    (accumulator, expense) => accumulator + parseFloat(expense.displayAmount),
     0
   );
+  // const totalAmount = expensesCategory.reduce((accumulator, expense) => {
+  //   const amount = parseFloat(expense.displayAmount);
+  //   return isNaN(amount) ? console.log(amount, expense) : accumulator + amount;
+  // }, 0);
 
-  // Map through expenses array and render each one as a card
-  // const allExp = Object.entries(groupedExpenses).map(([date, expenses]) => (
-  //   <div key={date}>
-  //     {/*overall date header */}
-  //     <Card.Header>{date}</Card.Header>
-  //     {expenses.map(
-  //       (expense) =>
-  //         expense.displayAmount !== undefined && (
-  //           <div
-  //             key={expense.id}
-  //             className={`${
-  //               expense.id === highlighted ? "highlighted-card" : ""
-  //             }`}
-  //             ref={expense.id === highlighted ? highlightedCardRef : null}
-  //           >
-  //             <Card onClick={() => handleOnSelect(expense)}>
-  //               <Card.Body>
-  //                 <div className="card-content">
-  //                   <div>
-  //                     <Card.Title>
-  //                       {expense.categoryEmoji}
-  //                       {expense.categoryName}
-  //                     </Card.Title>
-  //                     <Card.Subtitle className="mb-2 text-muted">
-  //                       {expense.description !== "-" ? (
-  //                         <>
-  //                           {expense.description}
-  //                           <br />
-  //                         </>
-  //                       ) : null}
-  //                       {expense.displayCurrency || expense.currency}{" "}
-  //                       {formatter.format(
-  //                         expense.displayAmount || expense.amount
-  //                       )}
-  //                       {expense.displayCurrency !== expense.currency
-  //                         ? ` (${expense.currency} ${formatter.format(
-  //                             expense.amount
-  //                           )})`
-  //                         : null}
-  //                     </Card.Subtitle>
-  //                   </div>
-  //                   <div>
-  //                     {expense.receiptUrl ? (
-  //                       <FileImage
-  //                         variant="info"
-  //                         onClick={() => handleShowReceiptClick(expense)}
-  //                         title="Click to view receipt"
-  //                         style={{ margin: "5px" }}
-  //                       />
-  //                     ) : (
-  //                       []
-  //                     )}
-  //                     <EditExpenses
-  //                       uid={uid}
-  //                       expense={expense}
-  //                       currenciesList={currenciesList}
-  //                       setExpenseCounter={setExpenseCounter}
-  //                     />
-  //                     <Trash
-  //                       id="delete-button"
-  //                       variant="danger"
-  //                       onClick={() => handleDeleteExpenses(expense.id)}
-  //                       title="Click to delete expense"
-  //                       style={{ margin: "5px" }}
-  //                     />
-  //                   </div>
-  //                 </div>
-  //               </Card.Body>
-  //             </Card>
-  //           </div>
-  //         )
-  //     )}
-  //   </div>
-  // ));
-  // setReadyToShow(true);
-  // console.dir(allExp);
-  // console.log(JSON.stringify(allExp));
-  // console.log(allExp);
+  console.log("totalAmount", totalAmount);
 
   // Pan to latest expense location whenever there's a change in expenses
   useEffect(() => {
     // map to pan to most recently added expense
     const getLatestExpLocation = () => {
-      const expensesArray = Object.values(expenses);
+      const expensesArray = Object.values(expensesCategory);
+      // console.log(expensesArray[0]);
       const lastExpense = expensesArray[0];
       if (lastExpense && !isNaN(lastExpense.lat) && !isNaN(lastExpense.lng)) {
         return { lat: lastExpense.lat, lng: lastExpense.lng };
@@ -156,7 +85,7 @@ export default function ListExpenses({
     }
 
     fetchAndPanToLatestLocation();
-  }, [expenses, groupedExpenses]);
+  }, [expensesCategory, groupedExpenses]);
 
   // useEffect to cause highlighted card to scroll into view
   useEffect(() => {
@@ -166,7 +95,7 @@ export default function ListExpenses({
         block: "nearest",
       });
     }
-  }, [highlighted]);
+  }, [isHighlighted]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -202,11 +131,11 @@ export default function ListExpenses({
               setLat={setLat}
               lng={lng}
               setLng={setLng}
-              expenses={expenses}
-              expenseCounter={expenseCounter}
+              expensesCategory={expensesCategory}
               setExpenseCounter={setExpenseCounter}
               currenciesList={currenciesList}
               displayCurrency={displayCurrency}
+              categoriesData={categoriesData}
             />
             <Filter style={{ cursor: "pointer" }} />
           </div>
@@ -220,27 +149,16 @@ export default function ListExpenses({
         ) : readyToShow ? (
           <div>
             <AllExpenses
-              handleShowReceiptClick={handleShowReceiptClick}
               uid={uid}
-              mapRef={mapRef}
-              lat={lat}
-              setLat={setLat}
-              lng={lng}
-              setLng={setLng}
-              expenseCounter={expenseCounter}
-              setExpenseCounter={setExpenseCounter}
-              expenses={expenses}
-              formatter={formatter}
-              highlighted={highlighted}
-              handleOnSelect={handleOnSelect}
-              isLoading={isLoading}
-              displayCurrency={displayCurrency}
-              setDisplayCurrency={setDisplayCurrency}
               currenciesList={currenciesList}
-              handleDeleteExpenses={handleDeleteExpenses}
               groupedExpenses={groupedExpenses}
-              readyToShow={readyToShow}
-              setReadyToShow={setReadyToShow}
+              expensesCategory={expensesCategory}
+              setExpenseCounter={setExpenseCounter}
+              isHighlighted={isHighlighted}
+              formatter={formatter}
+              handleOnSelect={handleOnSelect}
+              handleShowReceiptClick={handleShowReceiptClick}
+              handleDeleteExpenses={handleDeleteExpenses}
             />
           </div>
         ) : (

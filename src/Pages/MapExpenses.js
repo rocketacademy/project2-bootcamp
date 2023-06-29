@@ -4,33 +4,37 @@ import ListExpenses from "../Components/ListExpenses";
 import Welcome from "./Welcome";
 import { useState, useEffect } from "react";
 import { realTimeDatabase } from "../firebase";
-import { onValue, off, ref, update, remove } from "firebase/database";
+import { ref, update, remove } from "firebase/database";
 import { useLoadScript } from "@react-google-maps/api";
 import { Toast } from "react-bootstrap";
 
 const DB_EXPENSES_FOLDER_NAME = "expenses";
-const DB_USERS_FOLDER_NAME = "user";
+const DB_USER_FOLDER_NAME = "user";
 
 export default function MapExpenses({
   isLoggedIn,
   uid,
   userData,
+  expensesCategory,
   currenciesList,
+  categoriesData,
+  isLoading,
+  expenseCounter,
+  setExpenseCounter,
 }) {
-  console.log("islogged in", isLoggedIn);
-  console.log("uid:", uid);
-  const [expenseCounter, setExpenseCounter] = useState(0);
+  // console.log("islogged in", isLoggedIn);
+  // console.log("uid:", uid);
   const [userLocation, setUserLocation] = useState(null);
-  const [mapRef, setMapRef] = useState();
-  const [expRef, setExpRef] = useState();
-  const [highlighted, setHighlighted] = useState(null);
+  const [isHighlighted, setIsHighlighted] = useState(null);
   const [lat, setLat] = useState(0);
   const [lng, setLng] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
   const [displayCurrency, setDisplayCurrency] = useState("SGD");
   const [showToast, setShowToast] = useState(false);
-  const [expenses, setExpenses] = useState([]);
   const [groupedExpenses, setGroupedExpenses] = useState([]);
+
+  // not used in current component
+  const [expRef, setExpRef] = useState();
+  const [mapRef, setMapRef] = useState();
 
   // Get user's location and assign coordinates to states
   useEffect(() => {
@@ -54,57 +58,19 @@ export default function MapExpenses({
     }
   }, [expenseCounter]);
 
-  // Fetches latest expenses array, triggered with every additional expense
+  // Group expenses with category by date
   useEffect(() => {
-    const expRef = ref(realTimeDatabase, `${DB_EXPENSES_FOLDER_NAME}/${uid}`);
-
-    const listener = onValue(
-      expRef,
-      (snapshot) => {
-        const expensesData = snapshot.val();
-        if (expensesData) {
-          const expensesArray = Object.entries(expensesData).map(
-            ([key, value]) => ({
-              id: key,
-              ...value,
-            })
-          );
-          console.log(expensesArray);
-          setExpenses(expensesArray);
-          setIsLoading(false);
-
-          // Sort expenses by date, with the latest at the top of the list
-          const sortedExpenses = expensesArray.sort(
-            (a, b) => new Date(b.date) - new Date(a.date)
-          );
-
-          // Group expenses by date
-          const groupedExpenses = {};
-          sortedExpenses.forEach((expense) => {
-            const date = expense.date;
-            if (!groupedExpenses[date]) {
-              groupedExpenses[date] = [];
-            }
-            groupedExpenses[date].push(expense);
-          });
-
-          console.log(
-            `Grouped expenses: ${JSON.stringify(groupedExpenses, null, 2)}`
-          );
-
-          setGroupedExpenses(groupedExpenses);
-        }
-      },
-      (error) => {
-        console.error(error);
+    const groupedExpenses = {};
+    expensesCategory.forEach((expense) => {
+      const date = expense.date;
+      if (!groupedExpenses[date]) {
+        groupedExpenses[date] = [];
       }
-    );
-
-    return () => {
-      off(expRef, listener);
-      setExpenses([]);
-    };
-  }, [uid, mapRef, expenseCounter]);
+      groupedExpenses[date].push(expense);
+    });
+    setGroupedExpenses(groupedExpenses);
+  }, [expensesCategory]);
+  // console.log("Grouped expenses:", groupedExpenses);
 
   // Fetches displayCurrency from the database and update the client-side state i.e. Database > Client
   useEffect(() => {
@@ -112,10 +78,11 @@ export default function MapExpenses({
       setDisplayCurrency(userData.displayCurrency);
     }
   }, [userData]);
+  // console.log("displayCurrency", displayCurrency);
 
   // Update the displayCurrency in the database whenever there is a change in client-side state i.e., Client > Database
   useEffect(() => {
-    const userRef = ref(realTimeDatabase, `${DB_USERS_FOLDER_NAME}/${uid}`);
+    const userRef = ref(realTimeDatabase, `${DB_USER_FOLDER_NAME}/${uid}`);
     update(userRef, { displayCurrency: displayCurrency });
   }, [displayCurrency]);
 
@@ -130,13 +97,13 @@ export default function MapExpenses({
     maximumFractionDigits: 2,
   });
 
-  // Note which expense is 'selected' or 'highlighted', and to style it accordingly
+  // if expense is 'selected', highlight it. This needs to be used in both map and all expenses
   const handleOnSelect = (expense) => {
-    if (highlighted === expense.id) {
-      setHighlighted(null);
+    if (isHighlighted === expense.id) {
+      setIsHighlighted(null);
     } else {
-      setHighlighted(expense.id);
-      console.log(highlighted);
+      setIsHighlighted(expense.id);
+      // console.log(highlighted);
     }
   };
 
@@ -157,6 +124,8 @@ export default function MapExpenses({
     }
   };
 
+  console.log("expensesCategory:", expensesCategory[0]["amount"]);
+
   return (
     <div>
       {/* Toast to notify user once expense has been successfully deleted */}
@@ -176,17 +145,15 @@ export default function MapExpenses({
         <div className="App">
           <Map
             uid={uid}
+            expensesCategory={expensesCategory}
             expenseCounter={expenseCounter}
             userLocation={userLocation}
-            expenses={expenses}
-            setExpenses={setExpenses}
-            mapRef={mapRef}
-            setMapRef={setMapRef}
-            expRef={expRef}
             isLoaded={isLoaded}
             formatter={formatter}
-            highlighted={highlighted}
-            setHighlighted={setHighlighted}
+            mapRef={mapRef}
+            setMapRef={setMapRef}
+            isHighlighted={isHighlighted}
+            setIsHighlighted={setIsHighlighted}
           />
           <ListExpenses
             uid={uid}
@@ -195,14 +162,12 @@ export default function MapExpenses({
             setLat={setLat}
             lng={lng}
             setLng={setLng}
-            expenseCounter={expenseCounter}
             setExpenseCounter={setExpenseCounter}
             userLocation={userLocation}
-            expenses={expenses}
-            setExpenses={setExpenses}
+            expensesCategory={expensesCategory}
             formatter={formatter}
-            highlighted={highlighted}
-            setHighlighted={setHighlighted}
+            isHighlighted={isHighlighted}
+            setIsHighlighted={setIsHighlighted}
             handleOnSelect={handleOnSelect}
             isLoading={isLoading}
             displayCurrency={displayCurrency}
@@ -210,6 +175,7 @@ export default function MapExpenses({
             currenciesList={currenciesList}
             handleDeleteExpenses={handleDeleteExpenses}
             groupedExpenses={groupedExpenses}
+            categoriesData={categoriesData}
           />
         </div>
       ) : (
