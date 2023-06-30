@@ -109,12 +109,11 @@ export default function EditExpenses({
         });
       });
     }
-
+    handleClose();
     // Increase expense counter so map in the main page will pan to latest expense location
-    setExpenseCounter((prevExpenseCounter) => prevExpenseCounter + 1);
+    // setExpenseCounter((prevExpenseCounter) => prevExpenseCounter + 1);
     setReceiptFile("");
     setReceiptFileValue("");
-    handleClose();
   };
 
   return (
