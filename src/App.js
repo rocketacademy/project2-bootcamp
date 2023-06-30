@@ -100,7 +100,7 @@ export default function App() {
               ? sortedExpenses
               : prevExpenses
           );
-          setIsLoading(false);
+          // setIsLoading(false);
         }
       },
       (error) => {

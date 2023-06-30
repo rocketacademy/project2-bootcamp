@@ -124,7 +124,7 @@ export default function MapExpenses({
     }
   };
 
-  console.log("expensesCategory:", expensesCategory[0]["amount"]);
+  // console.log("expensesCategory:", expensesCategory[0]["amount"]);
 
   return (
     <div>

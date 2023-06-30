@@ -159,6 +159,7 @@ export default function ListExpenses({
               handleOnSelect={handleOnSelect}
               handleShowReceiptClick={handleShowReceiptClick}
               handleDeleteExpenses={handleDeleteExpenses}
+              categoriesData={categoriesData}
             />
           </div>
         ) : (

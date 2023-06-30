@@ -7,12 +7,14 @@ export default function AllExpenses({
   uid,
   currenciesList,
   groupedExpenses,
+  expensesCategory,
   setExpenseCounter,
   isHighlighted,
   formatter,
   handleOnSelect,
   handleShowReceiptClick,
   handleDeleteExpenses,
+  categoriesData,
 }) {
   const highlightedCardRef = useRef(null); // Create reference for highlighted card
 
@@ -95,9 +97,10 @@ export default function AllExpenses({
                             )}
                             <EditExpenses
                               uid={uid}
-                              expense={expense}
+                              expensesCategory={expensesCategory}
                               currenciesList={currenciesList}
                               setExpenseCounter={setExpenseCounter}
+                              categoriesData={categoriesData}
                             />
                             <span
                               id="delete-button"

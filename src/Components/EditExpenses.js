@@ -1,5 +1,5 @@
 import "../App.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Form, Modal, InputGroup } from "react-bootstrap";
 import { realTimeDatabase, storage } from "../firebase";
 import { ref, set, update } from "firebase/database";
@@ -12,33 +12,29 @@ import { GoogleMap, MarkerF } from "@react-google-maps/api";
 import Geocode from "react-geocode";
 import { Typeahead } from "react-bootstrap-typeahead";
 import "react-bootstrap-typeahead/css/Typeahead.css";
-
 const DB_EXPENSES_FOLDER_NAME = "expenses";
 const STORAGE_EXPENSES_FOLDER_NAME = "receiptPhoto";
-
 export default function EditExpenses({
   uid,
   mapRef,
   setExpenseCounter,
   currenciesList,
-  expense,
+  expensesCategory,
+  categoriesData,
 }) {
   // State to handle open and close of modal
   const [show, setShow] = useState(false);
-
   // States to store expense data
-  const [date, setDate] = useState(expense.date);
-  const [category, setCategory] = useState(expense.category);
-  const [currency, setCurrency] = useState(expense.currency);
-  const [amount, setAmount] = useState(expense.amount);
-  const [description, setDescription] = useState(expense.description);
-  const [lat, setLat] = useState(expense.lat);
-  const [lng, setLng] = useState(expense.lng);
-
+  const [date, setDate] = useState(expensesCategory.date);
+  const [category, setCategory] = useState(expensesCategory.category);
+  const [currency, setCurrency] = useState(expensesCategory.currency);
+  const [amount, setAmount] = useState(expensesCategory.amount);
+  const [description, setDescription] = useState(expensesCategory.description);
+  const [lat, setLat] = useState(expensesCategory.lat);
+  const [lng, setLng] = useState(expensesCategory.lng);
   const [address, setAddress] = useState("");
   const [receiptFile, setReceiptFile] = useState("");
   const [receiptFileValue, setReceiptFileValue] = useState("");
-
   // Get lat and lng coordinates on 'look up' button press
   const getLatLng = () =>
     Geocode.fromAddress(address, process.env.REACT_APP_API_KEY).then(
@@ -61,24 +57,23 @@ export default function EditExpenses({
     setReceiptFileValue("");
   };
   const handleShow = () => {
+    if (expensesCategory) {
+      setDate(expensesCategory.date);
+      setCategory(expensesCategory.category);
+      setCurrency(expensesCategory.currency);
+      setAmount(expensesCategory.amount);
+      setDescription(expensesCategory.description);
+    }
     setShow(true);
   };
 
   // Update data in db
   const handleUpdate = (e) => {
     e.preventDefault();
-    // Access the selected category value
-    console.log(category);
-    console.log(currency);
-    console.log(amount);
-    console.log(description);
-    console.log(date);
-    // console.log(receiptFile);
-
     // Get ref key
     const expRef = ref(
       realTimeDatabase,
-      `${DB_EXPENSES_FOLDER_NAME}/${uid}/${expense.id}`
+      `${DB_EXPENSES_FOLDER_NAME}/${uid}/${expensesCategory.id}`
     );
     // Update data at expense reference location
     update(expRef, {
@@ -90,33 +85,35 @@ export default function EditExpenses({
       description: description,
       date: date,
     });
-
     console.log(`expRef: ${expRef}`);
-
     if (receiptFile) {
       const expFileRef = storageRef(
         storage,
         ` ${STORAGE_EXPENSES_FOLDER_NAME}/${uid}/${receiptFile.name}`
       );
-
       uploadBytes(expFileRef, receiptFile).then((snapshot) => {
         getDownloadURL(snapshot.ref).then((receiptUrl) => {
           // update expenses db with expenses photo url
           const currExpRef = ref(
             realTimeDatabase,
-            `${DB_EXPENSES_FOLDER_NAME}/${uid}/${expense.id}/receiptUrl`
+            `${DB_EXPENSES_FOLDER_NAME}/${uid}/${expensesCategory.id}/receiptUrl`
           );
           set(currExpRef, receiptUrl);
         });
       });
     }
-
     // Increase expense counter so map in the main page will pan to latest expense location
     setExpenseCounter((prevExpenseCounter) => prevExpenseCounter + 1);
     setReceiptFile("");
     setReceiptFileValue("");
     handleClose();
   };
+  // to ensure that selection of the first element in the category will be shown. eg Food will be saved to db as category
+  useEffect(() => {
+    if (categoriesData.length > 0) {
+      setCategory(categoriesData[0]);
+    }
+  }, [categoriesData]);
 
   return (
     <>
@@ -128,7 +125,6 @@ export default function EditExpenses({
       >
         ✏️
       </span>
-
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>Edit Expense</Modal.Title>
@@ -146,7 +142,6 @@ export default function EditExpenses({
                 onChange={(e) => setDate(e.target.value)}
               />
             </Form.Group>
-
             <Form.Select
               aria-label="Default select example"
               value={category}
@@ -156,16 +151,16 @@ export default function EditExpenses({
               <option value="" disabled>
                 Category
               </option>
-              <option value="🍔 Food">🍔 Food</option>
-              <option value="💸 Bills">💸 Bills</option>
-              <option value="🚗 Transport">🚗 Transport</option>
-              <option value="🏠 Home">🏠 Home</option>
-              <option value="🌏 Holiday">🌏 Holiday</option>
-              <option value="🎬 Entertainment">🎬 Entertainment</option>
-              <option value="🤷 Others">🤷 Others</option>
+              {categoriesData.map((categoryObj, index) => (
+                <option
+                  key={index}
+                  value={`${categoryObj.emoji} ${categoryObj.category}`}
+                >
+                  {categoryObj.emoji} {categoryObj.category}
+                </option>
+              ))}
             </Form.Select>
             <br />
-
             <InputGroup className="mb-3">
               <Typeahead
                 id="currency-typeahead"
@@ -174,7 +169,6 @@ export default function EditExpenses({
                 onChange={(selected) => setCurrency(selected[0])}
                 options={currenciesList}
               ></Typeahead>
-
               <Form.Control
                 type="number"
                 placeholder={amount}
@@ -182,10 +176,8 @@ export default function EditExpenses({
                 onChange={(e) => setAmount(e.target.value)}
               />
             </InputGroup>
-
             <Form.Group className="form-group">
               <Form.Label className="compact-label">Location</Form.Label>
-
               {lat && lng ? (
                 <div className="coordinates-display green">
                   {lat.toFixed(4)}, {lng.toFixed(4)}
@@ -224,7 +216,6 @@ export default function EditExpenses({
                   </Button>
                 </div>
               </div>
-
               <div id="loc-option-2">
                 <GoogleMap
                   onClick={(e) => {
@@ -250,7 +241,6 @@ export default function EditExpenses({
                 <br />
               </div>
             </Form.Group>
-
             <Form.Group
               className="mb-3"
               controlId="exampleForm.ControlTextarea1"
@@ -265,7 +255,6 @@ export default function EditExpenses({
                 onChange={(e) => setDescription(e.target.value)}
               />
             </Form.Group>
-
             <Form.Group controlId="formFile" className="mb-3">
               <Form.Label>Upload receipt</Form.Label>
               <Form.Control
