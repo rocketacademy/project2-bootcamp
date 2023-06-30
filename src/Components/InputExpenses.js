@@ -110,10 +110,10 @@ export default function InputExpenses({
       });
     }
 
-    // setReadyToShow(false);
+    handleClose();
+    setReadyToShow(false);
     handleNewInput();
     setExpenseCounter((prevExpenseCounter) => prevExpenseCounter + 1);
-    handleClose();
   };
 
   // to ensure that selection of the first element in the category will be shown. eg Food will be saved to db as category

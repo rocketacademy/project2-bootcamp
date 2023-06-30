@@ -26,7 +26,8 @@ export default function ListExpenses({
   handleDeleteExpenses,
   formatter,
   isHighlighted,
-  isLoading,
+  // isLoading,
+  isLoadingExpenses,
 }) {
   const [selectedExpense, setSelectedExpense] = useState(null);
   const [showModal, setShowModal] = useState(false);
@@ -72,7 +73,7 @@ export default function ListExpenses({
     // Pan to latest expense location once extracted
     const fetchAndPanToLatestLocation = async () => {
       const location = await getLatestExpLocation();
-      if (location !== null && isLoading === false) {
+      if (location !== null && isLoadingExpenses === false) {
         mapRef.panTo(location);
       }
     };
@@ -102,6 +103,8 @@ export default function ListExpenses({
     return () => clearTimeout(timer); // Clean up on unmount
   }, []);
 
+  console.log("list exp isLoadingExpenses", isLoadingExpenses);
+  console.log(isLoadingExpenses);
   return (
     <div className="list-container">
       <div className="card-header">
@@ -139,7 +142,7 @@ export default function ListExpenses({
         </div>
       </div>
       <div className="allExp-container">
-        {isLoading ? (
+        {isLoadingExpenses ? (
           <p style={{ textAlign: "center" }}>
             <em>Your expenses are currently being loaded</em>
           </p>

@@ -18,9 +18,9 @@ import currencies from "./Components/Currencies";
 import ResetPassword from "./Pages/ResetPassword";
 import Category from "./Pages/Category";
 
-const DB_EXPENSES_FOLDER_NAME = "expenses";
 const DB_USER_FOLDER_NAME = "user";
-const DB_CATEGORY_FOLDER_NAME = "categories";
+// const DB_EXPENSES_FOLDER_NAME = "expenses";
+// const DB_CATEGORY_FOLDER_NAME = "categories";
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -29,11 +29,11 @@ export default function App() {
   const [profilePhotoURL, setProfilePhotoURL] = useState("");
   const [fileInputFile, setFileInputFile] = useState("");
   const [fileInputValue, setFileInputValue] = useState("");
-  const [expenses, setExpenses] = useState([]);
-  const [categoriesData, setCategoriesData] = useState([]);
+  // const [expenses, setExpenses] = useState([]);
+  // const [categoriesData, setCategoriesData] = useState([]);
   const [currenciesList, setCurrenciesList] = useState([]);
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(true);
+  // const [isLoading, setIsLoading] = useState(true);
 
   // Fetch user data when logged in
   useEffect(() => {
@@ -76,99 +76,11 @@ export default function App() {
     });
   }, [uid]);
 
-  // Fetches latest expenses array, triggered with every change
-  useEffect(() => {
-    setIsLoading(true); // <-- Set isLoading to true when fetch starts
-    const expRef = ref(realTimeDatabase, `${DB_EXPENSES_FOLDER_NAME}/${uid}`);
-    const listener = onValue(
-      expRef,
-      (snapshot) => {
-        const expensesData = snapshot.val();
-        if (expensesData) {
-          const expensesArray = Object.entries(expensesData).map(
-            ([key, value]) => ({
-              id: key,
-              ...value,
-            })
-          );
-          // Sort expenses by date, with the latest at the top of the list
-          const sortedExpenses = expensesArray.sort(
-            (a, b) => new Date(b.date) - new Date(a.date)
-          );
-          setExpenses(sortedExpenses);
-          setIsLoading(false);
-        }
-      },
-      (error) => {
-        console.error(error);
-        setIsLoading(false); // <-- Also set isLoading to false in case of error
-      }
-    );
-    return () => {
-      off(expRef, listener);
-      setExpenses([]);
-    };
-  }, [uid]);
-
-  if (!isLoading) {
-    // <-- Only log expenses if fetch is completed
-    console.log("expenses", expenses);
-  }
-  console.log("isLoading", isLoading);
-
-  // Fetches latest category array, triggered with every change
-  useEffect(() => {
-    const catRef = ref(realTimeDatabase, `${DB_CATEGORY_FOLDER_NAME}/${uid}`);
-    const unsubscribe = onValue(
-      catRef,
-      (snapshot) => {
-        const catData = snapshot.val();
-        // console.log(catData);
-        if (catData) {
-          const catArray = Object.entries(catData).map(([key, value]) => ({
-            id: key,
-            ...value,
-          }));
-          setCategoriesData((prevCategoriesData) =>
-            JSON.stringify(prevCategoriesData) !== JSON.stringify(catArray)
-              ? catArray
-              : prevCategoriesData
-          );
-        }
-      },
-      (errorObject) => {
-        console.log("The read failed: " + errorObject.name);
-      }
-    );
-
-    return () => {
-      // Remove the listener when the component unmounts
-      unsubscribe();
-    };
-  }, [uid]);
-  console.log("categoriesData:", categoriesData);
-
-  // merge expenses and cateogory to add color and emoji to the expenses
-  const expensesCategory = useMemo(() => {
-    return expenses.map((expense, index) => {
-      const category = categoriesData.find(
-        (category) => category.category === expense.categoryName
-      );
-      // Ensure a category is found. If not, provide a fallback category
-      const fallbackCategory = category
-        ? category
-        : { category: "Unknown", color: "#000000", emoji: "❓" };
-      // Modify the spread sequence so the id from expense is not overwritten.
-      return { ...fallbackCategory, ...expense };
-    });
-  }, [expenses, categoriesData]);
-  // console.log("expensesCategory:", expensesCategory);
-
   // convert currencies from array of objects to array of strings
   useEffect(() => {
     const currencyList = currencies.map((currency) => currency.code);
     setCurrenciesList(currencyList);
-  }, [expenses]);
+  }, []);
   // console.log(currenciesList);
 
   return (
@@ -265,10 +177,10 @@ export default function App() {
               isLoggedIn={isLoggedIn}
               uid={uid}
               userData={userData}
-              expensesCategory={expensesCategory}
+              // expensesCategory={expensesCategory}
               currenciesList={currenciesList}
-              categoriesData={categoriesData}
-              isLoading={isLoading}
+              // categoriesData={categoriesData}
+              // isLoading={isLoading}
             />
           }
         />
