@@ -132,9 +132,6 @@ export default function App() {
             (a, b) => new Date(b.date) - new Date(a.date)
           );
 
-          setExpensesCategory(sortedExpenses);
-          console.log("expensesCategory in fetching exp", expensesCategory);
-
           // Join expenses with categories
           if (!isLoadingCategories) {
             const joinedExpenses = sortedExpenses.map((expense, index) => {
@@ -148,6 +145,9 @@ export default function App() {
               // Modify the spread sequence so the id from expense is not overwritten.
               return { ...fallbackCategory, ...expense };
             });
+
+            setExpensesCategory(joinedExpenses);
+            console.log("joinedExpenses in fetching exp", joinedExpenses);
 
             const groupedExpenses = {};
             joinedExpenses.forEach((expense) => {
@@ -310,7 +310,13 @@ export default function App() {
 
         <Route
           path="/dashboard"
-          element={<Dashboard isLoggedIn={isLoggedIn} uid={uid} />}
+          element={
+            <Dashboard
+              isLoggedIn={isLoggedIn}
+              uid={uid}
+              // expensesCategory={expensesCategory}
+            />
+          }
         />
 
         <Route
