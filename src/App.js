@@ -2,8 +2,7 @@ import React from "react";
 import logo from "./logo.png";
 import "./App.css";
 
-class App extends React.Component {
-  render() {
+export default function App() {
     return (
       <div className="App">
         <header className="App-header">
@@ -15,6 +14,3 @@ class App extends React.Component {
       </div>
     );
   }
-}
-
-export default App;
