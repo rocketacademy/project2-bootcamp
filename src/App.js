@@ -134,44 +134,6 @@ export default function App() {
 
           setExpensesCategory(sortedExpenses);
           console.log("expensesCategory in fetching exp", expensesCategory);
-        } else {
-          setExpensesCategory([]); // Set expensesCategory to an empty array if there are no expenses
-        }
-        setIsLoadingExpenses(false);
-      },
-      (error) => {
-        console.error(error);
-        setIsLoadingExpenses(false); // <-- Also set isLoadingExpenses to false in case of error
-      }
-    );
-
-    return () => {
-      off(expRef, listener);
-    };
-  }, [uid]);
-
-  useEffect(() => {
-    setIsLoadingExpenses(true); // <-- Set isLoadingExpenses to true when fetch starts
-
-    const expRef = ref(realTimeDatabase, `${DB_EXPENSES_FOLDER_NAME}/${uid}`);
-    const listener = onValue(
-      expRef,
-      (snapshot) => {
-        const expensesData = snapshot.val();
-        if (expensesData) {
-          const expensesArray = Object.entries(expensesData).map(
-            ([key, value]) => ({
-              id: key,
-              ...value,
-            })
-          );
-          // Sort expenses by date, with the latest at the top of the list
-          const sortedExpenses = expensesArray.sort(
-            (a, b) => new Date(b.date) - new Date(a.date)
-          );
-
-          setExpensesCategory(sortedExpenses);
-          console.log("expensesCategory in fetching exp", expensesCategory);
 
           // Join expenses with categories
           if (!isLoadingCategories) {
