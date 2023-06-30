@@ -17,21 +17,27 @@ const STORAGE_EXPENSES_FOLDER_NAME = "receiptPhoto";
 export default function EditExpenses({
   uid,
   mapRef,
+  expenseCounter,
   setExpenseCounter,
   currenciesList,
-  expensesCategory,
+  expense,
   categoriesData,
 }) {
   // State to handle open and close of modal
   const [show, setShow] = useState(false);
   // States to store expense data
-  const [date, setDate] = useState(expensesCategory.date);
-  const [category, setCategory] = useState(expensesCategory.category);
-  const [currency, setCurrency] = useState(expensesCategory.currency);
-  const [amount, setAmount] = useState(expensesCategory.amount);
-  const [description, setDescription] = useState(expensesCategory.description);
-  const [lat, setLat] = useState(expensesCategory.lat);
-  const [lng, setLng] = useState(expensesCategory.lng);
+  const [date, setDate] = useState(expense.date);
+  const [category, setCategory] = useState(expense.categoryName);
+  // to display emoji with category
+  const [categoryDisplay, setCategoryDisplay] = useState(
+    `${expense.emoji} ${expense.categoryName}`
+  );
+
+  const [currency, setCurrency] = useState(expense.currency);
+  const [amount, setAmount] = useState(expense.amount);
+  const [description, setDescription] = useState(expense.description);
+  const [lat, setLat] = useState(expense.lat);
+  const [lng, setLng] = useState(expense.lng);
   const [address, setAddress] = useState("");
   const [receiptFile, setReceiptFile] = useState("");
   const [receiptFileValue, setReceiptFileValue] = useState("");
@@ -57,27 +63,28 @@ export default function EditExpenses({
     setReceiptFileValue("");
   };
   const handleShow = () => {
-    if (expensesCategory) {
-      setDate(expensesCategory.date);
-      setCategory(expensesCategory.category);
-      setCurrency(expensesCategory.currency);
-      setAmount(expensesCategory.amount);
-      setDescription(expensesCategory.description);
-    }
     setShow(true);
   };
+
+  // console.log("expensesCategory in edit", expense.id);
 
   // Update data in db
   const handleUpdate = (e) => {
     e.preventDefault();
+    // console.log("category:", category);
+    // console.log(currency);
+    // console.log(amount);
+    // console.log(description);
+    // console.log(date);
+
     // Get ref key
     const expRef = ref(
       realTimeDatabase,
-      `${DB_EXPENSES_FOLDER_NAME}/${uid}/${expensesCategory.id}`
+      `${DB_EXPENSES_FOLDER_NAME}/${uid}/${expense.id}`
     );
     // Update data at expense reference location
     update(expRef, {
-      category: category,
+      categoryName: category,
       currency: currency,
       amount: amount,
       lat: lat,
@@ -96,24 +103,19 @@ export default function EditExpenses({
           // update expenses db with expenses photo url
           const currExpRef = ref(
             realTimeDatabase,
-            `${DB_EXPENSES_FOLDER_NAME}/${uid}/${expensesCategory.id}/receiptUrl`
+            `${DB_EXPENSES_FOLDER_NAME}/${uid}/${expense.id}/receiptUrl`
           );
           set(currExpRef, receiptUrl);
         });
       });
     }
+
     // Increase expense counter so map in the main page will pan to latest expense location
     setExpenseCounter((prevExpenseCounter) => prevExpenseCounter + 1);
     setReceiptFile("");
     setReceiptFileValue("");
     handleClose();
   };
-  // to ensure that selection of the first element in the category will be shown. eg Food will be saved to db as category
-  useEffect(() => {
-    if (categoriesData.length > 0) {
-      setCategory(categoriesData[0]);
-    }
-  }, [categoriesData]);
 
   return (
     <>
@@ -144,8 +146,16 @@ export default function EditExpenses({
             </Form.Group>
             <Form.Select
               aria-label="Default select example"
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
+              value={categoryDisplay}
+              onChange={(e) => {
+                const selectedCategory = categoriesData.find(
+                  (categoryObj) =>
+                    `${categoryObj.emoji} ${categoryObj.category}` ===
+                    e.target.value
+                );
+                setCategory(selectedCategory.category); // only set the category name for database
+                setCategoryDisplay(e.target.value);
+              }} // update display state with new selected value
               required
             >
               <option value="" disabled>

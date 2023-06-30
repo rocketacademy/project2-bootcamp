@@ -18,6 +18,7 @@ export default function ListExpenses({
   lng,
   setLat,
   setLng,
+  expenseCounter,
   setExpenseCounter,
   displayCurrency,
   setDisplayCurrency,
@@ -51,10 +52,6 @@ export default function ListExpenses({
     (accumulator, expense) => accumulator + parseFloat(expense.displayAmount),
     0
   );
-  // const totalAmount = expensesCategory.reduce((accumulator, expense) => {
-  //   const amount = parseFloat(expense.displayAmount);
-  //   return isNaN(amount) ? console.log(amount, expense) : accumulator + amount;
-  // }, 0);
 
   console.log("totalAmount", totalAmount);
 
@@ -144,7 +141,7 @@ export default function ListExpenses({
       <div className="allExp-container">
         {isLoading ? (
           <p style={{ textAlign: "center" }}>
-            <em>Your expenses will appear here</em>
+            <em>Your expenses are currently being loaded</em>
           </p>
         ) : readyToShow ? (
           <div>
@@ -153,6 +150,7 @@ export default function ListExpenses({
               currenciesList={currenciesList}
               groupedExpenses={groupedExpenses}
               expensesCategory={expensesCategory}
+              expenseCounter={expenseCounter}
               setExpenseCounter={setExpenseCounter}
               isHighlighted={isHighlighted}
               formatter={formatter}

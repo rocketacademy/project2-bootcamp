@@ -8,6 +8,7 @@ export default function AllExpenses({
   currenciesList,
   groupedExpenses,
   expensesCategory,
+  expenseCounter,
   setExpenseCounter,
   isHighlighted,
   formatter,
@@ -97,8 +98,9 @@ export default function AllExpenses({
                             )}
                             <EditExpenses
                               uid={uid}
-                              expensesCategory={expensesCategory}
+                              expense={expense}
                               currenciesList={currenciesList}
+                              expenseCounter={expenseCounter}
                               setExpenseCounter={setExpenseCounter}
                               categoriesData={categoriesData}
                             />

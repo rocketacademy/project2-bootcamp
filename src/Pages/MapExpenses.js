@@ -19,11 +19,7 @@ export default function MapExpenses({
   currenciesList,
   categoriesData,
   isLoading,
-  expenseCounter,
-  setExpenseCounter,
 }) {
-  // console.log("islogged in", isLoggedIn);
-  // console.log("uid:", uid);
   const [userLocation, setUserLocation] = useState(null);
   const [isHighlighted, setIsHighlighted] = useState(null);
   const [lat, setLat] = useState(0);
@@ -31,6 +27,7 @@ export default function MapExpenses({
   const [displayCurrency, setDisplayCurrency] = useState("SGD");
   const [showToast, setShowToast] = useState(false);
   const [groupedExpenses, setGroupedExpenses] = useState([]);
+  const [expenseCounter, setExpenseCounter] = useState(0);
 
   // not used in current component
   const [expRef, setExpRef] = useState();
@@ -57,6 +54,7 @@ export default function MapExpenses({
       console.error("Geolocation is not supported by this browser.");
     }
   }, [expenseCounter]);
+  // console.log("expenseCounter", expenseCounter);
 
   // Group expenses with category by date
   useEffect(() => {
@@ -162,7 +160,6 @@ export default function MapExpenses({
             setLat={setLat}
             lng={lng}
             setLng={setLng}
-            setExpenseCounter={setExpenseCounter}
             userLocation={userLocation}
             expensesCategory={expensesCategory}
             formatter={formatter}
