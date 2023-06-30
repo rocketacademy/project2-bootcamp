@@ -10,16 +10,17 @@ import { Toast } from "react-bootstrap";
 
 const DB_USER_FOLDER_NAME = "user";
 const DB_EXPENSES_FOLDER_NAME = "expenses";
-const DB_CATEGORY_FOLDER_NAME = "categories";
+// const DB_CATEGORY_FOLDER_NAME = "categories";
 
 export default function MapExpenses({
   isLoggedIn,
   uid,
   userData,
-  // expensesCategory,
+  expensesCategory,
   currenciesList,
-  // categoriesData,
-  // isLoading,
+  categoriesData,
+  groupedExpenses,
+  isLoadingExpenses,
 }) {
   const [userLocation, setUserLocation] = useState(null);
   const [isHighlighted, setIsHighlighted] = useState(null);
@@ -27,114 +28,10 @@ export default function MapExpenses({
   const [lng, setLng] = useState(0);
   const [displayCurrency, setDisplayCurrency] = useState("SGD");
   const [showToast, setShowToast] = useState(false);
-  const [groupedExpenses, setGroupedExpenses] = useState([]);
   const [expenseCounter, setExpenseCounter] = useState(0);
-  const [expenses, setExpenses] = useState([]);
-  const [categoriesData, setCategoriesData] = useState([]);
-  // const [isLoading, setIsLoading] = useState(true);
-  const [isLoadingExpenses, setIsLoadingExpenses] = useState(false);
-  const [isLoadingCategories, setIsLoadingCategories] = useState(false);
-  const [expensesCategory, setExpensesCategory] = useState([]);
 
   // not used in current component
   const [mapRef, setMapRef] = useState();
-
-  // Fetches latest category array, triggered with every change
-  useEffect(() => {
-    // setIsLoadingCategories(true);
-    const catRef = ref(realTimeDatabase, `${DB_CATEGORY_FOLDER_NAME}/${uid}`);
-    const unsubscribe = onValue(
-      catRef,
-      (snapshot) => {
-        const catData = snapshot.val();
-        // console.log(catData);
-        if (catData) {
-          const catArray = Object.entries(catData).map(([key, value]) => ({
-            id: key,
-            ...value,
-          }));
-          setCategoriesData((prevCategoriesData) =>
-            JSON.stringify(prevCategoriesData) !== JSON.stringify(catArray)
-              ? catArray
-              : prevCategoriesData
-          );
-        }
-        // setIsLoadingCategories(false); // <-- Set isLoadingCategories to false when fetch finishes
-      },
-      (errorObject) => {
-        console.log("The read failed: " + errorObject.name);
-        // setIsLoadingCategories(false); // <-- Also set isLoadingCategories to false in case of error
-      }
-    );
-
-    return () => {
-      // Remove the listener when the component unmounts
-      unsubscribe();
-    };
-  }, [uid]);
-  console.log("categoriesData:", categoriesData);
-
-  // Fetches latest expenses array, triggered with every change
-  useEffect(() => {
-    setIsLoadingExpenses(true); // <-- Set isLoadingExpenses to true when fetch starts
-
-    const expRef = ref(realTimeDatabase, `${DB_EXPENSES_FOLDER_NAME}/${uid}`);
-    const listener = onValue(
-      expRef,
-      (snapshot) => {
-        const expensesData = snapshot.val();
-        if (expensesData) {
-          const expensesArray = Object.entries(expensesData).map(
-            ([key, value]) => ({
-              id: key,
-              ...value,
-            })
-          );
-          // Sort expenses by date, with the latest at the top of the list
-          const sortedExpenses = expensesArray.sort(
-            (a, b) => new Date(b.date) - new Date(a.date)
-          );
-          setExpenses(sortedExpenses);
-          // Ensure that both expenses and categoriesData are loaded before attempting to join
-          if (!isLoadingCategories) {
-            const expensesCategory = sortedExpenses.map((expense, index) => {
-              const category = categoriesData.find(
-                (category) => category.category === expense.categoryName
-              );
-              // Ensure a category is found. If not, provide a fallback category
-              const fallbackCategory = category
-                ? category
-                : { category: "Unknown", color: "#000000", emoji: "❓" };
-              // Modify the spread sequence so the id from expense is not overwritten.
-              return { ...fallbackCategory, ...expense };
-            });
-            setExpensesCategory(expensesCategory);
-
-            const groupedExpenses = {};
-            expensesCategory.forEach((expense) => {
-              const date = expense.date;
-              if (!groupedExpenses[date]) {
-                groupedExpenses[date] = [];
-              }
-              groupedExpenses[date].push(expense);
-            });
-            setGroupedExpenses(groupedExpenses);
-          }
-
-          setIsLoadingExpenses(false);
-          console.log("expenses", expenses);
-        }
-      },
-      (error) => {
-        console.error(error);
-        setIsLoadingExpenses(false); // <-- Also set isLoadingExpenses to false in case of error
-      }
-    );
-    return () => {
-      off(expRef, listener);
-      setExpenses([]);
-    };
-  }, [uid, isLoadingCategories, categoriesData]);
 
   // Get user's location and assign coordinates to states
   useEffect(() => {
