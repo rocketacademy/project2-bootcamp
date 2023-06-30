@@ -7,7 +7,12 @@
 }
 
 /* Style inputs, select elements and textareas */
-#dName, #imageFile, #uEmail, #uCPassword,#uNPassword, #uPasswordC {
+#dName,
+#imageFile,
+#uEmail,
+#uCPassword,
+#uNPassword,
+#uPasswordC {
   width: 100%;
   padding: 12px;
   border: 1px solid #ccc;
@@ -24,7 +29,7 @@
 
 /* Style the submit button */
 .submitButton {
-  background-color: #04AA6D;
+  background-color: #04aa6d;
   color: white;
   padding: 12px 20px;
   border: none;
@@ -36,7 +41,7 @@
 /* Style the submit button */
 .submitButton:hover {
   background-color: white;
-  color: #04AA6D;
+  color: #04aa6d;
   padding: 12px 20px;
   border: none;
   border-radius: 4px;
@@ -56,9 +61,8 @@
 
 /* Style the container */
 .container {
-  border-radius: 5px;
-  background-color: #212529;
-  color: white;
+  border-radius: 50px;
+  background-color: #615038;
   padding: 20px;
 }
 
@@ -85,7 +89,9 @@
 
 /* Responsive layout - when the screen is less than 600px wide, make the two columns stack on top of each other instead of next to each other */
 @media screen and (max-width: 600px) {
-  .col-25, .col-75, input[type=submit] {
+  .col-25,
+  .col-75,
+  input[type="submit"] {
     width: 100%;
     margin-top: 0;
   }

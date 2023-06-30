@@ -44,8 +44,12 @@ const Login = () => {
 
   return (
     <div className="centered">
-      <p style={{ textAlign: "right", fontSize: 10 }}>
-        To Register an account. Click <Link to="/auth/register">here</Link>.
+      <p style={{ textAlign: "right", fontSize: 15 }}>
+        To Register an account. Click{" "}
+        <Link to="/auth/register" style={{ color: "yellow" }}>
+          here
+        </Link>
+        .
       </p>
       <h1>Login</h1>
       <h4>Login using your account</h4>
@@ -53,21 +57,27 @@ const Login = () => {
         <TextField
           id="outlined-basic"
           label="Email Address"
-          variant="outlined"
+          variant="filled"
           type="email"
           name="inputEmailValue"
           value={inputEmail}
           onChange={handleChange}
+          style={{ backgroundColor: "white" }}
         />
         <TextField
           label="Password"
-          variant="outlined"
+          variant="filled"
           type="password"
           name="inputPwdValue"
           value={inputPwd}
           onChange={handleChange}
+          style={{ backgroundColor: "white", fontWeight: "bolder" }}
         />
-        <Button variant="outlined" type="submit">
+        <Button
+          variant="outlined"
+          type="submit"
+          style={{ fontWeight: "bolder" }}
+        >
           Login
         </Button>
       </form>
