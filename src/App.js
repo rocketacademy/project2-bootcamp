@@ -17,6 +17,7 @@ import patchQuestionFillSvg from "./Icons/patch-question-fill.svg";
 import currencies from "./Components/Currencies";
 import ResetPassword from "./Pages/ResetPassword";
 import Category from "./Pages/Category";
+import { BeatLoader } from "react-spinners";
 
 const DB_USER_FOLDER_NAME = "user";
 const DB_EXPENSES_FOLDER_NAME = "expenses";
@@ -167,7 +168,7 @@ export default function App() {
       },
       (error) => {
         console.error(error);
-        setIsLoadingExpenses(false); // <-- Also set isLoadingExpenses to false in case of error
+        setIsLoadingExpenses(false); // Also set isLoadingExpenses to false in case of error
       }
     );
 
@@ -311,11 +312,19 @@ export default function App() {
         <Route
           path="/dashboard"
           element={
-            <Dashboard
-              isLoggedIn={isLoggedIn}
-              uid={uid}
-              // expensesCategory={expensesCategory}
-            />
+            isLoadingCategories ? (
+              <div className="temporary-box">
+                <BeatLoader color={"#3dd381"} loading={isLoadingCategories} />
+              </div>
+            ) : (
+              // <div className="temporary-box">loading... </div>
+              <Dashboard
+                isLoggedIn={isLoggedIn}
+                uid={uid}
+                expensesCategory={expensesCategory}
+                categoriesData={categoriesData}
+              />
+            )
           }
         />
 

@@ -6,6 +6,7 @@ import Filter from "./Filter";
 import InputExpenses from "./InputExpenses";
 import { useState, useRef, useEffect } from "react";
 import { Button, Modal } from "react-bootstrap";
+import { BeatLoader } from "react-spinners";
 
 export default function ListExpenses({
   uid,
@@ -46,15 +47,14 @@ export default function ListExpenses({
     setShowModal(false);
   };
 
-  console.log("expensesCategory:", expensesCategory);
+  // console.log("expensesCategory:", expensesCategory);
 
   // Sum up the totalAmount for all expenses to be displayed
   const totalAmount = expensesCategory.reduce(
     (accumulator, expense) => accumulator + parseFloat(expense.displayAmount),
     0
   );
-
-  console.log("totalAmount", totalAmount);
+  // console.log("totalAmount", totalAmount);
 
   // Pan to latest expense location whenever there's a change in expenses
   useEffect(() => {
@@ -142,9 +142,12 @@ export default function ListExpenses({
       </div>
       <div className="allExp-container">
         {isLoadingExpenses ? (
-          <p style={{ textAlign: "center" }}>
-            <em>Your expenses are currently being loaded</em>
-          </p>
+          // <p style={{ textAlign: "center" }}>
+          //   <em>Your expenses are currently being loaded</em>
+          // </p>
+          <div className="temporary-box">
+            <BeatLoader color={"#3dd381"} loading={isLoadingExpenses} />
+          </div>
         ) : readyToShow ? (
           <div>
             <AllExpenses

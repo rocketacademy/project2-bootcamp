@@ -24,6 +24,7 @@
     "react-geocode": "^0.2.3",
     "react-router-dom": "^6.12.1",
     "react-scripts": "5.0.1",
+    "react-spinners": "^0.13.8",
     "recharts": "^2.7.2"
   },
   "scripts": {

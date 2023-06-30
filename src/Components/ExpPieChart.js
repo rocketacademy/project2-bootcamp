@@ -4,52 +4,15 @@ import { ref, get, child, onValue } from "firebase/database";
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend } from "recharts";
 
 export default function ExpPieChart({
-  expensesList,
   selectedDate,
-  uid,
-  isLoggedIn,
+  expensesCategory,
+  categoriesData,
 }) {
-  const DB_CATEGORY_FOLDER_NAME = "categories";
-  const [categoriesData, setCategoriesData] = useState([]);
-  // const [expensesListPie, setExpensesListPie] = useState(expensesList);
-
-  useEffect(() => {
-    const userCatRef = ref(
-      realTimeDatabase,
-      `${DB_CATEGORY_FOLDER_NAME}/${uid}`
-    );
-    // Attach an asynchronous callback to read the data at our categories reference
-    const unsubscribe = onValue(
-      userCatRef,
-      (snapshot) => {
-        const catData = snapshot.val();
-        // console.log(catData);
-        if (catData) {
-          const catArray = Object.entries(catData).map(([key, value]) => ({
-            id: key,
-            ...value,
-          }));
-
-          setCategoriesData(catArray);
-          // console.log("catArray:", catArray);
-        }
-      },
-      (errorObject) => {
-        // console.log("The read failed: " + errorObject.name);
-      }
-    );
-
-    return () => {
-      // Remove the listener when the component unmounts
-      unsubscribe();
-    };
-  }, [uid]);
-
   // Filter expenses based on the selected date
   // if selectedDate is not null, filter expensesList such that expense.date is equiv to selectedDate, else show all
   const filteredExpenses = selectedDate
-    ? expensesList.filter((expense) => expense.date === selectedDate)
-    : expensesList;
+    ? expensesCategory.filter((expense) => expense.date === selectedDate)
+    : expensesCategory;
   // console.log("filteredExpenses:", filteredExpenses);
 
   // Calculate the sum of amounts by category
@@ -66,6 +29,8 @@ export default function ExpPieChart({
     );
   });
   // console.log("displayAmountByCategory", displayAmountByCategory);
+
+  // convert object into array of arrays.map convert each inner array to an object
   const pieChartData = Object.entries(displayAmountByCategory).map(
     ([categoryName, displayAmount]) => ({
       categoryName,
@@ -73,7 +38,8 @@ export default function ExpPieChart({
     })
   );
   // console.log("pieChartData", pieChartData);
-  // console.log("categoriesData:", categoriesData);
+
+  // merge piechart with category to append the color and emoji
   const joinedPieChartData = useMemo(() => {
     return pieChartData.map((expense) => {
       const category = categoriesData.find(
@@ -86,7 +52,7 @@ export default function ExpPieChart({
       return { ...expense, ...fallbackCategory };
     });
   }, [pieChartData, categoriesData]);
-  // console.log("joinedPieChartData:", joinedPieChartData);
+  console.log("joinedPieChartData:", joinedPieChartData);
 
   return (
     <ResponsiveContainer>

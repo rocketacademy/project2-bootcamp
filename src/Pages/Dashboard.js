@@ -15,44 +15,22 @@ import ExpPieChart from "../Components/ExpPieChart";
 // use all dates for x-axis
 // able to change to day/ month/ year
 // hover and can see the cat, item and amount in a list
-export default function Dashboard({ uid, isLoggedIn }) {
-  // load expenses according to user
-  const DB_EXPENSES_FOLDER_NAME = "expenses";
-  const [expensesList, setExpensesList] = useState([]);
+export default function Dashboard({
+  uid,
+  isLoggedIn,
+  expensesCategory,
+  categoriesData,
+}) {
   const [selectedDate, setSelectedDate] = useState("");
   const [focusBar, setFocusBar] = useState(null);
   const [mouseLeave, setMouseLeave] = useState(true);
   const [view, setView] = useState("daily");
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const dbRef = ref(realTimeDatabase);
-        const snapshot = await get(
-          child(dbRef, `${DB_EXPENSES_FOLDER_NAME}/${uid}`)
-        );
-        if (snapshot.exists()) {
-          const expensesList = [];
-          snapshot.forEach((childSnapshot) => {
-            const expKey = childSnapshot.key;
-            const expData = childSnapshot.val();
-            // console.log("Exp Data:", expData);
-            expensesList.push({ id: expKey, ...expData });
-          });
-          setExpensesList(expensesList);
-          // console.log("expensesList:", expensesList);
-        }
-      } catch (error) {
-        console.log("Error retrieving expense data:", error);
-      }
-    };
-    if (isLoggedIn) {
-      fetchData();
-    }
-  }, [uid, isLoggedIn]);
+  console.log("categoriesData:", categoriesData);
+  // console.log("expensesCategory", expensesCategory);
 
   // Calculate the sum of amounts by date
   const displayAmountByDate = {};
-  expensesList.forEach((expense) => {
+  expensesCategory.forEach((expense) => {
     const date = expense.date;
     const displayAmount = parseFloat(expense.displayAmount);
     if (!displayAmountByDate[date]) {
@@ -67,7 +45,7 @@ export default function Dashboard({ uid, isLoggedIn }) {
 
   // Find the maximum date in expensesList
   let endDate = null;
-  expensesList.forEach((expense) => {
+  expensesCategory.forEach((expense) => {
     const date = expense.date;
     if (!endDate || new Date(date) > new Date(endDate)) {
       endDate = date;
@@ -78,7 +56,7 @@ export default function Dashboard({ uid, isLoggedIn }) {
 
   // Find the minimum date in expensesList
   let startDate = null;
-  expensesList.forEach((expense) => {
+  expensesCategory.forEach((expense) => {
     const date = expense.date;
     if (!startDate || new Date(date) < new Date(startDate)) {
       startDate = date;
@@ -187,8 +165,9 @@ export default function Dashboard({ uid, isLoggedIn }) {
         <ExpPieChart
           isLoggedIn={isLoggedIn}
           uid={uid}
-          expensesList={expensesList}
+          expensesCategory={expensesCategory}
           selectedDate={selectedDate}
+          categoriesData={categoriesData}
         />
       </div>
     </div>
