@@ -152,11 +152,19 @@ function ResponsiveAppBar(props) {
             TheSpork
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-            <MenuItem onClick={handleCloseNavMenu}>
-              <Typography textAlign="center">Search Recipe</Typography>
+            <MenuItem
+              onClick={handleCloseNavMenu}
+              as={Link}
+              to="/imageclassify"
+            >
+              <Typography textAlign="center">Search Related Recipe</Typography>
             </MenuItem>
-            <MenuItem onClick={handleCloseNavMenu}>
-              <Typography textAlign="center">Saved Recipes</Typography>
+            <MenuItem
+              onClick={handleCloseNavMenu}
+              as={Link}
+              to="/map"
+            >
+              <Typography textAlign="center">Find Markets</Typography>
             </MenuItem>
           </Box>
 

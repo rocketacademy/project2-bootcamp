@@ -47,7 +47,7 @@ const ProfilePage = () => {
   const [newConfirmPassword, setNewConfirmPassword] = useState("");
   const [name, setName] = useState("");
   const [imgLink, setImgLink] = useState("");
-  const [fileInputValue, setFileInputValue] = useState("");
+  const [provider, setProvider] = useState("");
   const [fileInputFile, setFileInputFile] = useState(null);
 
   const [error, setError] = useState("");
@@ -64,6 +64,7 @@ const ProfilePage = () => {
           setEmail(userDetails.email);
           setName(userDetails.name);
           setImgLink(userDetails.avatar);
+          setProvider(userDetails.authProvider);
         } else {
           console.log("No data available");
         }
@@ -97,35 +98,45 @@ const ProfilePage = () => {
       database,
       `${REALTIME_DATABASE_USERS_KEY}/${userId}`
     );
-    const fullStorageRef = storageRef(
-      storage,
-      STORAGE_KEY + fileInputFile.name
-    );
 
-    const uploadTask = uploadBytesResumable(fullStorageRef, fileInputFile);
-    uploadTask.on(
-      "state_changed",
-      (snapshot) => {
-        const progress = Math.round(
-          (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-        );
-        setProgresspercent(progress);
-      },
-      (error) => {
-        alert(error);
-      },
-      () => {
-        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-          console.log(downloadURL);
-          set(currentUserRef, {
-            name: name,
-            authProvider: "Local",
-            email: email,
-            avatar: fileInputFile === null ? imgLink : downloadURL,
+    if (fileInputFile !== null) {
+      const fullStorageRef = storageRef(
+        storage,
+        STORAGE_KEY + fileInputFile.name
+      );
+
+      const uploadTask = uploadBytesResumable(fullStorageRef, fileInputFile);
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          const progress = Math.round(
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+          );
+          setProgresspercent(progress);
+        },
+        (error) => {
+          alert(error);
+        },
+        () => {
+          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+            console.log(downloadURL);
+            set(currentUserRef, {
+              name: name,
+              authProvider: provider,
+              email: email,
+              avatar: fileInputFile === null ? imgLink : downloadURL,
+            });
           });
-        });
-      }
-    );
+        }
+      );
+    } else {
+      set(currentUserRef, {
+        name: name,
+        authProvider: provider,
+        email: email,
+        avatar: fileInputFile === null && imgLink,
+      });
+    }
   }
 
   function handleChange(event) {
@@ -133,7 +144,6 @@ const ProfilePage = () => {
       setName(event.target.value);
     } else if (event.target.name === "imgFile") {
       setFileInputFile(event.target.files[0]);
-      setFileInputValue(event.target.file);
     } else if (event.target.name === "userEmail") {
       setEmail(event.target.value);
     } else if (event.target.name === "currentPassword") {
@@ -147,44 +157,51 @@ const ProfilePage = () => {
 
   function handleSubmit(event) {
     event.preventDefault();
-    reauthenticate(currentPassword)
-      .then(() => {
-        if (newPassword !== newConfirmPassword) {
-          return setError(`Passwords do not match!`);
-        }
-        const promises = [];
-        setError("");
-        setLoading(true);
-        if (email !== loggedInUser.email) {
-          promises.push(updateEmail(loggedInUser, email));
-        }
-        if (newPassword) {
-          promises.push(updatePassword(loggedInUser, newPassword));
-        }
+    if (provider !== "google") {
+      reauthenticate(currentPassword)
+        .then(() => {
+          if (newPassword !== newConfirmPassword) {
+            return setError(`Passwords do not match!`);
+          }
+          const promises = [];
+          setError("");
+          setLoading(true);
+          if (email !== loggedInUser.email) {
+            promises.push(updateEmail(loggedInUser, email));
+          }
+          if (newPassword) {
+            promises.push(updatePassword(loggedInUser, newPassword));
+          }
 
-        promises.push(writeData());
+          promises.push(writeData());
 
-        Promise.all(promises)
-          .then(() => {
-            writeData();
-            setMessage("Account Settings updated. Refreshing page...");
-            setTimeout(() => {
-              navigate(`/`);
-            }, 3000);
-          })
-          .catch((error) => {
-            setError("Failed to update account.");
-            console.log(error);
-          })
-          .finally(() => {
-            setLoading(false);
-          });
-      })
-      .catch((error) => {
-        setError("Current Password is incorrect.");
-        setCurrentPassword("")
-        console.log(error);
-      });
+          Promise.all(promises)
+            .then(() => {
+              setMessage("Account Settings updated. Refreshing page...");
+              setTimeout(() => {
+                navigate(`/`);
+              }, 3000);
+            })
+            .catch((error) => {
+              setError("Failed to update account.");
+              console.log(error);
+            })
+            .finally(() => {
+              setLoading(false);
+            });
+        })
+        .catch((error) => {
+          setError("Current Password is incorrect.");
+          setCurrentPassword("");
+          console.log(error);
+        });
+    } else {
+      writeData();
+      setMessage("Account Settings updated. Refreshing page...");
+      setTimeout(() => {
+        navigate(`/`);
+      }, 3000);
+    }
   }
 
   return (
@@ -243,6 +260,7 @@ const ProfilePage = () => {
               name="userEmail"
               defaultValue={email}
               onChange={handleChange}
+              disabled={provider === "google" ? true : false}
             />
           </div>
         </div>
@@ -259,6 +277,7 @@ const ProfilePage = () => {
               type="password"
               name="currentPassword"
               onChange={handleChange}
+              disabled={provider === "google" ? true : false}
             />
           </div>
         </div>
@@ -275,6 +294,7 @@ const ProfilePage = () => {
               type="password"
               name="newPassword"
               onChange={handleChange}
+              disabled={currentPassword.trim() === "" ? true : false}
             />
           </div>
         </div>
@@ -291,19 +311,21 @@ const ProfilePage = () => {
               type="password"
               name="confirmPassword"
               onChange={handleChange}
+              disabled={currentPassword.trim() === "" ? true : false}
             />
           </div>
         </div>
-        {currentPassword === "" || loading === true ? (
-          <input
-            className="submitButton"
-            type="submit"
-            value="Submit"
-            disabled
-          />
-        ) : (
-          <input className="submitButton" type="submit" value="Update" />
-        )}
+
+        <input
+          className="submitButton"
+          type="submit"
+          value="Update"
+          disabled={
+            provider !== "google"
+              ? false
+              : currentPassword.trim() !== "" && (loading ? false : true)
+          }
+        />
       </form>
     </div>
   );
