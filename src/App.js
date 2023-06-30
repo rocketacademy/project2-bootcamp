@@ -29,12 +29,10 @@ export default function App() {
   const [profilePhotoURL, setProfilePhotoURL] = useState("");
   const [fileInputFile, setFileInputFile] = useState("");
   const [fileInputValue, setFileInputValue] = useState("");
-  // const [expenses, setExpenses] = useState([]);
-  // const [categoriesData, setCategoriesData] = useState([]);
   const [currenciesList, setCurrenciesList] = useState([]);
   const navigate = useNavigate();
-  const [isLoadingExpenses, setIsLoadingExpenses] = useState(false);
-  const [isLoadingCategories, setIsLoadingCategories] = useState(false);
+  const [isLoadingExpenses, setIsLoadingExpenses] = useState(true);
+  const [isLoadingCategories, setIsLoadingCategories] = useState(true);
   const [expensesCategory, setExpensesCategory] = useState([]);
   const [categoriesData, setCategoriesData] = useState([]);
   const [groupedExpenses, setGroupedExpenses] = useState([]);
@@ -82,13 +80,12 @@ export default function App() {
 
   // Fetches latest category array, triggered with every change
   useEffect(() => {
-    // setIsLoadingCategories(true);
+    setIsLoadingCategories(true);
     const catRef = ref(realTimeDatabase, `${DB_CATEGORY_FOLDER_NAME}/${uid}`);
     const unsubscribe = onValue(
       catRef,
       (snapshot) => {
         const catData = snapshot.val();
-        // console.log(catData);
         if (catData) {
           const catArray = Object.entries(catData).map(([key, value]) => ({
             id: key,
@@ -100,11 +97,11 @@ export default function App() {
               : prevCategoriesData
           );
         }
-        // setIsLoadingCategories(false); // <-- Set isLoadingCategories to false when fetch finishes
+        setIsLoadingCategories(false); // <-- Set isLoadingCategories to false when fetch finishes
       },
       (errorObject) => {
         console.log("The read failed: " + errorObject.name);
-        // setIsLoadingCategories(false); // <-- Also set isLoadingCategories to false in case of error
+        setIsLoadingCategories(false); // <-- Also set isLoadingCategories to false in case of error
       }
     );
 
@@ -113,7 +110,6 @@ export default function App() {
       unsubscribe();
     };
   }, [uid]);
-  console.log("categoriesData:", categoriesData);
 
   // Fetches latest expenses array, triggered with every change
   useEffect(() => {
@@ -135,9 +131,51 @@ export default function App() {
           const sortedExpenses = expensesArray.sort(
             (a, b) => new Date(b.date) - new Date(a.date)
           );
-          // Ensure that both expenses and categoriesData are loaded before attempting to join
+
+          setExpensesCategory(sortedExpenses);
+          console.log("expensesCategory in fetching exp", expensesCategory);
+        } else {
+          setExpensesCategory([]); // Set expensesCategory to an empty array if there are no expenses
+        }
+        setIsLoadingExpenses(false);
+      },
+      (error) => {
+        console.error(error);
+        setIsLoadingExpenses(false); // <-- Also set isLoadingExpenses to false in case of error
+      }
+    );
+
+    return () => {
+      off(expRef, listener);
+    };
+  }, [uid]);
+
+  useEffect(() => {
+    setIsLoadingExpenses(true); // <-- Set isLoadingExpenses to true when fetch starts
+
+    const expRef = ref(realTimeDatabase, `${DB_EXPENSES_FOLDER_NAME}/${uid}`);
+    const listener = onValue(
+      expRef,
+      (snapshot) => {
+        const expensesData = snapshot.val();
+        if (expensesData) {
+          const expensesArray = Object.entries(expensesData).map(
+            ([key, value]) => ({
+              id: key,
+              ...value,
+            })
+          );
+          // Sort expenses by date, with the latest at the top of the list
+          const sortedExpenses = expensesArray.sort(
+            (a, b) => new Date(b.date) - new Date(a.date)
+          );
+
+          setExpensesCategory(sortedExpenses);
+          console.log("expensesCategory in fetching exp", expensesCategory);
+
+          // Join expenses with categories
           if (!isLoadingCategories) {
-            const expensesCategory = sortedExpenses.map((expense, index) => {
+            const joinedExpenses = sortedExpenses.map((expense, index) => {
               const category = categoriesData.find(
                 (category) => category.category === expense.categoryName
               );
@@ -148,10 +186,9 @@ export default function App() {
               // Modify the spread sequence so the id from expense is not overwritten.
               return { ...fallbackCategory, ...expense };
             });
-            setExpensesCategory(expensesCategory);
 
             const groupedExpenses = {};
-            expensesCategory.forEach((expense) => {
+            joinedExpenses.forEach((expense) => {
               const date = expense.date;
               if (!groupedExpenses[date]) {
                 groupedExpenses[date] = [];
@@ -159,21 +196,23 @@ export default function App() {
               groupedExpenses[date].push(expense);
             });
             setGroupedExpenses(groupedExpenses);
+            console.log("groupedExpenses", groupedExpenses);
           }
-
-          setIsLoadingExpenses(false);
-          console.log("expenses", expensesCategory);
+        } else {
+          setExpensesCategory([]); // Set expensesCategory to an empty array if there are no expenses
         }
+        setIsLoadingExpenses(false);
       },
       (error) => {
         console.error(error);
         setIsLoadingExpenses(false); // <-- Also set isLoadingExpenses to false in case of error
       }
     );
+
     return () => {
       off(expRef, listener);
     };
-  }, [uid, isLoadingCategories, categoriesData, expensesCategory]);
+  }, [uid, isLoadingCategories, categoriesData]);
 
   // convert currencies from array of objects to array of strings
   useEffect(() => {
@@ -181,7 +220,7 @@ export default function App() {
     setCurrenciesList(currencyList);
   }, []);
   // console.log(currenciesList);
-
+  console.log("app isLoadingExpenses", isLoadingExpenses);
   return (
     <>
       <Navbar bg="light" fixed="top">

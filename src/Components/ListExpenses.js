@@ -103,8 +103,7 @@ export default function ListExpenses({
     return () => clearTimeout(timer); // Clean up on unmount
   }, []);
 
-  console.log("list exp isLoadingExpenses", isLoadingExpenses);
-  console.log(isLoadingExpenses);
+  // console.log("list exp isLoadingExpenses", isLoadingExpenses);
   return (
     <div className="list-container">
       <div className="card-header">
