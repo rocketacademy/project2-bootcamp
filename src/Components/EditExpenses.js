@@ -1,5 +1,5 @@
 import "../App.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Form, Modal, InputGroup } from "react-bootstrap";
 import { realTimeDatabase, storage } from "../firebase";
 import { ref, set, update } from "firebase/database";
@@ -12,33 +12,35 @@ import { GoogleMap, MarkerF } from "@react-google-maps/api";
 import Geocode from "react-geocode";
 import { Typeahead } from "react-bootstrap-typeahead";
 import "react-bootstrap-typeahead/css/Typeahead.css";
-
 const DB_EXPENSES_FOLDER_NAME = "expenses";
 const STORAGE_EXPENSES_FOLDER_NAME = "receiptPhoto";
-
 export default function EditExpenses({
   uid,
   mapRef,
+  expenseCounter,
   setExpenseCounter,
   currenciesList,
   expense,
+  categoriesData,
 }) {
   // State to handle open and close of modal
   const [show, setShow] = useState(false);
-
   // States to store expense data
   const [date, setDate] = useState(expense.date);
-  const [category, setCategory] = useState(expense.category);
+  const [category, setCategory] = useState(expense.categoryName);
+  // to display emoji with category
+  const [categoryDisplay, setCategoryDisplay] = useState(
+    `${expense.emoji} ${expense.categoryName}`
+  );
+
   const [currency, setCurrency] = useState(expense.currency);
   const [amount, setAmount] = useState(expense.amount);
   const [description, setDescription] = useState(expense.description);
   const [lat, setLat] = useState(expense.lat);
   const [lng, setLng] = useState(expense.lng);
-
   const [address, setAddress] = useState("");
   const [receiptFile, setReceiptFile] = useState("");
   const [receiptFileValue, setReceiptFileValue] = useState("");
-
   // Get lat and lng coordinates on 'look up' button press
   const getLatLng = () =>
     Geocode.fromAddress(address, process.env.REACT_APP_API_KEY).then(
@@ -64,16 +66,16 @@ export default function EditExpenses({
     setShow(true);
   };
 
+  // console.log("expensesCategory in edit", expense.id);
+
   // Update data in db
   const handleUpdate = (e) => {
     e.preventDefault();
-    // Access the selected category value
-    console.log(category);
-    console.log(currency);
-    console.log(amount);
-    console.log(description);
-    console.log(date);
-    // console.log(receiptFile);
+    // console.log("category:", category);
+    // console.log(currency);
+    // console.log(amount);
+    // console.log(description);
+    // console.log(date);
 
     // Get ref key
     const expRef = ref(
@@ -82,7 +84,7 @@ export default function EditExpenses({
     );
     // Update data at expense reference location
     update(expRef, {
-      category: category,
+      categoryName: category,
       currency: currency,
       amount: amount,
       lat: lat,
@@ -90,15 +92,12 @@ export default function EditExpenses({
       description: description,
       date: date,
     });
-
     console.log(`expRef: ${expRef}`);
-
     if (receiptFile) {
       const expFileRef = storageRef(
         storage,
         ` ${STORAGE_EXPENSES_FOLDER_NAME}/${uid}/${receiptFile.name}`
       );
-
       uploadBytes(expFileRef, receiptFile).then((snapshot) => {
         getDownloadURL(snapshot.ref).then((receiptUrl) => {
           // update expenses db with expenses photo url
@@ -128,7 +127,6 @@ export default function EditExpenses({
       >
         ✏️
       </span>
-
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>Edit Expense</Modal.Title>
@@ -146,26 +144,33 @@ export default function EditExpenses({
                 onChange={(e) => setDate(e.target.value)}
               />
             </Form.Group>
-
             <Form.Select
               aria-label="Default select example"
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
+              value={categoryDisplay}
+              onChange={(e) => {
+                const selectedCategory = categoriesData.find(
+                  (categoryObj) =>
+                    `${categoryObj.emoji} ${categoryObj.category}` ===
+                    e.target.value
+                );
+                setCategory(selectedCategory.category); // only set the category name for database
+                setCategoryDisplay(e.target.value);
+              }} // update display state with new selected value
               required
             >
               <option value="" disabled>
                 Category
               </option>
-              <option value="🍔 Food">🍔 Food</option>
-              <option value="💸 Bills">💸 Bills</option>
-              <option value="🚗 Transport">🚗 Transport</option>
-              <option value="🏠 Home">🏠 Home</option>
-              <option value="🌏 Holiday">🌏 Holiday</option>
-              <option value="🎬 Entertainment">🎬 Entertainment</option>
-              <option value="🤷 Others">🤷 Others</option>
+              {categoriesData.map((categoryObj, index) => (
+                <option
+                  key={index}
+                  value={`${categoryObj.emoji} ${categoryObj.category}`}
+                >
+                  {categoryObj.emoji} {categoryObj.category}
+                </option>
+              ))}
             </Form.Select>
             <br />
-
             <InputGroup className="mb-3">
               <Typeahead
                 id="currency-typeahead"
@@ -174,7 +179,6 @@ export default function EditExpenses({
                 onChange={(selected) => setCurrency(selected[0])}
                 options={currenciesList}
               ></Typeahead>
-
               <Form.Control
                 type="number"
                 placeholder={amount}
@@ -182,10 +186,8 @@ export default function EditExpenses({
                 onChange={(e) => setAmount(e.target.value)}
               />
             </InputGroup>
-
             <Form.Group className="form-group">
               <Form.Label className="compact-label">Location</Form.Label>
-
               {lat && lng ? (
                 <div className="coordinates-display green">
                   {lat.toFixed(4)}, {lng.toFixed(4)}
@@ -224,7 +226,6 @@ export default function EditExpenses({
                   </Button>
                 </div>
               </div>
-
               <div id="loc-option-2">
                 <GoogleMap
                   onClick={(e) => {
@@ -250,7 +251,6 @@ export default function EditExpenses({
                 <br />
               </div>
             </Form.Group>
-
             <Form.Group
               className="mb-3"
               controlId="exampleForm.ControlTextarea1"
@@ -265,7 +265,6 @@ export default function EditExpenses({
                 onChange={(e) => setDescription(e.target.value)}
               />
             </Form.Group>
-
             <Form.Group controlId="formFile" className="mb-3">
               <Form.Label>Upload receipt</Form.Label>
               <Form.Control

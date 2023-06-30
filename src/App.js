@@ -33,8 +33,7 @@ export default function App() {
   const [categoriesData, setCategoriesData] = useState([]);
   const [currenciesList, setCurrenciesList] = useState([]);
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(false);
-  const [expenseCounter, setExpenseCounter] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Fetch user data when logged in
   useEffect(() => {
@@ -79,6 +78,7 @@ export default function App() {
 
   // Fetches latest expenses array, triggered with every change
   useEffect(() => {
+    setIsLoading(true); // <-- Set isLoading to true when fetch starts
     const expRef = ref(realTimeDatabase, `${DB_EXPENSES_FOLDER_NAME}/${uid}`);
     const listener = onValue(
       expRef,
@@ -95,24 +95,26 @@ export default function App() {
           const sortedExpenses = expensesArray.sort(
             (a, b) => new Date(b.date) - new Date(a.date)
           );
-          setExpenses((prevExpenses) =>
-            JSON.stringify(prevExpenses) !== JSON.stringify(sortedExpenses)
-              ? sortedExpenses
-              : prevExpenses
-          );
+          setExpenses(sortedExpenses);
           setIsLoading(false);
         }
       },
       (error) => {
         console.error(error);
+        setIsLoading(false); // <-- Also set isLoading to false in case of error
       }
     );
     return () => {
       off(expRef, listener);
       setExpenses([]);
     };
-  }, [uid, expenseCounter]);
-  console.log("expenses", expenses);
+  }, [uid]);
+
+  if (!isLoading) {
+    // <-- Only log expenses if fetch is completed
+    console.log("expenses", expenses);
+  }
+  console.log("isLoading", isLoading);
 
   // Fetches latest category array, triggered with every change
   useEffect(() => {
@@ -156,7 +158,8 @@ export default function App() {
       const fallbackCategory = category
         ? category
         : { category: "Unknown", color: "#000000", emoji: "❓" };
-      return { ...expense, ...fallbackCategory };
+      // Modify the spread sequence so the id from expense is not overwritten.
+      return { ...fallbackCategory, ...expense };
     });
   }, [expenses, categoriesData]);
   // console.log("expensesCategory:", expensesCategory);
@@ -266,8 +269,6 @@ export default function App() {
               currenciesList={currenciesList}
               categoriesData={categoriesData}
               isLoading={isLoading}
-              expenseCounter={expenseCounter}
-              setExpenseCounter={setExpenseCounter}
             />
           }
         />
