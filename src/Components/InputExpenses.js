@@ -27,7 +27,6 @@ export default function InputExpenses({
   userLocation,
   currenciesList,
   displayCurrency,
-  setReadyToShow,
   categoriesData,
 }) {
   const [show, setShow] = useState(false);
@@ -111,7 +110,6 @@ export default function InputExpenses({
     }
 
     handleClose();
-    setReadyToShow(false);
     handleNewInput();
     setExpenseCounter((prevExpenseCounter) => prevExpenseCounter + 1);
   };

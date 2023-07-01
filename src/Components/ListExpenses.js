@@ -33,7 +33,6 @@ export default function ListExpenses({
   const [selectedExpense, setSelectedExpense] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const highlightedCardRef = useRef(null); // Create reference for highlighted card
-  const [readyToShow, setReadyToShow] = useState(false);
 
   // Display receipt when showReceipt button is clicked
   const handleShowReceiptClick = (expense) => {
@@ -78,10 +77,6 @@ export default function ListExpenses({
       }
     };
 
-    if (groupedExpenses.length !== 0) {
-      setReadyToShow(true);
-    }
-
     fetchAndPanToLatestLocation();
   }, [expensesCategory, groupedExpenses]);
 
@@ -95,15 +90,6 @@ export default function ListExpenses({
     }
   }, [isHighlighted]);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setReadyToShow(true);
-    }, 10000); // Adjust this value as needed
-
-    return () => clearTimeout(timer); // Clean up on unmount
-  }, []);
-
-  // console.log("list exp isLoadingExpenses", isLoadingExpenses);
   return (
     <div className="list-container">
       <div className="card-header">
@@ -148,7 +134,7 @@ export default function ListExpenses({
           <div className="temporary-box">
             <BeatLoader color={"#3dd381"} loading={isLoadingExpenses} />
           </div>
-        ) : readyToShow ? (
+        ) : (
           <div>
             <AllExpenses
               uid={uid}
@@ -165,8 +151,6 @@ export default function ListExpenses({
               categoriesData={categoriesData}
             />
           </div>
-        ) : (
-          <p>Loading</p>
         )}
       </div>
 
