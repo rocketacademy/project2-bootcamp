@@ -27,13 +27,12 @@ export default function Profile({
   setFileInputValue,
   uid,
   currenciesList,
+  displayCurrency,
+  setDisplayCurrency,
 }) {
   const [firstName, setFirstName] = useState(userData["First Name"]);
   const [lastName, setLastName] = useState(userData["Last Name"]);
   const [displayName, setDisplayName] = useState(userData["Display Name"]);
-  const [displayCurrency, setDisplayCurrency] = useState(
-    userData["Display Currency"]
-  );
   const [userInfo, setUserInfo] = useState();
   const [counter, setCounter] = useState(0);
 
