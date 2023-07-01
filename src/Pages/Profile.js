@@ -55,12 +55,24 @@ export default function Profile({
       .catch((error) => {
         console.error(error);
       });
-    const info = Object.entries(userData).map(([key, value]) => (
-      <div key={key}>
-        <span>{key}: </span>
-        <span>{value}</span>
-      </div>
-    ));
+
+    const info = Object.entries(userData).map(([key, value]) => {
+      let renderedValue;
+
+      if (typeof value === "object") {
+        renderedValue = JSON.stringify(value); // Render the object as a string
+      } else {
+        renderedValue = value; // Render the value as-is if it's a string or number
+      }
+
+      return (
+        <div key={key}>
+          <span>{key}: </span>
+          <span>{renderedValue}</span>
+        </div>
+      );
+    });
+
     setUserInfo(info);
   }, [userData, counter]);
 

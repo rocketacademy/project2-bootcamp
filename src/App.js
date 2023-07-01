@@ -186,7 +186,7 @@ export default function App() {
     setCurrenciesList(currencyList);
   }, []);
   // console.log(currenciesList);
-  console.log("app isLoadingExpenses", isLoadingExpenses);
+  // console.log("app isLoadingExpenses", isLoadingExpenses);
   return (
     <>
       <Navbar bg="light" fixed="top">
