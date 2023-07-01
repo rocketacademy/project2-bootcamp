@@ -85,22 +85,25 @@ export default function SignUp({
                     });
                 });
 
-                // Store images in an images folder in Firebase Storage
-                const fileRef = storageRef(
-                  storage,
-                  ` ${STORAGE_PROFILE_FOLDER_NAME}/${userCredential.user.uid}/${fileInputFile.name}`
-                );
+                if (fileInputFile) {
+                  // Store images in an images folder in Firebase Storage
+                  const fileRef = storageRef(
+                    storage,
+                    ` ${STORAGE_PROFILE_FOLDER_NAME}/${userCredential.user.uid}/${fileInputFile.name}`
+                  );
 
-                uploadBytes(fileRef, fileInputFile).then((snapshot) => {
-                  getDownloadURL(snapshot.ref).then((profileUrl) => {
-                    // update user db with profile photo url
-                    const currUserRef = ref(
-                      realTimeDatabase,
-                      `${DB_USER_FOLDER_NAME}/${userCredential.user.uid}/profileUrl`
-                    );
-                    set(currUserRef, profileUrl);
+                  uploadBytes(fileRef, fileInputFile).then((snapshot) => {
+                    getDownloadURL(snapshot.ref).then((profileUrl) => {
+                      // update user db with profile photo url
+                      const currUserRef = ref(
+                        realTimeDatabase,
+                        `${DB_USER_FOLDER_NAME}/${userCredential.user.uid}/profileUrl`
+                      );
+                      set(currUserRef, profileUrl);
+                    });
                   });
-                });
+                }
+
                 navigate("/mapexpenses");
               })
               .catch((error) => {

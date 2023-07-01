@@ -56,15 +56,18 @@ export default function App() {
               setUserData(userData);
               console.log("user Data:", userData);
               // use uid to find profile url
-              const profilePhotoRef = ref(
-                realTimeDatabase,
-                `${DB_USER_FOLDER_NAME}/${uid}/profileUrl`
-              );
-              onValue(profilePhotoRef, (snapshot) => {
-                if (snapshot.val() !== null) {
-                  setProfilePhotoURL(snapshot.val());
-                }
-              });
+
+              if (userData.hasOwnProperty("profileUrl")) {
+                const profilePhotoRef = ref(
+                  realTimeDatabase,
+                  `${DB_USER_FOLDER_NAME}/${uid}/profileUrl`
+                );
+                onValue(profilePhotoRef, (snapshot) => {
+                  if (snapshot.val() !== null) {
+                    setProfilePhotoURL(snapshot.val());
+                  }
+                });
+              }
             } else {
               console.log("No data available");
             }
@@ -218,7 +221,7 @@ export default function App() {
               ) : null}
               <NavDropdown
                 title={
-                  profilePhotoURL ? (
+                  profilePhotoURL !== null ? (
                     <img
                       className="rounded-circle"
                       src={profilePhotoURL}
