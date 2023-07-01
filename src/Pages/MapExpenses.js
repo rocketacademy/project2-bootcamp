@@ -159,6 +159,7 @@ export default function MapExpenses({
             setMapRef={setMapRef}
             isHighlighted={isHighlighted}
             setIsHighlighted={setIsHighlighted}
+            displayCurrency={displayCurrency}
           />
           <ListExpenses
             uid={uid}

@@ -184,7 +184,7 @@ export default function App() {
     return () => {
       off(expRef, listener);
     };
-  }, [uid, isLoadingCategories, categoriesData]);
+  }, [uid, isLoadingCategories, categoriesData, displayCurrency]);
 
   // convert currencies from array of objects to array of strings
   useEffect(() => {
