@@ -1,6 +1,4 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { realTimeDatabase } from "../firebase";
-import { ref, get, child, onValue } from "firebase/database";
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend } from "recharts";
 
 export default function ExpPieChart({
@@ -8,8 +6,7 @@ export default function ExpPieChart({
   expensesCategory,
   categoriesData,
 }) {
-  // Filter expenses based on the selected date
-  // if selectedDate is not null, filter expensesList such that expense.date is equiv to selectedDate, else show all
+  /* Filter expenses based on the selected date. If selectedDate is not null, filter expensesList such that expense.date is equiv to selectedDate, else show all*/
   const filteredExpenses = selectedDate
     ? expensesCategory.filter((expense) => expense.date === selectedDate)
     : expensesCategory;
@@ -52,7 +49,7 @@ export default function ExpPieChart({
       return { ...expense, ...fallbackCategory };
     });
   }, [pieChartData, categoriesData]);
-  console.log("joinedPieChartData:", joinedPieChartData);
+  // console.log("joinedPieChartData:", joinedPieChartData);
 
   return (
     <ResponsiveContainer>
