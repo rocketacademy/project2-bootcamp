@@ -7,6 +7,7 @@ import Error404 from "../pages/NotFound404";
 import SearchPage from "../pages/SearchPage";
 import Homepage from "../pages/Homepage/Homepage";
 import ProfilePage from "../pages/Account/Account";
+import SavedRecipes from "../pages/SavedRecipes";
 import { auth } from "../config";
 import { onAuthStateChanged } from "firebase/auth";
 import ResultRecipe from "../pages/ResultRecipe";
@@ -24,7 +25,7 @@ export default function DefineRoutesHere() {
       }
       // Else set logged-in user in state to null
       setLoggedInUser(null);
-      console.log(userObj)
+      console.log(userObj);
     });
   }, [loggedInUser]);
 
@@ -73,6 +74,15 @@ export default function DefineRoutesHere() {
           </RequireAuth>
         }
       />
+      <Route
+        path="/saved-recipes"
+        element={
+          <RequireAuth redirectTo="/auth/login" user={loggedInUser}>
+            <SavedRecipes />
+          </RequireAuth>
+        }
+      />
+
       <Route path="*" element={<Error404 />} />
     </Routes>
   );
