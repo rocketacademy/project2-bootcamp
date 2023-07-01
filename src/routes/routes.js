@@ -7,10 +7,13 @@ import Error404 from "../pages/NotFound404";
 import SearchPage from "../pages/SearchPage";
 import Homepage from "../pages/Homepage/Homepage";
 import ProfilePage from "../pages/Account/Account";
+import ResultRecipe from "../pages/ResultRecipe";
+import ImgClassify from "../pages/ImgClass";
+import Googlemap from "../pages/Map/Map";
 import SavedRecipes from "../pages/SavedRecipes";
 import { auth } from "../config";
 import { onAuthStateChanged } from "firebase/auth";
-import ResultRecipe from "../pages/ResultRecipe";
+
 
 export default function DefineRoutesHere() {
   const [loggedInUser, setLoggedInUser] = useState();
@@ -71,6 +74,22 @@ export default function DefineRoutesHere() {
         element={
           <RequireAuth redirectTo="/auth/login" user={loggedInUser}>
             <ResultRecipe />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/imageclassify"
+        element={
+          <RequireAuth redirectTo="/auth/login" user={loggedInUser}>
+            <ImgClassify />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/map"
+        element={
+          <RequireAuth redirectTo="/auth/login" user={loggedInUser}>
+            <Googlemap />
           </RequireAuth>
         }
       />

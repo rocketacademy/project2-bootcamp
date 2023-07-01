@@ -99,7 +99,7 @@ const Signup = () => {
                     //const childKey = childSnapshot.key;
                     const childData = childSnapshot.val();
                     console.log(childData);
-                    navigate("/home");
+                    navigate("/");
                     // ...
                   });
                 } else {
@@ -113,7 +113,7 @@ const Signup = () => {
                     avatar: user.photoURL,
                   });
 
-                  navigate("/home");
+                  navigate("/");
                 }
               },
               {

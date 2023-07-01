@@ -4,6 +4,7 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../config";
+import "../App.css";
 
 const Login = () => {
   const [inputEmail, inputEmailValue] = useState("");
@@ -33,7 +34,7 @@ const Login = () => {
       .then(() => {
         inputEmailValue("");
         inputPwdValue("");
-        navigate("/");
+        navigate("/imageclassify");
       })
       .catch((error) => {
         console.log(error);
