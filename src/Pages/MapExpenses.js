@@ -126,6 +126,8 @@ export default function MapExpenses({
 
   // console.log("expensesCategory:", expensesCategory[0]["amount"]);
 
+  useEffect(() => {}, [isLoggedIn]);
+
   return (
     <div>
       {/* Toast to notify user once expense has been successfully deleted */}
@@ -141,6 +143,7 @@ export default function MapExpenses({
         </Toast.Header>
         <Toast.Body>Expense deleted successfully!</Toast.Body>
       </Toast>{" "}
+      {/* Conditional to render the welcome message if user is not logged in */}
       {isLoggedIn ? (
         <div className="App">
           <Map
