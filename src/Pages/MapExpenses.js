@@ -21,12 +21,13 @@ export default function MapExpenses({
   categoriesData,
   groupedExpenses,
   isLoadingExpenses,
+  displayCurrency,
+  setDisplayCurrency,
 }) {
   const [userLocation, setUserLocation] = useState(null);
   const [isHighlighted, setIsHighlighted] = useState(null);
   const [lat, setLat] = useState(0);
   const [lng, setLng] = useState(0);
-  const [displayCurrency, setDisplayCurrency] = useState("SGD");
   const [showToast, setShowToast] = useState(false);
   const [expenseCounter, setExpenseCounter] = useState(0);
 
@@ -73,6 +74,7 @@ export default function MapExpenses({
   // console.log("Grouped expenses:", groupedExpenses);
 
   // Fetches displayCurrency from the database and update the client-side state i.e. Database > Client
+
   useEffect(() => {
     if (userData && userData.displayCurrency) {
       setDisplayCurrency(userData.displayCurrency);
@@ -157,6 +159,7 @@ export default function MapExpenses({
             setMapRef={setMapRef}
             isHighlighted={isHighlighted}
             setIsHighlighted={setIsHighlighted}
+            displayCurrency={displayCurrency}
           />
           <ListExpenses
             uid={uid}

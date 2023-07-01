@@ -30,6 +30,7 @@ export default function Map({
   setMapRef,
   isHighlighted,
   setIsHighlighted,
+  displayCurrency,
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [infoWindowData, setInfoWindowData] = useState();
@@ -111,6 +112,7 @@ export default function Map({
         <h1>Loading...</h1>
       ) : (
         <GoogleMap
+          // key={displayCurrency}
           mapContainerClassName="map"
           // hide the map and satellite overlay
           options={{ mapTypeControl: false }}
@@ -140,7 +142,7 @@ export default function Map({
                 }) =>
                   displayAmount !== undefined && (
                     <MarkerF
-                      key={id}
+                      key={`${id}-${displayCurrency}-${displayAmount}`}
                       position={{ lat, lng }}
                       onClick={() => {
                         handleMarkerClick(

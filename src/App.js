@@ -37,6 +37,7 @@ export default function App() {
   const [expensesCategory, setExpensesCategory] = useState([]);
   const [categoriesData, setCategoriesData] = useState([]);
   const [groupedExpenses, setGroupedExpenses] = useState([]);
+  const [displayCurrency, setDisplayCurrency] = useState(null);
 
   // Fetch user data when logged in
   useEffect(() => {
@@ -49,14 +50,18 @@ export default function App() {
           realTimeDatabase,
           `${DB_USER_FOLDER_NAME}/${uid}`
         );
+
         get(userDataRef)
           .then((snapshot) => {
             if (snapshot.exists()) {
               const userData = snapshot.val(); // Retrieve the data of the node
               setUserData(userData);
-              console.log("user Data:", userData);
-              // use uid to find profile url
+              setDisplayCurrency(userData.displayCurrency);
+              console.log(
+                `user Data: ${userData}; displayCurrency: ${userData.displayCurrency}`
+              );
 
+              // use uid to find profile url
               if (userData.hasOwnProperty("profileUrl")) {
                 const profilePhotoRef = ref(
                   realTimeDatabase,
@@ -179,7 +184,7 @@ export default function App() {
     return () => {
       off(expRef, listener);
     };
-  }, [uid, isLoadingCategories, categoriesData]);
+  }, [uid, isLoadingCategories, categoriesData, displayCurrency]);
 
   // convert currencies from array of objects to array of strings
   useEffect(() => {
@@ -291,6 +296,8 @@ export default function App() {
               categoriesData={categoriesData}
               isLoadingExpenses={isLoadingExpenses}
               groupedExpenses={groupedExpenses}
+              displayCurrency={displayCurrency}
+              setDisplayCurrency={setDisplayCurrency}
             />
           }
         />
@@ -308,6 +315,8 @@ export default function App() {
               setFileInputValue={setFileInputValue}
               uid={uid}
               currenciesList={currenciesList}
+              displayCurrency={displayCurrency}
+              setDisplayCurrency={setDisplayCurrency}
             />
           }
         />
