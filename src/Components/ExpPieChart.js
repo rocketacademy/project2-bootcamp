@@ -2,15 +2,31 @@ import React, { useState, useEffect, useMemo } from "react";
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend } from "recharts";
 
 export default function ExpPieChart({
-  selectedDate,
+  selectedPeriod,
   expensesCategory,
   categoriesData,
+  view,
 }) {
   /* Filter expenses based on the selected date. If selectedDate is not null, filter expensesList such that expense.date is equiv to selectedDate, else show all*/
-  const filteredExpenses = selectedDate
-    ? expensesCategory.filter((expense) => expense.date === selectedDate)
+  console.log("view", view);
+  console.log("selectedPeriod", selectedPeriod);
+  const filteredExpenses = selectedPeriod
+    ? expensesCategory.filter((expense) => {
+        if (view === "daily") {
+          // Compare the full date (YYYY-MM-DD)
+          return expense.date.slice(0, 10) === selectedPeriod;
+        } else if (view === "monthly") {
+          // Compare the year and month (YYYY-MM)
+          return expense.date.slice(0, 7) === selectedPeriod;
+        } else if (view === "yearly") {
+          // Compare the year (YYYY)
+          return expense.date.slice(0, 4) === selectedPeriod;
+        } else {
+          return false;
+        }
+      })
     : expensesCategory;
-  // console.log("filteredExpenses:", filteredExpenses);
+  console.log("filteredExpenses:", filteredExpenses);
 
   // Calculate the sum of amounts by category
   const displayAmountByCategory = {};
