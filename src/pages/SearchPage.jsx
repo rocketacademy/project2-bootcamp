@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import Search from "../components/SearchBar";
 // import FavouriteButton from "../components/FavouriteButton";
 import SharePopperButton from "../components/SharePopperButton";
+import { motion } from "framer-motion";
 
 // mui styling
 import Card from "@mui/material/Card";
@@ -15,8 +16,9 @@ import { CardActionArea, CardActions } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2";
 import IconButton from "@mui/material/IconButton";
 import BookmarkAddIcon from "@mui/icons-material/BookmarkAdd";
+import Footer from "../components/Footer";
 
-function SearchPage() {
+function SearchPage({ isHomePage }) {
   const [searchedRecipes, setSearchedRecipes] = useState([]);
   const [favourites, setFavourites] = useState([]);
 
@@ -56,7 +58,7 @@ function SearchPage() {
   return (
     <div>
       <Search></Search>
-      <Grid container spacing={2}>
+      <Grid container spacing={1}>
         {searchedRecipes.map((item) => {
           return (
             <Grid
@@ -66,31 +68,59 @@ function SearchPage() {
               justifyContent="center"
               alignItems="center"
             >
-              <Card sx={{ maxWidth: 345 }} key={item.id}>
-                <CardActionArea
-                  component={Link}
-                  to={`/recipe/${item.id}`}
+              <motion.div
+                animate={{ opacity: 1 }}
+                initial={{ opacity: 0 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                <Card
+                  sx={{
+                    maxWidth: 345,
+                    backgroundColor: "#386150",
+                    borderRadius: "0.5rem",
+                    border: "1px solid rgba(0, 0, 0, 0.2)",
+                    boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
+                  }}
                   key={item.id}
                 >
-                  <CardMedia component="img" src={item.image} alt="" />
-                  <CardContent>
-                    <Typography gutterBottom variant="h5" component="div">
-                      {item.title}
-                    </Typography>
-                  </CardContent>
-                </CardActionArea>
-                <CardActions>
-                  {/* <FavouriteButton /> */}
-                  <IconButton aria-label="add to favorites">
-                    <BookmarkAddIcon onClick={() => addFavouriteRecipe(item)} />
-                  </IconButton>
-                  <SharePopperButton handleShare={handleShare} item={item} />
-                </CardActions>
-              </Card>
+                  <CardActionArea
+                    component={Link}
+                    to={`/recipe/${item.id}`}
+                    key={item.id}
+                  >
+                    <CardMedia component="img" src={item.image} alt="" />
+                    <CardContent>
+                      <Typography
+                        gutterBottom
+                        variant="h5"
+                        component="div"
+                        sx={{
+                          fontFamily: "gill sans, sans-serif",
+                          fontSize: "1.5rem",
+                          color: "white",
+                        }}
+                      >
+                        {item.title}
+                      </Typography>
+                    </CardContent>
+                  </CardActionArea>
+                  <CardActions>
+                    {/* <FavouriteButton /> */}
+                    <IconButton aria-label="add to favorites">
+                      <BookmarkAddIcon
+                        onClick={() => addFavouriteRecipe(item)}
+                      />
+                    </IconButton>
+                    <SharePopperButton handleShare={handleShare} item={item} />
+                  </CardActions>
+                </Card>
+              </motion.div>
             </Grid>
           );
         })}
       </Grid>
+      {!isHomePage && <Footer />}
     </div>
   );
 }
