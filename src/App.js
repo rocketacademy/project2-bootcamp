@@ -218,7 +218,7 @@ export default function App() {
               ) : null}
               <NavDropdown
                 title={
-                  profilePhotoURL !== null ? (
+                  profilePhotoURL ? (
                     <img
                       className="rounded-circle"
                       src={profilePhotoURL}
