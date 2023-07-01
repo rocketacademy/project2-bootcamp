@@ -76,6 +76,7 @@ export default function App() {
             console.error(error);
           });
       } else {
+        setIsLoggedIn(false);
         setUid("");
         setProfilePhotoURL("");
       }
@@ -247,12 +248,16 @@ export default function App() {
                       Category
                     </NavDropdown.Item>
                     <NavDropdown.Item
-                      onClick={(e) => {
-                        setIsLoggedIn(false);
-                        signOut(auth);
-                        setProfilePhotoURL("");
-                        setUid("");
-                        navigate("/mapexpenses");
+                      onClick={() => {
+                        signOut(auth)
+                          .then(() => {
+                            setProfilePhotoURL("");
+                            setUid("");
+                            navigate("/mapexpenses");
+                          })
+                          .catch((error) => {
+                            console.error(error);
+                          });
                       }}
                     >
                       Log Out
