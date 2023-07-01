@@ -3,31 +3,18 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 import Search from "../components/SearchBar";
+import { motion } from "framer-motion";
 
 // mui styling
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
-import { CardActionArea, CardActions } from "@mui/material";
-import BookmarkAddIcon from "@mui/icons-material/BookmarkAdd";
-import ShareIcon from "@mui/icons-material/Share";
-import IconButton from "@mui/material/IconButton";
+import { CardActionArea } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2";
-import ListItemButton from "@mui/material/ListItemButton";
-import Popper from "@mui/material/Popper";
-import PopupState, { bindToggle, bindPopper } from "material-ui-popup-state";
-import Fade from "@mui/material/Fade";
-import Paper from "@mui/material/Paper";
-// import { fade } from "@mui/material/styles/colorManipulator";
+import Footer from "../components/Footer";
 
-import List from "@mui/material/List";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import FacebookIcon from "@mui/icons-material/Facebook";
-import LinkIcon from "@mui/icons-material/Link";
-
-function SearchPage() {
+function SearchPage({ isHomePage }) {
   const [searchedRecipes, setSearchedRecipes] = useState([]);
 
   let params = useParams();
@@ -44,22 +31,10 @@ function SearchPage() {
     getSearchResults(params.search);
   }, [params.search]);
 
-  const handleShare = (event, item) => {
-    event.preventDefault();
-    const recipeURL = `/recipe/${item.id}`;
-
-    if (event.currentTarget.id === "facebook") {
-      const link = `https://www.facebook.com/sharer/sharer.php?u=${recipeURL}`;
-      window.open(link, "_blank");
-    } else if (event.currentTarget.id === "copy") {
-      navigator.clipboard.writeText(recipeURL);
-    }
-  };
-
   return (
     <div>
       <Search></Search>
-      <Grid container spacing={2}>
+      <Grid container spacing={1}>
         {searchedRecipes.map((item) => {
           return (
             <Grid
@@ -69,72 +44,50 @@ function SearchPage() {
               justifyContent="center"
               alignItems="center"
             >
-              <Card sx={{ maxWidth: 345 }} key={item.id}>
-                <CardActionArea
-                  component={Link}
-                  to={`/recipe/${item.id}`}
+              <motion.div
+                animate={{ opacity: 1 }}
+                initial={{ opacity: 0 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                <Card
+                  sx={{
+                    maxWidth: 345,
+                    backgroundColor: "#386150",
+                    borderRadius: "0.5rem",
+                    border: "1px solid rgba(0, 0, 0, 0.2)",
+                    boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
+                  }}
                   key={item.id}
                 >
-                  <CardMedia component="img" src={item.image} alt="" />
-                  <CardContent>
-                    <Typography gutterBottom variant="h5" component="div">
-                      {item.title}
-                    </Typography>
-                  </CardContent>
-                </CardActionArea>
-                <CardActions>
-                  <IconButton aria-label="add to favorites">
-                    <BookmarkAddIcon />
-                  </IconButton>
-
-                  <PopupState variant="popper" popupId="demo-popup-popper">
-                    {(popupState) => (
-                      <div>
-                        <IconButton color="inherit" {...bindToggle(popupState)}>
-                          <ShareIcon />
-                        </IconButton>
-                        <Popper {...bindPopper(popupState)} transition>
-                          {({ TransitionProps }) => (
-                            <Fade {...TransitionProps} timeout={350}>
-                              <Paper>
-                                <List dense={true}>
-                                  <ListItemButton
-                                    id="facebook"
-                                    onClick={(event) =>
-                                      handleShare(event, item)
-                                    }
-                                  >
-                                    <ListItemIcon>
-                                      <FacebookIcon />
-                                    </ListItemIcon>
-                                    <ListItemText primary="Facebook" />
-                                  </ListItemButton>
-
-                                  <ListItemButton
-                                    id="copy"
-                                    onClick={(event) =>
-                                      handleShare(event, item)
-                                    }
-                                  >
-                                    <ListItemIcon>
-                                      <LinkIcon />
-                                    </ListItemIcon>
-                                    <ListItemText primary="Copy Link" />
-                                  </ListItemButton>
-                                </List>
-                              </Paper>
-                            </Fade>
-                          )}
-                        </Popper>
-                      </div>
-                    )}
-                  </PopupState>
-                </CardActions>
-              </Card>
+                  <CardActionArea
+                    component={Link}
+                    to={`/recipe/${item.id}`}
+                    key={item.id}
+                  >
+                    <CardMedia component="img" src={item.image} alt="" />
+                    <CardContent>
+                      <Typography
+                        gutterBottom
+                        variant="h5"
+                        component="div"
+                        sx={{
+                          fontFamily: "gill sans, sans-serif",
+                          fontSize: "1.5rem",
+                          color: "white",
+                        }}
+                      >
+                        {item.title}
+                      </Typography>
+                    </CardContent>
+                  </CardActionArea>
+                </Card>
+              </motion.div>
             </Grid>
           );
         })}
       </Grid>
+      {!isHomePage && <Footer />}
     </div>
   );
 }

@@ -243,8 +243,12 @@ const Signup = () => {
 
   return (
     <div className="centered">
-      <p style={{ textAlign: "right", fontSize: 10 }}>
-        Already have an account ? Click <Link to="/auth/login">here</Link>.
+      <p style={{ textAlign: "right", fontSize: 15 }}>
+        Already have an account ? Click{" "}
+        <Link to="/auth/login" style={{ color: "yellow" }}>
+          here
+        </Link>
+        .
       </p>
       <h1>Sign up</h1>
       <p style={{ paddingBottom: 20, fontSize: 20 }}>
@@ -267,35 +271,39 @@ const Signup = () => {
         <TextField
           id="outlined-basic"
           label="Display Name"
-          variant="outlined"
+          variant="filled"
           type="text"
           name="nameInputValue"
           value={nameInputValue}
           onChange={handleChange}
+          style={{ backgroundColor: "white", fontWeight: "bolder" }}
         />
         <TextField
           label="Email Address"
-          variant="outlined"
+          variant="filled"
           type="email"
           name="emailInputValue"
           value={emailInputValue}
           onChange={handleChange}
+          style={{ backgroundColor: "white", fontWeight: "bolder" }}
         />
         <TextField
           label="Password"
-          variant="outlined"
+          variant="filled"
           type="password"
           name="passwordInputValue"
           value={passwordInputValue}
           onChange={handleChange}
+          style={{ backgroundColor: "white", fontWeight: "bolder" }}
         />
         <TextField
           label="Repeat password"
-          variant="outlined"
+          variant="filled"
           type="password"
           name="confirmPassword"
           value={confirmPwdInputValue}
           onChange={handleChange}
+          style={{ backgroundColor: "white", fontWeight: "bolder" }}
         />
         <Form.Group controlId="formFile" className="mb-3">
           <Form.Control
@@ -310,7 +318,11 @@ const Signup = () => {
             <LinearProgressWithLabel value={progresspercent} />
           </Box>
         )}
-        <Button variant="outlined" type="submit">
+        <Button
+          variant="outlined"
+          type="submit"
+          style={{ fontWeight: "bolder" }}
+        >
           Sign up
         </Button>
       </form>

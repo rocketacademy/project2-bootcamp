@@ -32,12 +32,13 @@ function Search() {
             type="text"
             placeholder="Search..."
             value={input}
-            variant="outlined"
+            variant="filled"
             size="small"
+            style={{ backgroundColor: "white" }}
             label="Search for a recipe"
           />
           <IconButton type="submit" aria-label="search">
-            <SearchIcon style={{ fill: "blue" }} />
+            <SearchIcon style={{ fill: "yellow" }} />
           </IconButton>
           <p>You're searching for "{input}"</p>
         </div>
