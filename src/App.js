@@ -334,7 +334,6 @@ export default function App() {
                 <BeatLoader color={"#3dd381"} loading={isLoadingCategories} />
               </div>
             ) : (
-              // <div className="temporary-box">loading... </div>
               <Dashboard
                 isLoggedIn={isLoggedIn}
                 uid={uid}

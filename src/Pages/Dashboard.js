@@ -8,8 +8,6 @@ import {
   Bar,
   Cell,
 } from "recharts";
-import { realTimeDatabase } from "../firebase";
-import { ref, get, child } from "firebase/database";
 import { Button } from "react-bootstrap";
 import ExpPieChart from "../Components/ExpPieChart";
 // use all dates for x-axis
@@ -21,78 +19,119 @@ export default function Dashboard({
   expensesCategory,
   categoriesData,
 }) {
-  const [selectedDate, setSelectedDate] = useState("");
+  const [selectedPeriod, setSelectedPeriod] = useState("");
   const [focusBar, setFocusBar] = useState(null);
-  const [mouseLeave, setMouseLeave] = useState(true);
   const [view, setView] = useState("daily");
-  console.log("categoriesData:", categoriesData);
-  // console.log("expensesCategory", expensesCategory);
-
-  // Calculate the sum of amounts by date
-  const displayAmountByDate = {};
-  expensesCategory.forEach((expense) => {
-    const date = expense.date;
-    const displayAmount = parseFloat(expense.displayAmount);
-    if (!displayAmountByDate[date]) {
-      displayAmountByDate[date] = 0;
+  // Find the minimum, maximum date in expensesList
+  const calculateStartAndEndDates = (expensesCategory, view) => {
+    let endDate = null;
+    let firstDate = null;
+    expensesCategory.forEach((expense) => {
+      const date = new Date(expense.date);
+      if (!endDate || date > endDate) {
+        endDate = date;
+      }
+      if (!firstDate || date < firstDate) {
+        firstDate = date;
+      }
+    });
+    // Calculate the start date based on the view
+    let startDate = new Date(endDate);
+    if (view === "monthly") {
+      startDate.setMonth(endDate.getMonth() - 12); // 1 month before end date
+    } else if (view === "yearly") {
+      startDate.setFullYear(endDate.getFullYear() - 3); // 3 years before end date
+    } else {
+      startDate.setDate(endDate.getDate() - 30); // 30 days before end date
     }
-    displayAmountByDate[date] += displayAmount;
-    displayAmountByDate[date] = parseFloat(
-      displayAmountByDate[date].toFixed(2)
-    ); // round to 2dp
-  });
-  // console.log(displayAmountByDate);
-
-  // Find the maximum date in expensesList
-  let endDate = null;
-  expensesCategory.forEach((expense) => {
-    const date = expense.date;
-    if (!endDate || new Date(date) > new Date(endDate)) {
-      endDate = date;
+    // Check calculated start date with first date. If first date is later than calculated start date. set start date=first date
+    if (firstDate > startDate) {
+      startDate = firstDate;
     }
-  });
-  endDate = new Date(endDate);
-  // console.log(`end date: ${endDate}`);
-
-  // Find the minimum date in expensesList
-  let startDate = null;
-  expensesCategory.forEach((expense) => {
-    const date = expense.date;
-    if (!startDate || new Date(date) < new Date(startDate)) {
-      startDate = date;
-    }
-  });
-  startDate = new Date(startDate);
-  // console.log(`start date: ${startDate}`);
-
-  const generateDatesInRange = (startDate, endDate) => {
+    return { startDate, endDate };
+  };
+  const { startDate, endDate } = calculateStartAndEndDates(
+    expensesCategory,
+    view
+  );
+  // console.log("start date", startDate);
+  // console.log("end date", endDate);
+  // generate a list of all possible period between start and end date
+  const generateDatesInRange = (startDate, endDate, view) => {
     const dates = [];
-    const currentDate = new Date(endDate);
+    let currentDate = new Date(endDate);
     while (currentDate >= startDate) {
-      dates.push(currentDate.toISOString().slice(0, 10));
+      let period;
+      if (view === "daily") {
+        period = currentDate.toISOString().slice(0, 10); // YYYY-MM-DD
+      } else if (view === "monthly") {
+        period = currentDate.toISOString().slice(0, 7); // YYYY-MM
+      } else if (view === "yearly") {
+        period = currentDate.toISOString().slice(0, 4); // YYYY
+      }
+      // only push period into dates if it is new
+      if (!dates.includes(period)) {
+        dates.push(period);
+      }
       currentDate.setDate(currentDate.getDate() - 1);
     }
     return dates;
   };
-  const allDates = generateDatesInRange(startDate, endDate);
-
-  // Fill in missing dates with a value of 0
-  allDates.forEach((date) => {
-    if (!displayAmountByDate[date]) {
-      displayAmountByDate[date] = 0;
-    }
-  });
-  // console.log(displayAmountByDate);
-
+  // function to calculate display amount
+  const calculateDisplayAmount = (
+    expensesCategory,
+    view,
+    startDate,
+    endDate
+  ) => {
+    // sum display amount by period
+    const displayAmountByPeriod = {};
+    expensesCategory.forEach((expense) => {
+      let period = new Date(expense.date);
+      if (view === "monthly") {
+        period = period.toISOString().slice(0, 7);
+      } else if (view === "yearly") {
+        period = period.toISOString().slice(0, 4);
+      } else {
+        period = expense.date;
+      }
+      // console.log("period", period);
+      const displayAmount = parseFloat(expense.displayAmount);
+      if (!displayAmountByPeriod[period]) {
+        displayAmountByPeriod[period] = 0;
+      }
+      displayAmountByPeriod[period] += displayAmount;
+      displayAmountByPeriod[period] = parseFloat(
+        displayAmountByPeriod[period].toFixed(2)
+      );
+    });
+    // console.log("displayAmountByPeriod: original", displayAmountByPeriod);
+    // using all periods, insert in 0 for periods that are not in displayamountby period
+    const allPeriods = generateDatesInRange(startDate, endDate, view);
+    allPeriods.forEach((period) => {
+      if (!displayAmountByPeriod[period]) {
+        displayAmountByPeriod[period] = 0;
+      }
+    });
+    return { allPeriods, displayAmountByPeriod };
+  };
+  // Then call this function with the selected view
+  const { allPeriods, displayAmountByPeriod } = calculateDisplayAmount(
+    expensesCategory,
+    view,
+    startDate,
+    endDate
+  );
+  // console.log("actual return allPeriods", allPeriods);
+  // console.log("actual return displayAmountByPeriod", displayAmountByPeriod);
   // Transform amountByDate into an array of objects with 'date' and 'amount' keys
-  const chartData = allDates.map((date) => ({
-    date,
-    displayAmount: displayAmountByDate[date],
+  const chartData = allPeriods.map((period) => ({
+    period,
+    displayAmount: displayAmountByPeriod[period],
   }));
   // Sort the chartData array based on the date values
-  chartData.sort((a, b) => new Date(a.date) - new Date(b.date));
+  chartData.sort((a, b) => new Date(a.period) - new Date(b.period));
   // console.log("chartData:", chartData);
-
   const CustomTooltip = ({ payload, label, active }) => {
     if (active) {
       return (
@@ -105,21 +144,20 @@ export default function Dashboard({
     }
     return null;
   };
+  const viewButtons = ["daily", "monthly", "yearly"].map((viewName) => (
+    <Button
+      key={viewName}
+      variant={view === viewName ? "warning" : "outline-warning"}
+      onClick={() => setView(viewName)}
+    >
+      {viewName.charAt(0).toUpperCase() + viewName.slice(1)}
+    </Button>
+  ));
 
   return (
     <div className="dashboard">
       <h1 className="dashboard-header">Total spending </h1>
-      <div className="view-buttons">
-        <Button variant="outline-warning" onClick={() => setView("daily")}>
-          Daily
-        </Button>
-        <Button variant="outline-warning" onClick={() => setView("monthly")}>
-          Monthly
-        </Button>
-        <Button variant="outline-warning" onClick={() => setView("yearly")}>
-          Yearly
-        </Button>
-      </div>
+      <div className="dashboard-view-buttons">{viewButtons}</div>
       <div className="chart-container">
         <BarChart
           width={500}
@@ -131,28 +169,29 @@ export default function Dashboard({
             left: 20,
             bottom: 5,
           }}
-          onMouseMove={(state) => {
-            if (state.isTooltipActive) {
-              setFocusBar(state.activeTooltipIndex);
-              setMouseLeave(false);
-              const { date } = chartData[state.activeTooltipIndex];
-              setSelectedDate(date);
-            } else {
-              setFocusBar(null);
-              setMouseLeave(true);
-              setSelectedDate("");
+          onClick={(state) => {
+            if (state.activePayload) {
+              const { period } = state.activePayload[0].payload;
+              const index = state.activeTooltipIndex;
+              if (period === selectedPeriod) {
+                setSelectedPeriod(""); // unselect the bar if it's already selected
+                setFocusBar(null); // remove focus from the bar
+              } else {
+                setSelectedPeriod(period); // select the bar
+                setFocusBar(index); // set focus to the bar
+              }
             }
           }}
         >
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="date" />
+          <XAxis dataKey="period" />
           <YAxis domain={[0, "dataMax"]} />
           <Tooltip cursor={false} content={<CustomTooltip />} />
           <Bar dataKey="displayAmount" fill="#8884d8">
             {chartData.map((entry, index) => (
               <Cell
                 fill={
-                  focusBar === index || mouseLeave
+                  focusBar === index || focusBar === null
                     ? "#8884d8"
                     : "rgba(43, 92, 231, 0.2)"
                 }
@@ -163,11 +202,10 @@ export default function Dashboard({
       </div>
       <div className="chart-container">
         <ExpPieChart
-          isLoggedIn={isLoggedIn}
-          uid={uid}
           expensesCategory={expensesCategory}
-          selectedDate={selectedDate}
+          selectedPeriod={selectedPeriod}
           categoriesData={categoriesData}
+          view={view}
         />
       </div>
     </div>
