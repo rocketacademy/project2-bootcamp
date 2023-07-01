@@ -21,9 +21,7 @@ export default function Dashboard({
 }) {
   const [selectedPeriod, setSelectedPeriod] = useState("");
   const [focusBar, setFocusBar] = useState(null);
-  const [mouseLeave, setMouseLeave] = useState(true);
   const [view, setView] = useState("daily");
-
   // Find the minimum, maximum date in expensesList
   const calculateStartAndEndDates = (expensesCategory, view) => {
     let endDate = null;
@@ -37,7 +35,6 @@ export default function Dashboard({
         firstDate = date;
       }
     });
-
     // Calculate the start date based on the view
     let startDate = new Date(endDate);
     if (view === "monthly") {
@@ -47,12 +44,10 @@ export default function Dashboard({
     } else {
       startDate.setDate(endDate.getDate() - 30); // 30 days before end date
     }
-
     // Check calculated start date with first date. If first date is later than calculated start date. set start date=first date
     if (firstDate > startDate) {
       startDate = firstDate;
     }
-
     return { startDate, endDate };
   };
   const { startDate, endDate } = calculateStartAndEndDates(
@@ -61,12 +56,10 @@ export default function Dashboard({
   );
   // console.log("start date", startDate);
   // console.log("end date", endDate);
-
   // generate a list of all possible period between start and end date
   const generateDatesInRange = (startDate, endDate, view) => {
     const dates = [];
     let currentDate = new Date(endDate);
-
     while (currentDate >= startDate) {
       let period;
       if (view === "daily") {
@@ -84,7 +77,6 @@ export default function Dashboard({
     }
     return dates;
   };
-
   // function to calculate display amount
   const calculateDisplayAmount = (
     expensesCategory,
@@ -114,7 +106,6 @@ export default function Dashboard({
       );
     });
     // console.log("displayAmountByPeriod: original", displayAmountByPeriod);
-
     // using all periods, insert in 0 for periods that are not in displayamountby period
     const allPeriods = generateDatesInRange(startDate, endDate, view);
     allPeriods.forEach((period) => {
@@ -124,7 +115,6 @@ export default function Dashboard({
     });
     return { allPeriods, displayAmountByPeriod };
   };
-
   // Then call this function with the selected view
   const { allPeriods, displayAmountByPeriod } = calculateDisplayAmount(
     expensesCategory,
@@ -134,7 +124,6 @@ export default function Dashboard({
   );
   // console.log("actual return allPeriods", allPeriods);
   // console.log("actual return displayAmountByPeriod", displayAmountByPeriod);
-
   // Transform amountByDate into an array of objects with 'date' and 'amount' keys
   const chartData = allPeriods.map((period) => ({
     period,
@@ -143,7 +132,6 @@ export default function Dashboard({
   // Sort the chartData array based on the date values
   chartData.sort((a, b) => new Date(a.period) - new Date(b.period));
   // console.log("chartData:", chartData);
-
   const CustomTooltip = ({ payload, label, active }) => {
     if (active) {
       return (
@@ -156,7 +144,6 @@ export default function Dashboard({
     }
     return null;
   };
-
   const viewButtons = ["daily", "monthly", "yearly"].map((viewName) => (
     <Button
       key={viewName}
@@ -166,10 +153,6 @@ export default function Dashboard({
       {viewName.charAt(0).toUpperCase() + viewName.slice(1)}
     </Button>
   ));
-
-  useEffect(() => {
-    console.log(selectedPeriod);
-  }, [selectedPeriod]);
 
   return (
     <div className="dashboard">

@@ -8,8 +8,8 @@ export default function ExpPieChart({
   view,
 }) {
   /* Filter expenses based on the selected date. If selectedDate is not null, filter expensesList such that expense.date is equiv to selectedDate, else show all*/
-  console.log("view", view);
-  console.log("selectedPeriod", selectedPeriod);
+  // console.log("view", view);
+  // console.log("selectedPeriod", selectedPeriod);
   const filteredExpenses = selectedPeriod
     ? expensesCategory.filter((expense) => {
         if (view === "daily") {
@@ -26,7 +26,7 @@ export default function ExpPieChart({
         }
       })
     : expensesCategory;
-  console.log("filteredExpenses:", filteredExpenses);
+  // console.log("filteredExpenses:", filteredExpenses);
 
   // Calculate the sum of amounts by category
   const displayAmountByCategory = {};
