@@ -21,7 +21,7 @@
 .right {
   right: 0;
   width: 60%;
-  background-color: white;
+  background-color: #386150;
 }
 
 /* If you want the content centered horizontally and vertically */
@@ -38,4 +38,3 @@
   width: 150px;
   border-radius: 50%;
 }
-
