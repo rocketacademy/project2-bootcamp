@@ -14,7 +14,11 @@ import MuiAlert from "@mui/material/Alert";
 
 //Firebase
 import { push, ref as databaseRef, set } from "firebase/database";
-import { getDownloadURL, ref as storageRef, uploadBytes} from "firebase/storage";
+import {
+  getDownloadURL,
+  ref as storageRef,
+  uploadBytes,
+} from "firebase/storage";
 import { database, storage } from "../firebase";
 
 function AdminUpload(props) {
@@ -25,7 +29,7 @@ function AdminUpload(props) {
   const [openSuccessSnackbar, setOpenSuccessSnackbar] = useState(false);
   const [openErrorSnackbar, setOpenErrorSnackbar] = useState(false);
   // 1. Function to set state on the files upon dropping
-  const IMAGEOBJECT_FOLDER_NAME = "imageObjects"; 
+  const IMAGEOBJECT_FOLDER_NAME = "imageObjects";
   const IMAGES_FOLDER_NAME = "images"; //Images folder name
 
   //Function: Upload time
@@ -33,8 +37,8 @@ function AdminUpload(props) {
     const uploadData = new Date();
     const formattedDate = uploadData.toLocaleDateString();
     const formattedTime = uploadData.toLocaleTimeString();
-    return ("["+formattedDate + " "+ formattedTime +"]")
-  }
+    return "[" + formattedDate + " " + formattedTime + "]";
+  };
   // 2. Perform your form submission logic here, along with file upload handling
 
   const Alert = React.forwardRef(function Alert(props, ref) {
@@ -55,44 +59,48 @@ function AdminUpload(props) {
     // Access the selected files from the "files" state and include them in your form data
     // Perform form validation before submission
     if (isFormValid()) {
+      // 'file' comes from the Blob or File API; On Click: Send file to firebase
+      // For loop throught the array of uploaded files
+      files.forEach((file, index) => {
+        // Handle if the file is null
+        if (file != null) {
+          // PART A: Upload file into storage
+          let fileRef = storageRef(
+            storage,
+            `${IMAGES_FOLDER_NAME}/${file.name}`
+          );
+          // PART B: Upload ImageObject
+          // Uploading object for posts to the Firebase if there is a file
+          uploadBytes(fileRef, file)
+            .then(() => {
+              getDownloadURL(fileRef).then((downloadUrl) => {
+                //get download URL for the given file
 
-    
-    // 'file' comes from the Blob or File API; On Click: Send file to firebase
-    // For loop throught the array of uploaded files
-    files.forEach((file,index) => {
-    // Handle if the file is null
-    if (file !=null){
-    // PART A: Upload file into storage
-    let fileRef = storageRef(storage, `${IMAGES_FOLDER_NAME}/${file.name}`);
-    // PART B: Upload ImageObject
-    // Uploading object for posts to the Firebase if there is a file
-    uploadBytes(fileRef, file)
-    .then(() => {
-        getDownloadURL(fileRef).then((downloadUrl) => { //get download URL for the given file
-        
-        //Writing data into the database
-          const postListRef = databaseRef(database, IMAGEOBJECT_FOLDER_NAME);
-          const newPostRef = push(postListRef);
-          set(newPostRef, { //set this into the posts
-            imgurl: downloadUrl, //1. download url
-            imgTime: file.lastModified, // 2. Image Metadata-Time
-            tagsarray: null, //3. No tags (default)
-            email: email, //4. User Email
-            name: name.toLowerCase(), //5. User's Name
-            pass: pass, //6. Unique Identifier
-            updatetime: uploadDateTime(), //5. Upload time (Admin)            
-          })
+                //Writing data into the database
+                const postListRef = databaseRef(
+                  database,
+                  IMAGEOBJECT_FOLDER_NAME
+                );
+                const newPostRef = push(postListRef);
+                set(newPostRef, {
+                  //set this into the posts
+                  imgurl: downloadUrl, //1. download url
+                  imgTime: file.lastModified, // 2. Image Metadata-Time
+                  tagsarray: [{ key: 1, label: "default" }], //3. No tags (default)
+                  email: email, //4. User Email
+                  name: name.toLowerCase(), //5. User's Name
+                  pass: pass, //6. Unique Identifier
+                  updatetime: uploadDateTime(), //5. Upload time (Admin)
+                });
+              });
+              console.log(`Uploading ${file.name} ...`);
+            })
+            .catch((error) => {
+              // Handle upload error
+              console.log("Error uploading data:", error);
+            });
         }
-        )
-        console.log(`Uploading ${file.name} ...`);
-      }
-      
-      )
-      .catch((error) => {
-        // Handle upload error
-        console.log('Error uploading data:', error);
       });
-    }});   
 
       // Submit the form
       setName(""); //Reset the form
