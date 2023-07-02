@@ -11,6 +11,7 @@ const IMAGEOBJECT_FOLDER_NAME = "imageObjects";
 
 const Home = () => {
   const [imageObjects, setImageObjects] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
 
   useEffect(() => {
     // This effect will run when the component mounts and whenever the 'yourCollection' data changes in Firebase.
@@ -41,13 +42,29 @@ const Home = () => {
               },
             ] //key-value pair
         );
+
+        setFilteredData(
+          (preImageObjects) =>
+            // Store message key so we can use it as a key in our list items when rendering messages
+            [
+              ...preImageObjects,
+              {
+                key: data.key,
+                imgurl: data.val().imgurl, //from fdb
+                tagsarray: data.val().tagsarray, //from fdb
+                email: data.val().email, //from fdb
+                name: data.val().name, //from fdb
+                pass: data.val().pass, //from fdb
+              },
+            ] //key-value pair
+        );
       });
     };
   }, []);
 
   // console.log(imageObjects)
-  // extrating the key and the image only for downloading
-  const itemData = imageObjects.map(
+  // extracting the key and the image only for downloading
+  const itemData = filteredData.map(
     ({ key, imgurl, tagsarray, email, name, pass }) => ({
       key: key,
       imgurl: imgurl,
@@ -59,11 +76,33 @@ const Home = () => {
     })
   );
 
+  //Function that filters data based on input
+  const filterData = (searchTerm) => {
+    const keywords = searchTerm.toLowerCase().split(" "); //split by spaces
+
+    if (searchTerm === "") {
+      //if empty text return keyword filter will be default
+      const filteredData = itemData.filter((item) => {
+        // Check if any hobby has the category "Art"
+        return item.tagsarray.some((tags) => tags.label === "default");
+      });
+      setFilteredData(filteredData);
+    } else {
+      for (const element of keywords) {
+        const filteredData = itemData.filter((item) => {
+          // Check if any hobby has the category "Art"
+          return item.tagsarray.some((tags) => tags.label === element);
+        });
+        setFilteredData(filteredData);
+      }
+    }
+  };
+
   return (
     <div>
-      <SearchBar />
+      <SearchBar onSearch={filterData} />
       {console.log(itemData)}
-      {console.log(imageObjects)}
+      {console.log(`Image Objects: ${JSON.stringify(imageObjects)}`)}
       <ImgDownload ImageObjects={itemData} />
       <header className="App-header">
         <meta name="viewport" content="initial-scale=1, width=device-width" />
