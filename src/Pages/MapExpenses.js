@@ -2,9 +2,9 @@ import "../App.css";
 import Map from "../Components/Map";
 import ListExpenses from "../Components/ListExpenses";
 import Welcome from "./Welcome";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { realTimeDatabase } from "../firebase";
-import { ref, update, remove, off, onValue } from "firebase/database";
+import { ref, update, remove } from "firebase/database";
 import { useLoadScript } from "@react-google-maps/api";
 import { Toast } from "react-bootstrap";
 
@@ -55,32 +55,13 @@ export default function MapExpenses({
       console.error("Geolocation is not supported by this browser.");
     }
   }, [expenseCounter]);
-  // console.log("expenseCounter", expenseCounter);
-
-  // // Group expenses with category by date
-  // useEffect(() => {
-  //   if (expensesCategory.length > 0) {
-  //     const groupedExpenses = {};
-  //     expensesCategory.forEach((expense) => {
-  //       const date = expense.date;
-  //       if (!groupedExpenses[date]) {
-  //         groupedExpenses[date] = [];
-  //       }
-  //       groupedExpenses[date].push(expense);
-  //     });
-  //     setGroupedExpenses(groupedExpenses);
-  //   }
-  // }, [expensesCategory]);
-  // console.log("Grouped expenses:", groupedExpenses);
 
   // Fetches displayCurrency from the database and update the client-side state i.e. Database > Client
-
   useEffect(() => {
     if (userData && userData.displayCurrency) {
       setDisplayCurrency(userData.displayCurrency);
     }
   }, [userData]);
-  // console.log("displayCurrency", displayCurrency);
 
   // Update the displayCurrency in the database whenever there is a change in client-side state i.e., Client > Database
   useEffect(() => {
@@ -184,6 +165,7 @@ export default function MapExpenses({
             handleDeleteExpenses={handleDeleteExpenses}
             groupedExpenses={groupedExpenses}
             categoriesData={categoriesData}
+            setExpenseCounter={setExpenseCounter}
           />
         </div>
       ) : (

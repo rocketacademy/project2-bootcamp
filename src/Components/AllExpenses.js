@@ -1,6 +1,6 @@
 import "../App.css";
 import EditExpenses from "./EditExpenses";
-import { useState, useRef, useEffect } from "react";
+import { useRef } from "react";
 import { Card } from "react-bootstrap";
 
 export default function AllExpenses({
@@ -16,20 +16,22 @@ export default function AllExpenses({
   handleShowReceiptClick,
   handleDeleteExpenses,
   categoriesData,
+  filters,
 }) {
   const highlightedCardRef = useRef(null); // Create reference for highlighted card
 
-  // console.log("groupedExpenses", groupedExpenses);
-  // console.log("groupedExpenses", groupedExpenses["2023-06-28"][0].id);
   return (
     <div>
       {Object.keys(groupedExpenses).length === 0 ? (
         <p>Loading</p>
       ) : (
+        // Map through the object of date-grouped expenses
         Object.entries(groupedExpenses).map(([date, expenses]) => (
           <div key={date}>
             {/*overall date header */}
             <Card.Header>{date}</Card.Header>
+
+            {/* Map through the expenses within each date-group */}
             {expenses.map(
               (expense) =>
                 expense.displayAmount !== undefined && (
@@ -45,42 +47,55 @@ export default function AllExpenses({
                     <Card onClick={() => handleOnSelect(expense)}>
                       <Card.Body>
                         <div className="card-content">
-                          <div>
-                            <div
-                              style={{
-                                display: "flex",
-                                justifyContent: "center",
-                                alignItems: "center",
-                                borderRadius: "50%",
-                                width: "3rem",
-                                height: "3rem",
-                                fontSize: "2rem",
-                                backgroundColor: expense.color,
-                              }}
-                            >
-                              {expense.emoji}
+                          {/* Additional div wrapper needed to keep the category icon circle round */}
+                          <div
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                            }}
+                          >
+                            <div id="for-icon" style={{ marginRight: "15px" }}>
+                              <div
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "center",
+                                  alignItems: "center",
+                                  borderRadius: "50%",
+                                  width: "3rem",
+                                  height: "3rem",
+                                  fontSize: "2rem",
+                                  backgroundColor: expense.color,
+                                }}
+                              >
+                                {expense.emoji}
+                              </div>
+                            </div>
+                            <div>
+                              <Card.Title>{expense.category}</Card.Title>
+                              <Card.Subtitle className="mb-2 text-muted">
+                                {/* Show description if available */}
+                                {expense.description !== "-" ? (
+                                  <>
+                                    {expense.description}
+                                    <br />
+                                  </>
+                                ) : null}
+                                {/* Display displayCurrency+Amount, otherwise show input currency+amount */}
+                                {expense.displayCurrency || expense.currency}
+                                {formatter.format(
+                                  expense.displayAmount || expense.amount
+                                )}
+                                {/* If the displayCurrency is different from the input currency, show the input currency and amount */}
+                                {expense.displayCurrency !== expense.currency
+                                  ? ` (${expense.currency} ${formatter.format(
+                                      expense.amount
+                                    )})`
+                                  : null}
+                              </Card.Subtitle>
                             </div>
                           </div>
-                          <div>
-                            <Card.Title>{expense.category}</Card.Title>
-                            <Card.Subtitle className="mb-2 text-muted">
-                              {expense.description !== "-" ? (
-                                <>
-                                  {expense.description}
-                                  <br />
-                                </>
-                              ) : null}
-                              {expense.displayCurrency || expense.currency}
-                              {formatter.format(
-                                expense.displayAmount || expense.amount
-                              )}
-                              {expense.displayCurrency !== expense.currency
-                                ? ` (${expense.currency} ${formatter.format(
-                                    expense.amount
-                                  )})`
-                                : null}
-                            </Card.Subtitle>
-                          </div>
+
+                          {/* Div to contain the emoji-buttons to show receipt, edit expense, delete expense */}
                           <div
                             style={{ display: "flex", alignItems: "center" }}
                           >
