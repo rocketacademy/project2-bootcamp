@@ -58,7 +58,8 @@ export default function App() {
               setUserData(userData);
               setDisplayCurrency(userData.displayCurrency);
               console.log(
-                `user Data: ${userData}; displayCurrency: ${userData.displayCurrency}`
+                `user Data: ${JSON.stringify(userData)}`
+                // ; displayCurrency: ${userData.displayCurrency}`
               );
 
               // use uid to find profile url

@@ -130,7 +130,7 @@ export default function InputExpenses({
           variant="outline-dark"
           onClick={handleShow}
           title="Click to add new expenses"
-          style={{ cursor: "pointer" }}
+          style={{ cursor: "pointer", margin: "0 5px" }}
         >
           💸
         </span>
