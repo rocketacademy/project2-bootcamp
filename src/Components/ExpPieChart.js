@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useMemo } from "react";
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend } from "recharts";
 
 export default function ExpPieChart({

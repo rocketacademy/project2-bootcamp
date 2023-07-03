@@ -2,9 +2,9 @@ import "../App.css";
 import Map from "../Components/Map";
 import ListExpenses from "../Components/ListExpenses";
 import Welcome from "./Welcome";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { realTimeDatabase } from "../firebase";
-import { ref, update, remove, off, onValue } from "firebase/database";
+import { ref, update, remove } from "firebase/database";
 import { useLoadScript } from "@react-google-maps/api";
 import { Toast } from "react-bootstrap";
 
@@ -57,24 +57,7 @@ export default function MapExpenses({
   }, [expenseCounter]);
   // console.log("expenseCounter", expenseCounter);
 
-  // // Group expenses with category by date
-  // useEffect(() => {
-  //   if (expensesCategory.length > 0) {
-  //     const groupedExpenses = {};
-  //     expensesCategory.forEach((expense) => {
-  //       const date = expense.date;
-  //       if (!groupedExpenses[date]) {
-  //         groupedExpenses[date] = [];
-  //       }
-  //       groupedExpenses[date].push(expense);
-  //     });
-  //     setGroupedExpenses(groupedExpenses);
-  //   }
-  // }, [expensesCategory]);
-  // console.log("Grouped expenses:", groupedExpenses);
-
   // Fetches displayCurrency from the database and update the client-side state i.e. Database > Client
-
   useEffect(() => {
     if (userData && userData.displayCurrency) {
       setDisplayCurrency(userData.displayCurrency);
@@ -128,8 +111,6 @@ export default function MapExpenses({
     }
   };
 
-  // console.log("expensesCategory:", expensesCategory[0]["amount"]);
-
   useEffect(() => {}, [isLoggedIn]);
 
   return (
@@ -176,7 +157,6 @@ export default function MapExpenses({
             isHighlighted={isHighlighted}
             setIsHighlighted={setIsHighlighted}
             handleOnSelect={handleOnSelect}
-            // isLoading={isLoading}
             isLoadingExpenses={isLoadingExpenses}
             displayCurrency={displayCurrency}
             setDisplayCurrency={setDisplayCurrency}
