@@ -58,8 +58,9 @@ export default function App() {
               setUserData(userData);
               setDisplayCurrency(userData.displayCurrency);
               console.log(
-                `user Data: ${JSON.stringify(userData)}`
-                // ; displayCurrency: ${userData.displayCurrency}`
+                `user Data: ${JSON.stringify(userData)}; displayCurrency: ${
+                  userData.displayCurrency
+                }`
               );
 
               // use uid to find profile url
@@ -89,19 +90,21 @@ export default function App() {
     });
   }, [uid]);
 
-  // Fetches latest category array, triggered with every change
+  // Fetches latest category array, triggered with every change to the list of categories
   useEffect(() => {
     setIsLoadingCategories(true);
     const catRef = ref(realTimeDatabase, `${DB_CATEGORY_FOLDER_NAME}/${uid}`);
-    const unsubscribe = onValue(
+    const categoryListener = onValue(
       catRef,
       (snapshot) => {
         const catData = snapshot.val();
         if (catData) {
+          // console.log(JSON.stringify(catData));
           const catArray = Object.entries(catData).map(([key, value]) => ({
             id: key,
             ...value,
           }));
+          // console.log(catArray);
           setCategoriesData((prevCategoriesData) =>
             JSON.stringify(prevCategoriesData) !== JSON.stringify(catArray)
               ? catArray
@@ -118,63 +121,77 @@ export default function App() {
 
     return () => {
       // Remove the listener when the component unmounts
-      unsubscribe();
+      categoryListener();
     };
   }, [uid]);
 
-  // Fetches latest expenses array, triggered with every change
+  // Fetches latest expenses array, triggered with every change to the list of expenses
   useEffect(() => {
     setIsLoadingExpenses(true); // <-- Set isLoadingExpenses to true when fetch starts
 
     const expRef = ref(realTimeDatabase, `${DB_EXPENSES_FOLDER_NAME}/${uid}`);
-    const listener = onValue(
+    const expensesListener = onValue(
       expRef,
       (snapshot) => {
         const expensesData = snapshot.val();
+
+        // If the the expenses data has been fetched...
         if (expensesData) {
+          // Convert the object of objects into an array of objects
           const expensesArray = Object.entries(expensesData).map(
             ([key, value]) => ({
               id: key,
               ...value,
             })
           );
-          // Sort expenses by date, with the latest at the top of the list
+
+          // Sort expenses array by date, with the latest at the top of the list
           const sortedExpenses = expensesArray.sort(
             (a, b) => new Date(b.date) - new Date(a.date)
           );
 
-          // Join expenses with categories
+          // Combine category key-value pairs with expenses key-value pairs AND group the newly created arrays by date
           if (!isLoadingCategories) {
-            const joinedExpenses = sortedExpenses.map((expense, index) => {
+            const joinedExpenses = sortedExpenses.map((expense) => {
               const category = categoriesData.find(
                 (category) => category.category === expense.categoryName
               );
+
               // Ensure a category is found. If not, provide a fallback category
               const fallbackCategory = category
                 ? category
                 : { category: "Unknown", color: "#000000", emoji: "❓" };
+
               // Modify the spread sequence so the id from expense is not overwritten.
+              // For each expense, get the emoji and color of the identified category, and combine these key-value pairs with the expenses key-value pairs
               return { ...fallbackCategory, ...expense };
             });
 
             setExpensesCategory(joinedExpenses);
             console.log("joinedExpenses in fetching exp", joinedExpenses);
 
+            // Initialise an empty object to contain objects of dates: [expenses]
             const groupedExpenses = {};
             joinedExpenses.forEach((expense) => {
               const date = expense.date;
+
+              // If the date has not been set as a key yet, create the date:[empty array] pair
               if (!groupedExpenses[date]) {
                 groupedExpenses[date] = [];
               }
+
+              // Push the expense to the array belonging to the same date-key
               groupedExpenses[date].push(expense);
             });
+
             setGroupedExpenses(groupedExpenses);
             console.log("groupedExpenses", groupedExpenses);
           }
         } else {
           setExpensesCategory([]); // Set expensesCategory to an empty array if there are no expenses
         }
-        setIsLoadingExpenses(false);
+
+        setIsLoadingExpenses(false); // <-- Set isLoadingExpenses to false when fetch is successful
       },
       (error) => {
         console.error(error);
@@ -183,7 +200,8 @@ export default function App() {
     );
 
     return () => {
-      off(expRef, listener);
+      // Remove the listener once the component has been dismounted (unrendered)
+      expensesListener();
     };
   }, [uid, isLoadingCategories, categoriesData, displayCurrency]);
 
@@ -192,8 +210,7 @@ export default function App() {
     const currencyList = currencies.map((currency) => currency.code);
     setCurrenciesList(currencyList);
   }, []);
-  // console.log(currenciesList);
-  // console.log("app isLoadingExpenses", isLoadingExpenses);
+
   return (
     <>
       <Navbar bg="light" fixed="top">

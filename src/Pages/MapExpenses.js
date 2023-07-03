@@ -55,7 +55,7 @@ export default function MapExpenses({
       console.error("Geolocation is not supported by this browser.");
     }
   }, [expenseCounter]);
-  // console.log("expenseCounter", expenseCounter);
+
 
   // Fetches displayCurrency from the database and update the client-side state i.e. Database > Client
   useEffect(() => {
@@ -63,7 +63,6 @@ export default function MapExpenses({
       setDisplayCurrency(userData.displayCurrency);
     }
   }, [userData]);
-  // console.log("displayCurrency", displayCurrency);
 
   // Update the displayCurrency in the database whenever there is a change in client-side state i.e., Client > Database
   useEffect(() => {
@@ -164,6 +163,7 @@ export default function MapExpenses({
             handleDeleteExpenses={handleDeleteExpenses}
             groupedExpenses={groupedExpenses}
             categoriesData={categoriesData}
+            setExpenseCounter={setExpenseCounter}
           />
         </div>
       ) : (
