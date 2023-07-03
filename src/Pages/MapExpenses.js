@@ -56,6 +56,7 @@ export default function MapExpenses({
     }
   }, [expenseCounter]);
 
+
   // Fetches displayCurrency from the database and update the client-side state i.e. Database > Client
   useEffect(() => {
     if (userData && userData.displayCurrency) {
@@ -109,8 +110,6 @@ export default function MapExpenses({
     }
   };
 
-  // console.log("expensesCategory:", expensesCategory[0]["amount"]);
-
   useEffect(() => {}, [isLoggedIn]);
 
   return (
@@ -157,7 +156,6 @@ export default function MapExpenses({
             isHighlighted={isHighlighted}
             setIsHighlighted={setIsHighlighted}
             handleOnSelect={handleOnSelect}
-            // isLoading={isLoading}
             isLoadingExpenses={isLoadingExpenses}
             displayCurrency={displayCurrency}
             setDisplayCurrency={setDisplayCurrency}

@@ -1,14 +1,14 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { realTimeDatabase } from "../firebase";
-import { ref, update, onValue, set, push } from "firebase/database";
-import { Card, Button, Modal, Row, Col, Form } from "react-bootstrap";
+import { ref, update, set, push, remove } from "firebase/database";
+import { Card, Button, Modal, Row, Col, Form, Toast } from "react-bootstrap";
 import { SketchPicker } from "react-color";
 import EmojiPicker from "emoji-picker-react";
 
 const DB_CATEGORY_FOLDER_NAME = "categories";
 
-export default function Category({ uid, isLoggedIn }) {
-  const [categoriesData, setCategoriesData] = useState([]);
+export default function Category({ uid, isLoggedIn, categoriesData }) {
+  // const [categoriesData, setCategoriesData] = useState([]);
   const [showCatModal, setShowCatModal] = useState(false);
   const [category, setCategory] = useState("");
   const [color, setColor] = useState("#000000");
@@ -16,38 +16,8 @@ export default function Category({ uid, isLoggedIn }) {
   const [displayColorPicker, setDisplayColorPicker] = useState(false);
   const [displayEmojiPicker, setDisplayEmojiPicker] = useState(false);
   const [selectedCategoryId, setSelectedCategoryId] = useState(null);
-
-  useEffect(() => {
-    const userCatRef = ref(
-      realTimeDatabase,
-      `${DB_CATEGORY_FOLDER_NAME}/${uid}`
-    );
-    // Attach an asynchronous callback to read the data at our categories reference
-    const unsubscribe = onValue(
-      userCatRef,
-      (snapshot) => {
-        const catData = snapshot.val();
-        // console.log(catData);
-        if (catData) {
-          const catArray = Object.entries(catData).map(([key, value]) => ({
-            id: key,
-            ...value,
-          }));
-
-          setCategoriesData(catArray);
-          // console.log("catArray:", catArray);
-        }
-      },
-      (errorObject) => {
-        console.log("The read failed: " + errorObject.name);
-      }
-    );
-
-    return () => {
-      // Remove the listener when the component unmounts
-      unsubscribe();
-    };
-  }, [uid]);
+  const [showToast, setShowToast] = useState(false);
+  const [deletedCategory, setDeletedCategory] = useState("");
 
   // function to allow user to add new category
   const handleSubmit = (e) => {
@@ -109,6 +79,27 @@ export default function Category({ uid, isLoggedIn }) {
     setDisplayEmojiPicker(false); // Hide picker after selection
   };
 
+  const handleDeleteCategory = (categoryId) => {
+    if (window.confirm("Are you sure you want to delete this category?")) {
+      const catRef = ref(
+        realTimeDatabase,
+        `${DB_CATEGORY_FOLDER_NAME}/${uid}/${categoryId}`
+      );
+      remove(catRef)
+        .then(() => {
+          // Once the category is deleted, update the state and show the toast
+          const deletedCategory = categoriesData.find(
+            (category) => category.id === categoryId
+          );
+          setDeletedCategory(deletedCategory.category);
+          setShowToast(true);
+        })
+        .catch((error) => {
+          console.error("Error deleting expense:", error);
+        });
+    }
+  };
+
   return (
     <div className="category">
       <h1>Categories</h1>
@@ -162,14 +153,21 @@ export default function Category({ uid, isLoggedIn }) {
                   e.stopPropagation();
                   handleShowCatModal(category);
                 }}
+                title="Click to edit category"
               >
                 ✏️
+              </span>
+              <span
+                onClick={() => handleDeleteCategory(category.id)}
+                title="Click to delete category"
+                style={{ marginLeft: "1rem", cursor: "pointer" }}
+              >
+                🗑️
               </span>
             </div>
           </Card.Body>
         </Card>
       ))}
-
       {/* Modal to key in new category and update category */}
       <Modal show={showCatModal} onHide={handleCloseCatModal}>
         <Modal.Header closeButton>
@@ -261,6 +259,21 @@ export default function Category({ uid, isLoggedIn }) {
           </Button>
         </Modal.Footer>
       </Modal>
+      {/* Toast to notify user once category has been successfully deleted */}
+      <Toast
+        className="center-toast"
+        onClose={() => setShowToast(false)}
+        show={showToast}
+        delay={1500}
+        autohide
+      >
+        <Toast.Header>
+          <strong className="mr-auto">Notification</strong>
+        </Toast.Header>
+        <Toast.Body>
+          Category:{deletedCategory} deleted successfully!
+        </Toast.Body>
+      </Toast>{" "}
     </div>
   );
 }

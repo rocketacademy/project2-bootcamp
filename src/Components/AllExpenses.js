@@ -28,6 +28,7 @@ export default function AllExpenses({
       {Object.keys(groupedExpenses).length === 0 ? (
         <p>Loading</p>
       ) : (
+
         // Map through the object of date-grouped expenses
         Object.entries(groupedExpenses).map(([date, expenses]) => {
           let filteredExpenses = expenses.filter((expense) => {
@@ -197,6 +198,7 @@ export default function AllExpenses({
             </div>
           );
         })
+
       )}
     </div>
   );

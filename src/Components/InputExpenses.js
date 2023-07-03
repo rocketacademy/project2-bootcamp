@@ -2,7 +2,7 @@ import "../App.css";
 import { useEffect, useState } from "react";
 import { Button, Form, Modal, InputGroup } from "react-bootstrap";
 import { realTimeDatabase, storage } from "../firebase";
-import { push, ref, set, get, child, onValue } from "firebase/database";
+import { push, ref, set } from "firebase/database";
 import {
   ref as storageRef,
   uploadBytes,

@@ -1,5 +1,5 @@
 import "../App.css";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button, Form, Modal, InputGroup } from "react-bootstrap";
 import { realTimeDatabase, storage } from "../firebase";
 import { ref, set, update } from "firebase/database";

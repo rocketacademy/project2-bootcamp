@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   XAxis,
   YAxis,
@@ -190,6 +190,7 @@ export default function Dashboard({
           <Bar dataKey="displayAmount" fill="#8884d8">
             {chartData.map((entry, index) => (
               <Cell
+                key={index}
                 fill={
                   focusBar === index || focusBar === null
                     ? "#8884d8"

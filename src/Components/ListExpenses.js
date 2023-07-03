@@ -1,7 +1,6 @@
 import "../App.css";
 import AllExpenses from "./AllExpenses";
 import DisplayCurrency from "./DisplayCurrency";
-// import EditExpenses from "./EditExpenses";
 import Filter from "./Filter";
 import InputExpenses from "./InputExpenses";
 import { useState, useRef, useEffect } from "react";
