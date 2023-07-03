@@ -89,7 +89,7 @@ export default function AllExpenses({
                                 variant="info"
                                 onClick={() => handleShowReceiptClick(expense)}
                                 title="Click to view receipt"
-                                style={{ margin: "5px" }}
+                                style={{ margin: "5px", cursor: "pointer" }}
                               >
                                 🖼️
                               </span>
@@ -109,7 +109,7 @@ export default function AllExpenses({
                               variant="danger"
                               onClick={() => handleDeleteExpenses(expense.id)}
                               title="Click to delete expense"
-                              style={{ margin: "5px" }}
+                              style={{ margin: "5px", cursor: "pointer" }}
                             >
                               🗑️
                             </span>

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { realTimeDatabase } from "../firebase";
-import { ref, update, onValue, set, push } from "firebase/database";
-import { Card, Button, Modal, Row, Col, Form } from "react-bootstrap";
+import { ref, update, onValue, set, push, remove } from "firebase/database";
+import { Card, Button, Modal, Row, Col, Form, Toast } from "react-bootstrap";
 import { SketchPicker } from "react-color";
 import EmojiPicker from "emoji-picker-react";
 
@@ -16,6 +16,8 @@ export default function Category({ uid, isLoggedIn }) {
   const [displayColorPicker, setDisplayColorPicker] = useState(false);
   const [displayEmojiPicker, setDisplayEmojiPicker] = useState(false);
   const [selectedCategoryId, setSelectedCategoryId] = useState(null);
+  const [showToast, setShowToast] = useState(false);
+  const [deletedCategory, setDeletedCategory] = useState("");
 
   useEffect(() => {
     const userCatRef = ref(
@@ -109,6 +111,27 @@ export default function Category({ uid, isLoggedIn }) {
     setDisplayEmojiPicker(false); // Hide picker after selection
   };
 
+  const handleDeleteCategory = (categoryId) => {
+    if (window.confirm("Are you sure you want to delete this category?")) {
+      const catRef = ref(
+        realTimeDatabase,
+        `${DB_CATEGORY_FOLDER_NAME}/${uid}/${categoryId}`
+      );
+      remove(catRef)
+        .then(() => {
+          // Once the category is deleted, update the state and show the toast
+          const deletedCategory = categoriesData.find(
+            (category) => category.id === categoryId
+          );
+          setDeletedCategory(deletedCategory.category);
+          setShowToast(true);
+        })
+        .catch((error) => {
+          console.error("Error deleting expense:", error);
+        });
+    }
+  };
+
   return (
     <div className="category">
       <h1>Categories</h1>
@@ -162,14 +185,21 @@ export default function Category({ uid, isLoggedIn }) {
                   e.stopPropagation();
                   handleShowCatModal(category);
                 }}
+                title="Click to edit category"
               >
                 ✏️
+              </span>
+              <span
+                onClick={() => handleDeleteCategory(category.id)}
+                title="Click to delete category"
+                style={{ marginLeft: "1rem", cursor: "pointer" }}
+              >
+                🗑️
               </span>
             </div>
           </Card.Body>
         </Card>
       ))}
-
       {/* Modal to key in new category and update category */}
       <Modal show={showCatModal} onHide={handleCloseCatModal}>
         <Modal.Header closeButton>
@@ -261,6 +291,22 @@ export default function Category({ uid, isLoggedIn }) {
           </Button>
         </Modal.Footer>
       </Modal>
+      {/* Toast to notify user once category has been successfully deleted */}
+      <Toast
+        className="center-toast"
+        onClose={() => setShowToast(false)}
+        show={showToast}
+        delay={1500}
+        autohide
+        category={category.category}
+      >
+        <Toast.Header>
+          <strong className="mr-auto">Notification</strong>
+        </Toast.Header>
+        <Toast.Body>
+          Category: {deletedCategory} deleted successfully!
+        </Toast.Body>
+      </Toast>{" "}
     </div>
   );
 }
