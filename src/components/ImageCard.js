@@ -12,7 +12,7 @@ const ListItem = styled("li")(({ theme }) => ({
 
 export default function ImageTile(props) {
   //Function: Takes in the image props and display them
-  const [chipData, setChipData] = React.useState(props.item.tagsarray); //Initial empty array
+  const [chipData, setChipData] = React.useState([]); //Initial empty array
   const [showInput, setShowInput] = React.useState(false);
   const [inputValue, setInputValue] = React.useState("");
   const inputRef = React.useRef(null);
@@ -32,6 +32,7 @@ export default function ImageTile(props) {
 
   const handleDelete = (chipToDelete) => () => {
     console.log(chipToDelete);
+    console.log(`Deleted From: ${JSON.stringify(props.item)}`)
     setChipData((chips) =>
       chips.filter((chip) => chip.key !== chipToDelete.key)
     );
@@ -83,7 +84,6 @@ export default function ImageTile(props) {
       console.log(inputValue);
       if (inputValue !== "") {
         setChipData(addChipFormat(inputValue)); //append to the chip data
-
         //Writing data into the database
         const objectPath = IMAGEOBJECT_FOLDER_NAME + "/" + props.item.key;
         const postListRef = databaseRef(database, objectPath);
@@ -112,14 +112,19 @@ export default function ImageTile(props) {
     };
   });
 
+  React.useEffect(()=>{ //whenever the props.item.tagsarray changes, it will update state
+    setChipData(props.item.tagsarray)
+  },[props.item.tagsarray])
+
   React.useEffect(() => {
-    console.log(`chipData: ${chipData}`);
+    // console.log(`chipData: ${chipData}`);
     // Writing data into the database
     const objectPath = `${IMAGEOBJECT_FOLDER_NAME}/${props.item.key}`;
     const postListRef = databaseRef(database, objectPath);
-    console.log(`Path: ${objectPath}`);
-    console.log(`postListRef: ${postListRef}`);
+    // console.log(`Path: ${objectPath}`);
+    // console.log(`postListRef: ${postListRef}`);
     // Update the parameter to Firebase
+    // Whenever chipdata changes it updates server
     update(postListRef, { tagsarray: chipData })
       .then(() => {
         console.log("Chips updated successfully");
@@ -127,7 +132,7 @@ export default function ImageTile(props) {
       .catch((error) => {
         console.error("Error updating Chips:", error);
       });
-  }, [chipData]);
+  }, [chipData,props.item.key]);
 
   //function to actually setup the sizes and image details for the tiling
   function srcset(image, size, rows = 1, cols = 1) {
@@ -184,6 +189,8 @@ export default function ImageTile(props) {
         {props.item.tagsarray !== null
           ? chipData.map((data) => {
               //this data will be replaced by component tagging
+              console.log(`Data Received: ${JSON.stringify(props.item)}`)
+              console.log(`Chip Data: ${JSON.stringify(data)}`)
               return (
                 <ListItem key={data.key}>
                   {data.label !== "default" && ( //hide default chip label but retain it

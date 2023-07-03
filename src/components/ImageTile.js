@@ -5,6 +5,7 @@ import ImageCard from './ImageCard';
 
 export default function ImageTile(props) {
   //Function: Takes in the image props and display them
+  console.log("Image Tile Rendered")
   return (    
     <div className="gallery-img">
       

@@ -10,8 +10,9 @@ import { database } from "../firebase";
 const IMAGEOBJECT_FOLDER_NAME = "imageObjects";
 
 const Home = () => {
-  const [imageObjects, setImageObjects] = useState([]);
-  const [filteredData, setFilteredData] = useState([]);
+  const [imageObjects, setImageObjects] = useState([]); //State 1
+  const [filteredData, setFilteredData] = useState([]); //State 2
+  const [searchPressed, setSearchPressed] = useState([false]);
 
   useEffect(() => {
     // This effect will run when the component mounts and whenever the 'yourCollection' data changes in Firebase.
@@ -65,7 +66,7 @@ const Home = () => {
   // console.log(imageObjects)
   // extracting the key and the image only for downloading
   useEffect(() => {
-    const itemData = filteredData.map(({ key, imgurl, tagsarray, email, name, pass }) => ({
+    const itemData = imageObjects.map(({ key, imgurl, tagsarray, email, name, pass }) => ({
       key: key,
       imgurl: imgurl,
       tagsarray: tagsarray,
@@ -82,7 +83,7 @@ const Home = () => {
   //Function that filters data based on input
   const filterData = (searchTerm) => {
     const keywords = searchTerm.toLowerCase().split(" "); //split by spaces
-
+    setSearchPressed(!searchPressed)
     if (searchTerm === "") {
       //if empty text return keyword filter will be default
       const filteredData = imageObjects.filter((item) => {
@@ -99,13 +100,16 @@ const Home = () => {
         setFilteredData(filteredData);
       }
     }
+    //Also assists to save the chips
   };
 
   return (
+    
     <div>
+      {console.log(`Filtered Data: ${JSON.stringify(filteredData)}`)}
       <SearchBar onSearch={filterData} />
-      {console.log(filteredData)}
-      {console.log(`Image Objects: ${JSON.stringify(imageObjects)}`)}
+      {/* {console.log(filteredData)} */}
+      {/* {console.log(`Image Objects: ${JSON.stringify(imageObjects)}`)} */}
       <ImgDownload ImageObjects={filteredData} />
       <header className="App-header">
         <meta name="viewport" content="initial-scale=1, width=device-width" />
