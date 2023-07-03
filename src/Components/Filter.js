@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Modal, Form, Button, Row, Col } from "react-bootstrap";
 
 export default function Filter({ setFilters, categoriesData }) {
@@ -14,23 +14,15 @@ export default function Filter({ setFilters, categoriesData }) {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedUpperLimit, setSelectedUpperLimit] = useState(null);
   const [selectedLowerLimit, setSelectedLowerLimit] = useState(null);
+  const [counter, setCounter] = useState(0);
 
   const handleClear = () => {
     setSelectedEndDate(endDateFormatted);
-    setSelectedStartDate(startDateFormatted);
+    setSelectedStartDate(null);
     setSelectedCategory(null);
     setSelectedUpperLimit(null);
     setSelectedLowerLimit(null);
-
-    setFilters((prevFilters) => ({
-      ...prevFilters,
-      startDate: null,
-      endDate: null,
-      category: selectedCategory,
-      upperLimit: selectedUpperLimit,
-      lowerLimit: selectedLowerLimit,
-    }));
-
+    setCounter(counter + 1);
     setShow(false);
   };
 
@@ -45,6 +37,24 @@ export default function Filter({ setFilters, categoriesData }) {
     }));
     setShow(false);
   };
+
+  useEffect(() => {
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      startDate: selectedStartDate,
+      endDate: selectedEndDate,
+      category: selectedCategory,
+      upperLimit: selectedUpperLimit,
+      lowerLimit: selectedLowerLimit,
+    }));
+  }, [
+    // selectedStartDate,
+    // selectedEndDate,
+    // selectedCategory,
+    // selectedUpperLimit,
+    // selectedLowerLimit,
+    counter,
+  ]);
 
   return (
     <div>
@@ -112,19 +122,29 @@ export default function Filter({ setFilters, categoriesData }) {
               <Form.Label>Category</Form.Label>
               <Form.Select
                 aria-label="Default select example"
+                value={
+                  selectedCategory
+                    ? `${
+                        categoriesData.find(
+                          (categoryObj) =>
+                            categoryObj.category === selectedCategory
+                        ).emoji
+                      } ${selectedCategory}`
+                    : "null"
+                }
                 onChange={(e) => {
                   const selectedCategory = categoriesData.find(
                     (categoryObj) =>
                       `${categoryObj.emoji} ${categoryObj.category}` ===
                       e.target.value
                   );
-                  setSelectedCategory(selectedCategory);
+                  setSelectedCategory(
+                    selectedCategory ? selectedCategory.category : null
+                  );
                 }}
                 required
               >
-                <option value="" disabled>
-                  Category
-                </option>
+                <option value="null">All Categories</option>
                 {categoriesData.map((categoryObj, index) => (
                   <option
                     key={index}

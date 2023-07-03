@@ -33,7 +33,13 @@ export default function ListExpenses({
   const [showModal, setShowModal] = useState(false);
   const [selectedExpense, setSelectedExpense] = useState(null);
   const highlightedCardRef = useRef(null); // Create reference for highlighted card
-  const [filters, setFilters] = useState();
+  const [filters, setFilters] = useState({
+    category: null,
+    startDate: null,
+    endDate: null,
+    upperLimit: null,
+    lowerLimit: null,
+  });
 
   // Display receipt when showReceipt button is clicked
   const handleShowReceiptClick = (expense) => {

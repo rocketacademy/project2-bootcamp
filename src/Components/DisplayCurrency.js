@@ -11,6 +11,7 @@ export default function DisplayCurrency({
   currenciesList,
 }) {
   const [showCurrencyModal, setShowCurrencyModal] = useState(false);
+  const [interimCurrency, setInterimCurrency] = useState(displayCurrency);
 
   const handleShow = () => {
     setShowCurrencyModal(true);
@@ -21,7 +22,7 @@ export default function DisplayCurrency({
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
+    setDisplayCurrency(interimCurrency);
     handleClose();
   };
 
@@ -30,7 +31,7 @@ export default function DisplayCurrency({
       <div>
         <Button
           title="Click to change display currency"
-          variant="secondary"
+          variant="dark"
           onClick={handleShow}
         >
           {displayCurrency} {totalAmount}
@@ -48,7 +49,7 @@ export default function DisplayCurrency({
                 id="currency-typeahead"
                 labelKey="currency"
                 placeholder="Search currency"
-                onChange={(selected) => setDisplayCurrency(selected[0])}
+                onChange={(selected) => setInterimCurrency(selected[0])}
                 options={currenciesList}
               ></Typeahead>
             </InputGroup>
