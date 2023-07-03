@@ -9,18 +9,16 @@ export default function Welcome({ isLoggedIn }) {
         navigate("/mapexpenses")
       ) : (
         <div>
-          <div>
-            <h1>Welcome to DollarDirection!</h1>
-            <br />
-            <p>
-              Keep track of where you've been and how much you've spent so you
-              will never have to ask: <br />
-              <b>
-                <em>"Where'd my money go?!"</em>
-              </b>
-            </p>{" "}
-            <Link to="/authform">Sign Up / Log In here</Link>
-          </div>
+          <h1>Welcome to DollarDirection!</h1>
+          <br />
+          <p>
+            Keep track of where you've been and how much you've spent so you
+            will never have to ask: <br />
+            <b>
+              <em>"Where'd my money go?!"</em>
+            </b>
+          </p>{" "}
+          <Link to="/authform">Sign Up / Log In here</Link>
         </div>
       )}
     </div>

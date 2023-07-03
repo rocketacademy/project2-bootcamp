@@ -1,6 +1,6 @@
 import "../App.css";
 import EditExpenses from "./EditExpenses";
-import { useState, useRef, useEffect } from "react";
+import { useRef } from "react";
 import { Card } from "react-bootstrap";
 
 export default function AllExpenses({

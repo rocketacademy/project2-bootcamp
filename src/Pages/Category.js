@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { realTimeDatabase } from "../firebase";
-import { ref, update, onValue, set, push, remove } from "firebase/database";
+import { ref, update, set, push, remove } from "firebase/database";
 import { Card, Button, Modal, Row, Col, Form, Toast } from "react-bootstrap";
 import { SketchPicker } from "react-color";
 import EmojiPicker from "emoji-picker-react";
@@ -18,40 +18,6 @@ export default function Category({ uid, isLoggedIn, categoriesData }) {
   const [selectedCategoryId, setSelectedCategoryId] = useState(null);
   const [showToast, setShowToast] = useState(false);
   const [deletedCategory, setDeletedCategory] = useState("");
-
-  // useEffect(() => {
-  //   const userCatRef = ref(
-  //     realTimeDatabase,
-  //     `${DB_CATEGORY_FOLDER_NAME}/${uid}`
-  //   );
-  //   // Attach an asynchronous callback to read the data at our categories reference
-  //   const unsubscribe = onValue(
-  //     userCatRef,
-  //     (snapshot) => {
-  //       const catData = snapshot.val();
-  //       // console.log(catData);
-  //       if (catData) {
-  //         const catArray = Object.entries(catData).map(([key, value]) => ({
-  //           id: key,
-  //           ...value,
-  //         }));
-
-  //         setCategoriesData(catArray);
-  //         // console.log("catArray:", catArray);
-  //       }
-  //     },
-  //     (errorObject) => {
-  //       console.log("The read failed: " + errorObject.name);
-  //     }
-  //   );
-
-  //   return () => {
-  //     // Remove the listener when the component unmounts
-  //     unsubscribe();
-  //   };
-  // }, [uid]);
-
-  console.log("categoriesData", categoriesData);
 
   // function to allow user to add new category
   const handleSubmit = (e) => {
