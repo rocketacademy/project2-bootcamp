@@ -64,8 +64,8 @@ const Home = () => {
 
   // console.log(imageObjects)
   // extracting the key and the image only for downloading
-  const itemData = filteredData.map(
-    ({ key, imgurl, tagsarray, email, name, pass }) => ({
+  useEffect(() => {
+    const itemData = filteredData.map(({ key, imgurl, tagsarray, email, name, pass }) => ({
       key: key,
       imgurl: imgurl,
       tagsarray: tagsarray,
@@ -73,8 +73,11 @@ const Home = () => {
       name: name,
       pass: pass,
       title: null,
-    })
-  );
+    }));
+
+    setImageObjects(itemData);
+    console.log(`Initial Filtered Data: ${filteredData}`)
+  }, []);
 
   //Function that filters data based on input
   const filterData = (searchTerm) => {
@@ -82,14 +85,14 @@ const Home = () => {
 
     if (searchTerm === "") {
       //if empty text return keyword filter will be default
-      const filteredData = itemData.filter((item) => {
+      const filteredData = imageObjects.filter((item) => {
         // Check if any hobby has the category "Art"
         return item.tagsarray.some((tags) => tags.label === "default");
       });
       setFilteredData(filteredData);
     } else {
       for (const element of keywords) {
-        const filteredData = itemData.filter((item) => {
+        const filteredData = imageObjects.filter((item) => {
           // Check if any hobby has the category "Art"
           return item.tagsarray.some((tags) => tags.label === element);
         });
@@ -101,13 +104,13 @@ const Home = () => {
   return (
     <div>
       <SearchBar onSearch={filterData} />
-      {console.log(itemData)}
+      {console.log(filteredData)}
       {console.log(`Image Objects: ${JSON.stringify(imageObjects)}`)}
-      <ImgDownload ImageObjects={itemData} />
+      <ImgDownload ImageObjects={filteredData} />
       <header className="App-header">
         <meta name="viewport" content="initial-scale=1, width=device-width" />
         <div className="Gallery-img">
-          <ImageTile ImageObjects={itemData} />
+          <ImageTile ImageObjects={filteredData} />
         </div>
       </header>
     </div>

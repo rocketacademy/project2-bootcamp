@@ -7,10 +7,10 @@ export default function SearchBar({ onSearch }) {
 
   const handleChange = (event) => {
     setSearchTerm(event.target.value);
-    console.log(searchTerm);
   };
 
   const handleSearch = () => {
+    console.log(`Searching Keyword: ${searchTerm}`);
     onSearch(searchTerm);
   };
 
