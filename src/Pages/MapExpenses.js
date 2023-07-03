@@ -2,9 +2,9 @@ import "../App.css";
 import Map from "../Components/Map";
 import ListExpenses from "../Components/ListExpenses";
 import Welcome from "./Welcome";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { realTimeDatabase } from "../firebase";
-import { ref, update, remove, off, onValue } from "firebase/database";
+import { ref, update, remove } from "firebase/database";
 import { useLoadScript } from "@react-google-maps/api";
 import { Toast } from "react-bootstrap";
 

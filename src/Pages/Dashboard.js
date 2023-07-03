@@ -190,6 +190,7 @@ export default function Dashboard({
           <Bar dataKey="displayAmount" fill="#8884d8">
             {chartData.map((entry, index) => (
               <Cell
+                key={index}
                 fill={
                   focusBar === index || focusBar === null
                     ? "#8884d8"

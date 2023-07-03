@@ -7,8 +7,8 @@ import EmojiPicker from "emoji-picker-react";
 
 const DB_CATEGORY_FOLDER_NAME = "categories";
 
-export default function Category({ uid, isLoggedIn }) {
-  const [categoriesData, setCategoriesData] = useState([]);
+export default function Category({ uid, isLoggedIn, categoriesData }) {
+  // const [categoriesData, setCategoriesData] = useState([]);
   const [showCatModal, setShowCatModal] = useState(false);
   const [category, setCategory] = useState("");
   const [color, setColor] = useState("#000000");
@@ -19,37 +19,39 @@ export default function Category({ uid, isLoggedIn }) {
   const [showToast, setShowToast] = useState(false);
   const [deletedCategory, setDeletedCategory] = useState("");
 
-  useEffect(() => {
-    const userCatRef = ref(
-      realTimeDatabase,
-      `${DB_CATEGORY_FOLDER_NAME}/${uid}`
-    );
-    // Attach an asynchronous callback to read the data at our categories reference
-    const unsubscribe = onValue(
-      userCatRef,
-      (snapshot) => {
-        const catData = snapshot.val();
-        // console.log(catData);
-        if (catData) {
-          const catArray = Object.entries(catData).map(([key, value]) => ({
-            id: key,
-            ...value,
-          }));
+  // useEffect(() => {
+  //   const userCatRef = ref(
+  //     realTimeDatabase,
+  //     `${DB_CATEGORY_FOLDER_NAME}/${uid}`
+  //   );
+  //   // Attach an asynchronous callback to read the data at our categories reference
+  //   const unsubscribe = onValue(
+  //     userCatRef,
+  //     (snapshot) => {
+  //       const catData = snapshot.val();
+  //       // console.log(catData);
+  //       if (catData) {
+  //         const catArray = Object.entries(catData).map(([key, value]) => ({
+  //           id: key,
+  //           ...value,
+  //         }));
 
-          setCategoriesData(catArray);
-          // console.log("catArray:", catArray);
-        }
-      },
-      (errorObject) => {
-        console.log("The read failed: " + errorObject.name);
-      }
-    );
+  //         setCategoriesData(catArray);
+  //         // console.log("catArray:", catArray);
+  //       }
+  //     },
+  //     (errorObject) => {
+  //       console.log("The read failed: " + errorObject.name);
+  //     }
+  //   );
 
-    return () => {
-      // Remove the listener when the component unmounts
-      unsubscribe();
-    };
-  }, [uid]);
+  //   return () => {
+  //     // Remove the listener when the component unmounts
+  //     unsubscribe();
+  //   };
+  // }, [uid]);
+
+  console.log("categoriesData", categoriesData);
 
   // function to allow user to add new category
   const handleSubmit = (e) => {
@@ -298,13 +300,12 @@ export default function Category({ uid, isLoggedIn }) {
         show={showToast}
         delay={1500}
         autohide
-        category={category.category}
       >
         <Toast.Header>
           <strong className="mr-auto">Notification</strong>
         </Toast.Header>
         <Toast.Body>
-          Category: {deletedCategory} deleted successfully!
+          Category:{deletedCategory} deleted successfully!
         </Toast.Body>
       </Toast>{" "}
     </div>

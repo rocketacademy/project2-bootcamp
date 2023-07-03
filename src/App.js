@@ -324,7 +324,13 @@ export default function App() {
 
         <Route
           path="/category"
-          element={<Category uid={uid} isLoggedIn={isLoggedIn} />}
+          element={
+            <Category
+              uid={uid}
+              isLoggedIn={isLoggedIn}
+              categoriesData={categoriesData}
+            />
+          }
         />
 
         <Route
