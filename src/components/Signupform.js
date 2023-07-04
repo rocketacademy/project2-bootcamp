@@ -131,7 +131,7 @@ const Signup = () => {
               avatar: user.photoURL,
             });
 
-            navigate("/home");
+            navigate("/");
           }
         })
         .catch((error) => {

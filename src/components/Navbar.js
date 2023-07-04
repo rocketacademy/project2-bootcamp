@@ -125,7 +125,12 @@ function ResponsiveAppBar(props) {
               }}
             >
               <MenuItem onClick={handleCloseNavMenu}>
-                <Typography textAlign="center">Random Recipes</Typography>
+                <Typography textAlign="center">
+                  Search Related Recipe
+                </Typography>
+              </MenuItem>
+              <MenuItem onClick={handleCloseNavMenu}>
+                <Typography textAlign="center">Find Markets</Typography>
               </MenuItem>
               <MenuItem onClick={handleCloseNavMenu}>
                 <Typography textAlign="center">Saved Recipes</Typography>
@@ -187,6 +192,14 @@ function ResponsiveAppBar(props) {
               >
                 Find Market Nearby
               </Typography>
+            </MenuItem>
+            <MenuItem
+              onClick={handleCloseNavMenu}
+              as={Link}
+              to="/saved-recipes"
+            >
+              <Typography textAlign="center">Saved Recipes</Typography>
+              
             </MenuItem>
           </Box>
 

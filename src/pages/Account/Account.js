@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ref as databaseRef, child, get, set } from "firebase/database";
+import { ref as databaseRef, child, get, set, remove } from "firebase/database";
 import {
   ref as storageRef,
   uploadBytesResumable,
@@ -12,6 +12,9 @@ import {
   updatePassword,
   EmailAuthProvider,
   reauthenticateWithCredential,
+  deleteUser,
+  reauthenticateWithPopup,
+  GoogleAuthProvider,
 } from "firebase/auth";
 import { database, auth, storage } from "../../config";
 import "./Account.css";
@@ -139,6 +142,14 @@ const ProfilePage = () => {
     }
   }
 
+  function deleteData() {
+    const currentUserRef = databaseRef(
+      database,
+      `${REALTIME_DATABASE_USERS_KEY}/${userId}`
+    );
+    remove(currentUserRef);
+  }
+
   function handleChange(event) {
     if (event.target.name === "displayName") {
       setName(event.target.value);
@@ -204,12 +215,62 @@ const ProfilePage = () => {
     }
   }
 
+  function deleteAccount(event) {
+    event.preventDefault();
+    if (provider === "google") {
+      reauthenticateWithPopup(loggedInUser, new GoogleAuthProvider())
+        .then(() => {
+          deleteUser(loggedInUser)
+            .then(() => {
+              deleteData();
+              // User deleted.
+              alert("Account deleted. Refreshing page...");
+              navigate(`/auth/login`);
+            })
+            .catch((error) => {
+              // An error ocurred
+              // ...
+              const errorCode = error.code;
+              const errorMessage = error.message;
+              setError(`${errorCode} : ${errorMessage}`);
+            });
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          setError(`${errorCode} : ${errorMessage}`);
+        });
+    } else {
+      reauthenticate(currentPassword)
+        .then(() => {
+          deleteUser(loggedInUser)
+            .then(() => {
+              deleteData();
+              // User deleted.
+              alert("Account deleted. Refreshing page...");
+              navigate(`/auth/login`);
+            })
+            .catch((error) => {
+              // An error ocurred
+              // ...
+              const errorCode = error.code;
+              const errorMessage = error.message;
+              setError(`${errorCode} : ${errorMessage}`);
+            });
+        })
+        .catch((error) => {
+          setError("Current Password is incorrect.");
+          setCurrentPassword("");
+        });
+    }
+  }
+
   return (
     <div className="container">
       {message && <Alert severity="success">{message}</Alert>}
       {error && <Alert severity="error">{error}</Alert>}
       <img src={imgLink} alt="Avatar" className="avatar" />
-      <form onSubmit={handleSubmit}>
+      <form>
         <div className="form-horizontal">
           <div className="col-25">
             <label className="control-label" htmlFor="dName">
@@ -316,16 +377,35 @@ const ProfilePage = () => {
           </div>
         </div>
 
-        <input
-          className="submitButton"
-          type="submit"
-          value="Update"
+        <button
+          className="updateButton"
           disabled={
-            provider !== "google"
+            provider === "google"
               ? false
-              : currentPassword.trim() !== "" && (loading ? false : true)
+              : currentPassword.trim() !== ""
+              ? false
+              : loading
+              ? false
+              : true
           }
-        />
+          onClick={handleSubmit}
+        >
+          Update
+        </button>
+
+        <button
+          className="deleteButton"
+          disabled={
+            provider === "google"
+              ? false
+              : currentPassword.trim() !== ""
+              ? false
+              : true
+          }
+          onClick={deleteAccount}
+        >
+          Delete
+        </button>
       </form>
     </div>
   );
