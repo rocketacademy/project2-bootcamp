@@ -17,6 +17,9 @@ import { signOut } from "firebase/auth";
 import { auth } from "../config";
 import { useNavigate, Link } from "react-router-dom";
 import { database } from "../config";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import SearchIcon from "@mui/icons-material/Search";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
 
 function ResponsiveAppBar(props) {
   const [anchorElNav, setAnchorElNav] = useState(null);
@@ -161,10 +164,34 @@ function ResponsiveAppBar(props) {
               as={Link}
               to="/imageclassify"
             >
-              <Typography textAlign="center">Search Related Recipe</Typography>
+              <ListItemIcon>
+                <SearchIcon />
+              </ListItemIcon>
+              <Typography
+                textAlign="center"
+                sx={{
+                  fontFamily: "gill sans, sans-serif",
+                  color: "black",
+                  fontWeight: "bold",
+                }}
+              >
+                Search Related Recipe
+              </Typography>
             </MenuItem>
             <MenuItem onClick={handleCloseNavMenu} as={Link} to="/map">
-              <Typography textAlign="center">Find Markets</Typography>
+              <ListItemIcon>
+                <LocationOnIcon />
+              </ListItemIcon>
+              <Typography
+                textAlign="center"
+                sx={{
+                  fontFamily: "gill sans, sans-serif",
+                  color: "black",
+                  fontWeight: "bold",
+                }}
+              >
+                Find Market Nearby
+              </Typography>
             </MenuItem>
             <MenuItem
               onClick={handleCloseNavMenu}
@@ -172,6 +199,7 @@ function ResponsiveAppBar(props) {
               to="/saved-recipes"
             >
               <Typography textAlign="center">Saved Recipes</Typography>
+              
             </MenuItem>
           </Box>
 
