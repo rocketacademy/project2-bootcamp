@@ -74,6 +74,7 @@ export default function Export({
     <span
       style={{ margin: "0 5px", cursor: "pointer" }}
       onClick={() => handleExportClick()}
+      title="Click to select and export expenses"
     >
       📤
     </span>

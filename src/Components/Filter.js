@@ -63,6 +63,7 @@ export default function Filter({ setFilters, categoriesData }) {
         onClick={() => {
           setShow(true);
         }}
+        title="Click to filter expenses"
       >
         🗄️
       </span>
