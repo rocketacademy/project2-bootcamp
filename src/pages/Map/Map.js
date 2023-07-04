@@ -7,6 +7,7 @@ import {
 } from "@react-google-maps/api";
 import "./Map.css";
 import { Alert } from "@mui/material";
+import Footer from "../../components/Footer";
 
 const Googlemap = () => {
   const { isLoaded } = useLoadScript({
@@ -131,6 +132,7 @@ const Googlemap = () => {
           ))}
         </GoogleMap>
       )}
+      <Footer />
     </div>
   );
 };

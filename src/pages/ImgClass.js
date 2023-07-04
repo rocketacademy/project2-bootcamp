@@ -14,6 +14,8 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import { CardActionArea } from "@mui/material";
+import Footer from "../components/Footer";
+import { Link } from "react-router-dom";
 
 function ImgClassify() {
   const [imageUrl, setImageUrl] = useState("");
@@ -33,7 +35,7 @@ function ImgClassify() {
       // Make a request from API
       axios
         .get(
-          `https://api.spoonacular.com/food/images/analyze?imageUrl=${imageUrl}&apiKey=${process.env.REACT_APP_API_KEY3}`
+          `https://api.spoonacular.com/food/images/analyze?imageUrl=${imageUrl}&apiKey=${process.env.REACT_APP_API_KEY4}`
         )
         .then(function (response) {
           // handle success
@@ -74,7 +76,12 @@ function ImgClassify() {
       </form>
       <br />
       {imageUrl.trim() !== "" && (
-        <img src={imageUrl} alt="food" className="img-thumbnail" style={{width: "50%"}}/>
+        <img
+          src={imageUrl}
+          alt="food"
+          className="img-thumbnail"
+          style={{ width: "50%" }}
+        />
       )}
       {info === true && (
         <Container>
@@ -86,11 +93,31 @@ function ImgClassify() {
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
               <TableHead>
                 <TableRow>
-                  <TableCell>Analysed Food</TableCell>
-                  <TableCell align="right">Calories</TableCell>
-                  <TableCell align="right">Fat&nbsp;(g)</TableCell>
-                  <TableCell align="right">Carbs&nbsp;(g)</TableCell>
-                  <TableCell align="right">Protein&nbsp;(g)</TableCell>
+                  <TableCell>
+                    <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+                      Analysed Food
+                    </Typography>
+                  </TableCell>
+                  <TableCell align="right">
+                    <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+                      Calories
+                    </Typography>
+                  </TableCell>
+                  <TableCell align="right">
+                    <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+                      Fat&nbsp;(g)
+                    </Typography>
+                  </TableCell>
+                  <TableCell align="right">
+                    <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+                      Carbs&nbsp;(g)
+                    </Typography>
+                  </TableCell>
+                  <TableCell align="right">
+                    <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+                      Protein&nbsp;(g)
+                    </Typography>
+                  </TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -98,19 +125,35 @@ function ImgClassify() {
                   sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                 >
                   <TableCell component="th" scope="row">
-                    {category.name}
+                    <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+                      {category.name}
+                    </Typography>
                   </TableCell>
                   <TableCell align="right">
-                    {nutrition.calories.value}
+                    <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+                      {nutrition.calories.value}
+                    </Typography>
                   </TableCell>
-                  <TableCell align="right">{nutrition.fat.value}</TableCell>
-                  <TableCell align="right">{nutrition.carbs.value}</TableCell>
-                  <TableCell align="right">{nutrition.protein.value}</TableCell>
+                  <TableCell align="right">
+                    <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+                      {nutrition.fat.value}
+                    </Typography>
+                  </TableCell>
+                  <TableCell align="right">
+                    <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+                      {nutrition.carbs.value}
+                    </Typography>
+                  </TableCell>
+                  <TableCell align="right">
+                    <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+                      {nutrition.protein.value}
+                    </Typography>
+                  </TableCell>
                 </TableRow>
               </TableBody>
             </Table>
           </TableContainer>
-
+          <br />
           <Grid
             container
             spacing={{ xs: 2, md: 3 }}
@@ -119,7 +162,7 @@ function ImgClassify() {
             {Array.from(recipes).map((recipe) => (
               <Grid item xs={2} sm={4} md={4} key={recipe.id}>
                 <Card sx={{ maxWidth: 368 }}>
-                  <CardActionArea>
+                  <CardActionArea component={Link} to={`/recipe/${recipe.id}`}>
                     <CardMedia
                       component="img"
                       height="100%"
@@ -128,7 +171,7 @@ function ImgClassify() {
                       style={{
                         position: "relative",
                         backgroundColor: "transparent",
-                        opacity: "50%",
+                        opacity: "70%",
                       }}
                     />
                     <CardContent
@@ -138,9 +181,18 @@ function ImgClassify() {
                         left: 0,
                         height: "100%",
                         width: "100%",
+                        textAlign: "center",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
                       }}
                     >
-                      <Typography gutterBottom variant="h5" component="div">
+                      <Typography
+                        gutterBottom
+                        variant="h5"
+                        component="div"
+                        sx={{ fontWeight: "bold" }}
+                      >
                         {recipe.title}
                       </Typography>
                     </CardContent>
@@ -151,6 +203,7 @@ function ImgClassify() {
           </Grid>
         </Container>
       )}
+      <Footer />
     </div>
   );
 }
