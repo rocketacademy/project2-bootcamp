@@ -8,11 +8,10 @@ import {
   Bar,
   Cell,
 } from "recharts";
-import { Button } from "react-bootstrap";
+import { Button, Tab, Tabs } from "react-bootstrap";
 import ExpPieChart from "../Components/ExpPieChart";
-// use all dates for x-axis
-// able to change to day/ month/ year
-// hover and can see the cat, item and amount in a list
+import ExpensesByCategory from "../Components/ExpensesByCategory";
+
 export default function Dashboard({
   uid,
   isLoggedIn,
@@ -54,8 +53,7 @@ export default function Dashboard({
     expensesCategory,
     view
   );
-  // console.log("start date", startDate);
-  // console.log("end date", endDate);
+
   // generate a list of all possible period between start and end date
   const generateDatesInRange = (startDate, endDate, view) => {
     const dates = [];
@@ -95,7 +93,6 @@ export default function Dashboard({
       } else {
         period = expense.date;
       }
-      // console.log("period", period);
       const displayAmount = parseFloat(expense.displayAmount);
       if (!displayAmountByPeriod[period]) {
         displayAmountByPeriod[period] = 0;
@@ -105,7 +102,7 @@ export default function Dashboard({
         displayAmountByPeriod[period].toFixed(2)
       );
     });
-    // console.log("displayAmountByPeriod: original", displayAmountByPeriod);
+
     // using all periods, insert in 0 for periods that are not in displayamountby period
     const allPeriods = generateDatesInRange(startDate, endDate, view);
     allPeriods.forEach((period) => {
@@ -122,8 +119,7 @@ export default function Dashboard({
     startDate,
     endDate
   );
-  // console.log("actual return allPeriods", allPeriods);
-  // console.log("actual return displayAmountByPeriod", displayAmountByPeriod);
+
   // Transform amountByDate into an array of objects with 'date' and 'amount' keys
   const chartData = allPeriods.map((period) => ({
     period,
@@ -131,7 +127,8 @@ export default function Dashboard({
   }));
   // Sort the chartData array based on the date values
   chartData.sort((a, b) => new Date(a.period) - new Date(b.period));
-  // console.log("chartData:", chartData);
+
+  // set tooltip for bar graph
   const CustomTooltip = ({ payload, label, active }) => {
     if (active) {
       return (
@@ -149,66 +146,105 @@ export default function Dashboard({
       key={viewName}
       variant={view === viewName ? "warning" : "outline-warning"}
       onClick={() => setView(viewName)}
+      className="custom-button"
     >
       {viewName.charAt(0).toUpperCase() + viewName.slice(1)}
     </Button>
   ));
 
+  /* Filter expenses based on the selected date. If selectedDate is not null, filter expensesList such that expense.date is equiv to selectedDate, else show all. Used for pie chart and list expenses*/
+  const filteredExpenses = selectedPeriod
+    ? expensesCategory.filter((expense) => {
+        if (view === "daily") {
+          // Compare the full date (YYYY-MM-DD)
+          return expense.date.slice(0, 10) === selectedPeriod;
+        } else if (view === "monthly") {
+          // Compare the year and month (YYYY-MM)
+          return expense.date.slice(0, 7) === selectedPeriod;
+        } else if (view === "yearly") {
+          // Compare the year (YYYY)
+          return expense.date.slice(0, 4) === selectedPeriod;
+        } else {
+          return false;
+        }
+      })
+    : expensesCategory;
+
   return (
-    <div className="dashboard">
-      <h1 className="dashboard-header">Total spending </h1>
-      <div className="dashboard-view-buttons">{viewButtons}</div>
-      <div className="chart-container">
-        <BarChart
-          width={500}
-          height={300}
-          data={chartData}
-          margin={{
-            top: 5,
-            right: 30,
-            left: 20,
-            bottom: 5,
-          }}
-          onClick={(state) => {
-            if (state.activePayload) {
-              const { period } = state.activePayload[0].payload;
-              const index = state.activeTooltipIndex;
-              if (period === selectedPeriod) {
-                setSelectedPeriod(""); // unselect the bar if it's already selected
-                setFocusBar(null); // remove focus from the bar
-              } else {
-                setSelectedPeriod(period); // select the bar
-                setFocusBar(index); // set focus to the bar
-              }
-            }
-          }}
+    <>
+      <div className="dashboard">
+        <h1 className="dashboard-header">Total spending </h1>
+        <div className="dashboard-view-buttons">{viewButtons}</div>
+        <Tabs
+          defaultActiveKey="bargraph"
+          id="fill-tab-example"
+          className="mb-3"
+          fill
         >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="period" />
-          <YAxis domain={[0, "dataMax"]} />
-          <Tooltip cursor={false} content={<CustomTooltip />} />
-          <Bar dataKey="displayAmount" fill="#8884d8">
-            {chartData.map((entry, index) => (
-              <Cell
-                key={index}
-                fill={
-                  focusBar === index || focusBar === null
-                    ? "#8884d8"
-                    : "rgba(43, 92, 231, 0.2)"
-                }
-              />
-            ))}
-          </Bar>
-        </BarChart>
+          <Tab eventKey="bargraph" title="Bar Graph">
+            Title for bargraph
+            <div className="chart-container">
+              <div className="chart-wrapper">
+                <BarChart
+                  width={500}
+                  height={300}
+                  data={chartData}
+                  margin={{
+                    top: 5,
+                    right: 30,
+                    left: 20,
+                    bottom: 5,
+                  }}
+                  onClick={(state) => {
+                    if (state.activePayload) {
+                      const { period } = state.activePayload[0].payload;
+                      const index = state.activeTooltipIndex;
+                      if (period === selectedPeriod) {
+                        setSelectedPeriod(""); // unselect the bar if it's already selected
+                        setFocusBar(null); // remove focus from the bar
+                      } else {
+                        setSelectedPeriod(period); // select the bar
+                        setFocusBar(index); // set focus to the bar
+                      }
+                    }
+                  }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="period" />
+                  <YAxis domain={[0, "dataMax"]} />
+                  <Tooltip cursor={false} content={<CustomTooltip />} />
+                  <Bar dataKey="displayAmount" fill="#8884d8">
+                    {chartData.map((entry, index) => (
+                      <Cell
+                        key={index}
+                        fill={
+                          focusBar === index || focusBar === null
+                            ? "#8884d8"
+                            : "rgba(43, 92, 231, 0.2)"
+                        }
+                      />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </div>
+            </div>
+          </Tab>
+          <Tab eventKey="piechart" title="Pie Chart">
+            Title for pie chart
+            <div className="chart-container">
+              <div className="chart-wrapper">
+                <ExpPieChart
+                  filteredExpenses={filteredExpenses}
+                  categoriesData={categoriesData}
+                />
+              </div>
+            </div>
+          </Tab>
+        </Tabs>
       </div>
-      <div className="chart-container">
-        <ExpPieChart
-          expensesCategory={expensesCategory}
-          selectedPeriod={selectedPeriod}
-          categoriesData={categoriesData}
-          view={view}
-        />
+      <div>
+        <ExpensesByCategory filteredExpenses={filteredExpenses} />
       </div>
-    </div>
+    </>
   );
 }

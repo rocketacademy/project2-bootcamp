@@ -1,33 +1,7 @@
 import React, { useMemo } from "react";
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend } from "recharts";
 
-export default function ExpPieChart({
-  selectedPeriod,
-  expensesCategory,
-  categoriesData,
-  view,
-}) {
-  /* Filter expenses based on the selected date. If selectedDate is not null, filter expensesList such that expense.date is equiv to selectedDate, else show all*/
-  // console.log("view", view);
-  // console.log("selectedPeriod", selectedPeriod);
-  const filteredExpenses = selectedPeriod
-    ? expensesCategory.filter((expense) => {
-        if (view === "daily") {
-          // Compare the full date (YYYY-MM-DD)
-          return expense.date.slice(0, 10) === selectedPeriod;
-        } else if (view === "monthly") {
-          // Compare the year and month (YYYY-MM)
-          return expense.date.slice(0, 7) === selectedPeriod;
-        } else if (view === "yearly") {
-          // Compare the year (YYYY)
-          return expense.date.slice(0, 4) === selectedPeriod;
-        } else {
-          return false;
-        }
-      })
-    : expensesCategory;
-  // console.log("filteredExpenses:", filteredExpenses);
-
+export default function ExpPieChart({ filteredExpenses, categoriesData }) {
   // Calculate the sum of amounts by category
   const displayAmountByCategory = {};
   filteredExpenses.forEach((expense) => {
@@ -72,8 +46,8 @@ export default function ExpPieChart({
       <PieChart>
         <Pie
           data={joinedPieChartData}
-          cx={190}
-          cy={105}
+          cx={200}
+          cy={190}
           innerRadius={60}
           outerRadius={80}
           fill="#8884d8"
@@ -88,7 +62,7 @@ export default function ExpPieChart({
         <Legend
           layout="vertical"
           align="right"
-          verticalAlign="top"
+          verticalAlign="middle"
           formatter={(value, entry) => (
             <span style={{ color: entry.color }}>
               {entry.payload.emoji}
