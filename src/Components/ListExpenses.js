@@ -2,6 +2,7 @@ import "../App.css";
 import AllExpenses from "./AllExpenses";
 import DisplayCurrency from "./DisplayCurrency";
 import Filter from "./Filter";
+import Export from "./Export";
 import InputExpenses from "./InputExpenses";
 import { useState, useRef, useEffect } from "react";
 import { Button, Modal } from "react-bootstrap";
@@ -39,6 +40,9 @@ export default function ListExpenses({
     upperLimit: null,
     lowerLimit: null,
   });
+  const [showCheckboxes, setShowCheckboxes] = useState(false);
+  const [selectedExpenses, setSelectedExpenses] = useState([]);
+  const [selectedExpensesData, setSelectedExpensesData] = useState([]);
 
   // Display receipt when showReceipt button is clicked
   const handleShowReceiptClick = (expense) => {
@@ -111,6 +115,7 @@ export default function ListExpenses({
               display: "flex",
               justifyContent: "space-around",
               padding: "10px",
+              fontSize: "1.5rem",
             }}
           >
             <InputExpenses
@@ -130,6 +135,14 @@ export default function ListExpenses({
               style={{ cursor: "pointer" }}
               setFilters={setFilters}
               categoriesData={categoriesData}
+            />
+            <Export
+              showCheckboxes={showCheckboxes}
+              setShowCheckboxes={setShowCheckboxes}
+              selectedExpenses={selectedExpenses}
+              setSelectedExpenses={setSelectedExpenses}
+              selectedExpensesData={selectedExpensesData}
+              setSelectedExpensesData={setSelectedExpensesData}
             />
           </div>
         </div>
@@ -155,6 +168,12 @@ export default function ListExpenses({
               handleDeleteExpenses={handleDeleteExpenses}
               categoriesData={categoriesData}
               filters={filters}
+              showCheckboxes={showCheckboxes}
+              setShowCheckboxes={setShowCheckboxes}
+              selectedExpenses={selectedExpenses}
+              setSelectedExpenses={setSelectedExpenses}
+              selectedExpensesData={selectedExpensesData}
+              setSelectedExpensesData={setSelectedExpensesData}
             />
           </div>
         )}

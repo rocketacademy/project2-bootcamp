@@ -1,7 +1,8 @@
+import { useScrollTrigger } from "@mui/material";
 import "../App.css";
 import EditExpenses from "./EditExpenses";
-import { useEffect, useRef } from "react";
-import { Card } from "react-bootstrap";
+import { useRef, useEffect } from "react";
+import { Card, Form } from "react-bootstrap";
 
 export default function AllExpenses({
   uid,
@@ -17,11 +18,34 @@ export default function AllExpenses({
   handleDeleteExpenses,
   categoriesData,
   filters,
+  showCheckboxes,
+  setShowCheckboxes,
+  selectedExpenses,
+  setSelectedExpenses,
+  selectedExpensesData,
+  setSelectedExpensesData,
 }) {
   const highlightedCardRef = useRef(null); // Create reference for highlighted card
   let today = new Date();
   let yesterday = new Date();
   yesterday.setDate(today.getDate() - 1);
+
+  // Triggered when user checks box for expense for export; adds expense id to state
+  const handleCheckboxChange = (data, id) => {
+    setSelectedExpenses((prev) => {
+      if (prev.includes(id)) {
+        setSelectedExpensesData((prevData) => {
+          return prevData.filter((expenseData) => expenseData.id !== id);
+        });
+        return prev.filter((expenseId) => expenseId !== id);
+      } else {
+        setSelectedExpensesData((prevData) => {
+          return [...prevData, data];
+        });
+        return [...prev, id];
+      }
+    });
+  };
 
   return (
     <div>
@@ -66,7 +90,7 @@ export default function AllExpenses({
                   backgroundColor: "#D3D3D3",
                   color: "black",
                   padding: "5px 0px 5px 20px",
-                  fontWeight: "bold",
+                  // fontWeight: "bold",
                 }}
               >
                 <Card.Header>{date}</Card.Header>
@@ -99,24 +123,56 @@ export default function AllExpenses({
                                 id="for-icon"
                                 style={{ marginRight: "15px" }}
                               >
-                                <div
-                                  style={{
-                                    display: "flex",
-                                    justifyContent: "center",
-                                    alignItems: "center",
-                                    borderRadius: "50%",
-                                    width: "3rem",
-                                    height: "3rem",
-                                    fontSize: "2rem",
-                                    backgroundColor: expense.color,
-                                  }}
-                                >
-                                  {expense.emoji}
-                                </div>
+                                {showCheckboxes ? (
+                                  <div
+                                    key={`${expense.id}`}
+                                    style={{
+                                      display: "flex",
+                                      justifyContent: "center",
+                                      alignItems: "center",
+                                      borderRadius: "50%",
+                                      width: "3rem",
+                                      height: "3rem",
+                                      fontSize: "2rem",
+                                      backgroundColor: expense.color,
+                                    }}
+                                    className="mb-3"
+                                  >
+                                    <Form.Check
+                                      type="checkbox"
+                                      checked={selectedExpenses.includes(
+                                        expense.id
+                                      )}
+                                      onChange={() => [
+                                        handleCheckboxChange(
+                                          expense,
+                                          expense.id
+                                        ),
+                                      ]}
+                                    />
+                                  </div>
+                                ) : (
+                                  <div
+                                    style={{
+                                      display: "flex",
+                                      justifyContent: "center",
+                                      alignItems: "center",
+                                      borderRadius: "50%",
+                                      width: "3rem",
+                                      height: "3rem",
+                                      fontSize: "2rem",
+                                      backgroundColor: expense.color,
+                                    }}
+                                  >
+                                    {expense.emoji}
+                                  </div>
+                                )}
                               </div>
                               <div>
-                                <Card.Title>{expense.category}</Card.Title>
-                                <Card.Subtitle className="mb-2 text-muted">
+                                <Card.Subtitle>
+                                  {expense.category}
+                                </Card.Subtitle>
+                                <Card.Text className="mb-2 text-muted">
                                   {/* Show description if available */}
                                   {expense.description !== "-" ? (
                                     <>
@@ -135,7 +191,7 @@ export default function AllExpenses({
                                         expense.amount
                                       )})`
                                     : null}
-                                </Card.Subtitle>
+                                </Card.Text>
                               </div>
                             </div>
 
@@ -144,6 +200,7 @@ export default function AllExpenses({
                               style={{
                                 display: "flex",
                                 alignItems: "center",
+                                fontSize: "1.5rem",
                               }}
                             >
                               {expense.receiptUrl ? (
