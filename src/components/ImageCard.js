@@ -5,6 +5,7 @@ import Chip from "@mui/material/Chip";
 import Box from "@mui/material/Box";
 import { database } from "../firebase";
 import { ref as databaseRef, update } from "firebase/database";
+import TextField from "@mui/material/TextField";
 
 const ListItem = styled("li")(({ theme }) => ({
   margin: theme.spacing(0.5),
@@ -32,7 +33,7 @@ export default function ImageTile(props) {
 
   const handleDelete = (chipToDelete) => () => {
     console.log(chipToDelete);
-    console.log(`Deleted From: ${JSON.stringify(props.item)}`)
+    console.log(`Deleted From: ${JSON.stringify(props.item)}`);
     setChipData((chips) =>
       chips.filter((chip) => chip.key !== chipToDelete.key)
     );
@@ -112,9 +113,10 @@ export default function ImageTile(props) {
     };
   });
 
-  React.useEffect(()=>{ //whenever the props.item.tagsarray changes, it will update state
-    setChipData(props.item.tagsarray)
-  },[props.item.tagsarray])
+  React.useEffect(() => {
+    //whenever the props.item.tagsarray changes, it will update state
+    setChipData(props.item.tagsarray);
+  }, [props.item.tagsarray]);
 
   React.useEffect(() => {
     // console.log(`chipData: ${chipData}`);
@@ -132,7 +134,7 @@ export default function ImageTile(props) {
       .catch((error) => {
         console.error("Error updating Chips:", error);
       });
-  }, [chipData,props.item.key]);
+  }, [chipData, props.item.key]);
 
   //function to actually setup the sizes and image details for the tiling
   function srcset(image, size, rows = 1, cols = 1) {
@@ -150,6 +152,7 @@ export default function ImageTile(props) {
       cols={props.item.cols || 1}
       rows={props.item.rows || 1}
     >
+      {/* the number like 720 in <img> changes the img quality */}
       <img
         {...srcset(props.item.imgurl, 720, props.item.rows, props.item.cols)}
         alt={props.item.title}
@@ -159,12 +162,21 @@ export default function ImageTile(props) {
       />
       {showInput && (
         <div className="overlay">
-          <input
+          <TextField
+            sx={{
+              input: { color: "white", textAlign: "center" },
+            }}
             ref={inputRef}
             type="text"
-            value={inputValue}
-            maxlength="8"
+            value={inputValue} /* 
+            maxlength="8" */
             onChange={handleInputChange}
+            inputProps={{ maxLength: 8, autoFocus: true }}
+            hiddenLabel
+            id="filled-hidden-label-small"
+            defaultValue="Small"
+            variant="filled"
+            size="small"
             onKeyPress={handleKeyPress}
           />
         </div>
@@ -189,8 +201,8 @@ export default function ImageTile(props) {
         {props.item.tagsarray !== null
           ? chipData.map((data) => {
               //this data will be replaced by component tagging
-              console.log(`Data Received: ${JSON.stringify(props.item)}`)
-              console.log(`Chip Data: ${JSON.stringify(data)}`)
+              console.log(`Data Received: ${JSON.stringify(props.item)}`);
+              console.log(`Chip Data: ${JSON.stringify(data)}`);
               return (
                 <ListItem key={data.key}>
                   {data.label !== "default" && ( //hide default chip label but retain it

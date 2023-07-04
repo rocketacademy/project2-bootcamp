@@ -11,8 +11,7 @@ const IMAGEOBJECT_FOLDER_NAME = "imageObjects";
 
 const Home = () => {
   const [imageObjects, setImageObjects] = useState([]); //State 1
-  const [filteredData, setFilteredData] = useState([]); //State 2
-  const [searchPressed, setSearchPressed] = useState([false]);
+  const [filterTerms, setfilterTerms] = useState([]);
 
   useEffect(() => {
     // This effect will run when the component mounts and whenever the 'yourCollection' data changes in Firebase.
@@ -26,6 +25,7 @@ const Home = () => {
       // This code will run when the component unmounts
       // You can perform any necessary cleanup here
       onChildAdded(imgListRef, (data) => {
+        console.log(`Server Data: ${JSON.stringify(data)}`);
         // Add the subsequent child to local component state, initialising a new array to trigger re-render
         //console.log(data.val().imgurl)
         setImageObjects(
@@ -41,80 +41,63 @@ const Home = () => {
                 name: data.val().name, //from fdb
                 pass: data.val().pass, //from fdb
               },
-            ] //key-value pair
-        );
-
-        setFilteredData(
-          (preImageObjects) =>
-            // Store message key so we can use it as a key in our list items when rendering messages
-            [
-              ...preImageObjects,
-              {
-                key: data.key,
-                imgurl: data.val().imgurl, //from fdb
-                tagsarray: data.val().tagsarray, //from fdb
-                email: data.val().email, //from fdb
-                name: data.val().name, //from fdb
-                pass: data.val().pass, //from fdb
-              },
-            ] //key-value pair
+            ].map(({ key, imgurl, tagsarray, email, name, pass }) => ({
+              key: key,
+              imgurl: imgurl,
+              tagsarray: tagsarray,
+              email: email,
+              name: name,
+              pass: pass,
+              title: null,
+            })) //key-value pair
         );
       });
     };
-  }, []);
+  }, [filterTerms]);
 
   // console.log(imageObjects)
   // extracting the key and the image only for downloading
-  useEffect(() => {
-    const itemData = imageObjects.map(({ key, imgurl, tagsarray, email, name, pass }) => ({
-      key: key,
-      imgurl: imgurl,
-      tagsarray: tagsarray,
-      email: email,
-      name: name,
-      pass: pass,
-      title: null,
-    }));
 
-    setImageObjects(itemData);
-    console.log(`Initial Filtered Data: ${filteredData}`)
-  }, []);
+  const updateTerms = (searchTerm) => {
+    const keywords = searchTerm.toLowerCase().split(" "); //split by spaces
+    setImageObjects([]); //reset data when search is clicked
+    if (keywords[0] === "") {
+      setfilterTerms([]); //when user search empty string
+    } else {
+      setfilterTerms(keywords);
+    }
+  };
 
   //Function that filters data based on input
-  const filterData = (searchTerm) => {
-    const keywords = searchTerm.toLowerCase().split(" "); //split by spaces
-    setSearchPressed(!searchPressed)
-    if (searchTerm === "") {
-      //if empty text return keyword filter will be default
-      const filteredData = imageObjects.filter((item) => {
-        // Check if any hobby has the category "Art"
-        return item.tagsarray.some((tags) => tags.label === "default");
-      });
-      setFilteredData(filteredData);
-    } else {
-      for (const element of keywords) {
+  const filterData = (searchArray) => {
+    console.log(searchArray);
+    if (searchArray.length > 0) {
+      for (const element of searchArray) {
         const filteredData = imageObjects.filter((item) => {
           // Check if any hobby has the category "Art"
           return item.tagsarray.some((tags) => tags.label === element);
         });
-        setFilteredData(filteredData);
+
+        console.log(`Filtered Data: ${JSON.stringify(filteredData)}`);
+
+        return filteredData;
       }
+    } else {
+      return imageObjects;
     }
-    //Also assists to save the chips
   };
 
   return (
-    
     <div>
-      {console.log(`Filtered Data: ${JSON.stringify(filteredData)}`)}
-      <SearchBar onSearch={filterData} />
-      {/* {console.log(filteredData)} */}
-      {/* {console.log(`Image Objects: ${JSON.stringify(imageObjects)}`)} */}
-      <ImgDownload ImageObjects={filteredData} />
+      <SearchBar onSearch={updateTerms} />
+      {console.log(`Search Terms: ${filterTerms}`)}
+      {console.log(`Image Objects: ${JSON.stringify(imageObjects)}`)}
+      {console.log(`input: ${JSON.stringify(filterData(filterTerms))}`)}
+      <ImgDownload ImageObjects={filterData(filterTerms)} />
       <header className="App-header">
         <meta name="viewport" content="initial-scale=1, width=device-width" />
         <div className="Gallery-img">
-          <ImageTile ImageObjects={filteredData} />
+          <ImageTile ImageObjects={filterData(filterTerms)} />
         </div>
       </header>
     </div>
