@@ -18,9 +18,12 @@ import IconButton from "@mui/material/IconButton";
 import BookmarkAddIcon from "@mui/icons-material/BookmarkAdd";
 import Footer from "../components/Footer";
 
+import { auth, database } from "../config";
+import { child, ref as databaseRef, set } from "firebase/database";
+
 function SearchPage({ isHomePage }) {
   const [searchedRecipes, setSearchedRecipes] = useState([]);
-  const [favourites, setFavourites] = useState([]);
+  const [user, setUser] = useState();
 
   let params = useParams();
 
@@ -33,9 +36,12 @@ function SearchPage({ isHomePage }) {
   };
 
   useEffect(() => {
-    console.log(favourites);
     getSearchResults(params.search);
-  }, [params.search, favourites]);
+    const currUser = auth.currentUser;
+    if (currUser !== null) {
+      setUser(currUser);
+    }
+  }, [params.search]);
 
   const handleShare = (event, item) => {
     event.preventDefault();
@@ -50,9 +56,11 @@ function SearchPage({ isHomePage }) {
   };
 
   const addFavouriteRecipe = (recipe) => {
-    const newFavouriteList = [...favourites, recipe];
-    setFavourites(newFavouriteList);
-    console.log("Saved to favourites");
+    console.log(recipe);
+
+    const favouritesRef = databaseRef(database, `Users/${user.uid}/favourites`);
+    const keyFavRef = child(favouritesRef, `${recipe.id}`);
+    set(keyFavRef, { title: recipe.title, imgUrl: recipe.image });
   };
 
   return (
@@ -62,7 +70,6 @@ function SearchPage({ isHomePage }) {
         {searchedRecipes.map((item) => {
           return (
             <Grid
-              item
               xs={6}
               display="flex"
               justifyContent="center"
@@ -84,11 +91,7 @@ function SearchPage({ isHomePage }) {
                   }}
                   key={item.id}
                 >
-                  <CardActionArea
-                    component={Link}
-                    to={`/recipe/${item.id}`}
-                    key={item.id}
-                  >
+                  <CardActionArea component={Link} to={`/recipe/${item.id}`}>
                     <CardMedia component="img" src={item.image} alt="" />
                     <CardContent>
                       <Typography
@@ -107,10 +110,11 @@ function SearchPage({ isHomePage }) {
                   </CardActionArea>
                   <CardActions>
                     {/* <FavouriteButton /> */}
-                    <IconButton aria-label="add to favorites">
-                      <BookmarkAddIcon
-                        onClick={() => addFavouriteRecipe(item)}
-                      />
+                    <IconButton
+                      aria-label="add to favorites"
+                      onClick={() => addFavouriteRecipe(item)}
+                    >
+                      <BookmarkAddIcon />
                     </IconButton>
                     <SharePopperButton handleShare={handleShare} item={item} />
                   </CardActions>

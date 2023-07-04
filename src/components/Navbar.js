@@ -18,7 +18,6 @@ import { auth } from "../config";
 import { useNavigate, Link } from "react-router-dom";
 import { database } from "../config";
 
-
 function ResponsiveAppBar(props) {
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
@@ -32,11 +31,11 @@ function ResponsiveAppBar(props) {
     }
 
     if (user !== null) {
-      const userRef = databaseRef(database, `/Users/${user.uid}`)
+      const userRef = databaseRef(database, `/Users/${user.uid}`);
       onValue(userRef, (snapshot) => {
         const data = snapshot.val();
         setUserDetails(data);
-      })
+      });
     }
   }, [props.loggedInUser, user]);
 
@@ -123,7 +122,12 @@ function ResponsiveAppBar(props) {
               }}
             >
               <MenuItem onClick={handleCloseNavMenu}>
-                <Typography textAlign="center">Random Recipes</Typography>
+                <Typography textAlign="center">
+                  Search Related Recipe
+                </Typography>
+              </MenuItem>
+              <MenuItem onClick={handleCloseNavMenu}>
+                <Typography textAlign="center">Find Markets</Typography>
               </MenuItem>
               <MenuItem onClick={handleCloseNavMenu}>
                 <Typography textAlign="center">Saved Recipes</Typography>
@@ -159,12 +163,15 @@ function ResponsiveAppBar(props) {
             >
               <Typography textAlign="center">Search Related Recipe</Typography>
             </MenuItem>
+            <MenuItem onClick={handleCloseNavMenu} as={Link} to="/map">
+              <Typography textAlign="center">Find Markets</Typography>
+            </MenuItem>
             <MenuItem
               onClick={handleCloseNavMenu}
               as={Link}
-              to="/map"
+              to="/saved-recipes"
             >
-              <Typography textAlign="center">Find Markets</Typography>
+              <Typography textAlign="center">Saved Recipes</Typography>
             </MenuItem>
           </Box>
 
