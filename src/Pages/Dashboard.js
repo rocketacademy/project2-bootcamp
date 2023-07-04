@@ -24,7 +24,7 @@ export default function Dashboard({
 
   // Find the minimum, maximum date in expensesList
   const calculateStartAndEndDates = (expensesCategory, view) => {
-    let endDate = null;
+    let endDate = new Date();
     let firstDate = null;
     expensesCategory.forEach((expense) => {
       const date = new Date(expense.date);
