@@ -64,10 +64,7 @@ export default function SignUp({
                   UID: userCredential.user.uid,
                   email: email,
                   displayName: displayName,
-                  // set default display currency for all new users to SGD
                   displayCurrency: "SGD",
-                  // set category colour selection default for each user
-                  // categoriesData: categoriesData,
                 });
 
                 // Firebase path to the user's categories.
@@ -103,7 +100,6 @@ export default function SignUp({
                     });
                   });
                 }
-
                 navigate("/mapexpenses");
               })
               .catch((error) => {
@@ -123,11 +119,11 @@ export default function SignUp({
   return (
     <>
       <Container
-        className="d-flex flex-column align-items-center justify-content-center"
+        className="d-flex flex-column align-items-left justify-content-center"
         style={{ height: "100vh" }}
       >
         {" "}
-        <h2>Sign Up</h2>
+        <h2>Create Account</h2>
         <br />
         {isLoggedIn ? (
           <div>
@@ -147,7 +143,7 @@ export default function SignUp({
                       <Form.Label>First Name</Form.Label>
                       <Form.Control
                         type="text"
-                        placeholder="First Name"
+                        placeholder=""
                         value={firstName}
                         onChange={(e) => {
                           setFirstName(e.target.value);
@@ -159,7 +155,7 @@ export default function SignUp({
                       <Form.Label>Last Name</Form.Label>
                       <Form.Control
                         type="text"
-                        placeholder="Last Name"
+                        placeholder=""
                         value={lastName}
                         onChange={(e) => {
                           setLastName(e.target.value);
@@ -173,7 +169,7 @@ export default function SignUp({
                   <Form.Label>Display Name</Form.Label>
                   <Form.Control
                     type="text"
-                    placeholder="Display Name"
+                    placeholder=""
                     value={displayName}
                     onChange={(e) => {
                       setDisplayName(e.target.value);
@@ -186,7 +182,7 @@ export default function SignUp({
                   <Form.Label>Email address</Form.Label>
                   <Form.Control
                     type="email"
-                    placeholder="Enter email"
+                    placeholder=""
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
@@ -200,7 +196,7 @@ export default function SignUp({
                     </span>
                   ) : (
                     <Form.Text className="text-muted">
-                      We'll never share your email with anyone else.
+                      A valid email address.
                     </Form.Text>
                   )}
                 </Form.Group>
@@ -209,7 +205,7 @@ export default function SignUp({
                   <Form.Label>Password</Form.Label>
                   <Form.Control
                     type="password"
-                    placeholder="Password"
+                    placeholder=""
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
@@ -230,11 +226,11 @@ export default function SignUp({
                 <Button
                   variant="primary"
                   onClick={signUp}
-                  style={{ width: "100%" }}
+                  style={{ width: "40%" }}
                 >
                   Sign Up
                 </Button>
-                <div className="text-center" style={{ marginTop: "5px" }}>
+                <div className="text-left" style={{ marginTop: "5px" }}>
                   <Link to="/authform">
                     Already have an account? Sign In here!
                   </Link>
