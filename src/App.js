@@ -62,19 +62,6 @@ export default function App() {
                   userData.displayCurrency
                 }`
               );
-
-              // use uid to find profile url
-              if (userData.hasOwnProperty("profileUrl")) {
-                const profilePhotoRef = ref(
-                  realTimeDatabase,
-                  `${DB_USER_FOLDER_NAME}/${uid}/profileUrl`
-                );
-                onValue(profilePhotoRef, (snapshot) => {
-                  if (snapshot.val() !== null) {
-                    setProfilePhotoURL(snapshot.val());
-                  }
-                });
-              }
             } else {
               console.log("No data available");
             }
@@ -82,6 +69,18 @@ export default function App() {
           .catch((error) => {
             console.error(error);
           });
+        // set the onValue listener to listen to changes immediately when data is fetched. Should not nest inside get as get only fetches the data once. Even if there are other changes later on, it will not be reflected.
+        onValue(userDataRef, (snapshot) => {
+          const userData = snapshot.val();
+          if (userData) {
+            // Use UID to find profile url
+            if (userData.hasOwnProperty("profileUrl")) {
+              setProfilePhotoURL(userData.profileUrl);
+            }
+          } else {
+            console.log("No data available");
+          }
+        });
       } else {
         setIsLoggedIn(false);
         setUid("");
@@ -89,6 +88,8 @@ export default function App() {
       }
     });
   }, [uid]);
+
+  console.log("profilePhotoURL", profilePhotoURL);
 
   // Fetches latest category array, triggered with every change to the list of categories
   useEffect(() => {

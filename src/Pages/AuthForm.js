@@ -4,7 +4,6 @@ import { auth } from "../firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useNavigate, Link } from "react-router-dom";
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
-import { CenterFocusStrong } from "@mui/icons-material";
 
 export default function AuthForm({ isLoggedIn, username }) {
   const [email, setEmail] = useState("");
@@ -41,7 +40,7 @@ export default function AuthForm({ isLoggedIn, username }) {
           </div>
         ) : (
           <div>
-            <div style={{ textAlign: "center" }}>
+            <div style={{ textAlign: "left" }}>
               <h2>Sign In</h2>
               <br />
             </div>
@@ -52,38 +51,40 @@ export default function AuthForm({ isLoggedIn, username }) {
                     <Form.Label>Email address</Form.Label>
                     <Form.Control
                       type="email"
-                      placeholder="Enter email"
+                      placeholder=""
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                     />
                     <Form.Text className="text-muted">
-                      We'll never share your email with anyone else.
+                      Enter your email address
                     </Form.Text>
                   </Form.Group>
                   <Form.Group className="mb-3" controlId="formBasicPassword">
                     <Form.Label>Password</Form.Label>
                     <Form.Control
                       type="password"
-                      placeholder="Password"
+                      placeholder=""
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                     />
+                    <Form.Text className="text-muted">
+                      Enter the password that accompanies your email address
+                    </Form.Text>
                   </Form.Group>
+
                   <Button
                     variant="primary"
                     onClick={signIn}
-                    style={{ width: "100%" }}
+                    style={{ width: "40%" }}
                   >
                     Sign In
                   </Button>
-                  <div className="text-center" style={{ marginTop: "5px" }}>
+                  <div className="text-left" style={{ marginTop: "5px" }}>
                     <Link to="/signUp">
                       Don't have an account? Create one here!
                     </Link>
                     <br />
-                    <Link to="/resetpassword">
-                      Otherwise, click here to reset your password.
-                    </Link>
+                    <Link to="/resetpassword">Forgot your password? </Link>
                   </div>
                 </Form>
               </Col>
