@@ -215,6 +215,7 @@ export default function App() {
     <>
       <Navbar bg="light" fixed="top">
         <Container
+          className="navbar-container"
           style={{
             maxWidth: "1025px",
             paddingLeft: "0",
