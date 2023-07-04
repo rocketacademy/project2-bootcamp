@@ -40,23 +40,29 @@ export default function ExpensesByCategory({ filteredExpenses }) {
             <Collapse in={openCardIndex === index}>
               <div id="collapseInfo">
                 {expenses.map((expense) => (
-                  <Card.Body
+                  <Card
                     key={expense.id}
-                    style={{ backgroundColor: "white", textAlign: "left" }}
+                    className="my-card-body"
+                    style={{ margin: "10px", border: "1px solid black" }}
                   >
-                    {/* Display the individual expense */}
-                    <Card.Title>
-                      <strong>Date:</strong> {expense.date}
-                    </Card.Title>
-                    <Card.Text>
-                      <strong>Amount:</strong> {expense.displayCurrency}{" "}
-                      {parseFloat(expense.displayAmount.toFixed(2))}
-                      (${expense.currency} ${expense.amount})
-                    </Card.Text>
-                    <Card.Text>
-                      <strong>Description:</strong> {expense.description}
-                    </Card.Text>
-                  </Card.Body>
+                    <Card.Body
+                      key={expense.id}
+                      style={{ backgroundColor: "white", textAlign: "left" }}
+                    >
+                      {/* Display the individual expense */}
+                      <Card.Title>
+                        <strong>Date:</strong> {expense.date}
+                      </Card.Title>
+                      <Card.Text>
+                        <strong>Amount:</strong> {expense.displayCurrency}{" "}
+                        {parseFloat(expense.displayAmount.toFixed(2))}(
+                        {expense.currency} {expense.amount})
+                      </Card.Text>
+                      <Card.Text>
+                        <strong>Description:</strong> {expense.description}
+                      </Card.Text>
+                    </Card.Body>
+                  </Card>
                 ))}
               </div>
             </Collapse>
