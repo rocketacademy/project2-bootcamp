@@ -34,7 +34,7 @@ const Login = () => {
       .then(() => {
         inputEmailValue("");
         inputPwdValue("");
-        navigate("/imageclassify");
+        navigate("/");
       })
       .catch((error) => {
         console.log(error);

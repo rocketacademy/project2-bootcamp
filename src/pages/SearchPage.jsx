@@ -26,7 +26,7 @@ function SearchPage({ isHomePage }) {
 
   const getSearchResults = async (name) => {
     const data = await fetch(
-      `https://api.spoonacular.com/recipes/complexSearch?apiKey=${process.env.REACT_APP_API_KEY3}&query=${name}&number=1`
+      `https://api.spoonacular.com/recipes/complexSearch?apiKey=${process.env.REACT_APP_API_KEY4}&query=${name}&number=4`
     );
     const recipes = await data.json();
     setSearchedRecipes(recipes.results);
