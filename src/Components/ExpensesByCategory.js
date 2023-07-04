@@ -1,10 +1,7 @@
 import React, { useState } from "react";
-import { Card, Button, Collapse } from "react-bootstrap";
+import { Card, Collapse } from "react-bootstrap";
 
-export default function ExpensesByCategory({
-  filteredExpenses,
-  categoriesData,
-}) {
+export default function ExpensesByCategory({ filteredExpenses }) {
   const [openCardIndex, setOpenCardIndex] = useState(null);
   console.log("filteredExpenses:", filteredExpenses);
 
@@ -36,24 +33,29 @@ export default function ExpensesByCategory({
             onClick={() => toggleCollapse(index)}
             aria-controls="collapseInfo"
           >
-            <Card.Header>
-              {expenses[0].emoji}
-              {category}: {expenses[0].displayCurrency}
+            <Card.Header style={{ fontWeight: "bold" }}>
+              {expenses[0].emoji} {category}: {expenses[0].displayCurrency}{" "}
               {total}
             </Card.Header>
             <Collapse in={openCardIndex === index}>
               <div id="collapseInfo">
                 {expenses.map((expense) => (
-                  <Card.Body key={expense.id}>
+                  <Card.Body
+                    key={expense.id}
+                    style={{ backgroundColor: "white", textAlign: "left" }}
+                  >
                     {/* Display the individual expense */}
-                    <p>
-                      {expense.date}
-                      <br />
-                      {expense.displayCurrency}
+                    <Card.Title>
+                      <strong>Date:</strong> {expense.date}
+                    </Card.Title>
+                    <Card.Text>
+                      <strong>Amount:</strong> {expense.displayCurrency}{" "}
                       {parseFloat(expense.displayAmount.toFixed(2))}
-                      <br />
-                      {expense.description}
-                    </p>
+                      (${expense.currency} ${expense.amount})
+                    </Card.Text>
+                    <Card.Text>
+                      <strong>Description:</strong> {expense.description}
+                    </Card.Text>
                   </Card.Body>
                 ))}
               </div>

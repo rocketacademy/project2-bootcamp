@@ -118,7 +118,7 @@
 
 .card-text {
   display: flex;
-  justify-content: space-around;
+  /* justify-content: space-between; */
   align-items: center;
   text-align: "left";
 }

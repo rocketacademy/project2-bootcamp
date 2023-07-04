@@ -243,10 +243,7 @@ export default function Dashboard({
         </Tabs>
       </div>
       <div>
-        <ExpensesByCategory
-          filteredExpenses={filteredExpenses}
-          categoriesData={categoriesData}
-        />
+        <ExpensesByCategory filteredExpenses={filteredExpenses} />
       </div>
     </>
   );
