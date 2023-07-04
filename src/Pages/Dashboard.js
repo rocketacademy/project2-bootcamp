@@ -21,6 +21,7 @@ export default function Dashboard({
   const [selectedPeriod, setSelectedPeriod] = useState("");
   const [focusBar, setFocusBar] = useState(null);
   const [view, setView] = useState("daily");
+
   // Find the minimum, maximum date in expensesList
   const calculateStartAndEndDates = (expensesCategory, view) => {
     let endDate = null;

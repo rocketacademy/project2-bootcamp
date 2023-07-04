@@ -1,3 +1,7 @@
+.navbar-container {
+  background-color: white;
+}
+
 .navbar-home-container {
   display: flex;
   justify-content: flex-end;
