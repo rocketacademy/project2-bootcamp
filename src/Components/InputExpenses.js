@@ -28,6 +28,7 @@ export default function InputExpenses({
   currenciesList,
   displayCurrency,
   categoriesData,
+  exchangeRates,
 }) {
   const [show, setShow] = useState(false);
   const [category, setCategory] = useState({ category: "initial", emoji: "" });
@@ -80,11 +81,18 @@ export default function InputExpenses({
     const expRef = ref(realTimeDatabase, `${DB_EXPENSES_FOLDER_NAME}/${uid}`);
     const newExpRef = push(expRef);
     const newExpenseKey = newExpRef.key;
+    let displayAmount = amount;
+    if (currency !== displayCurrency) {
+      const rateFrom = exchangeRates[currency];
+      const rateTo = exchangeRates[displayCurrency];
+      displayAmount = (amount / rateFrom) * rateTo;
+    }
     set(newExpRef, {
       categoryName: category.category, // save the category name
       currency: currency,
       displayCurrency: displayCurrency,
       amount: amount,
+      displayAmount: displayAmount,
       lat: lat,
       lng: lng,
       description: description,

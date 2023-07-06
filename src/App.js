@@ -3,7 +3,7 @@ import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Welcome from "./Pages/Welcome";
 import { realTimeDatabase, auth } from "./firebase";
-import { ref, onValue, get } from "firebase/database";
+import { ref, onValue, get, set, update } from "firebase/database";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { useNavigate, Routes, Route, Link } from "react-router-dom";
 import AuthForm from "./Pages/AuthForm";
@@ -48,9 +48,26 @@ export default function App() {
     async function fetchRatesAndUpdateDB() {
       try {
         const response = await fetch(
-          `https://v6.exchangerate-api.com/v6/${exchangeRatesApiKey}/latest/USD`
+          `https://v6.exchangerate-api.com/v6/f251da995575f9ae7cd5d521/latest/USD`
         );
+        // Check if response status is ok
+        if (!response.ok) {
+          console.error(
+            "Error fetching exchange rates, status:",
+            response.status
+          );
+          return;
+        }
+
         const data = await response.json();
+        // Ensure that data.conversion_rates is an object
+        if (
+          !data.conversion_rates ||
+          typeof data.conversion_rates !== "object"
+        ) {
+          console.error("conversion_rates is not an object or is undefined.");
+          return;
+        }
 
         const dateRef = ref(
           realTimeDatabase,
@@ -61,7 +78,7 @@ export default function App() {
           `${DB_EXCHANGERATES_FOLDER_NAME}/data`
         );
 
-        await set(ratesRef, data.conversion_rates);
+        await update(ratesRef, data.conversion_rates);
         await set(dateRef, today);
 
         setExchangeRates(data.conversion_rates);
@@ -375,6 +392,7 @@ export default function App() {
               groupedExpenses={groupedExpenses}
               displayCurrency={displayCurrency}
               setDisplayCurrency={setDisplayCurrency}
+              exchangeRates={exchangeRates}
             />
           }
         />

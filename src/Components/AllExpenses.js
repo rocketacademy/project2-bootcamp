@@ -24,6 +24,7 @@ export default function AllExpenses({
   setSelectedExpenses,
   selectedExpensesData,
   setSelectedExpensesData,
+  exchangeRates,
 }) {
   const highlightedCardRef = useRef(null); // Create reference for highlighted card
   let today = new Date();
@@ -224,6 +225,7 @@ export default function AllExpenses({
                                 expenseCounter={expenseCounter}
                                 setExpenseCounter={setExpenseCounter}
                                 categoriesData={categoriesData}
+                                exchangeRates={exchangeRates}
                               />
                               <span
                                 id="delete-button"

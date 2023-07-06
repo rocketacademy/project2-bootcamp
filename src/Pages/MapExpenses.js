@@ -10,7 +10,6 @@ import { Toast } from "react-bootstrap";
 
 const DB_USER_FOLDER_NAME = "user";
 const DB_EXPENSES_FOLDER_NAME = "expenses";
-// const DB_CATEGORY_FOLDER_NAME = "categories";
 
 export default function MapExpenses({
   isLoggedIn,
@@ -23,6 +22,7 @@ export default function MapExpenses({
   isLoadingExpenses,
   displayCurrency,
   setDisplayCurrency,
+  exchangeRates,
 }) {
   const [userLocation, setUserLocation] = useState(null);
   const [isHighlighted, setIsHighlighted] = useState(null);
@@ -55,7 +55,6 @@ export default function MapExpenses({
       console.error("Geolocation is not supported by this browser.");
     }
   }, [expenseCounter]);
-
 
   // Fetches displayCurrency from the database and update the client-side state i.e. Database > Client
   useEffect(() => {
@@ -164,6 +163,7 @@ export default function MapExpenses({
             groupedExpenses={groupedExpenses}
             categoriesData={categoriesData}
             setExpenseCounter={setExpenseCounter}
+            exchangeRates={exchangeRates}
           />
         </div>
       ) : (

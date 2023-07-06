@@ -26,39 +26,39 @@ const db = admin.database();
 
 const apiKey = functions.config().exchangerate.key;
 
-exports.convertCurrency = functions.database
-    .ref("/expenses/{userId}/{expenseId}")
-    .onWrite(async (change, context) => {
-    // Exit when the data is deleted.
-      if (!change.after.exists()) {
-        return null;
-      }
+// exports.convertCurrency = functions.database
+//     .ref("/expenses/{userId}/{expenseId}")
+//     .onWrite(async (change, context) => {
+//     // Exit when the data is deleted.
+//       if (!change.after.exists()) {
+//         return null;
+//       }
 
-      const expense = change.after.val();
+//       const expense = change.after.val();
 
-      // Check if relevant fields have changed b4 fetching the fx
-      if (change.before.exists()) {
-        const beforeExpense = change.before.val();
-        if (
-          expense.amount === beforeExpense.amount &&
-        expense.currency === beforeExpense.currency &&
-        expense.displayCurrency === beforeExpense.displayCurrency
-        ) {
-          console.log("Expense data unchanged, no need to convert currency");
-          return null;
-        }
-      }
+//       // Check if relevant fields have changed b4 fetching the fx
+//       if (change.before.exists()) {
+//         const beforeExpense = change.before.val();
+//         if (
+//           expense.amount === beforeExpense.amount &&
+//         expense.currency === beforeExpense.currency &&
+//         expense.displayCurrency === beforeExpense.displayCurrency
+//         ) {
+//           console.log("Expense data unchanged, no need to convert currency");
+//           return null;
+//         }
+//       }
 
-      const response = await fetch(
-          `https://v6.exchangerate-api.com/v6/${apiKey}/latest/USD`,
-      );
-      const data = await response.json();
-      const exchangeRates = data.conversion_rates;
-      const rateFrom = exchangeRates[expense.currency];
-      const rateTo = exchangeRates[expense.displayCurrency];
-      const displayAmount = (expense.amount / rateFrom) * rateTo;
-      return change.after.ref.child("displayAmount").set(displayAmount);
-    });
+//       const response = await fetch(
+//           `https://v6.exchangerate-api.com/v6/${apiKey}/latest/USD`,
+//       );
+//       const data = await response.json();
+//       const exchangeRates = data.conversion_rates;
+//       const rateFrom = exchangeRates[expense.currency];
+//       const rateTo = exchangeRates[expense.displayCurrency];
+//       const displayAmount = (expense.amount / rateFrom) * rateTo;
+//       return change.after.ref.child("displayAmount").set(displayAmount);
+//     });
 
 exports.onDisplayCurrencyChange = functions.database
     .ref("/user/{userId}/displayCurrency")

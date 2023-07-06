@@ -22,6 +22,7 @@ export default function EditExpenses({
   currenciesList,
   expense,
   categoriesData,
+  exchangeRates,
 }) {
   // State to handle open and close of modal
   const [show, setShow] = useState(false);
