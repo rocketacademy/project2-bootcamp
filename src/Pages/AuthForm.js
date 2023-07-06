@@ -60,6 +60,7 @@ export default function AuthForm({ isLoggedIn, username }) {
                       Enter your email address
                     </Form.Text>
                   </Form.Group>
+
                   <Form.Group className="mb-3" controlId="formBasicPassword">
                     <Form.Label>Password</Form.Label>
                     <Form.Control
@@ -80,7 +81,10 @@ export default function AuthForm({ isLoggedIn, username }) {
                   >
                     Sign In
                   </Button>
+                  <br />
+
                   <GoogleButton />
+
                   <div className="text-left" style={{ marginTop: "5px" }}>
                     <Link to="/signUp">
                       Don't have an account? Create one here!

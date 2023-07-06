@@ -14,6 +14,7 @@ import {
 import { useNavigate, Link } from "react-router-dom";
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
 import categoriesData from "../Reference/categories.json";
+import GoogleButton from "../Components/SignInWithGoogleButton";
 
 // Save the Firebase post folder name as a constant to avoid bugs due to misspelling
 const DB_USER_FOLDER_NAME = "user";
@@ -230,6 +231,9 @@ export default function SignUp({
                 >
                   Sign Up
                 </Button>
+
+                <GoogleButton />
+
                 <div className="text-left" style={{ marginTop: "5px" }}>
                   <Link to="/authform">
                     Already have an account? Sign In here!
