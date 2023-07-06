@@ -12,11 +12,13 @@ import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import CameraIcon from "@mui/icons-material/Camera";
+import { useAuth } from "./Auth";
 
 const pages = ["About Us"];
 const settings = ["Logout"];
 
 function ResponsiveAppBar() {
+  const { currentUser, logout } = useAuth();
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
@@ -37,6 +39,8 @@ function ResponsiveAppBar() {
 
   return (
     <AppBar position="static">
+      {console.log(JSON.stringify(currentUser))}
+      {console.log(currentUser?.photoURL)}
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <CameraIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
@@ -130,7 +134,10 @@ function ResponsiveAppBar() {
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                <Avatar
+                  alt={currentUser?.displayName?.charAt(0).toUpperCase()}
+                  src={currentUser?.photoURL}
+                />
               </IconButton>
             </Tooltip>
             <Menu

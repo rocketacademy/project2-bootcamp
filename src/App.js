@@ -6,23 +6,57 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 //routes
 import AdminUpload from "./components/AdminUpload";
 import Home from "./components/Home";
+import SignIn from "./components/LoginDefault";
+import Auth from "./components/Auth";
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 
-class App extends React.Component {
-  render() {
-    return (
-      <BrowserRouter>
+const App = () => {
+  const auth = getAuth();
+  const [loggedInUser, setLoggedInUser] = React.useState(null);
+
+  React.useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      console.log("Auth State Triggered");
+      if (user) {
+        console.log(`User Registered: ${user}`);
+        setLoggedInUser(user);
+      } else {
+        setLoggedInUser(null);
+      }
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, []);
+
+  const signOut = () => {
+    signOut(auth)
+      .then(() => {
+        console.log("Signed Out");
+        setLoggedInUser(null);
+      })
+      .catch((error) => {
+        console.log("Error signing out:", error);
+      });
+  };
+
+  return (
+    <BrowserRouter>
+      <Auth>
         <div className="App">
-          <ResponsiveAppBar />
+          <ResponsiveAppBar loggedInUser={loggedInUser} signOut={signOut} />
           <div>
             <Routes>
-              <Route path="/" element={<Home />} />
+              <Route path="/" element={auth ? <Home /> : <SignIn />} />
               <Route exact path="/admin" element={<AdminUpload />} />
+              <Route exactpath="/login" element={<SignIn />} />
             </Routes>
           </div>
         </div>
-      </BrowserRouter>
-    );
-  }
-}
+      </Auth>
+    </BrowserRouter>
+  );
+};
 
 export default App;
