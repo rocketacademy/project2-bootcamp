@@ -22,6 +22,7 @@ import { BeatLoader } from "react-spinners";
 const DB_USER_FOLDER_NAME = "user";
 const DB_EXPENSES_FOLDER_NAME = "expenses";
 const DB_CATEGORY_FOLDER_NAME = "categories";
+const DB_EXCHANGERATES_FOLDER_NAME = "exchangeRates";
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -38,6 +39,64 @@ export default function App() {
   const [categoriesData, setCategoriesData] = useState([]);
   const [groupedExpenses, setGroupedExpenses] = useState([]);
   const [displayCurrency, setDisplayCurrency] = useState(null);
+  const [exchangeRates, setExchangeRates] = useState({});
+  const today = new Date().toISOString().substring(0, 10);
+
+  // Fetch the day's exchange rates
+  const exchangeRatesApiKey = process.env.REACT_APP_EXCHANGE_API_KEY;
+  useEffect(() => {
+    async function fetchRatesAndUpdateDB() {
+      try {
+        const response = await fetch(
+          `https://v6.exchangerate-api.com/v6/${exchangeRatesApiKey}/latest/USD`
+        );
+        const data = await response.json();
+
+        const dateRef = ref(
+          realTimeDatabase,
+          `${DB_EXCHANGERATES_FOLDER_NAME}/date`
+        );
+        const ratesRef = ref(
+          realTimeDatabase,
+          `${DB_EXCHANGERATES_FOLDER_NAME}/data`
+        );
+
+        await set(ratesRef, data.conversion_rates);
+        await set(dateRef, today);
+
+        setExchangeRates(data.conversion_rates);
+      } catch (error) {
+        console.error("Error fetching exchange rates:", error);
+      }
+    }
+
+    // Check date in DB - if date is today, fetch the rates from DB. If date is not today, fetch rates via API and update DB
+    const dateRef = ref(realTimeDatabase, `${DB_CATEGORY_FOLDER_NAME}/date`);
+    get(dateRef)
+      .then((snapshot) => {
+        if (snapshot.val() === today) {
+          const ratesRef = ref(
+            realTimeDatabase,
+            `${DB_CATEGORY_FOLDER_NAME}/data`
+          );
+          get(ratesRef)
+            .then((snapshot) => {
+              setExchangeRates(snapshot.val());
+            })
+            .catch((error) => {
+              console.error(
+                "Error reading exchange rates from database:",
+                error
+              );
+            });
+        } else {
+          fetchRatesAndUpdateDB();
+        }
+      })
+      .catch((error) => {
+        console.error("Error reading date from database:", error);
+      });
+  }, []);
 
   // Fetch user data when logged in
   useEffect(() => {
