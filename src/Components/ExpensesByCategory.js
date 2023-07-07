@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Card, Collapse } from "react-bootstrap";
+
 export default function ExpensesByCategory({ filteredExpenses }) {
   const [openCardIndex, setOpenCardIndex] = useState(null);
   console.log("filteredExpenses:", filteredExpenses);
