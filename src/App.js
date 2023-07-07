@@ -30,25 +30,17 @@ const App = () => {
     };
   }, []);
 
-  const signOut = () => {
-    signOut(auth)
-      .then(() => {
-        console.log("Signed Out");
-        setLoggedInUser(null);
-      })
-      .catch((error) => {
-        console.log("Error signing out:", error);
-      });
-  };
-
   return (
     <BrowserRouter>
       <Auth>
         <div className="App">
-          <ResponsiveAppBar loggedInUser={loggedInUser} signOut={signOut} />
+          <ResponsiveAppBar signOut={signOut} />
           <div>
             <Routes>
-              <Route path="/" element={auth ? <Home /> : <SignIn />} />
+              <Route
+                path="/"
+                element={auth.currentUser ? <Home /> : <SignIn />}
+              />
               <Route exact path="/admin" element={<AdminUpload />} />
               <Route exactpath="/login" element={<SignIn />} />
             </Routes>

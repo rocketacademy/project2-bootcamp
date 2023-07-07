@@ -13,9 +13,9 @@ import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import CameraIcon from "@mui/icons-material/Camera";
 import { useAuth } from "./Auth";
+import SignOutButton from "./SignOutButton";
 
-const pages = ["About Us"];
-const settings = ["Logout"];
+const pages = [""];
 
 function ResponsiveAppBar() {
   const { currentUser, logout } = useAuth();
@@ -140,28 +140,32 @@ function ResponsiveAppBar() {
                 />
               </IconButton>
             </Tooltip>
-            <Menu
-              sx={{ mt: "45px" }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
-            >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
+
+            {currentUser && (
+              <Menu
+                sx={{ mt: "45px" }}
+                id="menu-appbar"
+                anchorEl={anchorElUser}
+                anchorOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                open={Boolean(anchorElUser)}
+                onClose={handleCloseUserMenu}
+              >
+                <MenuItem key={1} onClick={handleCloseUserMenu}>
+                  <Typography textAlign="right">{`${currentUser.displayName}`}</Typography>
                 </MenuItem>
-              ))}
-            </Menu>
+                <MenuItem key={2} onClick={handleCloseUserMenu}>
+                  <SignOutButton />
+                </MenuItem>
+              </Menu>
+            )}
           </Box>
         </Toolbar>
       </Container>
