@@ -1,20 +1,19 @@
-.navbar-container {
-  background-color: white;
+* {
+  font-family: "Open Sans", sans-serif;
 }
 
-.navbar-home-container {
-  display: flex;
-  justify-content: flex-end;
-  font-size: 1.25rem;
+/* Custom properties/variables  */
+:root {
+  --main-white: #ffffff;
+  --main-gray: grey;
+  --main-green: burlywood;
+  --main-dark-gray: #545655;
 }
 
 .App {
-  font-size: 1rem;
   margin: auto;
   margin-top: 63.78px;
-
-  background-color: white;
-  color: rgb(0, 0, 0);
+  background-color: var(--main-white);
 
   min-height: 91svh;
   max-width: 1025px;
@@ -22,6 +21,42 @@
   display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: 1fr 1fr;
+}
+
+.navbar-container {
+  background-color: var(--main-green);
+  border: 0;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+
+.navbar-brand {
+  font-weight: 600;
+}
+
+.navbar-main {
+  display: flex;
+  justify-content: center;
+  font-size: 1.25rem;
+}
+
+/* When screensize is small */
+@media (max-width: 700px) {
+  .navbar-main {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background-color: var(--main-green);
+  }
+
+  .navbar-main .top-nav {
+    justify-content: space-evenly;
+  }
+}
+
+.navbar-profile {
+  display: flex;
+  justify-content: flex-end;
 }
 
 .map-container {
@@ -130,13 +165,38 @@
   border-radius: 0.375rem;
 }
 
+.profile-container {
+  margin: auto;
+  margin-top: 63.78px;
+  min-height: 91svh;
+  max-height: 45.5svh;
+  max-width: 1025px;
+
+  background-color: var(--main-white);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .profile-picture {
   width: 150px;
   height: 150px;
   overflow: hidden;
   border-radius: 50%;
+  border: 2px solid var(--main-gray);
   background-size: "cover";
   background-position: "50% 50%";
+  margin-right: 10px;
+}
+
+.button-profile-update-pic,
+.button-profile-update-profile {
+  background-color: var(--main-green) !important;
+}
+
+.button-reset-password {
+  background-color: var(--main-gray) !important;
 }
 
 .dashboard {
@@ -213,6 +273,10 @@
     min-height: 91svh;
   }
   .reset-container {
+    height: 100%;
+    min-height: 91svh;
+  }
+  .profile-container {
     height: 100%;
     min-height: 91svh;
   }
