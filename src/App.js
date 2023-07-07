@@ -3,7 +3,7 @@ import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Welcome from "./Pages/Welcome";
 import { realTimeDatabase, auth } from "./firebase";
-import { ref, onValue, get } from "firebase/database";
+import { ref, onValue, get, set, update } from "firebase/database";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { useNavigate, Routes, Route, Link } from "react-router-dom";
 import AuthForm from "./Pages/AuthForm";
@@ -22,6 +22,7 @@ import { BeatLoader } from "react-spinners";
 const DB_USER_FOLDER_NAME = "user";
 const DB_EXPENSES_FOLDER_NAME = "expenses";
 const DB_CATEGORY_FOLDER_NAME = "categories";
+const DB_EXCHANGERATES_FOLDER_NAME = "exchangeRates";
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -38,6 +39,81 @@ export default function App() {
   const [categoriesData, setCategoriesData] = useState([]);
   const [groupedExpenses, setGroupedExpenses] = useState([]);
   const [displayCurrency, setDisplayCurrency] = useState(null);
+  const [exchangeRates, setExchangeRates] = useState({});
+  const today = new Date().toISOString().substring(0, 10);
+
+  // Fetch the day's exchange rates
+  const exchangeRatesApiKey = process.env.REACT_APP_EXCHANGE_API_KEY;
+  useEffect(() => {
+    async function fetchRatesAndUpdateDB() {
+      try {
+        const response = await fetch(
+          `https://v6.exchangerate-api.com/v6/f251da995575f9ae7cd5d521/latest/USD`
+        );
+        // Check if response status is ok
+        if (!response.ok) {
+          console.error(
+            "Error fetching exchange rates, status:",
+            response.status
+          );
+          return;
+        }
+
+        const data = await response.json();
+        // Ensure that data.conversion_rates is an object
+        if (
+          !data.conversion_rates ||
+          typeof data.conversion_rates !== "object"
+        ) {
+          console.error("conversion_rates is not an object or is undefined.");
+          return;
+        }
+
+        const dateRef = ref(
+          realTimeDatabase,
+          `${DB_EXCHANGERATES_FOLDER_NAME}/date`
+        );
+        const ratesRef = ref(
+          realTimeDatabase,
+          `${DB_EXCHANGERATES_FOLDER_NAME}/data`
+        );
+
+        await update(ratesRef, data.conversion_rates);
+        await set(dateRef, today);
+
+        setExchangeRates(data.conversion_rates);
+      } catch (error) {
+        console.error("Error fetching exchange rates:", error);
+      }
+    }
+
+    // Check date in DB - if date is today, fetch the rates from DB. If date is not today, fetch rates via API and update DB
+    const dateRef = ref(realTimeDatabase, `${DB_CATEGORY_FOLDER_NAME}/date`);
+    get(dateRef)
+      .then((snapshot) => {
+        if (snapshot.val() === today) {
+          const ratesRef = ref(
+            realTimeDatabase,
+            `${DB_CATEGORY_FOLDER_NAME}/data`
+          );
+          get(ratesRef)
+            .then((snapshot) => {
+              setExchangeRates(snapshot.val());
+            })
+            .catch((error) => {
+              console.error(
+                "Error reading exchange rates from database:",
+                error
+              );
+            });
+        } else {
+          fetchRatesAndUpdateDB();
+        }
+      })
+      .catch((error) => {
+        console.error("Error reading date from database:", error);
+      });
+  }, []);
 
   // Fetch user data when logged in
   useEffect(() => {
@@ -144,6 +220,9 @@ export default function App() {
             })
           );
 
+          console.log(`expensesData: ${JSON.stringify(expensesData)}`);
+          console.log(`expensesArray: ${JSON.stringify(expensesArray)}`);
+
           // Sort expenses array by date, with the latest at the top of the list
           const sortedExpenses = expensesArray.sort(
             (a, b) => new Date(b.date) - new Date(a.date)
@@ -202,13 +281,39 @@ export default function App() {
       // Remove the listener once the component has been dismounted (unrendered)
       expensesListener();
     };
-  }, [uid, isLoadingCategories, categoriesData, displayCurrency]);
+  }, [uid, isLoadingCategories, categoriesData]);
 
   // convert currencies from array of objects to array of strings
   useEffect(() => {
     const currencyList = currencies.map((currency) => currency.code);
     setCurrenciesList(currencyList);
   }, []);
+
+  // Update display amounts in the database with every change to the display currency
+  useEffect(() => {
+    // Fetch expenses data from realtime DB
+    const expRef = ref(realTimeDatabase, `${DB_EXPENSES_FOLDER_NAME}/${uid}`);
+
+    get(expRef).then((snapshot) => {
+      const data = snapshot.val();
+
+      // Map through each id in the expenses data and update the indicated keys with new values
+      for (let id in data) {
+        if (data[id].currency === displayCurrency) {
+          data[id].displayAmount = data[id].amount;
+          data[id].displayCurrency = displayCurrency;
+        } else {
+          const rateFrom = exchangeRates[data[id].currency];
+          const rateTo = exchangeRates[displayCurrency];
+          data[id].displayAmount = (data[id].amount / rateFrom) * rateTo;
+          data[id].displayCurrency = displayCurrency;
+        }
+      }
+
+      // Update the ref with the revised expenses data
+      return set(expRef, data);
+    });
+  }, [displayCurrency]);
 
   return (
     <>
@@ -316,6 +421,7 @@ export default function App() {
               groupedExpenses={groupedExpenses}
               displayCurrency={displayCurrency}
               setDisplayCurrency={setDisplayCurrency}
+              exchangeRates={exchangeRates}
             />
           }
         />

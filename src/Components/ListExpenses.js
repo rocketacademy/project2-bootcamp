@@ -29,6 +29,7 @@ export default function ListExpenses({
   isHighlighted,
   // isLoading,
   isLoadingExpenses,
+  exchangeRates,
 }) {
   const [showModal, setShowModal] = useState(false);
   const [selectedExpense, setSelectedExpense] = useState(null);
@@ -130,6 +131,7 @@ export default function ListExpenses({
               currenciesList={currenciesList}
               displayCurrency={displayCurrency}
               categoriesData={categoriesData}
+              exchangeRates={exchangeRates}
             />
             <Filter
               style={{ cursor: "pointer" }}
@@ -174,6 +176,8 @@ export default function ListExpenses({
               setSelectedExpenses={setSelectedExpenses}
               selectedExpensesData={selectedExpensesData}
               setSelectedExpensesData={setSelectedExpensesData}
+              exchangeRates={exchangeRates}
+              displayCurrency={displayCurrency}
             />
           </div>
         )}
