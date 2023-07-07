@@ -294,25 +294,27 @@ export default function App() {
     // Fetch expenses data from realtime DB
     const expRef = ref(realTimeDatabase, `${DB_EXPENSES_FOLDER_NAME}/${uid}`);
 
-    get(expRef).then((snapshot) => {
-      const data = snapshot.val();
+    if (!isLoadingExpenses) {
+      get(expRef).then((snapshot) => {
+        const data = snapshot.val();
 
-      // Map through each id in the expenses data and update the indicated keys with new values
-      for (let id in data) {
-        if (data[id].currency === displayCurrency) {
-          data[id].displayAmount = data[id].amount;
-          data[id].displayCurrency = displayCurrency;
-        } else {
-          const rateFrom = exchangeRates[data[id].currency];
-          const rateTo = exchangeRates[displayCurrency];
-          data[id].displayAmount = (data[id].amount / rateFrom) * rateTo;
-          data[id].displayCurrency = displayCurrency;
+        // Map through each id in the expenses data and update the indicated keys with new values
+        for (let id in data) {
+          if (data[id].currency === displayCurrency) {
+            data[id].displayAmount = data[id].amount;
+            data[id].displayCurrency = displayCurrency;
+          } else {
+            const rateFrom = exchangeRates[data[id].currency];
+            const rateTo = exchangeRates[displayCurrency];
+            data[id].displayAmount = (data[id].amount / rateFrom) * rateTo;
+            data[id].displayCurrency = displayCurrency;
+          }
         }
-      }
 
-      // Update the ref with the revised expenses data
-      return set(expRef, data);
-    });
+        // Update the ref with the revised expenses data
+        return set(expRef, data);
+      });
+    }
   }, [displayCurrency]);
 
   return (
