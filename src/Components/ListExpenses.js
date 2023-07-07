@@ -177,6 +177,7 @@ export default function ListExpenses({
               selectedExpensesData={selectedExpensesData}
               setSelectedExpensesData={setSelectedExpensesData}
               exchangeRates={exchangeRates}
+              displayCurrency={displayCurrency}
             />
           </div>
         )}

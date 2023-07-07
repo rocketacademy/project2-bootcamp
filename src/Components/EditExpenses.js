@@ -12,8 +12,10 @@ import { GoogleMap, MarkerF } from "@react-google-maps/api";
 import Geocode from "react-geocode";
 import { Typeahead } from "react-bootstrap-typeahead";
 import "react-bootstrap-typeahead/css/Typeahead.css";
+
 const DB_EXPENSES_FOLDER_NAME = "expenses";
 const STORAGE_EXPENSES_FOLDER_NAME = "receiptPhoto";
+
 export default function EditExpenses({
   uid,
   mapRef,
@@ -23,6 +25,7 @@ export default function EditExpenses({
   expense,
   categoriesData,
   exchangeRates,
+  displayCurrency,
 }) {
   // State to handle open and close of modal
   const [show, setShow] = useState(false);
@@ -83,11 +86,20 @@ export default function EditExpenses({
       realTimeDatabase,
       `${DB_EXPENSES_FOLDER_NAME}/${uid}/${expense.id}`
     );
+
+    let displayAmount = amount;
+    if (currency !== displayCurrency) {
+      const rateFrom = exchangeRates[currency];
+      const rateTo = exchangeRates[displayCurrency];
+      displayAmount = (amount / rateFrom) * rateTo;
+    }
+
     // Update data at expense reference location
     update(expRef, {
       categoryName: category,
       currency: currency,
       amount: amount,
+      displayAmount: displayAmount,
       lat: lat,
       lng: lng,
       description: description,

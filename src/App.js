@@ -220,6 +220,9 @@ export default function App() {
             })
           );
 
+          console.log(`expensesData: ${JSON.stringify(expensesData)}`);
+          console.log(`expensesArray: ${JSON.stringify(expensesArray)}`);
+
           // Sort expenses array by date, with the latest at the top of the list
           const sortedExpenses = expensesArray.sort(
             (a, b) => new Date(b.date) - new Date(a.date)
@@ -278,13 +281,39 @@ export default function App() {
       // Remove the listener once the component has been dismounted (unrendered)
       expensesListener();
     };
-  }, [uid, isLoadingCategories, categoriesData, displayCurrency]);
+  }, [uid, isLoadingCategories, categoriesData]);
 
   // convert currencies from array of objects to array of strings
   useEffect(() => {
     const currencyList = currencies.map((currency) => currency.code);
     setCurrenciesList(currencyList);
   }, []);
+
+  // Update display amounts in the database with every change to the display currency
+  useEffect(() => {
+    // Fetch expenses data from realtime DB
+    const expRef = ref(realTimeDatabase, `${DB_EXPENSES_FOLDER_NAME}/${uid}`);
+
+    get(expRef).then((snapshot) => {
+      const data = snapshot.val();
+
+      // Map through each id in the expenses data and update the indicated keys with new values
+      for (let id in data) {
+        if (data[id].currency === displayCurrency) {
+          data[id].displayAmount = data[id].amount;
+          data[id].displayCurrency = displayCurrency;
+        } else {
+          const rateFrom = exchangeRates[data[id].currency];
+          const rateTo = exchangeRates[displayCurrency];
+          data[id].displayAmount = (data[id].amount / rateFrom) * rateTo;
+          data[id].displayCurrency = displayCurrency;
+        }
+      }
+
+      // Update the ref with the revised expenses data
+      return set(expRef, data);
+    });
+  }, [displayCurrency]);
 
   return (
     <>
