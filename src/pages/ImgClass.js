@@ -36,7 +36,7 @@ function ImgClassify() {
       // Make a request from API
       axios
         .get(
-          `https://api.spoonacular.com/food/images/analyze?imageUrl=${imageUrl}&apiKey=${process.env.REACT_APP_API_KEY4}`
+          `https://api.spoonacular.com/food/images/analyze?imageUrl=${imageUrl}&apiKey=${process.env.REACT_APP_API_KEY}`
         )
         .then(function (response) {
           // handle success
