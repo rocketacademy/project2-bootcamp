@@ -15,7 +15,7 @@ import CameraIcon from "@mui/icons-material/Camera";
 import { useAuth } from "./Auth";
 import SignOutButton from "./SignOutButton";
 
-const pages = [""];
+const pages = ["About", "Contact Us"];
 
 function ResponsiveAppBar() {
   const { currentUser, logout } = useAuth();
@@ -132,7 +132,7 @@ function ResponsiveAppBar() {
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
+            <Tooltip title={currentUser ? "Open settings" : "Not signed in."}>
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 <Avatar
                   alt={currentUser?.displayName?.charAt(0).toUpperCase()}

@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Avatar from "@mui/material/Avatar";
 import CssBaseline from "@mui/material/CssBaseline";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
 import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
@@ -10,9 +8,11 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { Container, Typography, TextField, Button } from "@mui/material";
 import { useAuth } from "./Auth";
+import { getAuth, sendPasswordResetEmail } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import GoogleIcon from "@mui/icons-material/Google";
 import Alert from "@mui/material/Alert";
+import { set } from "firebase/database";
 
 function Copyright(props) {
   return (
@@ -42,6 +42,7 @@ export default function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
+  const [alertMsg, setAlertMsg] = useState(null);
 
   useEffect(() => {
     if (currentUser) {
@@ -63,6 +64,7 @@ export default function SignIn() {
       navigate("/"); // Redirect to Home after successful login
     } catch (error) {
       setError("Invalid email/password. Try again.");
+      setAlertMsg(null); //reset the alert
       setAlert({
         isAlert: true,
         severity: "error",
@@ -80,6 +82,7 @@ export default function SignIn() {
       navigate("/"); // Redirect to Home after successful login
     } catch (error) {
       setError("Invalid email/password. Try again.");
+      setAlertMsg(null); //reset the alert
       console.log("Google login error:", error);
     }
   };
@@ -91,6 +94,19 @@ export default function SignIn() {
       email: data.get("email"),
       password: data.get("password"),
     });
+  };
+
+  const triggerResetEmail = async (e) => {
+    e.preventDefault();
+    try {
+      const auth = getAuth();
+      await sendPasswordResetEmail(auth, email);
+      setAlertMsg("Please check your email to reset password.");
+      setError(null);
+    } catch (error) {
+      setError("Recovery Error: Email not recognized.");
+      setAlertMsg(null);
+    }
   };
 
   return (
@@ -135,8 +151,8 @@ export default function SignIn() {
               autoComplete="current-password"
               onChange={handlePasswordChange}
             />
-
             {error && <Alert severity="error">{error}</Alert>}
+            {alertMsg && <Alert severity="success">{alertMsg}</Alert>}
             <Button
               type="submit"
               fullWidth
@@ -159,7 +175,7 @@ export default function SignIn() {
             </Button>
             <Grid container>
               <Grid item xs>
-                <Link href="#" variant="body2">
+                <Link href="#" onClick={triggerResetEmail} variant="body2">
                   Forgot password?
                 </Link>
               </Grid>

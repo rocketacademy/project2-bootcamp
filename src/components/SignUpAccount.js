@@ -11,7 +11,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { Container, Typography, TextField, Button } from "@mui/material";
 import { useAuth } from "./Auth";
 import { useNavigate } from "react-router-dom";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth } from "../firebase";
 import Alert from "@mui/material/Alert";
 
@@ -62,9 +62,11 @@ export default function SignUp() {
     e.preventDefault();
 
     await createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
+      .then(async (userCredential) => {
         // Signed in
         const user = userCredential.user;
+        // Updating user name
+        await updateProfile(auth.currentUser, { displayName: "Default" });
         console.log(user);
         navigate("/");
         // ...
