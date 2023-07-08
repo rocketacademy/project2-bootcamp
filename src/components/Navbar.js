@@ -20,6 +20,7 @@ import { database } from "../config";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import SearchIcon from "@mui/icons-material/Search";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
+import BookmarkIcon from "@mui/icons-material/Bookmark";
 
 function ResponsiveAppBar(props) {
   const [anchorElNav, setAnchorElNav] = useState(null);
@@ -198,8 +199,19 @@ function ResponsiveAppBar(props) {
               as={Link}
               to="/saved-recipes"
             >
-              <Typography textAlign="center">Saved Recipes</Typography>
-              
+              <ListItemIcon>
+                <BookmarkIcon />
+              </ListItemIcon>
+              <Typography
+                textAlign="center"
+                sx={{
+                  fontFamily: "gill sans, sans-serif",
+                  color: "black",
+                  fontWeight: "bold",
+                }}
+              >
+                My Saved Recipes
+              </Typography>
             </MenuItem>
           </Box>
 

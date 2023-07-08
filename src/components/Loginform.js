@@ -45,7 +45,7 @@ const Login = () => {
   return (
     <div className="centered">
       <p style={{ textAlign: "right", fontSize: 15 }}>
-        To Register an account. Click{" "}
+        Don't have an account ? Click{" "}
         <Link to="/auth/register" style={{ color: "yellow" }}>
           here
         </Link>
