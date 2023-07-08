@@ -1,15 +1,39 @@
-# Rocket Academy Coding Bootcamp: Project 2: Full-Stack App (Firebase)
+# **Spork: Rocket Academy Project 2 Full-Stack App (Firebase)**
 
-https://bc.rocketacademy.co/2-full-stack/2.p-full-stack-app-firebase
+This is a React app that allows users to easily search up recipes, save recipes to their favourites, and find the closest supermarket to them.
 
-## Available Scripts
+## **Features**
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app). In the project directory, you can run:
+- User authentication with Firebase Auth and Google Auth
+- Recipe search with Spoonacular API
+- Supermarket search with Google Maps API
+- Favourites list
 
-### `npm start`
+## **Technologies**
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- React with CRA
+- Firebase Auth, Database, Storage
+- Spoonacular API
+- Google Maps API
+- MUI
+- Bootstrap
+- Framer Motion
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## **Getting Started**
+
+To run the app, you will need to have Node.js and npm installed. Once you have those installed, you can clone the repository and run the following commands:
+
+npm install
+npm start
+
+The app will then be available at http://localhost:3000.
+
+## **Usage**
+
+To use the app, you will need to create an account either using your Google account or with email and password. Once you have created an account, you can browse and search recipes. You can also save recipes to your favorites list and find the closest supermarket to you.
+
+## **Contributors**
+
+- Jerry
+- Eng Lin
+- Alayne
