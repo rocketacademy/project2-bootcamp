@@ -79,10 +79,12 @@ const Home = () => {
       (obj) => obj.email === currentUser.email
     );
     //Duplicates Filtering
-    const uniqueArray = emailFilter.filter((obj, index, self) => {
-      // Use a temporary object to keep track of unique keys
-      return index === self.findIndex((o) => o.key === obj.key);
-    });
+    const uniqueArray = Object.values(
+      emailFilter.reduce((acc, obj) => {
+        acc[obj.key] = obj;
+        return acc;
+      }, {})
+    );
     //Looping through tags
     if (searchArray.length > 0) {
       for (const element of searchArray) {
@@ -92,11 +94,17 @@ const Home = () => {
         });
 
         console.log(`Filtered Data: ${JSON.stringify(filteredData)}`);
-        searchList.push(filteredData[0]);
+        searchList.push(...filteredData);
         // return filteredData;
       }
       console.log(`Final-List: ${JSON.stringify(searchList)}`);
-      return searchList;
+      const uniqueOutput = Object.values(
+        searchList.reduce((acc, obj) => {
+          acc[obj.key] = obj;
+          return acc;
+        }, {})
+      );
+      return uniqueOutput;
     } else {
       return uniqueArray;
     }
