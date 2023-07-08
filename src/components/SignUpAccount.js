@@ -11,7 +11,8 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { Container, Typography, TextField, Button } from "@mui/material";
 import { useAuth } from "./Auth";
 import { useNavigate } from "react-router-dom";
-import GoogleIcon from "@mui/icons-material/Google";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../firebase";
 import Alert from "@mui/material/Alert";
 
 function Copyright(props) {
@@ -36,7 +37,7 @@ function Copyright(props) {
 
 const defaultTheme = createTheme();
 
-export default function SignIn() {
+export default function SignUp() {
   const navigate = useNavigate();
   const { login, loginWithGoogle, currentUser, setAlert } = useAuth();
   const [email, setEmail] = useState("");
@@ -56,41 +57,25 @@ export default function SignIn() {
   const handlePasswordChange = (event) => {
     setPassword(event.target.value);
   };
-  const handleLogin = async (e) => {
+
+  const onSubmit = async (e) => {
     e.preventDefault();
-    try {
-      await login(email, password);
-      navigate("/"); // Redirect to Home after successful login
-    } catch (error) {
-      setError("Invalid email/password. Try again.");
-      setAlert({
-        isAlert: true,
-        severity: "error",
-        message: error.message,
-        timeout: 5000,
-        location: "page",
+
+    await createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        // Signed in
+        const user = userCredential.user;
+        console.log(user);
+        navigate("/");
+        // ...
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        setError(errorMessage);
+        console.log(errorCode, errorMessage);
+        // ..
       });
-      console.log(error);
-    }
-  };
-
-  const handleGoogleLogin = async () => {
-    try {
-      await loginWithGoogle();
-      navigate("/"); // Redirect to Home after successful login
-    } catch (error) {
-      setError("Invalid email/password. Try again.");
-      console.log("Google login error:", error);
-    }
-  };
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
   };
 
   return (
@@ -109,9 +94,9 @@ export default function SignIn() {
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Sign in
+            Sign Up
           </Typography>
-          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
+          <Box component="form" onSubmit={onSubmit} sx={{ mt: 1 }}>
             <TextField
               margin="normal"
               required
@@ -119,8 +104,8 @@ export default function SignIn() {
               id="email"
               label="Email Address"
               name="email"
-              autoComplete="email"
               type={"email"}
+              autoComplete="email"
               autoFocus
               onChange={handleEmailChange}
             />
@@ -135,37 +120,20 @@ export default function SignIn() {
               autoComplete="current-password"
               onChange={handlePasswordChange}
             />
-
             {error && <Alert severity="error">{error}</Alert>}
             <Button
               type="submit"
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
-              onClick={handleLogin}
             >
-              Sign In
+              Sign Up
             </Button>
-            <Button
-              type="button"
-              onClick={handleGoogleLogin}
-              fullWidth
-              variant="outlined"
-              color="primary"
-              sx={{ mt: 0, mb: 2 }}
-              startIcon={<GoogleIcon />}
-            >
-              Sign In With Google
-            </Button>
+
             <Grid container>
-              <Grid item xs>
-                <Link href="#" variant="body2">
-                  Forgot password?
-                </Link>
-              </Grid>
               <Grid item>
-                <Link href="/signup" variant="body2">
-                  {"Don't have an account? Sign Up"}
+                <Link href="/login" variant="body2">
+                  {"Already have an account? Sign in!"}
                 </Link>
               </Grid>
             </Grid>

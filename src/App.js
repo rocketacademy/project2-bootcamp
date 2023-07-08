@@ -7,6 +7,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import AdminUpload from "./components/AdminUpload";
 import Home from "./components/Home";
 import SignIn from "./components/LoginDefault";
+import SignUp from "./components/SignUpAccount";
 import Auth from "./components/Auth";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 
@@ -42,7 +43,8 @@ const App = () => {
                 element={auth.currentUser ? <Home /> : <SignIn />}
               />
               <Route exact path="/admin" element={<AdminUpload />} />
-              <Route exactpath="/login" element={<SignIn />} />
+              <Route exact path="/login" element={<SignIn />} />
+              <Route exact path="/signup" element={<SignUp />} />
             </Routes>
           </div>
         </div>
