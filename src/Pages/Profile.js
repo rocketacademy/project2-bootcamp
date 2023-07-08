@@ -157,7 +157,7 @@ export default function Profile({
                 />
               </>
             )}
-            <Button onClick={handleShow} className="button-profile-update-pic">
+            <Button onClick={handleShow} className="profile-button-update-pic">
               Update picture
             </Button>
           </div>
@@ -169,11 +169,11 @@ export default function Profile({
             <Button
               onClick={handleShow2}
               style={{ marginRight: "10px" }}
-              className="button-profile-update-profile"
+              className="profile-button-update-profile"
             >
               Update profile
             </Button>
-            <Button className="button-reset-password">
+            <Button className="profile-button-reset-password">
               <Link to="/resetpassword" style={{ color: "white" }}>
                 Reset password
               </Link>

@@ -319,16 +319,9 @@ export default function App() {
 
   return (
     <>
-      <Navbar fixed="top" className="navbar-container ">
-        <Container
-          className="navbar-container"
-          style={{
-            maxWidth: "1025px",
-            paddingLeft: "0",
-            paddingRight: "0",
-          }}
-        >
-          <Container>
+      <Navbar fixed="top" className="navbar-container">
+        <Container>
+          <Container className="navbar-container">
             <Navbar.Brand as={Link} to="/mapexpenses">
               <img
                 alt="Money Stack Emoji"

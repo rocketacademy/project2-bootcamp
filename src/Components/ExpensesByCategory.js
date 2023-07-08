@@ -26,7 +26,7 @@ export default function ExpensesByCategory({ filteredExpenses }) {
           .toFixed(2);
         return (
           <Card
-            // style={{ backgroundColor: expenses[0].color }} // using the color of the first expense in this category
+            // style={{ backgroundColor: " #cac8c8" }}
             onClick={() => toggleCollapse(index)}
             aria-controls="collapseInfo"
           >
