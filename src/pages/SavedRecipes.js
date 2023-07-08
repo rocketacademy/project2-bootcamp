@@ -14,6 +14,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { motion } from "framer-motion";
 import Footer from "../components/Footer";
 import CloseIcon from "@mui/icons-material/Close";
+import Fridge from "../components/Fridge";
 
 const FavouriteRecipes = () => {
   const [favourites, setFavourites] = useState([]);
@@ -54,11 +55,7 @@ const FavouriteRecipes = () => {
 
   return (
     <div style={{ textAlign: "center" }}>
-      <img
-        src="https://www.reactiongifs.com/r/2012/11/fridge.gif"
-        alt="Fridge GIF"
-        style={{ height: "300px", marginBottom: "10px" }}
-      />
+      <Fridge />
       <Typography variant="h4" component="h1" marginBottom={2}>
         My Saved Recipes
       </Typography>
