@@ -28,6 +28,8 @@ function AdminUpload(props) {
   const [files, setFiles] = useState([]);
   const [openSuccessSnackbar, setOpenSuccessSnackbar] = useState(false);
   const [openErrorSnackbar, setOpenErrorSnackbar] = useState(false);
+  const [openInfoSnackbar, setOpenInfoSnackbar] = useState(false);
+  const [uploadingFiles, setUploadingFiles] = useState("");
   // 1. Function to set state on the files upon dropping
   const IMAGEOBJECT_FOLDER_NAME = "imageObjects";
   const IMAGES_FOLDER_NAME = "images"; //Images folder name
@@ -53,12 +55,18 @@ function AdminUpload(props) {
     setOpenErrorSnackbar(false);
   };
 
+  const handleCloseInfoSnackbar = () => {
+    setOpenInfoSnackbar(false);
+  };
+
   const handleSubmit = (event) => {
     event.preventDefault();
     // Perform your form submission logic here, along with file upload handling
     // Access the selected files from the "files" state and include them in your form data
     // Perform form validation before submission
     if (isFormValid()) {
+      let successCounter = 0; // Counter for successful uploads
+      let totalFiles = files.length; // Total number of files
       // 'file' comes from the Blob or File API; On Click: Send file to firebase
       // For loop throught the array of uploaded files
       files.forEach((file, index) => {
@@ -92,8 +100,20 @@ function AdminUpload(props) {
                   pass: pass, //6. Unique Identifier
                   updatetime: uploadDateTime(), //5. Upload time (Admin)
                 });
+                successCounter++; // Increment the counter for successful uploads
+
+                setUploadingFiles(
+                  `Uploading ${successCounter}/${totalFiles} Files...`
+                );
+                setOpenInfoSnackbar(true); // Turn on snack bar
+
+                if (successCounter === totalFiles) {
+                  // All files have been successfully uploaded
+                  setOpenSuccessSnackbar(true);
+                  handleCloseErrorSnackbar();
+                  handleCloseInfoSnackbar();
+                }
               });
-              console.log(`Uploading ${file.name} ...`);
             })
             .catch((error) => {
               // Handle upload error
@@ -107,8 +127,7 @@ function AdminUpload(props) {
       setEmail(""); //Reset the form
       setPass(""); //Reset the form
       setFiles([]); //Reset the form
-      setOpenSuccessSnackbar(true);
-      setOpenErrorSnackbar(false);
+
       console.log("Form submitted successfully");
       console.log("Form submitted with files:", files);
       // Additional submission logic
@@ -232,6 +251,19 @@ function AdminUpload(props) {
             sx={{ width: "100%" }}
           >
             Please fill in all fields!
+          </Alert>
+        </Snackbar>
+        <Snackbar
+          open={openInfoSnackbar}
+          autoHideDuration={6000}
+          onClose={handleCloseInfoSnackbar}
+        >
+          <Alert
+            onClose={handleCloseInfoSnackbar}
+            severity="info"
+            sx={{ width: "100%" }}
+          >
+            {uploadingFiles}
           </Alert>
         </Snackbar>
         <TextField
