@@ -49,7 +49,7 @@ const Login = () => {
       {authAlerts !== "" && <Alert severity="error">{authAlerts}</Alert>}
       {authAlerts === "Successfully logged in!" && <Alert severity="success">{authAlerts}</Alert>}
       <p style={{ textAlign: "right", fontSize: 15 }}>
-        To Register an account. Click{" "}
+        Don't have an account ? Click{" "}
         <Link to="/auth/register" style={{ color: "yellow" }}>
           here
         </Link>

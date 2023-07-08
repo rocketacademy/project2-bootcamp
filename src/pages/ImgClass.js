@@ -16,6 +16,7 @@ import CardMedia from "@mui/material/CardMedia";
 import { CardActionArea } from "@mui/material";
 import Footer from "../components/Footer";
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 
 function ImgClassify() {
   const [imageUrl, setImageUrl] = useState("");
@@ -35,7 +36,7 @@ function ImgClassify() {
       // Make a request from API
       axios
         .get(
-          `https://api.spoonacular.com/food/images/analyze?imageUrl=${imageUrl}&apiKey=${process.env.REACT_APP_API_KEY4}`
+          `https://api.spoonacular.com/food/images/analyze?imageUrl=${imageUrl}&apiKey=${process.env.REACT_APP_API_KEY}`
         )
         .then(function (response) {
           // handle success
@@ -161,43 +162,51 @@ function ImgClassify() {
           >
             {Array.from(recipes).map((recipe) => (
               <Grid item xs={2} sm={4} md={4} key={recipe.id}>
-                <Card sx={{ maxWidth: 368 }}>
-                  <CardActionArea component={Link} to={`/recipe/${recipe.id}`}>
-                    <CardMedia
-                      component="img"
-                      height="100%"
-                      image={`https://spoonacular.com/recipeImages/${recipe.id}-240x150.${recipe.imageType}`}
-                      alt={recipe.title}
-                      style={{
-                        position: "relative",
-                        backgroundColor: "transparent",
-                        opacity: "70%",
-                      }}
-                    />
-                    <CardContent
-                      style={{
-                        position: "absolute",
-                        top: 0,
-                        left: 0,
-                        height: "100%",
-                        width: "100%",
-                        textAlign: "center",
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                      }}
+                <motion.div
+                  whileHover={{ scale: 1.1 }}
+                  transition={{ duration: 0.25 }}
+                >
+                  <Card sx={{ maxWidth: 368 }}>
+                    <CardActionArea
+                      component={Link}
+                      to={`/recipe/${recipe.id}`}
                     >
-                      <Typography
-                        gutterBottom
-                        variant="h5"
-                        component="div"
-                        sx={{ fontWeight: "bold" }}
+                      <CardMedia
+                        component="img"
+                        height="100%"
+                        image={`https://spoonacular.com/recipeImages/${recipe.id}-240x150.${recipe.imageType}`}
+                        alt={recipe.title}
+                        style={{
+                          position: "relative",
+                          backgroundColor: "transparent",
+                          opacity: "70%",
+                        }}
+                      />
+                      <CardContent
+                        style={{
+                          position: "absolute",
+                          top: 0,
+                          left: 0,
+                          height: "100%",
+                          width: "100%",
+                          textAlign: "center",
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }}
                       >
-                        {recipe.title}
-                      </Typography>
-                    </CardContent>
-                  </CardActionArea>
-                </Card>
+                        <Typography
+                          gutterBottom
+                          variant="h5"
+                          component="div"
+                          sx={{ fontWeight: "bold" }}
+                        >
+                          {recipe.title}
+                        </Typography>
+                      </CardContent>
+                    </CardActionArea>
+                  </Card>
+                </motion.div>
               </Grid>
             ))}
           </Grid>
