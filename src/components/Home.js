@@ -62,7 +62,7 @@ const Home = () => {
 
   const updateTerms = (searchTerm) => {
     const keywords = searchTerm.toLowerCase().split(" "); //split by spaces
-    setImageObjects([]); //reset data when search is clicked
+    // setImageObjects([]); //reset data when search is clicked
     if (keywords[0] === "") {
       setfilterTerms([]); //when user search empty string
     } else {
@@ -74,23 +74,31 @@ const Home = () => {
   const filterData = (searchArray) => {
     let searchList = [];
     console.log(searchArray); //["mountain","purple"]
+    //Email Filtering
     let emailFilter = imageObjects.filter(
       (obj) => obj.email === currentUser.email
     );
+    //Duplicates Filtering
+    const uniqueArray = emailFilter.filter((obj, index, self) => {
+      // Use a temporary object to keep track of unique keys
+      return index === self.findIndex((o) => o.key === obj.key);
+    });
+    //Looping through tags
     if (searchArray.length > 0) {
       for (const element of searchArray) {
-        const filteredData = emailFilter.filter((item) => {
+        const filteredData = uniqueArray.filter((item) => {
           // Check if any hobby has the category "Art"
           return item.tagsarray.some((tags) => tags.label === element);
         });
 
         console.log(`Filtered Data: ${JSON.stringify(filteredData)}`);
         searchList.push(filteredData[0]);
-        return filteredData;
+        // return filteredData;
       }
       console.log(`Final-List: ${JSON.stringify(searchList)}`);
+      return searchList;
     } else {
-      return emailFilter;
+      return uniqueArray;
     }
   };
 
