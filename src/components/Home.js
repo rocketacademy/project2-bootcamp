@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import ImageTile from "./ImageTile";
 import SearchBar from "./SearchBar";
 import ImgDownload from "./ImgDownload";
+import { useAuth } from "./Auth";
 
 //Firebase - Pull data from server
 import { onChildAdded, ref as databaseRef } from "firebase/database";
@@ -12,6 +13,7 @@ const IMAGEOBJECT_FOLDER_NAME = "imageObjects";
 const Home = () => {
   const [imageObjects, setImageObjects] = useState([]); //State 1
   const [filterTerms, setfilterTerms] = useState([]);
+  const { currentUser } = useAuth();
 
   useEffect(() => {
     // This effect will run when the component mounts and whenever the 'yourCollection' data changes in Firebase.
@@ -70,20 +72,25 @@ const Home = () => {
 
   //Function that filters data based on input
   const filterData = (searchArray) => {
-    console.log(searchArray);
+    let searchList = [];
+    console.log(searchArray); //["mountain","purple"]
+    let emailFilter = imageObjects.filter(
+      (obj) => obj.email === currentUser.email
+    );
     if (searchArray.length > 0) {
       for (const element of searchArray) {
-        const filteredData = imageObjects.filter((item) => {
+        const filteredData = emailFilter.filter((item) => {
           // Check if any hobby has the category "Art"
           return item.tagsarray.some((tags) => tags.label === element);
         });
 
         console.log(`Filtered Data: ${JSON.stringify(filteredData)}`);
-
+        searchList.push(filteredData[0]);
         return filteredData;
       }
+      console.log(`Final-List: ${JSON.stringify(searchList)}`);
     } else {
-      return imageObjects;
+      return emailFilter;
     }
   };
 

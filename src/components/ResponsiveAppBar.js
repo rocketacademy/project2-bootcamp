@@ -18,7 +18,7 @@ import SignOutButton from "./SignOutButton";
 const pages = ["About", "Contact Us"];
 
 function ResponsiveAppBar() {
-  const { currentUser, logout } = useAuth();
+  const { currentUser } = useAuth();
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
