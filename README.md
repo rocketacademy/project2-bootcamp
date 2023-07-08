@@ -1,6 +1,7 @@
 # **Spork: Rocket Academy Project 2 Full-Stack App (Firebase)**
 
 This is a React app that allows users to easily search up recipes, save recipes to their favourites, and find the closest supermarket to them.
+![Homepage of Spork](public/image.png)
 
 ## **Features**
 
@@ -8,6 +9,11 @@ This is a React app that allows users to easily search up recipes, save recipes 
 - Recipe search with Spoonacular API
 - Supermarket search with Google Maps API
 - Favourites list
+- Search related recipes using an image
+
+![Search by keywords using Spoonacular API](public/image-2.png)
+![Find nearest supermarket with Google Map API](public/image-1.png)
+![Save to favourites list](public/image-3.png)
 
 ## **Technologies**
 
@@ -23,8 +29,8 @@ This is a React app that allows users to easily search up recipes, save recipes 
 
 To run the app, you will need to have Node.js and npm installed. Once you have those installed, you can clone the repository and run the following commands:
 
-npm install
-npm start
+`npm install`
+`npm start`
 
 The app will then be available at http://localhost:3000.
 
