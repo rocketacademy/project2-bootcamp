@@ -14,6 +14,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { motion } from "framer-motion";
 import Footer from "../components/Footer";
 import CloseIcon from "@mui/icons-material/Close";
+import Fridge from "../components/Fridge";
 
 const FavouriteRecipes = () => {
   const [favourites, setFavourites] = useState([]);
@@ -54,11 +55,7 @@ const FavouriteRecipes = () => {
 
   return (
     <div style={{ textAlign: "center" }}>
-      <img
-        src="https://www.reactiongifs.com/r/2012/11/fridge.gif"
-        alt="Fridge GIF"
-        style={{ height: "300px", marginBottom: "10px" }}
-      />
+      <Fridge />
       <Typography variant="h4" component="h1" marginBottom={2}>
         My Saved Recipes
       </Typography>
@@ -66,24 +63,24 @@ const FavouriteRecipes = () => {
         {favourites.map((recipe) => (
           <Grid item xs={12} sm={6} md={4} key={recipe.key}>
             <div style={{ position: "relative" }}>
-              <Card
-                sx={{
-                  maxWidth: 345,
-                  backgroundColor: "#386150",
-                  borderRadius: "0.5rem",
-                  border: "1px solid rgba(0, 0, 0, 0.2)",
-                  boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
-                  position: "relative",
-                }}
+              <motion.div
+                whileHover={{ scale: 1.1 }}
+                variants={cardVariants}
+                transition={{ duration: 0.25 }}
               >
-                <Link
-                  to={`/recipe/${recipe.key}`}
-                  style={{ textDecoration: "none" }}
+                <Card
+                  sx={{
+                    maxWidth: 345,
+                    backgroundColor: "#386150",
+                    borderRadius: "0.5rem",
+                    border: "1px solid rgba(0, 0, 0, 0.2)",
+                    boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
+                    position: "relative",
+                  }}
                 >
-                  <motion.div
-                    whileHover={{ scale: 1.1 }}
-                    variants={cardVariants}
-                    transition={{ duration: 0.25 }}
+                  <Link
+                    to={`/recipe/${recipe.key}`}
+                    style={{ textDecoration: "none" }}
                   >
                     <CardMedia
                       component="img"
@@ -104,24 +101,24 @@ const FavouriteRecipes = () => {
                         {recipe.title}
                       </Typography>
                     </CardContent>
-                  </motion.div>
-                </Link>
-                <IconButton
-                  aria-label="remove"
-                  onClick={() => removeFavouriteRecipe(recipe.key)}
-                  style={{
-                    position: "absolute",
-                    top: "-8px",
-                    right: "-8px",
-                    zIndex: 1,
-                    color: "white",
-                    backgroundColor: "rgba(0, 0, 0, 0.3)",
-                    borderRadius: "50%",
-                  }}
-                >
-                  <CloseIcon />
-                </IconButton>
-              </Card>
+                  </Link>
+                  <IconButton
+                    aria-label="remove"
+                    onClick={() => removeFavouriteRecipe(recipe.key)}
+                    style={{
+                      position: "absolute",
+                      top: "-8px",
+                      right: "-8px",
+                      zIndex: 1,
+                      color: "white",
+                      backgroundColor: "rgba(0, 0, 0, 0.3)",
+                      borderRadius: "50%",
+                    }}
+                  >
+                    <CloseIcon />
+                  </IconButton>
+                </Card>
+              </motion.div>
             </div>
           </Grid>
         ))}
