@@ -21,7 +21,7 @@ const PrivateAdminRoute = (user) => {
     }
   } catch (error) {
     // Code to handle the error
-    console.error("An error occurred:", error);
+    // console.error("An error occurred:", error);
     return <ErrorPage />;
   }
   return <ErrorPage />
@@ -34,9 +34,9 @@ const App = () => {
 
   React.useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      console.log("Auth State Triggered");
+      // console.log("Auth State Triggered");
       if (user) {
-        console.log(`User Registered: ${user.email}`);
+        // console.log(`User Registered: ${user.email}`);
         setLoggedInUser(user);
       } else {
         setLoggedInUser(null);
