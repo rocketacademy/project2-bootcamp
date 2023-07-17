@@ -117,7 +117,7 @@ function AdminUpload(props) {
             })
             .catch((error) => {
               // Handle upload error
-              console.log("Error uploading data:", error);
+              // console.log("Error uploading data:", error);
             });
         }
       });
@@ -128,13 +128,13 @@ function AdminUpload(props) {
       setPass(""); //Reset the form
       setFiles([]); //Reset the form
 
-      console.log("Form submitted successfully");
-      console.log("Form submitted with files:", files);
+      // console.log("Form submitted successfully");
+      // console.log("Form submitted with files:", files);
       // Additional submission logic
     } else {
       setOpenErrorSnackbar(true);
       setOpenSuccessSnackbar(false);
-      console.log("Form is not valid. Please fill in all fields.");
+      // console.log("Form is not valid. Please fill in all fields.");
     }
   };
 

@@ -8,11 +8,11 @@ const SignOutButton = () => {
     signOut(auth)
       .then(() => {
         // Sign-out successful.
-        console.log("User signed out successfully");
+        // console.log("User signed out successfully");
       })
       .catch((error) => {
         // An error happened.
-        console.error("Error occurred while signing out:", error);
+        // console.error("Error occurred while signing out:", error);
       });
   };
 

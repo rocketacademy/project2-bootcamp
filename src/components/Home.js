@@ -4,6 +4,7 @@ import SearchBar from "./SearchBar";
 import ImgDownload from "./ImgDownload";
 import { useAuth } from "./Auth";
 
+
 //Firebase - Pull data from server
 import { onChildAdded, ref as databaseRef } from "firebase/database";
 import { database } from "../firebase";
@@ -73,7 +74,7 @@ const Home = () => {
   //Function that filters data based on input
   const filterData = (searchArray) => {
     let searchList = [];
-    console.log(searchArray); //["mountain","purple"]
+    // console.log(searchArray); //["mountain","purple"]
     //Email Filtering
     let emailFilter = imageObjects.filter(
       (obj) => obj.email === currentUser.email
@@ -93,11 +94,11 @@ const Home = () => {
           return item.tagsarray.some((tags) => tags.label === element);
         });
 
-        console.log(`Filtered Data: ${JSON.stringify(filteredData)}`);
+        // console.log(`Filtered Data: ${JSON.stringify(filteredData)}`);
         searchList.push(...filteredData);
         // return filteredData;
       }
-      console.log(`Final-List: ${JSON.stringify(searchList)}`);
+      // console.log(`Final-List: ${JSON.stringify(searchList)}`);
       const uniqueOutput = Object.values(
         searchList.reduce((acc, obj) => {
           acc[obj.key] = obj;
@@ -113,9 +114,9 @@ const Home = () => {
   return (
     <div>
       <SearchBar onSearch={updateTerms} />
-      {console.log(`Search Terms: ${filterTerms}`)}
+      {/* {console.log(`Search Terms: ${filterTerms}`)}
       {console.log(`Image Objects: ${JSON.stringify(imageObjects)}`)}
-      {console.log(`input: ${JSON.stringify(filterData(filterTerms))}`)}
+      {console.log(`input: ${JSON.stringify(filterData(filterTerms))}`)} */}
       <ImgDownload ImageObjects={filterData(filterTerms)} />
       <header className="App-header">
         <meta name="viewport" content="initial-scale=1, width=device-width" />

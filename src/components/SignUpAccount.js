@@ -46,7 +46,7 @@ export default function SignUp() {
 
   useEffect(() => {
     if (currentUser) {
-      console.log("Welcome " + currentUser.email);
+      // console.log("Welcome " + currentUser.email);
     }
   }, [currentUser, navigate]);
 
@@ -67,7 +67,7 @@ export default function SignUp() {
         const user = userCredential.user;
         // Updating user name
         await updateProfile(auth.currentUser, { displayName: "Default" });
-        console.log(user);
+        // console.log(user);
         navigate("/");
         // ...
       })
@@ -75,7 +75,7 @@ export default function SignUp() {
         const errorCode = error.code;
         const errorMessage = error.message;
         setError(errorMessage);
-        console.log(errorCode, errorMessage);
+        // console.log(errorCode, errorMessage);
         // ..
       });
   };

@@ -39,8 +39,8 @@ function ResponsiveAppBar() {
 
   return (
     <AppBar position="static">
-      {console.log(JSON.stringify(currentUser))}
-      {console.log(currentUser?.photoURL)}
+      {/* {console.log(JSON.stringify(currentUser))}
+      {console.log(currentUser?.photoURL)} */}
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <CameraIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
