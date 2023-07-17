@@ -28,7 +28,7 @@ const Home = () => {
       // This code will run when the component unmounts
       // You can perform any necessary cleanup here
       onChildAdded(imgListRef, (data) => {
-        console.log(`Server Data: ${JSON.stringify(data)}`);
+        // console.log(`Server Data: ${JSON.stringify(data)}`);
         // Add the subsequent child to local component state, initialising a new array to trigger re-render
         //console.log(data.val().imgurl)
         setImageObjects(
