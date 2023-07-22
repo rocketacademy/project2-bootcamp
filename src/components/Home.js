@@ -4,29 +4,28 @@ import SearchBar from "./SearchBar";
 import ImgDownload from "./ImgDownload";
 import { useAuth } from "./Auth";
 
-
 //Firebase - Pull data from server
 import { onChildAdded, ref as databaseRef } from "firebase/database";
 import { database } from "../firebase";
 
+// Constant for db_name
 const IMAGEOBJECT_FOLDER_NAME = "imageObjects";
 
+////////////////////////////////
+//Component: Home - Displaying Tiled Images
+////////////////////////////////
 const Home = () => {
   const [imageObjects, setImageObjects] = useState([]); //State 1
   const [filterTerms, setfilterTerms] = useState([]);
   const { currentUser } = useAuth();
 
   useEffect(() => {
-    // This effect will run when the component mounts and whenever the 'yourCollection' data changes in Firebase.
-    // You can perform any necessary operations here, such as updating state, manipulating the data, etc.
-    // Make sure to handle any cleanup if required (return a cleanup function).
     const imgListRef = databaseRef(database, IMAGEOBJECT_FOLDER_NAME);
     // Subscribe to the Firebase listener
     //console.log(imgListRef);
 
     return () => {
       // This code will run when the component unmounts
-      // You can perform any necessary cleanup here
       onChildAdded(imgListRef, (data) => {
         // console.log(`Server Data: ${JSON.stringify(data)}`);
         // Add the subsequent child to local component state, initialising a new array to trigger re-render
@@ -61,6 +60,9 @@ const Home = () => {
   // console.log(imageObjects)
   // extracting the key and the image only for downloading
 
+  ////////////////////////////////
+  //Functions
+  ////////////////////////////////
   const updateTerms = (searchTerm) => {
     const keywords = searchTerm.toLowerCase().split(" "); //split by spaces
     // setImageObjects([]); //reset data when search is clicked

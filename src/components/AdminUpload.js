@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
+
+//MUI
 import {
   TextField,
   FormLabel,
@@ -21,6 +23,10 @@ import {
 } from "firebase/storage";
 import { database, storage } from "../firebase";
 
+////////////////////////////////
+//Component: AdminUpload - Admin upload page
+////////////////////////////////
+
 function AdminUpload(props) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -34,19 +40,36 @@ function AdminUpload(props) {
   const IMAGEOBJECT_FOLDER_NAME = "imageObjects";
   const IMAGES_FOLDER_NAME = "images"; //Images folder name
 
-  //Function: Upload time
+  ////////////////////////////////
+  //F1. Upload time
+  ////////////////////////////////
   const uploadDateTime = () => {
     const uploadData = new Date();
     const formattedDate = uploadData.toLocaleDateString();
     const formattedTime = uploadData.toLocaleTimeString();
     return "[" + formattedDate + " " + formattedTime + "]";
   };
-  // 2. Perform your form submission logic here, along with file upload handling
 
+  ////////////////////////////////
+  //F2. Validate form fields
+  ////////////////////////////////
+  const isFormValid = () => {
+    return (
+      name.trim() !== "" &&
+      email.trim() !== "" &&
+      pass.trim() !== "" &&
+      files.length !== 0
+    );
+  };
+
+  // 2. Perform your form submission logic here, along with file upload handling
   const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
   });
 
+  ////////////////////////////////
+  //1. On-Clicking/Validation Functions
+  ////////////////////////////////
   const handleCloseSuccessSnackbar = () => {
     setOpenSuccessSnackbar(false);
   };
@@ -138,18 +161,7 @@ function AdminUpload(props) {
     }
   };
 
-  // Validate form fields
-  const isFormValid = () => {
-    return (
-      name.trim() !== "" &&
-      email.trim() !== "" &&
-      pass.trim() !== "" &&
-      files.length !== 0
-    );
-  };
-
   //handling value inputs and display
-
   const handleNameChange = (event) => {
     setName(event.target.value);
   };
@@ -162,7 +174,9 @@ function AdminUpload(props) {
     setPass(event.target.value);
   };
 
-  //2b. Password Generator
+  ////////////////////////////////
+  //2b. Random Password Generator
+  ////////////////////////////////
   function generateRandomPassword(length) {
     const charset =
       "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()";
@@ -182,7 +196,9 @@ function AdminUpload(props) {
     setPass(password);
   };
 
-  // 3. Dropzone Params: Restricting Dropzone to only images files
+  ////////////////////////////////
+  //3. Dropzone Params: Restricting Dropzone to only images files
+  ////////////////////////////////
   const { getRootProps, getInputProps } = useDropzone({
     accept: {
       "image/jpeg": [],
@@ -216,7 +232,7 @@ function AdminUpload(props) {
   ));
 
   useEffect(() => {
-    // Make sure to revoke the data uris to avoid memory leaks, will run on unmount
+    // Make sure to revoke the data urls to avoid memory leaks, will run on unmount
     return () => files.forEach((file) => URL.revokeObjectURL(file.preview));
   }, [files]);
 

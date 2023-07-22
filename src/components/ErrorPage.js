@@ -1,19 +1,22 @@
-import React from 'react';
-import { Box, Typography, Button, Icon } from '@mui/material';
-import { ArrowBack } from '@mui/icons-material';
-import {useNavigate} from "react-router-dom";
-import ErrorIcon from '@mui/icons-material/Error';
+import React from "react";
+import { Box, Typography, Button, Icon } from "@mui/material";
+import { ArrowBack } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
+import ErrorIcon from "@mui/icons-material/Error";
 
+////////////////////////////////
+//Component: ErrorPage - Display error notification if admin not identified
+////////////////////////////////
 const ErrorPage = () => {
-    const errorCode = "401";
-    const errorMessage = "Unauthorised User!"
-    const navigate = useNavigate();
-    const onBackButtonClick = () => {
-        // Perform any necessary actions before navigation
-        // ...
-        // Navigate back to the previous page
-        navigate(-1);
-      };
+  const errorCode = "401";
+  const errorMessage = "Unauthorised User!";
+  const navigate = useNavigate();
+  const onBackButtonClick = () => {
+    // Perform any necessary actions before navigation
+    // ...
+    // Navigate back to the previous page
+    navigate(-1);
+  };
 
   return (
     <Box
@@ -23,9 +26,9 @@ const ErrorPage = () => {
       justifyContent="center"
       height="100vh"
     >
-        <Icon sx={{ fontSize: '88px' }}>
-          <ErrorIcon fontSize="inherit" color="warning" />
-        </Icon>
+      <Icon sx={{ fontSize: "88px" }}>
+        <ErrorIcon fontSize="inherit" color="warning" />
+      </Icon>
 
       <Typography variant="h4" gutterBottom>
         Error {errorCode}
@@ -38,7 +41,7 @@ const ErrorPage = () => {
         color="primary"
         startIcon={<ArrowBack />}
         onClick={onBackButtonClick}
-        sx={{ margin: '16px auto' }}
+        sx={{ margin: "16px auto" }}
       >
         Back
       </Button>

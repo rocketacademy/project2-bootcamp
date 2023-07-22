@@ -1,18 +1,24 @@
 import React, { useState, useEffect } from "react";
-import Avatar from "@mui/material/Avatar";
-import CssBaseline from "@mui/material/CssBaseline";
-import Link from "@mui/material/Link";
-import Grid from "@mui/material/Grid";
-import Box from "@mui/material/Box";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import {
+  Container,
+  Typography,
+  TextField,
+  Button,
+  Link,
+  Grid,
+  Box,
+  Avatar,
+  CssBaseline,
+} from "@mui/material";
+
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { Container, Typography, TextField, Button } from "@mui/material";
-import { useAuth } from "./Auth";
 import { getAuth, sendPasswordResetEmail } from "firebase/auth";
-import { useNavigate } from "react-router-dom";
 import GoogleIcon from "@mui/icons-material/Google";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Alert from "@mui/material/Alert";
-import { set } from "firebase/database";
+
+import { useAuth } from "./Auth";
+import { useNavigate } from "react-router-dom";
 
 function Copyright(props) {
   return (

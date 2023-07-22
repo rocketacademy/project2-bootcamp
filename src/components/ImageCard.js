@@ -1,15 +1,17 @@
 import React from "react";
-import ImageListItem from "@mui/material/ImageListItem";
-import { styled } from "@mui/material/styles";
+import { ImageListItem, styled, TextField } from "@mui/material/";
 import Chip from "@mui/material/Chip";
 import Box from "@mui/material/Box";
 import { database } from "../firebase";
 import { ref as databaseRef, update } from "firebase/database";
-import TextField from "@mui/material/TextField";
 
 const ListItem = styled("li")(({ theme }) => ({
   margin: theme.spacing(0.5),
 }));
+
+////////////////////////////////
+//Component: ImageTile - Display Image object
+////////////////////////////////
 
 export default function ImageTile(props) {
   //Function: Takes in the image props and display them
@@ -19,8 +21,12 @@ export default function ImageTile(props) {
   const inputRef = React.useRef(null);
   const imgRef = React.useRef(null);
 
-  // 1. Function to set state on the files upon dropping
+  // Constant for db_name
   const IMAGEOBJECT_FOLDER_NAME = "imageObjects";
+
+  ////////////////////////////////
+  //1. On-Clicking/Validation Functions
+  ////////////////////////////////
 
   const handleInputChange = (event) => {
     setInputValue(event.target.value); //Updating the texts of the component
@@ -53,31 +59,6 @@ export default function ImageTile(props) {
     }
   };
 
-  //This function updates the new object array for the chip
-  const addChipFormat = (chipValue) => {
-    let arrayData = [...chipData]; //copy value
-    chipValue = chipValue.replace(/\s/g, "");
-    // console.log(`Array Chip Length: ${arrayData.length}`);
-    if (arrayData.length !== 0) {
-      //if not empty
-      let lastKeyValue = arrayData[arrayData.length - 1].key;
-      let objectAppend = {
-        key: lastKeyValue + 1, //running number
-        label: chipValue.toLowerCase(),
-      };
-      arrayData.push(objectAppend); //appends to the object array
-      // console.log(arrayData);
-      return arrayData;
-    } else {
-      return [
-        {
-          key: 1,
-          label: chipValue.toLowerCase(),
-        },
-      ];
-    }
-  };
-
   //This handles the keyboard enter key to register submission
   const handleKeyPress = (event) => {
     if (event.key === "Enter") {
@@ -106,7 +87,11 @@ export default function ImageTile(props) {
     }
   };
 
+  ////////////////////////////////
+  //2. useEffects
+  ////////////////////////////////
   React.useEffect(() => {
+    //To listen when user clicks outside field
     document.addEventListener("click", handleClickOutside);
     return () => {
       document.removeEventListener("click", handleClickOutside);
@@ -119,8 +104,8 @@ export default function ImageTile(props) {
   }, [props.item.tagsarray]);
 
   React.useEffect(() => {
-    // console.log(`chipData: ${chipData}`);
     // Writing data into the database
+    // console.log(`chipData: ${chipData}`);
     const objectPath = `${IMAGEOBJECT_FOLDER_NAME}/${props.item.key}`;
     const postListRef = databaseRef(database, objectPath);
     // console.log(`Path: ${objectPath}`);
@@ -134,7 +119,11 @@ export default function ImageTile(props) {
       .catch((error) => {
         // console.error("Error updating Chips:", error);
       });
-  }, [chipData,props.item.key]);
+  }, [chipData, props.item.key]);
+
+  ////////////////////////////////
+  //Functions
+  ////////////////////////////////
 
   //function to actually setup the sizes and image details for the tiling
   function srcset(image, size, rows = 1, cols = 1) {
@@ -145,6 +134,31 @@ export default function ImageTile(props) {
       }&fit=crop&auto=format&dpr=2 2x`,
     };
   }
+
+  //This function updates the new object array for the chip
+  const addChipFormat = (chipValue) => {
+    let arrayData = [...chipData]; //copy value
+    chipValue = chipValue.replace(/\s/g, "");
+    // console.log(`Array Chip Length: ${arrayData.length}`);
+    if (arrayData.length !== 0) {
+      //if not empty
+      let lastKeyValue = arrayData[arrayData.length - 1].key;
+      let objectAppend = {
+        key: lastKeyValue + 1, //running number
+        label: chipValue.toLowerCase(),
+      };
+      arrayData.push(objectAppend); //appends to the object array
+      // console.log(arrayData);
+      return arrayData;
+    } else {
+      return [
+        {
+          key: 1,
+          label: chipValue.toLowerCase(),
+        },
+      ];
+    }
+  };
 
   return (
     <ImageListItem
@@ -161,25 +175,25 @@ export default function ImageTile(props) {
         onClick={handleImageClick}
       />
       {showInput && (
-       <div className="overlay">
-       <TextField
-         sx={{
-           input: { color: "white", textAlign: "center" },
-         }}
-         ref={inputRef}
-         type="text"
-         value={inputValue} /* 
+        <div className="overlay">
+          <TextField
+            sx={{
+              input: { color: "white", textAlign: "center" },
+            }}
+            ref={inputRef}
+            type="text"
+            value={inputValue} /* 
          maxlength="8" */
-         onChange={handleInputChange}
-         inputProps={{ maxLength: 8, autoFocus: true }}
-         hiddenLabel
-         id="filled-hidden-label-small"
-         defaultValue="Small"
-         variant="filled"
-         size="small"
-         onKeyPress={handleKeyPress}
-       />
-     </div>
+            onChange={handleInputChange}
+            inputProps={{ maxLength: 8, autoFocus: true }}
+            hiddenLabel
+            id="filled-hidden-label-small"
+            defaultValue="Small"
+            variant="filled"
+            size="small"
+            onKeyPress={handleKeyPress}
+          />
+        </div>
       )}
 
       <Box

@@ -1,6 +1,6 @@
-import { Button, Container, InputAdornment, TextField } from "@mui/material";
 import { useState } from "react";
 import SearchIcon from "@mui/icons-material/Search";
+import { Button, Container, InputAdornment, TextField } from "@mui/material";
 
 export default function SearchBar({ onSearch }) {
   const [searchTerm, setSearchTerm] = useState("");

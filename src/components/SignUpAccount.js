@@ -1,19 +1,24 @@
 import React, { useState, useEffect } from "react";
+import {
+  Container,
+  Typography,
+  TextField,
+  Button,
+  Link,
+  Grid,
+  Box,
+} from "@mui/material";
+import Alert from "@mui/material/Alert";
 import Avatar from "@mui/material/Avatar";
 import CssBaseline from "@mui/material/CssBaseline";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
-import Link from "@mui/material/Link";
-import Grid from "@mui/material/Grid";
-import Box from "@mui/material/Box";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { Container, Typography, TextField, Button } from "@mui/material";
-import { useAuth } from "./Auth";
-import { useNavigate } from "react-router-dom";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth } from "../firebase";
-import Alert from "@mui/material/Alert";
+
+import { useAuth } from "./Auth";
+import { useNavigate } from "react-router-dom";
 
 function Copyright(props) {
   return (
@@ -64,7 +69,7 @@ export default function SignUp() {
     await createUserWithEmailAndPassword(auth, email, password)
       .then(async (userCredential) => {
         // Signed in
-        const user = userCredential.user;
+        // const user = userCredential.user;
         // Updating user name
         await updateProfile(auth.currentUser, { displayName: "Default" });
         // console.log(user);
@@ -72,7 +77,7 @@ export default function SignUp() {
         // ...
       })
       .catch((error) => {
-        const errorCode = error.code;
+        // const errorCode = error.code;
         const errorMessage = error.message;
         setError(errorMessage);
         // console.log(errorCode, errorMessage);

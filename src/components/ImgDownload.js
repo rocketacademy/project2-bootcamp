@@ -1,14 +1,12 @@
-import React, { useState } from "react";
+import React from "react";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
 import { Button } from "@mui/material";
 import DownloadIcon from "@mui/icons-material/Download";
 
 //Firebase
-const IMAGES_FOLDER_NAME = "images"; //Images folder name
-
 const ImgDownload = (props) => {
-  const [imgUrl, setimgUrl] = useState(null);
+  // const [imgUrl, setimgUrl] = useState(null);
 
   const downloadFilesAsZip = async (fileUrls) => {
     const zip = new JSZip();
@@ -48,8 +46,8 @@ const ImgDownload = (props) => {
     //map into an arrage of img links for download
     const objectList = props.ImageObjects;
     const urlArray = objectList.map(({ imgurl }) => imgurl);
-    console.log(urlArray);
-    setimgUrl(urlArray); //set the state for downloads
+    // console.log(urlArray);
+    // setimgUrl(urlArray); //set the state for downloads
     downloadFilesAsZip(urlArray);
   };
 

@@ -7,11 +7,13 @@ import {
   signOut,
 } from "firebase/auth";
 import { auth } from "../firebase";
-import React, { useEffect } from "react";
-import { useState } from "react";
-import { useContext, createContext } from "react";
+import React, { useEffect, useState, useContext, createContext } from "react";
 
 const authContext = createContext();
+
+////////////////////////////////
+//Component: Auth: Google login authentication
+////////////////////////////////
 
 // react hook to handle user authentication
 export const useAuth = () => {
