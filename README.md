@@ -9,6 +9,9 @@ An image gallery for photographers to upload pictures online and assign them to 
 
 ![Screenshot 2023-07-15 at 10-35-05 Pixfolio App](https://github.com/dexterch91/project2-bootcamp/assets/38061057/4ce71dcc-073d-4066-a029-ef7a802982cd)
 
+## Demo Video
+![WebApp__Pixfolio_ReactFirebaseOAuthGoogleAuth](https://github.com/dexterch91/project2-bootcamp/assets/62207671/fccf0568-4ea5-4121-a6b9-15042e73aa76)
+
 # Features
 
 Upload screen which allows the admin to upload multiples images and tag it to users.
