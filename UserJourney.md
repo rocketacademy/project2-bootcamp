@@ -6,6 +6,7 @@
 - (WIP) Users can view the next upcoming date on the top of the screen / displays no upcoming dates if empty
 - (WIP) Users can view the total number of days they have been together
 - (WIP) Users can see the display names of themselves and their partner on the homescreen
+- (WIP) Users can see the display pictures of themselves and their partner on the homescreen
 
 # Settings Page
 

@@ -1,10 +1,11 @@
 //-----------React-----------//
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 //-----------Firebase-----------//
-
+import { storage } from "../firebase/firebase";
+import { uploadBytes, ref as sRef, getDownloadURL } from "firebase/storage";
 import { auth } from "../firebase/firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 //-----------Images-----------//
@@ -18,6 +19,7 @@ export default function SignUpPage() {
   const [signingUp, setSigningUp] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [file, setFile] = useState(null);
   const [profilePicture, setProfilePicture] = useState(null);
 
   const navigate = useNavigate();
@@ -28,10 +30,35 @@ export default function SignUpPage() {
     setIsFilled(newName.trim() !== "");
   };
 
-  const handleProfilePictureChange = (event) => {
+  const handleImageUpload = (event) => {
+    console.log(event.target.files[0]);
     const file = event.target.files[0];
-    setProfilePicture(file);
+    setFile(file);
   };
+
+  useEffect(() => {
+    if (file) {
+      const fileRef = sRef(storage, `image/${file.name}`);
+      uploadBytes(fileRef, file)
+        .then(() => getDownloadURL(fileRef))
+        // .then((url) => {
+        //   // Add posts and final URL AFTER image URL is generated
+        //   push(postListRef, {
+        //     comment: comment,
+        //     date: `${new Date()}`,
+        //     image: url,
+        //   });
+        // })
+        // Clear input fields
+        .then((url) => {
+          setProfilePicture(url);
+          setFile(null);
+        })
+        .catch((error) => {
+          console.error("Error uploading image:", error);
+        });
+    }
+  }, [file]);
 
   return (
     <>
@@ -45,11 +72,11 @@ export default function SignUpPage() {
         {signingUp ? (
           <>
             <img
-              src={morty}
-              alt="import profile"
-              className="h-[8em] w-[8em] rounded-full"
+              src={profilePicture ? profilePicture : morty}
+              alt="Profile"
+              className="h-[8em] rounded-full border-2 border-black p-1"
             />
-            <h1 className="m-3 text-[2em] font-bold">Join Paired Up</h1>
+            <h1 className="m-3 text-[2em] font-bold">Hello {name} </h1>
             <form>
               <label>Email:</label>
               <br />
@@ -91,8 +118,8 @@ export default function SignUpPage() {
             >
               Signup
             </button>
-            <NavLink to="/onboarding" className="m-3 text-slate-500">
-              sign up instead
+            <NavLink to="/sign-in" className="m-3 text-slate-500">
+              sign in instead
             </NavLink>
           </>
         ) : (
@@ -102,9 +129,9 @@ export default function SignUpPage() {
             </h1>
             <label htmlFor="profile-picture" className="">
               <img
-                src={profile}
-                alt="import profile"
-                className="h-[8em] rounded-full border-2 border-black p-2"
+                src={profilePicture ? profilePicture : profile}
+                alt="Upload"
+                className="h-[8em] rounded-full border-2 border-black p-1"
               />
             </label>
 
@@ -113,6 +140,7 @@ export default function SignUpPage() {
               id="profile-picture"
               accept="image/*" // Allow only image files to be selected
               style={{ display: "none" }} // Hide the input element
+              onChange={handleImageUpload}
             />
             <br />
             <label>Your Name:</label>
