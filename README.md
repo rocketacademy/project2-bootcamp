@@ -12,6 +12,7 @@ App description in one sentence
 - TailwindCSS
 - Daisy
 - Google Calendar API
+- React Router
 
 ## Project Management
 
