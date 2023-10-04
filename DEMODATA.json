@@ -1,0 +1,16 @@
+{
+    "pairs":[
+"pairid (unique)":[ "users": [user1,user2]
+displayname: [name1,name2]
+chat: {
+message1: {
+Date: Fri Sep 29 2023 00:11:48 GMT+0800 (Singapore Standard Time),
+image: "firebase storage"
+message: "Hello"}
+}
+dates: {
+
+    }
+
+}]
+}
