@@ -16,6 +16,7 @@ function App() {
       <header className="">
         <p className="bg-red-100  text-xl">Paired Up! v0.1</p>
         <p className="bg-red-100  text-xl">welcome to our app</p>
+        <p className="bg-red-100  text-xl">Bypass</p>
       </header>
     </div>
   );
