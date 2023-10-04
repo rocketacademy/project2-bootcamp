@@ -1,4 +1,19 @@
-**All User flows for Paired Up**
+**All features for Paired Up**
+
+# Planning
+
+- Brainstorm ideas, features & draft wireframes in Miro
+- Build Kanban board in Notion
+- Set up Slack channel for project discussions
+- Set up slides for final project presentation
+
+# Setup
+
+- Set up Create-react-app (TailwindCSS, Prettier-tailwindCSS, DaisyUI, React Router)
+- Add Github Collaborators & Setup Rules (Reviwers + Push limits)
+- Set up Firebase Storage, Real-time database, Authentication and add collaborators
+- Set up .env & add gitignore!! in local respositary
+- Set up Netlify - add api keys, deploy rules and test deploy
 
 # Home Page
 

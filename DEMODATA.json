@@ -1,5 +1,10 @@
 {
-  "pairId": "2323232323",
+  "global variables": {
+    "isLoggedIn": false,
+    "isPairedUp": false,
+    "isDemo": false
+  },
+  "pairKey": "2323232323",
   "displayName": ["name1", "name2"],
   "users": ["user1", "user2"],
   "emails": ["user1@gmail.com", "user2@gmail.com"],

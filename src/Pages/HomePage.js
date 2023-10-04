@@ -3,6 +3,7 @@ import { NavLink } from "react-router-dom";
 import profile from "../Images/upload.png";
 import morty from "../Images/morty.png";
 import background from "../Images/test.png";
+import heart from "../Images/heart.gif";
 
 export default function HomePage() {
   //Add Global State for isloggedIn
@@ -30,7 +31,7 @@ export default function HomePage() {
         >
           <NavLink
             to="/dates"
-            className="j mt-[90px] flex w-3/4 min-w-[20em] max-w-[40em] flex-row items-center rounded-xl bg-slate-300 bg-opacity-80 p-2 shadow-xl"
+            className="j mt-[90px] flex w-3/4 min-w-[20em] max-w-[40em] flex-row items-center rounded-xl bg-slate-300 bg-opacity-80 p-2 shadow-xl hover:bg-opacity-95"
           >
             <p className="p-3 font-bold"> Next Date:</p>
             <section>
@@ -39,10 +40,11 @@ export default function HomePage() {
               <p> Project Presentations</p>
             </section>
           </NavLink>
-          <article className=" w-1/2 min-w-[16em] max-w-[28em] rounded-xl bg-white bg-opacity-80 p-2 text-center shadow-xl">
-            <p className="text-[1.2em]">Together for</p>
-            <h1 className="text-[3em] font-bold">420 days</h1>
-            <h1 className="text-[1.2em]">Rick & Morty</h1>
+          <article className=" flex w-1/2 min-w-[16em] max-w-[28em] flex-col items-center rounded-xl bg-white bg-opacity-80 p-2 shadow-xl hover:animate-pulse">
+            <img src={heart} alt="heartbeat" className=" h-[4em] w-[4em]"></img>
+            <p className="text-[1em] leading-none">Together for</p>
+            <h1 className="text-[3em] font-bold leading-none">420 days</h1>
+            <h1 className="text-[1em]">Rick & Morty</h1>
           </article>
           <nav className="m-4 grid w-full max-w-[60em] grid-cols-3 gap-4  p-3 md:grid-cols-6">
             <NavLink

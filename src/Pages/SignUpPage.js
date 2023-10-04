@@ -1,8 +1,6 @@
 //-----------React-----------//
-
 import { useState, useEffect } from "react";
-import { NavLink } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 //-----------Firebase-----------//
 import { storage } from "../firebase/firebase";
 import { uploadBytes, ref as sRef, getDownloadURL } from "firebase/storage";
@@ -113,10 +111,10 @@ export default function SignUpPage() {
                     setEmail("");
                   },
                 );
-                navigate("/");
+                navigate("/pair-up");
               }}
             >
-              Signup
+              Sign up
             </button>
             <NavLink to="/sign-in" className="m-3 text-slate-500">
               sign in instead
