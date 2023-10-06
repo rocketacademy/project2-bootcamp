@@ -1,5 +1,6 @@
 //-----------React-----------//
 import React from "react";
+import { useState } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 //-----------Pages-----------//
@@ -64,8 +65,27 @@ const router = createBrowserRouter([
   },
 ]);
 
+export const UserContext = React.createContext(null);
+
 function App() {
-  return <RouterProvider router={router} />;
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isPairedUp, setIsPairedUp] = useState(false);
+  const [isDemo, setIsDemo] = useState(false);
+
+  const user = {
+    isLoggedIn,
+    isPairedUp,
+    isDemo,
+    setIsLoggedIn,
+    setIsPairedUp,
+    setIsDemo,
+  };
+
+  return (
+    <UserContext.Provider value={user}>
+      <RouterProvider router={router} />;
+    </UserContext.Provider>
+  );
 }
 
 export default App;

@@ -1,5 +1,12 @@
+//-----------React-----------//
 import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
+
+//-----------Firebase-----------//
+import { auth } from "../firebase/firebase";
+import { signOut } from "firebase/auth";
+
+//-----------Images-----------//
 import morty from "../Images/morty.png";
 
 export default function SettingsPage() {
@@ -8,6 +15,19 @@ export default function SettingsPage() {
 
   const navigate = useNavigate();
 
+  // Toggle sign out + navigate back to onboarding
+  const handleSignOut = () => {
+    signOut(auth)
+      .then(() => {
+        console.log("Signed Out");
+        navigate("/onboarding");
+      })
+      .catch((error) => {
+        console.log("Error Signing Out");
+      });
+  };
+
+  // Wipe pair account -> Delete all couple data + navigate back to onboarding
   const deletePairKey = () => {
     console.log("Account deleted");
     //delete user files
@@ -60,9 +80,9 @@ export default function SettingsPage() {
           />
         </form>
         <button className="btn m-3 w-1/2">Link Google Cal</button>
-        <NavLink to="/onboarding" className="btn w-1/2">
+        <button className="btn w-1/2" onClick={handleSignOut}>
           Sign Out
-        </NavLink>
+        </button>
         <button
           className="btn m-3 w-1/2 bg-red-200"
           onClick={() => document.getElementById("delete_modal").showModal()}
