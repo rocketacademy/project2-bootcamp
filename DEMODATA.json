@@ -1,18 +1,75 @@
 {
-    "pairs":[
-"pairid (unique)":[ "users": [user1,user2]
-displayname: [name1,name2]
-chat: {
-message1: { Made changes here impt
-Date: Fri Sep 29 2023 00:11:48 GMT+0800 (Singapore Standard Time),
-image: "firebase storage"
-message: "Hello"}
-}
-dates: {
-
+  "global variables": {
+    "isLoggedIn": false,
+    "isPairedUp": false,
+    "isDemo": false
+  },
+  "pairKey": "2323232323",
+  "displayName": ["name1", "name2"],
+  "users": ["user1", "user2"],
+  "emails": ["user1@gmail.com", "user2@gmail.com"],
+  "startDay": "Fri Sep 29 2023",
+  "backgroundPhoto": "https://firebasestorage.googleapis.com/v0/b/rocketgram-b6e66.appspot.com/o/image%2Floop2.gif?alt=media&token=38f84048-faa9-42fe-9839-12a370abc62e",
+  "chat": [
+    {
+      "key": "-NfRYsWVOJKJ031NT1PX",
+      "message": "how are you doing today",
+      "user": "user1",
+      "datetime": "Fri Sep 29 2023 00:11:48 GMT+0800 (Singapore Standard Time)",
+      "image": "https://firebasestorage.googleapis.com/v0/b/rocketgram-b6e66.appspot.com/o/image%2Floop2.gif?alt=media&token=38f84048-faa9-42fe-9839-12a370abc62e"
+    },
+    {
+      "key": "-NfRYsWVOJKJ034NT1Ps",
+      "message": "I'm doing fine",
+      "user": "user2",
+      "datetime": "Fri Sep 29 2023 00:11:48 GMT+0800 (Singapore Standard Time)",
+      "image": "https://firebasestorage.googleapis.com/v0/b/rocketgram-b6e66.appspot.com/o/image%2Floop2.gif?alt=media&token=38f84048-faa9-42fe-9839-12a370abc62e"
     }
-
-}]
+  ],
+  "dates": [
+    {
+      "key": "-NfRYsWVOJKJ031NT1PX",
+      "date": "Fri Sep 29 2023",
+      "time": "00:11:48 GMT+0800 (Singapore Standard Time)",
+      "activity": "Bowling at Changi Airport",
+      "description": "Make sure to bring your balls"
+    },
+    {
+      "key": "-NfRYsWVOJKJ031NT1PX",
+      "date": "Fri Oct 1 2023",
+      "time": "00:11:48 GMT+0800 (Singapore Standard Time)",
+      "activity": "Cycling at ECP",
+      "description": "Bring helmets!"
+    }
+  ],
+  "feed": [
+    {
+      "key": "-NfRYsWVOJKJ031NT1PX",
+      "date": "Fri Sep 29 2023",
+      "activity": "Bought HDB Flat!",
+      "description": "Won the HDB toto!",
+      "milestone": true,
+      "image": ["img link1", "img link2", "img link3"]
+    },
+    {
+      "key": "-NfRYsWVOJKJ031NT1PX",
+      "date": "Fri Sep 30 2023",
+      "activity": "Dancing at 1million studio",
+      "description": "Fun time with the instructor",
+      "milestone": false,
+      "image": ["img link1", "img link2"]
+    }
+  ],
+  "bucketList": [
+    {
+      "key": "-NfRYsWVOJKJ031NT1PX",
+      "item": "Visit London",
+      "isCompleted": true
+    },
+    {
+      "key": "-NfRYsWVOJKJ031NT1PX",
+      "item": "Visit the Louve museum in Paris",
+      "isCompleted": false
+    }
+  ]
 }
-
-Made changes here imptMade changes here imptMade changes here imptMade changes here impt

@@ -4,14 +4,15 @@ Contributors: Ignatius Tan, Gabriel Lim, Kenneth Lee
 
 # Paired Up - Couples App
 
-App description in one sentence
+[To update] App description in one sentence
 
-## Tech Stack
+## Tech Stack [To update]
 
 - React.JS
 - TailwindCSS
-- Daisy
+- Daisy UI
 - Google Calendar API
+- React Router
 
 ## Project Management
 
@@ -19,17 +20,20 @@ App description in one sentence
 - Wireframing & User Flows - Miro
 - Communication - Slack
 
-## Core Features
+## Core Features [To update]
 
-- Adding Dates
-- Chat
+- Dates - [To update] Plan dates together in advance & add to your calendar instantly
+- Chat - [To update] Private chatroom with your significant other! Share your favourite memories together
+- Feed - [To update] All in one
+- Bucket List - [To update]
+- Time Capsule - [To update]
+- Journal - [To update]
 
-## Future Enhancements
+## Future Enhancements [To update]
 
-- XX
-- XX
+- [To update]
 
-# Resources Used
+# Resources Used [To update]
 
 - Google Cal API Setup in Firebase https://developers.google.com/calendar/api/quickstart/js
 
