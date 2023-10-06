@@ -1,17 +1,28 @@
+//-----------React-----------//
 import { NavLink } from "react-router-dom";
+import { useContext } from "react";
+import { UserContext } from "../App.js";
 
+//-----------Images-----------//
 import profile from "../Images/upload.png";
 import morty from "../Images/morty.png";
 import background from "../Images/test.png";
 import heart from "../Images/heart.gif";
 
 export default function HomePage() {
-  //Add Global State for isloggedIn
+  //Pull in context from App.js
+  const context = useContext(UserContext);
   return (
     <>
       <div className="flex h-screen flex-col items-center justify-center">
         <header className="fixed top-0 flex w-screen flex-row justify-between p-3">
-          <div className="text-transparent">blankspc</div>
+          <div className="bg-white text-[10px]">
+            <p className="font-bold">State helper:</p>
+            {context.isLoggedIn ? <p>Signed In</p> : <p>Signed Out</p>}
+            {context.isPairedUp ? <p>Paired Up</p> : <p>Not Paired</p>}
+            {context.isDemo ? <p>Demo</p> : <p>Not Demo</p>}
+          </div>
+
           <img
             src={profile}
             alt="import profile"

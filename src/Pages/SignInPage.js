@@ -1,21 +1,33 @@
 //-----------React-----------//
-
-import { useState } from "react";
-import { NavLink } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect, useContext } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
+import { UserContext } from "../App.js";
 //-----------Firebase-----------//
-
 import { auth } from "../firebase/firebase";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
 //-----------Images-----------//
-
 import profile from "../Images/upload.png";
 
 export default function SignInPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [user, setUser] = useState({});
 
   const navigate = useNavigate();
+  const context = useContext(UserContext);
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (userInfo) => {
+      if (userInfo) {
+        console.log(userInfo);
+        // signed in user
+        context.setIsLoggedIn(true);
+      } else {
+        // no signed-in user
+        context.setIsLoggedIn(false);
+      }
+    });
+  }, []);
 
   return (
     <>
