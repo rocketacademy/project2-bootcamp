@@ -1,6 +1,8 @@
+import React from "react";
 import { NavLink } from "react-router-dom";
 import { useContext } from "react";
 import { UserContext } from "../App.js";
+import BucketForm from "../Components/BucketForm.js";
 
 export default function BucketListPage() {
   //Pull in context from App.js
@@ -21,7 +23,7 @@ export default function BucketListPage() {
           )}
         </header>
         <main>
-          <p>Insert Bucket List</p>
+          <BucketForm />
         </main>
       </div>
     </>
