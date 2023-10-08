@@ -4,9 +4,8 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { UserContext } from "../App.js";
 
 //-----------Firebase-----------//
-import { storage } from "../firebase/firebase";
+import { storage, auth } from "../firebase/firebase";
 import { uploadBytes, ref as sRef, getDownloadURL } from "firebase/storage";
-import { auth } from "../firebase/firebase";
 import {
   createUserWithEmailAndPassword,
   onAuthStateChanged,
@@ -81,6 +80,7 @@ export default function SignUpPage() {
           <NavLink to="/onboarding" className="text-[2em]">
             ←
           </NavLink>
+          <p className="text-[2em]">Sign Up</p>
           <p className="text-transparent">blank</p>
         </header>
         {signingUp ? (
@@ -90,7 +90,7 @@ export default function SignUpPage() {
               alt="Profile"
               className="h-[8em] rounded-full border-2 border-black p-1"
             />
-            <h1 className="m-3 text-[2em] font-bold">Hello {displayName} </h1>
+            <h1 className="m-3 text-[2em] font-bold">Hello {displayName}!</h1>
             <SignUpForm
               signUp={signUp}
               email={email}

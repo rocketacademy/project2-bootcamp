@@ -35,20 +35,25 @@
 
 # Onboarding - Sign Up
 
-- (WIP) User can upload their display photo when signing up
-- (WIP) User can input their display name when signing up
-- User can only proceed to sign up with email/password when display name is filled (profile picture optional)
-- (WIP) User can view their display photo and display name when signing up
-- (WIP) User can receive feedback message (e.g. invalid email, account exists etc.) during the signup process
+- (WIP - Link DP to account + Store images properly) User can upload their display photo when signing up
+- (WIP - Link DN to account + Stor properly in database) User can input their display name when signing up
+- (Make photo upload more obvious) User can only proceed to sign up with email/password when display name is filled (profile picture optional)
+- User can view their display photo and display name when signing up
+- User can receive feedback message (e.g. invalid email, account exists etc.) during the signup process
 
 # Onboarding - Pairing
 
--
+- (WIP) Users can only create unique pair keys, reject message should be shown if the key they have inputted does not match
+- Users must create a pair key + input their start of relationship before they are able to create a room
+- (WIP) Users joining an existing room should receive a confirmation if their pair key is eligible to join a room
+- (WIP) Users creating a room should have launch room available when their partner has signed up with their link / Automatically redirected to the home page once isPairedUp: True
+- Users in the waiting room are able to copy their pair key to send to their partner
 
 # Onboarding - Sign In
 
 - (WIP) User can view their display photo and display name after email has been input
-- (WIP) User can reset their password with forgot password
+- User can reset their password with forgot password
+- User can receive feedback message (e.g. invalid email, account exists etc.) during the signin process
 
 # Chat
 
