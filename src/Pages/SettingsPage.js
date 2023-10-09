@@ -1,7 +1,41 @@
-import { NavLink } from "react-router-dom";
+//-----------React-----------//
+import { useState } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
+
+//-----------Firebase-----------//
+import { auth } from "../firebase/firebase";
+import { signOut } from "firebase/auth";
+
+//-----------Images-----------//
 import morty from "../Images/morty.png";
 
 export default function SettingsPage() {
+  const [pairKey, setPairKey] = useState("");
+  const [tempPairKey, setTempPairKey] = useState("Example123"); //temp pair key till able to import from database
+
+  const navigate = useNavigate();
+
+  // Toggle sign out + navigate back to onboarding
+  const handleSignOut = () => {
+    signOut(auth)
+      .then(() => {
+        console.log("Signed Out");
+        navigate("/onboarding");
+      })
+      .catch((error) => {
+        console.log("Error Signing Out");
+      });
+  };
+
+  // Wipe pair account -> Delete all couple data + navigate back to onboarding
+  const deletePairKey = () => {
+    console.log("Account deleted");
+    //delete user files
+    //sign out user
+    //set global state back to isSignedIn (false) + isPaired (false)
+    navigate("/onboarding");
+  };
+
   return (
     <div className=" flex h-screen flex-col items-center justify-center">
       <header className="fixed top-0 flex w-screen flex-row items-center justify-between p-4">
@@ -22,7 +56,7 @@ export default function SettingsPage() {
           <br />
           <input
             type="text"
-            className=" mb-2 w-full rounded-md border-[1px] border-black"
+            className=" input w-full"
             id="displayName"
             placeholder=""
           />
@@ -32,7 +66,7 @@ export default function SettingsPage() {
 
           <input
             type="file"
-            className=" mb-2 w-full rounded-md border-[1px] border-black"
+            className="file-input w-full"
             id="background photo"
             placeholder="Insert file"
           />
@@ -40,15 +74,57 @@ export default function SettingsPage() {
           <label>Start of relationship:</label>
           <input
             type="date"
-            className="mb-2 w-full rounded-md border-[1px] border-black"
+            className="input w-full"
             id="background photo"
             placeholder="Insert file"
           />
         </form>
         <button className="btn m-3 w-1/2">Link Google Cal</button>
-        <NavLink to="/onboarding" className="btn w-1/2">
+        <button className="btn w-1/2" onClick={handleSignOut}>
           Sign Out
-        </NavLink>
+        </button>
+        <button
+          className="btn m-3 w-1/2 bg-red-200"
+          onClick={() => document.getElementById("delete_modal").showModal()}
+        >
+          Delete Pair
+        </button>
+        <dialog id="delete_modal" className="modal ">
+          <div className="modal-box bg-slate-100">
+            <form method="dialog">
+              <button className="btn btn-circle btn-ghost btn-sm absolute right-2 top-2">
+                ✕
+              </button>
+            </form>
+            <h3 className="text-lg font-bold">
+              Are you sure you want to delete your pair?
+            </h3>
+            <p className="py-2">
+              This operation
+              <span className="font-bold text-red-600">
+                {" "}
+                cannot be reversed
+              </span>
+              , all images, chats and data for both users will be erased. Enter
+              your pair key below to delete your pair.
+            </p>
+            <p className="py-2">Your Pair Key: {tempPairKey}</p>
+            <form>
+              <input
+                className="input"
+                value={pairKey}
+                onChange={(e) => setPairKey(e.target.value)}
+              ></input>
+              <button
+                className="btn disabled:text-slate-300"
+                disabled={!(pairKey === tempPairKey)}
+                onClick={deletePairKey}
+              >
+                Confirm
+              </button>
+            </form>
+          </div>
+        </dialog>
       </main>
     </div>
   );

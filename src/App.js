@@ -1,11 +1,13 @@
 //-----------React-----------//
 import React from "react";
+import { useState } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 //-----------Pages-----------//
 import HomePage from "./Pages/HomePage";
 import Onboarding from "./Pages/OnboardingPage";
 import SignUpPage from "./Pages/SignUpPage";
+import PairUp from "./Pages/PairUpPage";
 import SignInPage from "./Pages/SignInPage";
 import SettingsPage from "./Pages/SettingsPage";
 import ChatPage from "./Pages/ChatPage";
@@ -34,6 +36,10 @@ const router = createBrowserRouter([
     element: <SignUpPage />,
   },
   {
+    path: "/pair-up",
+    element: <PairUp />,
+  },
+  {
     path: "/sign-in",
     element: <SignInPage />,
   },
@@ -59,8 +65,27 @@ const router = createBrowserRouter([
   },
 ]);
 
+export const UserContext = React.createContext(null);
+
 function App() {
-  return <RouterProvider router={router} />;
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isPairedUp, setIsPairedUp] = useState(false);
+  const [isDemo, setIsDemo] = useState(false);
+
+  const user = {
+    isLoggedIn,
+    isPairedUp,
+    isDemo,
+    setIsLoggedIn,
+    setIsPairedUp,
+    setIsDemo,
+  };
+
+  return (
+    <UserContext.Provider value={user}>
+      <RouterProvider router={router} />;
+    </UserContext.Provider>
+  );
 }
 
 export default App;
