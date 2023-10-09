@@ -1,81 +1,87 @@
 //-----------React-----------//
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
+import { UserContext } from "../App.js";
+
 //-----------Firebase-----------//
 import { database } from "../firebase/firebase";
-import { ref, push, set, child, get, update } from "firebase/database";
+import { ref, set, child, get, update } from "firebase/database";
 
 import morty from "../Images/morty.png";
 import heart from "../Images/heart.gif";
 
 export default function PairUp() {
-  const [pairKeyCreate, setpairKeyCreate] = useState("");
-  const [pairKeyJoin, setpairKeyJoin] = useState("");
+  const [pairKeyCreate, setPairKeyCreate] = useState("");
+  const [pairKeyJoin, setPairKeyJoin] = useState("");
   const [startDate, setStartDate] = useState("");
   const [copied, setCopied] = useState(false);
   const [isFilled, setIsFilled] = useState(false);
-  const [message, setMessage] = useState("");
-
-  const navigate = useNavigate();
+  const [isUnique, setIsUnique] = useState(false);
+  const [message, setMessage] = useState("Create Pair Key:");
 
   const DB_PAIRKEY_KEY = "pairKeyRef";
+  const context = useContext(UserContext);
 
   const copyToClipboard = () => {
-    navigator.clipboard.writeText("rick&morty");
+    navigator.clipboard.writeText(pairKeyCreate);
     setCopied(true);
   };
 
+  // Check if both inputs are filled and the pair key is unique
   useEffect(() => {
-    // Check if both inputs are filled and update isFilled state accordingly
-    setIsFilled(pairKeyCreate.trim() !== "" && startDate.trim() !== "");
-  }, [pairKeyCreate, startDate]);
+    setIsFilled(
+      pairKeyCreate.trim() !== "" && startDate.trim() !== "" && isUnique,
+    );
+  }, [pairKeyCreate, startDate, isUnique]);
 
+  // Write data to firebase to create a new room + add the pairkey to the database
   const writeData = () => {
-    // Save pairkey to reference to check for unique
     const pairKeyRef = ref(database, DB_PAIRKEY_KEY);
-    const pairKeyQuery = child(pairKeyRef, pairKeyCreate);
-    const timestamp = new Date().getTime();
+    const roomRef = ref(database, pairKeyCreate);
 
     update(pairKeyRef, {
-      [timestamp]: pairKeyCreate,
-    });
-    get(pairKeyQuery)
-      .then((snapshot) => {
-        if (snapshot.exists()) {
-          console.log(snapshot);
-          console.log("Pair Key Exists - create new pairkey");
-        } else {
-          console.log(snapshot.val());
-          console.log("Pair Key is Unique");
-          console.log("New Room Created");
-          const roomRef = ref(database, pairKeyCreate);
-          set(roomRef, {
-            pairKey: pairKeyCreate,
-            startDate: startDate,
-          });
-        }
+      [pairKeyCreate]: pairKeyCreate,
+    })
+      .then(() => {
+        return set(roomRef, {
+          pairKey: pairKeyCreate,
+          startDate: startDate,
+        });
+      })
+      .then(() => {
+        // Set the pair key to global context
+        context.setPairKey(pairKeyCreate);
       })
       .catch((error) => {
         console.error("Error writing data:", error);
       });
   };
+  // Check on every change to pairKeyCreate if the value is unique
+  useEffect(() => {
+    if (pairKeyCreate !== "") {
+      const dbRef = ref(database, DB_PAIRKEY_KEY);
+      const pairKeyQuery = child(dbRef, pairKeyCreate);
 
-  // const checkPairKey = (pairKeyCreate) => {
-  //   const dbRef = ref(database, "Pairkey");
-  //   const pairKeyQuery = child(dbRef, pairKeyCreate);
-
-  //   get(pairKeyQuery)
-  //     .then((snapshot) => {
-  //       if (snapshot.exists()) {
-  //         console.log("exists", snapshot.val());
-  //       } else {
-  //         console.log("No such pairkey exists");
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       console.error(error);
-  //     });
-  // };
+      get(pairKeyQuery)
+        .then((snapshot) => {
+          if (snapshot.exists()) {
+            setMessage("❌ Pair key already exists");
+            setIsUnique(false);
+          } else {
+            setMessage(
+              <p>
+                ✅ <strong>{pairKeyCreate}</strong> is available
+              </p>,
+            );
+            setIsUnique(true);
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+    setMessage("Create Pair Key:");
+  }, [pairKeyCreate]);
 
   return (
     <div className=" flex h-screen flex-col items-center justify-center">
@@ -104,20 +110,20 @@ export default function PairUp() {
           Create a unique pair key for you and your partner
         </p>
         <form className="flex flex-col items-center">
-          <label>Create Pair Key:</label>
+          <label className=" p-1 text-sm">{message}</label>
           <input
             type="text"
             className=" mb-2 w-[10em] rounded-md border-[1px] border-black px-2"
             id="create-pairkey"
             value={pairKeyCreate}
             onChange={(e) => {
-              setpairKeyCreate(e.target.value);
+              setPairKeyCreate(e.target.value.toLowerCase());
             }}
             placeholder="rick&morty"
           />
-          {/* {message && message} */}
+          {/* Unique pair key confirmation message */}
 
-          <label>Start of relationship:</label>
+          <label className="text-sm">Start of relationship:</label>
           <input
             type="date"
             className="mb-2 w-[10em] rounded-md border-[1px] border-black px-2"
@@ -128,17 +134,15 @@ export default function PairUp() {
             }}
           />
         </form>
-        {/* <button onClick={checkPairKey(pairKeyCreate)} className="btn">
-          Confirm availability
-        </button> */}
-        <button onClick={writeData} className="btn">
-          ADD Pair Key
-        </button>
+
         {/* Waiting room modal */}
         <button
           className="btn w-[10em] disabled:text-slate-300"
           disabled={!isFilled}
-          onClick={() => document.getElementById("waiting-room").showModal()}
+          onClick={() => {
+            document.getElementById("waiting-room").showModal();
+            writeData();
+          }}
         >
           create room
         </button>
@@ -160,7 +164,7 @@ export default function PairUp() {
               className="rounded-lg bg-slate-200 p-2 text-lg font-bold shadow-md active:translate-y-[3px]"
               onClick={copyToClipboard}
             >
-              📑 rick&morty
+              📑 {pairKeyCreate}
             </button>
             <p className="py-3 text-center">
               Once your partner has entered your pair key you'll be put together
@@ -185,7 +189,7 @@ export default function PairUp() {
             id="join-pairkey"
             value={pairKeyJoin}
             onChange={(e) => {
-              setpairKeyJoin(e.target.value);
+              setPairKeyJoin(e.target.value);
             }}
           />
         </form>
