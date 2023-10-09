@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 //-----------Firebase-----------//
 import { database } from "../firebase/firebase";
-import { ref, push, set, child, get } from "firebase/database";
+import { ref, push, set, child, get, update } from "firebase/database";
 
 import morty from "../Images/morty.png";
 import heart from "../Images/heart.gif";
@@ -14,6 +14,7 @@ export default function PairUp() {
   const [startDate, setStartDate] = useState("");
   const [copied, setCopied] = useState(false);
   const [isFilled, setIsFilled] = useState(false);
+  const [message, setMessage] = useState("");
 
   const navigate = useNavigate();
 
@@ -33,30 +34,26 @@ export default function PairUp() {
     // Save pairkey to reference to check for unique
     const pairKeyRef = ref(database, DB_PAIRKEY_KEY);
     const pairKeyQuery = child(pairKeyRef, pairKeyCreate);
+    const timestamp = new Date().getTime();
 
-    push(pairKeyRef, {
-      pairKey: pairKeyCreate,
+    update(pairKeyRef, {
+      [timestamp]: pairKeyCreate,
     });
     get(pairKeyQuery)
       .then((snapshot) => {
         if (snapshot.exists()) {
-          console.log("Pair Key Exists");
+          console.log(snapshot);
+          console.log("Pair Key Exists - create new pairkey");
         } else {
+          console.log(snapshot.val());
           console.log("Pair Key is Unique");
+          console.log("New Room Created");
+          const roomRef = ref(database, pairKeyCreate);
+          set(roomRef, {
+            pairKey: pairKeyCreate,
+            startDate: startDate,
+          });
         }
-      })
-      // Create a unique room
-      .then(() => {
-        console.log("New Room Created");
-        const roomRef = ref(database, pairKeyCreate);
-        set(roomRef, {
-          pairKey: pairKeyCreate,
-          startDate: startDate,
-        });
-      })
-
-      .then(() => {
-        console.log("Data written successfully");
       })
       .catch((error) => {
         console.error("Error writing data:", error);
@@ -118,6 +115,7 @@ export default function PairUp() {
             }}
             placeholder="rick&morty"
           />
+          {/* {message && message} */}
 
           <label>Start of relationship:</label>
           <input
