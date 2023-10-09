@@ -1,15 +1,16 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import { push, ref, set } from "firebase/database";
-import { realTimeDatabase } from "../firebase/firebase";
-import { render } from "react-dom";
+import { database } from "../firebase/firebase";
 
 const REALTIME_DATABASE_KEY_BUCKET = "bucket-list";
 
-export default function BucketForm() {
+export default function BucketForm({ onSubmit }) {
   //State for bucketlist
   const [title, setTitle] = useState("");
   const [items, setItems] = useState([]);
   const [newItem, setNewItem] = useState("");
+  const [date, setDate] = useState("");
+  const [isDateSelected, setIsDateSelected] = useState(false);
 
   //create input to add more items with + button...
   const handleSubmit = (e) => {
@@ -28,19 +29,6 @@ export default function BucketForm() {
     setNewItem("");
   };
 
-  //create a toggle for checkbox
-  const toggleItems = (id, completed) => {
-    setItems((currentItems) => {
-      return currentItems.map((items) => {
-        if (items.id === id) {
-          return { ...items, completed };
-        }
-
-        return items;
-      });
-    });
-  };
-
   //delete item
   const deleteItem = (id) => {
     setItems((currentItems) => {
@@ -48,9 +36,27 @@ export default function BucketForm() {
     });
   };
 
+  //send data to database
+  const writeData = () => {
+    const bucketListRef = ref(database, REALTIME_DATABASE_KEY_BUCKET);
+    const newBucketRef = push(bucketListRef);
+
+    set(newBucketRef, {
+      title: title,
+      items: items,
+      date: date,
+    });
+
+    setTitle("");
+    setItems([]);
+    setNewItem("");
+    setDate("");
+    onSubmit();
+  };
+
   return (
     <div>
-      <label>Bucket:</label>
+      <label>Bucket :</label>
       <input
         type="text"
         name="title"
@@ -61,7 +67,7 @@ export default function BucketForm() {
         }}
       />
       <br />
-      <label>Add your socks:</label>
+      <label>Add your socks :</label>
       <input
         type="text"
         name="newItem"
@@ -77,19 +83,33 @@ export default function BucketForm() {
         {items.map((items) => {
           return (
             <li key={items.id}>
-              <label>
-                <input
-                  type="checkbox"
-                  checked={items.completed}
-                  onChange={(e) => toggleItems(items.id, e.target.checked)}
-                />
-                {items.title}
-              </label>
+              <label>{items.title}</label>
               <button onClick={() => deleteItem(items.id)}>Delete</button>
             </li>
           );
         })}
       </ul>
+      <input
+        className="check-for-date"
+        type="checkbox"
+        checked={isDateSelected}
+        onChange={() => setIsDateSelected(!isDateSelected)}
+      />
+      <label>Completion Date? :</label>
+      <input
+        type="date"
+        className="mb-2 w-[10em] rounded-md border-[1px] border-black px-2"
+        id="date"
+        value={date}
+        onChange={(e) => {
+          setDate(e.target.value);
+        }}
+        disabled={!isDateSelected}
+      />
+      <br />
+      <button className="bucket-button" onClick={writeData}>
+        Submit
+      </button>
     </div>
   );
 }
