@@ -1,30 +1,37 @@
 //-----------React-----------//
 import { useState, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
+import { UserContext } from "../App.js";
+
 //-----------Firebase-----------//
 import { storage } from "../firebase/firebase";
 import { uploadBytes, ref as sRef, getDownloadURL } from "firebase/storage";
 import { auth } from "../firebase/firebase";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  onAuthStateChanged,
+} from "firebase/auth";
 //-----------Images-----------//
 
 import profile from "../Images/upload.png";
 import morty from "../Images/morty.png";
+import SignUpForm from "../Components/Onboarding/SignUpForm.js";
 
 export default function SignUpPage() {
   const [isFilled, setIsFilled] = useState(false);
-  const [name, setName] = useState("");
+  const [displayName, setDisplayName] = useState("");
   const [signingUp, setSigningUp] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [file, setFile] = useState(null);
   const [profilePicture, setProfilePicture] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
 
   const navigate = useNavigate();
 
-  const handleNameChange = (event) => {
-    const newName = event.target.value;
-    setName(newName);
+  const handleNameChange = (e) => {
+    let newName = e.target.value;
+    setDisplayName(newName);
     setIsFilled(newName.trim() !== "");
   };
 
@@ -34,20 +41,29 @@ export default function SignUpPage() {
     setFile(file);
   };
 
+  const signUp = async () => {
+    try {
+      const userInfo = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password,
+      );
+      console.log(userInfo);
+      setEmail("");
+      setPassword("");
+      if (userInfo) {
+        navigate("/pair-up");
+      }
+    } catch (error) {
+      setErrorMessage(error.message);
+    }
+  };
+
   useEffect(() => {
     if (file) {
       const fileRef = sRef(storage, `image/${file.name}`);
       uploadBytes(fileRef, file)
         .then(() => getDownloadURL(fileRef))
-        // .then((url) => {
-        //   // Add posts and final URL AFTER image URL is generated
-        //   push(postListRef, {
-        //     comment: comment,
-        //     date: `${new Date()}`,
-        //     image: url,
-        //   });
-        // })
-        // Clear input fields
         .then((url) => {
           setProfilePicture(url);
           setFile(null);
@@ -74,51 +90,15 @@ export default function SignUpPage() {
               alt="Profile"
               className="h-[8em] rounded-full border-2 border-black p-1"
             />
-            <h1 className="m-3 text-[2em] font-bold">Hello {name} </h1>
-            <form>
-              <label>Email:</label>
-              <br />
-              <input
-                type="text"
-                className="input"
-                id="email"
-                placeholder="morty-smith@adultswim.com"
-                onChange={(e) => setEmail(e.target.value)}
-                value={email}
-              />
-              <br />
-              <label>Password:</label>
-              <br />
-
-              <input
-                type="password"
-                className="input"
-                id="password"
-                placeholder="********"
-                onChange={(e) => setPassword(e.target.value)}
-                value={password}
-              />
-            </form>
-            <br />
-            <button
-              className="btn"
-              onClick={async (e) => {
-                e.preventDefault();
-                createUserWithEmailAndPassword(auth, email, password).then(
-                  (userInfo) => {
-                    console.log(userInfo);
-                    setPassword("");
-                    setEmail("");
-                  },
-                );
-                navigate("/pair-up");
-              }}
-            >
-              Sign up
-            </button>
-            <NavLink to="/sign-in" className="m-3 text-slate-500">
-              sign in instead
-            </NavLink>
+            <h1 className="m-3 text-[2em] font-bold">Hello {displayName} </h1>
+            <SignUpForm
+              signUp={signUp}
+              email={email}
+              password={password}
+              setEmail={setEmail}
+              setPassword={setPassword}
+              errorMessage={errorMessage}
+            />
           </>
         ) : (
           <>
@@ -146,7 +126,7 @@ export default function SignUpPage() {
             <input
               type="text"
               className="input m-3 "
-              value={name}
+              value={displayName}
               onChange={handleNameChange}
             ></input>
             <button
