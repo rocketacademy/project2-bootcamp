@@ -16,7 +16,8 @@ import SignInForm from "../Components/Onboarding/SignInForm.js";
 export default function SignInPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [user, setUser] = useState("");
+  // const [user, setUser] = useState("");
+  const [message, setMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState(null);
 
   const navigate = useNavigate();
@@ -28,7 +29,7 @@ export default function SignInPage() {
       console.log(userInfo);
       setEmail("");
       setPassword("");
-      setUser(userInfo);
+      // setUser(userInfo);
       if (userInfo) {
         navigate("/");
       }
@@ -39,10 +40,13 @@ export default function SignInPage() {
 
   const resetPassword = (e) => {
     e.preventDefault();
+    setMessage("");
+    setErrorMessage("");
     sendPasswordResetEmail(auth, email)
       .then((response) => {
         console.log("email sent");
         console.log("email response?", response);
+        setMessage(`Reset password email has been sent to ${email}`);
       })
       .catch((error) => {
         setErrorMessage(error.message);
@@ -60,7 +64,7 @@ export default function SignInPage() {
         context.setIsLoggedIn(false);
       }
     });
-  }, []);
+  }, [context]);
 
   return (
     <>
@@ -77,7 +81,9 @@ export default function SignInPage() {
             alt="import profile"
             className="h-[8em] rounded-full border-2 border-black p-2"
           />
-          <h1 className="m-3 text-[2em] font-bold">Welcome back</h1>
+          <h1 className="m-3 text-[2em] font-bold">
+            Welcome back [displayName]
+          </h1>
 
           <SignInForm
             signIn={signIn}
@@ -88,6 +94,7 @@ export default function SignInPage() {
             resetPassword={resetPassword}
             errorMessage={errorMessage}
           />
+          {message && message}
         </>
       </div>
     </>

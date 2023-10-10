@@ -15,6 +15,7 @@ import BucketList from "./Pages/BucketListPage";
 import FeedPage from "./Pages/FeedPage";
 import DatesPage from "./Pages/DatesPage";
 import ErrorPage from "./Pages/ErrorPage";
+import BucketForm from "./Components/BucketForm";
 
 //-----------Firebase-----------//
 
@@ -61,21 +62,28 @@ const router = createBrowserRouter([
   },
   {
     path: "/bucket-list",
-    element: <BucketList />,
+    element: (
+      <BucketList>
+        <BucketForm />
+      </BucketList>
+    ),
   },
 ]);
 
 export const UserContext = React.createContext(null);
 
 function App() {
+  const [pairKey, setPairKey] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isPairedUp, setIsPairedUp] = useState(false);
   const [isDemo, setIsDemo] = useState(false);
 
   const user = {
+    pairKey,
     isLoggedIn,
     isPairedUp,
     isDemo,
+    setPairKey,
     setIsLoggedIn,
     setIsPairedUp,
     setIsDemo,

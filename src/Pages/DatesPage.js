@@ -2,6 +2,8 @@ import { NavLink } from "react-router-dom";
 import { useContext } from "react";
 import { UserContext } from "../App.js";
 
+import Event from "../Components/Dates/Event.js";
+
 export default function DatesPage() {
   //Pull in context from App.js
   const context = useContext(UserContext);
@@ -22,6 +24,7 @@ export default function DatesPage() {
         </header>
         <main>
           <p>Insert Dates</p>
+          <Event />
         </main>
       </div>
     </>
