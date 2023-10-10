@@ -68,14 +68,17 @@ const router = createBrowserRouter([
 export const UserContext = React.createContext(null);
 
 function App() {
+  const [pairKey, setPairKey] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isPairedUp, setIsPairedUp] = useState(false);
   const [isDemo, setIsDemo] = useState(false);
 
   const user = {
+    pairKey,
     isLoggedIn,
     isPairedUp,
     isDemo,
+    setPairKey,
     setIsLoggedIn,
     setIsPairedUp,
     setIsDemo,
