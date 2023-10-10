@@ -4,17 +4,54 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { UserContext } from "../App.js";
 //-----------Firebase-----------//
 import { auth } from "../firebase/firebase";
-import { signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
+import {
+  signInWithEmailAndPassword,
+  sendPasswordResetEmail,
+  onAuthStateChanged,
+} from "firebase/auth";
 //-----------Images-----------//
 import profile from "../Images/upload.png";
+import SignInForm from "../Components/Onboarding/SignInForm.js";
 
 export default function SignInPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [user, setUser] = useState({});
+  // const [user, setUser] = useState("");
+  const [message, setMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState(null);
 
   const navigate = useNavigate();
   const context = useContext(UserContext);
+
+  const signIn = async () => {
+    try {
+      const userInfo = await signInWithEmailAndPassword(auth, email, password);
+      console.log(userInfo);
+      setEmail("");
+      setPassword("");
+      // setUser(userInfo);
+      if (userInfo) {
+        navigate("/");
+      }
+    } catch (error) {
+      setErrorMessage(error.message);
+    }
+  };
+
+  const resetPassword = (e) => {
+    e.preventDefault();
+    setMessage("");
+    setErrorMessage("");
+    sendPasswordResetEmail(auth, email)
+      .then((response) => {
+        console.log("email sent");
+        console.log("email response?", response);
+        setMessage(`Reset password email has been sent to ${email}`);
+      })
+      .catch((error) => {
+        setErrorMessage(error.message);
+      });
+  };
 
   useEffect(() => {
     onAuthStateChanged(auth, (userInfo) => {
@@ -27,7 +64,7 @@ export default function SignInPage() {
         context.setIsLoggedIn(false);
       }
     });
-  }, []);
+  }, [context]);
 
   return (
     <>
@@ -44,51 +81,20 @@ export default function SignInPage() {
             alt="import profile"
             className="h-[8em] rounded-full border-2 border-black p-2"
           />
-          <h1 className="m-3 text-[2em] font-bold">Welcome back</h1>
-          <form>
-            <label>Email:</label>
-            <br />
-            <input
-              type="text"
-              className="input"
-              id="email"
-              placeholder="morty-smith@adultswim.com"
-              onChange={(e) => setEmail(e.target.value)}
-              value={email}
-            />
-            <br />
-            <label>Password:</label>
-            <br />
+          <h1 className="m-3 text-[2em] font-bold">
+            Welcome back [displayName]
+          </h1>
 
-            <input
-              type="password"
-              className="input"
-              id="password"
-              placeholder="********"
-              onChange={(e) => setPassword(e.target.value)}
-              value={password}
-            />
-          </form>
-          <br />
-          <button
-            className="btn"
-            onClick={async (e) => {
-              e.preventDefault();
-              signInWithEmailAndPassword(auth, email, password).then(
-                (userInfo) => {
-                  console.log(userInfo);
-                  setPassword("");
-                  setEmail("");
-                },
-              );
-              navigate("/");
-            }}
-          >
-            Signup
-          </button>
-          <NavLink to="/onboarding" className="m-3 text-slate-500">
-            Forgot password?{" "}
-          </NavLink>
+          <SignInForm
+            signIn={signIn}
+            email={email}
+            password={password}
+            setEmail={setEmail}
+            setPassword={setPassword}
+            resetPassword={resetPassword}
+            errorMessage={errorMessage}
+          />
+          {message && message}
         </>
       </div>
     </>

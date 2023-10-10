@@ -1,84 +1,294 @@
-import { useState } from "react";
+//-----------React-----------//
+import { useState, useEffect, useContext } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
+import { UserContext } from "../App.js";
+
+//-----------Firebase-----------//
+import { database, auth } from "../firebase/firebase";
+import { ref, set, child, get, update } from "firebase/database";
+
+//-----------Images-----------//
 import morty from "../Images/morty.png";
+import heart from "../Images/heart.gif";
 
 export default function PairUp() {
-  const [pairKey, setPairKey] = useState("");
-  const [keyCreated, setKeyCreated] = useState(false); //temp pair key till able to import from database
+  const [pairKeyCreate, setPairKeyCreate] = useState("");
+  const [pairKeyJoin, setPairKeyJoin] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [message, setMessage] = useState("Create Pair Key:");
+  const [joinMessage, setJoinMessage] = useState("Enter your Pair Key:");
 
+  //Toggles
+  const [copied, setCopied] = useState(false);
+  const [isFilled, setIsFilled] = useState(false);
+  const [isUnique, setIsUnique] = useState(false);
+  //Profile data pulled from Auth
+  const [email, setEmail] = useState("");
+  const [displayName, setDisplayName] = useState("");
+  const [profilePicture, setProfilePicture] = useState(null);
+
+  const DB_PAIRKEY_KEY = "pairKeyRef";
+  const context = useContext(UserContext);
   const navigate = useNavigate();
 
-  const deletePairKey = () => {
-    console.log("Account deleted");
-    //delete user files
-    //sign out user
-    //set global state back to isSignedIn (false) + isPaired (false)
-    navigate("/onboarding");
+  // Create - Copy clipboard
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(pairKeyCreate);
+    setCopied(true);
   };
+
+  // Create - Check if both inputs are filled and the pair key is unique
+  useEffect(() => {
+    setIsFilled(
+      pairKeyCreate.trim() !== "" && startDate.trim() !== "" && isUnique,
+    );
+  }, [pairKeyCreate, startDate, isUnique]);
+
+  // Create - Write data to firebase to create a new room + add the pairkey to the database
+  const createRoom = () => {
+    const pairKeyRef = ref(database, DB_PAIRKEY_KEY);
+    const roomRef = ref(database, pairKeyCreate);
+    // Create pairKey Room
+    update(pairKeyRef, {
+      [pairKeyCreate]: pairKeyCreate,
+    })
+      .then(() => {
+        // Upload user data to room
+        return set(roomRef, {
+          pairKey: pairKeyCreate,
+          startDate: startDate,
+          displayName1: displayName,
+          profilePicture1: profilePicture,
+          email1: email,
+        });
+      })
+      .then(() => {
+        // Set the pair key to global context
+        context.setPairKey(pairKeyCreate);
+      })
+      .catch((error) => {
+        console.error("Error writing data:", error);
+      });
+  };
+  // Create - Check on every keypress that pairKeyCreate if the value is unique
+  useEffect(() => {
+    if (pairKeyCreate !== "") {
+      const dbRef = ref(database, DB_PAIRKEY_KEY);
+      const pairKeyQuery = child(dbRef, pairKeyCreate);
+      // Display message on uniqueness of pair key
+      get(pairKeyQuery)
+        .then((snapshot) => {
+          if (snapshot.exists()) {
+            setMessage("❌ Pair key already exists");
+            setIsUnique(false);
+          } else {
+            setMessage(
+              <p>
+                ✅ <strong>{pairKeyCreate}</strong> is available
+              </p>,
+            );
+            setIsUnique(true);
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+    // Reset to default
+    setMessage("Create Pair Key:");
+  }, [pairKeyCreate]);
+
+  //Create - Check pairkey for isPairedUp to appear
+  const checkPaired = () => {
+    if (pairKeyCreate !== "") {
+      const roomRef = ref(database, pairKeyCreate);
+      const checkPairedQuery = child(roomRef, "isPairedUp");
+      get(checkPairedQuery).then((snapshot) => {
+        if (snapshot.exists()) {
+          console.log("PAIRED UP - redirect to main");
+          navigate("/");
+        } else {
+          console.log("Not paired up yet! Pls wait");
+        }
+      });
+    }
+  };
+
+  //Join - Check if pairkey is created + No second email in pairkey
+  const joinRoom = () => {
+    if (pairKeyJoin !== "") {
+      const pairKeyRef = ref(database, DB_PAIRKEY_KEY);
+      const pairKeyQuery = child(pairKeyRef, pairKeyJoin);
+
+      // Check pairkey is created
+      get(pairKeyQuery)
+        .then((snapshot) => {
+          if (snapshot.exists()) {
+            console.log("Join - Pair Key exists!");
+            // Check email2 does not exist within pairkey room
+            const roomRef = ref(database, pairKeyJoin);
+            const emailQuery = child(roomRef, "email2");
+
+            get(emailQuery).then((emailSnapshot) => {
+              if (emailSnapshot.exists()) {
+                console.log("Joining failed - Pairkey room already filled");
+                setJoinMessage("❌ Join failed - Pair key already matched");
+              } else {
+                navigate("/");
+                console.log("Join - Room is available");
+                //Add joining user data to pairkey room
+                return update(roomRef, {
+                  displayName2: displayName,
+                  profilePicture2: profilePicture,
+                  email2: email,
+                  isPairedUp: true,
+                });
+              }
+            });
+          } else {
+            setJoinMessage("❌ Join failed - Pair key does not exist");
+            console.log("Join - Pair Key does NOT exist");
+          }
+        })
+        .then(() => {
+          // Set the pair key to global context
+          context.setPairKey(pairKeyJoin);
+        })
+        .catch((error) => {
+          console.error("Error writing data:", error);
+        });
+    }
+  };
+
+  //Pull user data
+  useEffect(() => {
+    const user = auth.currentUser;
+
+    if (user !== null) {
+      setDisplayName(user.displayName);
+      setEmail(user.email);
+      setProfilePicture(user.photoURL);
+    }
+  }, []);
 
   return (
     <div className=" flex h-screen flex-col items-center justify-center">
       <header className="fixed top-0 flex w-screen flex-row items-center justify-between p-4">
-        <NavLink to="/sign-up" className="text-[2em]">
+        <NavLink to="/sign-in" className="text-[2em]">
           ←
         </NavLink>
-        <p className="text-[2em]"></p>
+        <p className="text-[2em]">Pair Up</p>
         <p className="text-transparent">blank</p>
       </header>
-      {keyCreated ? (
-        <main className="flex w-screen flex-col items-center">
-          <h1 className="text-xl font-bold">Waiting room</h1>
-          <p className="mx-5">
-            Once your partner has entered your pair key you'll be able to launch
-            the app!
-          </p>
-          <NavLink to="/sign-in" className="btn m-2">
-            Launch
-          </NavLink>
-        </main>
-      ) : (
-        <main className="flex flex-col items-center">
-          <div className="flex flex-row">
-            <img
-              src={morty}
-              alt="Profile"
-              className="m-1 h-[8em] rounded-full border-2 border-black p-1"
-            />
-            <img
-              src={morty}
-              alt="Profile"
-              className="m-1 h-[8em] rounded-full border-2 border-black p-1"
-            />
+      <div className="flex flex-row">
+        <img
+          src={profilePicture ? profilePicture : morty}
+          alt="Profile"
+          className="m-1 h-[8em] rounded-full border-2 border-black p-1"
+        />
+        <img
+          src={morty}
+          alt="Profile"
+          className="m-1 h-[8em] rounded-full border-2 border-black p-1"
+        />
+      </div>
+      {/* Create room */}
+      <main className="m-2 flex w-[30em] flex-col items-center rounded-lg border-[1px] border-slate-800  p-2">
+        <p className="mx-5 my-2 font-bold">
+          Create a unique pair key for you and your partner
+        </p>
+        <form className="flex flex-col items-center">
+          <label className=" p-1 text-sm">{message}</label>
+          <input
+            type="text"
+            className=" mb-2 w-[10em] rounded-md border-[1px] border-black px-2"
+            id="create-pairkey"
+            value={pairKeyCreate}
+            onChange={(e) => {
+              setPairKeyCreate(e.target.value.toLowerCase());
+            }}
+            placeholder="rick&morty"
+          />
+          {/* Unique pair key confirmation message */}
+
+          <label className="pb-1 text-sm">Start of relationship:</label>
+          <input
+            type="date"
+            max={new Date().toISOString().split("T")[0]}
+            className="mb-2 w-[10em] rounded-md border-[1px] border-black px-2"
+            id="startDate"
+            value={startDate}
+            onChange={(e) => {
+              setStartDate(e.target.value);
+            }}
+          />
+        </form>
+
+        {/* Waiting room modal */}
+        <button
+          className="btn w-[10em] disabled:text-slate-300"
+          disabled={!isFilled}
+          onClick={() => {
+            document.getElementById("waiting-room").showModal();
+            createRoom();
+          }}
+        >
+          create room
+        </button>
+        <button onClick={checkPaired} className="btn m-2">
+          Check pairing
+        </button>
+        <dialog id="waiting-room" className="modal">
+          <div className="modaeil-box flex flex-col items-center bg-slate-100">
+            <form method="dialog">
+              {/* if there is a button in form, it will close the modal */}
+              <button className="btn btn-circle btn-ghost btn-sm absolute right-2 top-2">
+                ✕
+              </button>
+            </form>
+            <img src={heart} alt="heart" className="h-[8em]" />
+            {copied ? (
+              <p className="text-green-800">Pair key copied!</p>
+            ) : (
+              <p>Click to copy:</p>
+            )}
+            <button
+              className="rounded-lg bg-slate-200 p-2 text-lg font-bold shadow-md active:translate-y-[3px]"
+              onClick={copyToClipboard}
+            >
+              📑 {pairKeyCreate}
+            </button>
+            <p className="py-3 text-center">
+              Once your partner has entered your pair key you'll be put together
+              in the room.
+            </p>
+            <button onClick={checkPaired} className="btn m-2">
+              Check pairing
+            </button>
           </div>
-          <p className="mx-5 my-2 bg-slate-200">
-            Create a unique pair key for you and your partner, once your
-            partnered has entered the pair key - you'll be put together!
-          </p>
-
-          <form className="w-3/4">
-            <label>Create Pair Key:</label>
-            <br />
-            <input
-              type="text"
-              className=" mb-2 w-full rounded-md border-[1px] border-black"
-              id="displayName"
-              placeholder=""
-            />
-
-            <br />
-            <label>Start of relationship:</label>
-            <input
-              type="date"
-              className="mb-2 w-full rounded-md border-[1px] border-black"
-              id="background photo"
-              placeholder="Insert file"
-            />
-          </form>
-          <button className="btn w-1/2" onClick={setKeyCreated}>
-            Create Room
-          </button>
-        </main>
-      )}
+        </dialog>
+      </main>
+      {/* Join room */}
+      <main className="m-2 flex w-[30em] flex-col items-center rounded-lg border-[1px] border-slate-800  p-2">
+        <p className="mx-5 my-2 font-bold">
+          Already have a pair key? Enter your key below
+        </p>
+        <form className="flex flex-col items-center">
+          <label className="pb-1 text-sm">{joinMessage}</label>
+          <input
+            type="text"
+            className=" mb-2 w-[10em] rounded-md border-[1px] border-black"
+            id="join-pairkey"
+            value={pairKeyJoin}
+            onChange={(e) => {
+              setPairKeyJoin(e.target.value);
+            }}
+          />
+        </form>
+        <button onClick={joinRoom} className="btn w-[10em]">
+          Join Room
+        </button>
+      </main>
     </div>
   );
 }
