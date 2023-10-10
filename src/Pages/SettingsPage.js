@@ -11,7 +11,7 @@ import morty from "../Images/morty.png";
 
 export default function SettingsPage() {
   const [pairKey, setPairKey] = useState("");
-  const [tempPairKey, setTempPairKey] = useState("Example123"); //temp pair key till able to import from database
+  const [tempPairKey] = useState("Example123"); //temp pair key till able to import from database
 
   const navigate = useNavigate();
 

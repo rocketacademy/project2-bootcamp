@@ -16,7 +16,7 @@ import SignInForm from "../Components/Onboarding/SignInForm.js";
 export default function SignInPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [user, setUser] = useState("");
+  // const [user, setUser] = useState("");
   const [message, setMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState(null);
 
@@ -29,7 +29,7 @@ export default function SignInPage() {
       console.log(userInfo);
       setEmail("");
       setPassword("");
-      setUser(userInfo);
+      // setUser(userInfo);
       if (userInfo) {
         navigate("/");
       }
@@ -64,7 +64,7 @@ export default function SignInPage() {
         context.setIsLoggedIn(false);
       }
     });
-  }, []);
+  }, [context]);
 
   return (
     <>

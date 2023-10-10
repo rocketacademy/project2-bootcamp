@@ -1,14 +1,15 @@
 //-----------React-----------//
 import { useState, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { UserContext } from "../App.js";
+// import { UserContext } from "../App.js";
 
 //-----------Firebase-----------//
 import { storage, auth } from "../firebase/firebase";
 import { uploadBytes, ref as sRef, getDownloadURL } from "firebase/storage";
 import {
   createUserWithEmailAndPassword,
-  onAuthStateChanged,
+  // onAuthStateChanged,
+  updateProfile,
 } from "firebase/auth";
 //-----------Images-----------//
 
@@ -46,10 +47,17 @@ export default function SignUpPage() {
         email,
         password,
       );
-      console.log(userInfo);
-      setEmail("");
-      setPassword("");
+
       if (userInfo) {
+        // Update user profile information
+        await updateProfile(userInfo.user, {
+          displayName: displayName,
+          photoURL: profilePicture,
+        });
+
+        console.log("User Profile Updated");
+        setEmail("");
+        setPassword("");
         navigate("/pair-up");
       }
     } catch (error) {
