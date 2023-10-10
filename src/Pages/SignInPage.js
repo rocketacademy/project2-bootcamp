@@ -10,7 +10,8 @@ import {
   onAuthStateChanged,
 } from "firebase/auth";
 //-----------Images-----------//
-import profile from "../Images/upload.png";
+import person2 from "../Images/LogosIcons/person2.png";
+
 import SignInForm from "../Components/Onboarding/SignInForm.js";
 
 export default function SignInPage() {
@@ -68,7 +69,7 @@ export default function SignInPage() {
 
   return (
     <>
-      <div className=" flex h-screen flex-col items-center justify-center">
+      <div className="flex h-screen flex-col items-center justify-center bg-background">
         <>
           <header className="fixed top-0 flex w-screen flex-row items-center justify-between p-4">
             <NavLink to="/onboarding" className="text-[2em]">
@@ -77,13 +78,11 @@ export default function SignInPage() {
             <p className="text-transparent">blank</p>
           </header>
           <img
-            src={profile}
+            src={person2}
             alt="import profile"
-            className="h-[8em] rounded-full border-2 border-black p-2"
+            className="h-[8em] w-[8em] rounded-full border-2 border-black bg-white object-contain p-1"
           />
-          <h1 className="m-3 text-[2em] font-bold">
-            Welcome back [displayName]
-          </h1>
+          <h1 className="m-3 text-[2em] font-bold">Welcome back!</h1>
 
           <SignInForm
             signIn={signIn}

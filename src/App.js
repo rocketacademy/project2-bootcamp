@@ -53,7 +53,7 @@ const router = createBrowserRouter([
     element: <ChatPage />,
   },
   {
-    path: "/feed",
+    path: "/memories",
     element: <FeedPage />,
   },
   {
@@ -91,7 +91,7 @@ function App() {
 
   return (
     <UserContext.Provider value={user}>
-      <RouterProvider router={router} />;
+      <RouterProvider router={router} />
     </UserContext.Provider>
   );
 }

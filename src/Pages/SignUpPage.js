@@ -13,9 +13,9 @@ import {
 } from "firebase/auth";
 //-----------Images-----------//
 
-import profile from "../Images/upload.png";
-import morty from "../Images/morty.png";
+import person1 from "../Images/LogosIcons/person1.png";
 import SignUpForm from "../Components/Onboarding/SignUpForm.js";
+import Button from "../Details/Button";
 
 export default function SignUpPage() {
   const [isFilled, setIsFilled] = useState(false);
@@ -82,7 +82,7 @@ export default function SignUpPage() {
 
   return (
     <>
-      <div className=" flex h-screen flex-col items-center justify-center">
+      <div className=" flex h-screen flex-col items-center justify-center bg-background">
         <header className="fixed top-0 flex w-screen flex-row items-center justify-between p-4">
           <NavLink to="/onboarding" className="text-[2em]">
             ←
@@ -93,9 +93,9 @@ export default function SignUpPage() {
         {signingUp ? (
           <>
             <img
-              src={profilePicture ? profilePicture : morty}
+              src={profilePicture ? profilePicture : person1}
               alt="Profile"
-              className="h-[8em] rounded-full border-2 border-black p-1"
+              className="h-[8em] w-[8em] rounded-full border-2 border-black bg-white object-contain p-1"
             />
             <h1 className="m-3 text-[2em] font-bold">Hello {displayName}!</h1>
             <SignUpForm
@@ -114,9 +114,9 @@ export default function SignUpPage() {
             </h1>
             <label htmlFor="profile-picture" className="">
               <img
-                src={profilePicture ? profilePicture : profile}
+                src={profilePicture ? profilePicture : person1}
                 alt="Upload"
-                className="h-[8em] rounded-full border-2 border-black p-1"
+                className="h-[8em] w-[8em] rounded-full border-2 border-black bg-white object-contain p-1 hover:translate-y-[-2px]"
               />
             </label>
 
@@ -132,17 +132,15 @@ export default function SignUpPage() {
 
             <input
               type="text"
-              className="input m-3 "
+              className="input m-3 bg-white"
               value={displayName}
               onChange={handleNameChange}
             ></input>
-            <button
-              className="btn disabled:text-slate-300"
-              onClick={setSigningUp}
+            <Button
+              label="Next"
+              handleClick={setSigningUp}
               disabled={!isFilled}
-            >
-              Next
-            </button>
+            />
           </>
         )}
       </div>

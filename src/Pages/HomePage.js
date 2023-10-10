@@ -1,17 +1,43 @@
 //-----------React-----------//
 import { NavLink } from "react-router-dom";
-import { useContext } from "react";
+import { useContext, useState, useEffect } from "react";
 import { UserContext } from "../App.js";
-
+//-----------Components-----------//
+import AppButton from "../Details/AppButton.js";
+//-----------Firebase-----------//
+import { auth } from "../firebase/firebase";
 //-----------Images-----------//
 import profile from "../Images/upload.png";
 import morty from "../Images/morty.png";
+import logo from "../Images/LogosIcons/logo.png";
+import person1 from "../Images/LogosIcons/person1.png";
 import background from "../Images/test.png";
-import heart from "../Images/heart.gif";
+import bucketlist from "../Images/LogosIcons/word-icon-bucketlist.png";
+import chat from "../Images/LogosIcons/word-icon-chat.png";
+import memories from "../Images/LogosIcons/word-icon-memories.png";
+import dates from "../Images/LogosIcons/word-icon-dates.png";
+import timeCapsule from "../Images/LogosIcons/word-icon-timecapsule.png";
+import journal from "../Images/LogosIcons/word-icon-journal.png";
+import CoupleDetails from "../Components/Home/CoupleDetails.js";
 
 export default function HomePage() {
   //Pull in context from App.js
   const context = useContext(UserContext);
+  const [email, setEmail] = useState("");
+  const [displayName, setDisplayName] = useState("");
+  const [profilePicture, setProfilePicture] = useState(null);
+
+  //Pull user data
+  useEffect(() => {
+    const user = auth.currentUser;
+
+    if (user !== null) {
+      setDisplayName(user.displayName);
+      setEmail(user.email);
+      setProfilePicture(user.photoURL);
+    }
+  }, []);
+
   return (
     <>
       <div className="flex h-screen flex-col items-center justify-center">
@@ -25,21 +51,21 @@ export default function HomePage() {
           </div>
 
           <img
-            src={profile}
+            src={logo}
             alt="import profile"
-            className="h-[4em] rounded-full bg-slate-300 p-2"
+            className="h-[4em] rounded-xl bg-background object-scale-down p-1 shadow-lg"
           />
           <NavLink to="/settings">
             <img
-              src={morty}
+              src={profilePicture ? profilePicture : person1}
               alt="import profile"
-              className="h-[4em] rounded-full border-2 border-white bg-slate-300"
+              className="h-[4em] w-[4em] rounded-full border-2 border-white bg-background object-contain shadow-md hover:translate-y-[-2px] hover:shadow-background"
             />
           </NavLink>
         </header>
         <main
           style={{ backgroundImage: `url(${background})` }}
-          className="flex h-full w-screen flex-col items-center justify-between bg-cover bg-center bg-no-repeat"
+          className=" flex h-full w-screen flex-col items-center justify-between bg-background bg-cover bg-center bg-no-repeat"
         >
           <NavLink
             to="/dates"
@@ -52,43 +78,20 @@ export default function HomePage() {
               <p> Project Presentations</p>
             </section>
           </NavLink>
-          <article className=" flex w-1/2 min-w-[16em] max-w-[28em] flex-col items-center rounded-xl bg-white bg-opacity-80 p-2 shadow-xl hover:animate-pulse">
+          <CoupleDetails />
+          {/* <article className=" flex w-1/2 min-w-[16em] max-w-[28em] flex-col items-center rounded-xl bg-white bg-opacity-80 p-2 shadow-xl hover:animate-pulse">
             <img src={heart} alt="heartbeat" className=" h-[4em] w-[4em]"></img>
             <p className="text-[1em] leading-none">Together for</p>
             <h1 className="text-[3em] font-bold leading-none">420 days</h1>
             <h1 className="text-[1em]">Rick & Morty</h1>
-          </article>
-          <nav className="m-4 grid w-full max-w-[60em] grid-cols-3 gap-4  p-3 md:grid-cols-6">
-            <NavLink
-              to="/chat"
-              className="btn h-[7em] bg-white hover:bg-slate-200"
-            >
-              Chat
-            </NavLink>
-            <NavLink
-              to="/feed"
-              className="btn h-[7em] bg-white hover:bg-slate-200"
-            >
-              Feed
-            </NavLink>
-            <NavLink
-              to="/dates"
-              className="btn h-[7em] bg-white hover:bg-slate-200"
-            >
-              Dates
-            </NavLink>
-            <NavLink
-              to="/bucket-list"
-              className="btn h-[7em] bg-white hover:bg-slate-200"
-            >
-              Bucket List
-            </NavLink>
-            <button className="btn h-[7em] bg-white hover:bg-slate-200">
-              Spare
-            </button>
-            <button className="btn h-[7em] bg-white hover:bg-slate-200">
-              Spare
-            </button>
+          </article> */}
+          <nav className="mb-4 grid w-full max-w-[60em] grid-cols-3 gap-3 p-3 md:grid-cols-6">
+            <AppButton src={chat} nav="/chat" />
+            <AppButton src={memories} nav="/memories" />
+            <AppButton src={dates} nav="/dates" />
+            <AppButton src={bucketlist} nav="/bucket-list" />
+            <AppButton src={timeCapsule} />
+            <AppButton src={journal} />
           </nav>
         </main>
       </div>

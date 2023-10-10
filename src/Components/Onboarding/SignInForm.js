@@ -1,4 +1,5 @@
 // import { NavLink } from "react-router-dom";
+import Button from "../../Details/Button";
 
 function SignInForm({
   signIn,
@@ -16,7 +17,7 @@ function SignInForm({
         <br />
         <input
           type="text"
-          className="input"
+          className="input bg-white"
           id="email"
           placeholder="morty-smith@adultswim.com"
           onChange={(e) => setEmail(e.target.value)}
@@ -28,7 +29,7 @@ function SignInForm({
 
         <input
           type="password"
-          className="input"
+          className="input bg-white"
           id="password"
           placeholder="********"
           onChange={(e) => setPassword(e.target.value)}
@@ -36,10 +37,11 @@ function SignInForm({
         />
       </form>
       <p className="m-1">{errorMessage}</p>
-      <button className="btn mt-3" onClick={signIn}>
-        Sign In
-      </button>
-      <button onClick={resetPassword} className="m-1 text-slate-500">
+      <Button label="Sign in" handleClick={signIn} />
+      <button
+        onClick={resetPassword}
+        className="m-2 text-sm text-slate-500 hover:translate-y-[-2px] hover:text-slate-800"
+      >
         Forgotten password
       </button>
     </>

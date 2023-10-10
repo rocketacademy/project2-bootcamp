@@ -8,6 +8,7 @@ import { signOut } from "firebase/auth";
 
 //-----------Images-----------//
 import morty from "../Images/morty.png";
+import Button from "../Details/Button";
 
 export default function SettingsPage() {
   const [pairKey, setPairKey] = useState("");
@@ -37,7 +38,7 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className=" flex h-screen flex-col items-center justify-center">
+    <div className=" flex h-screen flex-col items-center justify-center bg-background">
       <header className="fixed top-0 flex w-screen flex-row items-center justify-between p-4">
         <NavLink to="/" className="text-[2em]">
           ←
@@ -51,44 +52,38 @@ export default function SettingsPage() {
           alt="import profile"
           className="h-[8em] w-[8em] rounded-full"
         />
-        <form className="w-3/4">
+        <form className="mb-2 flex w-3/4 flex-col">
           <label>Display Name:</label>
-          <br />
           <input
             type="text"
-            className=" input w-full"
+            className=" input mb-1 w-full bg-white"
             id="displayName"
             placeholder=""
           />
-          <br />
           <label>Background Photo:</label>
-          <br />
 
           <input
             type="file"
-            className="file-input w-full"
+            className="file-input mb-1 w-full bg-white"
             id="background photo"
             placeholder="Insert file"
           />
-          <br />
           <label>Start of relationship:</label>
           <input
             type="date"
-            className="input w-full"
+            className="input w-full bg-white"
             id="background photo"
             placeholder="Insert file"
           />
         </form>
-        <button className="btn m-3 w-1/2">Link Google Cal</button>
-        <button className="btn w-1/2" onClick={handleSignOut}>
-          Sign Out
-        </button>
-        <button
-          className="btn m-3 w-1/2 bg-red-200"
-          onClick={() => document.getElementById("delete_modal").showModal()}
-        >
-          Delete Pair
-        </button>
+        <Button label="🗓️ Link Calendar" />
+        <Button label="🌴 Sign Out" handleClick={handleSignOut} />
+        <Button
+          label="❌ Delete Pair"
+          handleClick={() =>
+            document.getElementById("delete_modal").showModal()
+          }
+        />
         <dialog id="delete_modal" className="modal ">
           <div className="modal-box bg-slate-100">
             <form method="dialog">
@@ -116,7 +111,7 @@ export default function SettingsPage() {
                 onChange={(e) => setPairKey(e.target.value)}
               ></input>
               <button
-                className="btn disabled:text-slate-300"
+                className="btn ml-2 bg-red-700 text-white hover:bg-red-900 disabled:text-slate-300"
                 disabled={!(pairKey === tempPairKey)}
                 onClick={deletePairKey}
               >
@@ -126,6 +121,15 @@ export default function SettingsPage() {
           </div>
         </dialog>
       </main>
+      <footer className="absolute bottom-2 text-xs">
+        📍 Made with love, Singapore{" "}
+        <a
+          className="font-bold text-yellow-600"
+          href="https://github.com/gbrllim/paired-up"
+        >
+          Github
+        </a>
+      </footer>
     </div>
   );
 }
