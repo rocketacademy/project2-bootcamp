@@ -2,14 +2,20 @@
 import { useState, useEffect, useContext } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { UserContext } from "../App.js";
+//-----------Components-----------//
+import Button from "../Details/Button";
+import NavBar from "../Details/NavBar.js";
+import Footer from "../Details/Footer.js";
 
 //-----------Firebase-----------//
 import { database, auth } from "../firebase/firebase";
 import { ref, set, child, get, update } from "firebase/database";
 
 //-----------Images-----------//
-import morty from "../Images/morty.png";
 import heart from "../Images/heart.gif";
+import person1 from "../Images/LogosIcons/person1.png";
+import person2 from "../Images/LogosIcons/person2.png";
+import ProfileImage from "../Details/ProfileImage.js";
 
 export default function PairUp() {
   const [pairKeyCreate, setPairKeyCreate] = useState("");
@@ -25,6 +31,7 @@ export default function PairUp() {
   //Profile data pulled from Auth
   const [email, setEmail] = useState("");
   const [displayName, setDisplayName] = useState("");
+
   const [profilePicture, setProfilePicture] = useState(null);
 
   const DB_PAIRKEY_KEY = "pairKeyRef";
@@ -172,29 +179,20 @@ export default function PairUp() {
   }, []);
 
   return (
-    <div className=" flex h-screen flex-col items-center justify-center">
-      <header className="fixed top-0 flex w-screen flex-row items-center justify-between p-4">
-        <NavLink to="/sign-in" className="text-[2em]">
-          ←
-        </NavLink>
-        <p className="text-[2em]">Pair Up</p>
-        <p className="text-transparent">blank</p>
-      </header>
-      <div className="flex flex-row">
-        <img
-          src={profilePicture ? profilePicture : morty}
-          alt="Profile"
-          className="m-1 h-[8em] rounded-full border-2 border-black p-1"
+    <div className=" flex h-screen flex-col items-center justify-center bg-background">
+      <NavBar label="Pair Up" nav="/sign-in" />
+
+      <div className=" flex flex-row">
+        <ProfileImage
+          src={profilePicture ? profilePicture : person1}
+          alt="person1"
+          add="scale-x-[-1]"
         />
-        <img
-          src={morty}
-          alt="Profile"
-          className="m-1 h-[8em] rounded-full border-2 border-black p-1"
-        />
+        <ProfileImage src={person2} alt="person2" />
       </div>
       {/* Create room */}
-      <main className="m-2 flex w-[30em] flex-col items-center rounded-lg border-[1px] border-slate-800  p-2">
-        <p className="mx-5 my-2 font-bold">
+      <main className="m-2 flex w-[20em] flex-col items-center rounded-lg border-[1px] border-slate-800 p-2 sm:w-[28em]">
+        <p className="mx-5 my-2 text-center font-bold">
           Create a unique pair key for you and your partner
         </p>
         <form className="flex flex-col items-center">
@@ -225,23 +223,19 @@ export default function PairUp() {
         </form>
 
         {/* Waiting room modal */}
-        <button
-          className="btn w-[10em] disabled:text-slate-300"
+        <Button
+          label="Create Room"
           disabled={!isFilled}
-          onClick={() => {
+          handleClick={() => {
             document.getElementById("waiting-room").showModal();
             createRoom();
           }}
-        >
-          create room
-        </button>
-        <button onClick={checkPaired} className="btn m-2">
-          Check pairing
-        </button>
+        />
+        <Button label="Check Pairing" onClick={checkPaired} />
+
         <dialog id="waiting-room" className="modal">
-          <div className="modaeil-box flex flex-col items-center bg-slate-100">
+          <div className="modal-box flex flex-col items-center bg-white">
             <form method="dialog">
-              {/* if there is a button in form, it will close the modal */}
               <button className="btn btn-circle btn-ghost btn-sm absolute right-2 top-2">
                 ✕
               </button>
@@ -253,7 +247,8 @@ export default function PairUp() {
               <p>Click to copy:</p>
             )}
             <button
-              className="rounded-lg bg-slate-200 p-2 text-lg font-bold shadow-md active:translate-y-[3px]"
+              id="copyToClipboard"
+              className="rounded-lg bg-window p-2 text-lg font-bold shadow-md hover:translate-y-[-1px] active:translate-y-[3px]"
               onClick={copyToClipboard}
             >
               📑 {pairKeyCreate}
@@ -262,15 +257,13 @@ export default function PairUp() {
               Once your partner has entered your pair key you'll be put together
               in the room.
             </p>
-            <button onClick={checkPaired} className="btn m-2">
-              Check pairing
-            </button>
+            <Button label="Check Pairing" handleClick={checkPaired} />
           </div>
         </dialog>
       </main>
       {/* Join room */}
-      <main className="m-2 flex w-[30em] flex-col items-center rounded-lg border-[1px] border-slate-800  p-2">
-        <p className="mx-5 my-2 font-bold">
+      <main className="m-2 flex w-[20em] flex-col items-center rounded-lg border-[1px] border-slate-800 p-2  sm:w-[28em]">
+        <p className="mx-5 my-2 text-center font-bold">
           Already have a pair key? Enter your key below
         </p>
         <form className="flex flex-col items-center">
@@ -285,10 +278,9 @@ export default function PairUp() {
             }}
           />
         </form>
-        <button onClick={joinRoom} className="btn w-[10em]">
-          Join Room
-        </button>
+        <Button label="Join Room" handleClick={joinRoom} />
       </main>
+      <Footer />
     </div>
   );
 }

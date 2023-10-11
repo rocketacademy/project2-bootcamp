@@ -2,6 +2,10 @@
 import { useState, useEffect, useContext } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { UserContext } from "../App.js";
+//-----------Components-----------//
+import SignInForm from "../Components/Onboarding/SignInForm.js";
+import NavBar from "../Details/NavBar.js";
+import Footer from "../Details/Footer.js";
 //-----------Firebase-----------//
 import { auth } from "../firebase/firebase";
 import {
@@ -10,8 +14,7 @@ import {
   onAuthStateChanged,
 } from "firebase/auth";
 //-----------Images-----------//
-import profile from "../Images/upload.png";
-import SignInForm from "../Components/Onboarding/SignInForm.js";
+import person2 from "../Images/LogosIcons/person2.png";
 
 export default function SignInPage() {
   const [email, setEmail] = useState("");
@@ -68,22 +71,15 @@ export default function SignInPage() {
 
   return (
     <>
-      <div className=" flex h-screen flex-col items-center justify-center">
+      <div className="flex h-screen flex-col items-center justify-center bg-background">
         <>
-          <header className="fixed top-0 flex w-screen flex-row items-center justify-between p-4">
-            <NavLink to="/onboarding" className="text-[2em]">
-              ←
-            </NavLink>
-            <p className="text-transparent">blank</p>
-          </header>
+          <NavBar nav="/onboarding" />
           <img
-            src={profile}
+            src={person2}
             alt="import profile"
-            className="h-[8em] rounded-full border-2 border-black p-2"
+            className="h-[8em] w-[8em] rounded-full border-2 border-black bg-white object-contain p-1"
           />
-          <h1 className="m-3 text-[2em] font-bold">
-            Welcome back [displayName]
-          </h1>
+          <h1 className="m-3 text-[2em] font-bold">Welcome back!</h1>
 
           <SignInForm
             signIn={signIn}
@@ -96,6 +92,7 @@ export default function SignInPage() {
           />
           {message && message}
         </>
+        <Footer />
       </div>
     </>
   );

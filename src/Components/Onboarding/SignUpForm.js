@@ -1,4 +1,5 @@
 import { NavLink } from "react-router-dom";
+import Button from "../../Details/Button";
 
 function SignUpForm({
   signUp,
@@ -15,7 +16,7 @@ function SignUpForm({
         <br />
         <input
           type="text"
-          className="input"
+          className="input bg-white"
           id="email"
           placeholder="morty-smith@adultswim.com"
           onChange={(e) => setEmail(e.target.value)}
@@ -27,7 +28,7 @@ function SignUpForm({
 
         <input
           type="password"
-          className="input"
+          className="input bg-white"
           id="password"
           placeholder="********"
           onChange={(e) => setPassword(e.target.value)}
@@ -35,10 +36,11 @@ function SignUpForm({
         />
       </form>
       <p className="m-1">{errorMessage}</p>
-      <button className="btn mt-3" onClick={signUp}>
-        Sign up
-      </button>
-      <NavLink to="/sign-in" className="m-1 text-slate-500">
+      <Button label="Sign Up" handleClick={signUp} />
+      <NavLink
+        to="/sign-in"
+        className="m-2 text-sm text-slate-500 hover:translate-y-[-2px] hover:text-slate-800"
+      >
         sign in instead
       </NavLink>
     </>

@@ -6,6 +6,7 @@ import BucketForm from "../Components/BucketForm.js";
 import { database } from "../firebase/firebase";
 import { onChildAdded, ref, update, remove } from "firebase/database";
 import BucketListImage from "../Images/LogosIcons/word-icon-bucketlist.png";
+import NavBar from "../Details/NavBar.js";
 
 const REALTIME_DATABASE_KEY_BUCKET = "bucket-list";
 
@@ -90,13 +91,8 @@ export default function BucketListPage() {
 
   return (
     <>
-      <div className="flex h-screen flex-col items-center justify-center bg-background text-accent">
-        <header className="fixed top-0 flex w-screen flex-row items-center justify-between p-4">
-          <NavLink to="/" className="text-[2em]">
-            ←
-          </NavLink>
-          <img src={BucketListImage} alt="BucketList" className="h-[6em]" />
-        </header>
+      <div className=" flex h-screen flex-col items-center justify-center">
+        <NavBar label="Bucket List" src={BucketListImage} />
         <main>
           <div className="bucket-lists m-4 grid w-full max-w-[60em] grid-cols-2 gap-4  p-3 md:grid-cols-3">
             {bucketList.map((bucketItem) => (
