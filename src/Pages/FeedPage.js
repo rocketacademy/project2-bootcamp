@@ -6,6 +6,7 @@ import { database, storage } from "../firebase/firebase";
 import { onChildAdded, onChildChanged, push, ref, onValue } from "firebase/database";
 import {Feed} from '../Components/Feed'
 import {Composer} from '../Components/Composer'
+import memoriesimage from '../Images/LogosIcons/word-icon-memories.png'
 
 const DUMMY_USERID = "dummyuser" // to use these as subs
 const DUMMY_PAIRID = 'dummypair' // to use these as subs
@@ -29,22 +30,23 @@ export default function FeedPage() {
           <NavLink to="/" className="text-[2em]">
             ←
           </NavLink>
-          <p className="text-[2em]">Feed</p>
+          <img src={memoriesimage} alt='Memories icon' className="h-[6em]"/>
           {context.isLoggedIn ? (
             <p className="text-xs">Signed In</p>
           ) : (
             <p className="text-xs">Signed Out</p>
           )}
         </header>
-        <main>
+        <div className = 'h-1/4'>abc</div>
+        <main className = 'bg-blue-300 mt-[400px]'>
         <button onClick={() => document.getElementById("composer").showModal()}> + </button>
         <dialog id="composer" className = "modal">
         <form method="dialog">
         <button className="btn btn-circle btn-ghost btn-sm absolute right-2 top-2">✕</button>
+        
         </form>
         <Composer postContent = {null}/>
         </dialog>
-          {/* <Composer postContent = {null} /> */}
           <Feed posts={posts} setPosts={setPosts} />
         </main>
       </div>
