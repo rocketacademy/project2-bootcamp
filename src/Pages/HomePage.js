@@ -5,11 +5,15 @@
 - Enable next date to pull the latest date
 - Remove state helper
 */
-//-----------React-----------//
+//-----------Libraries-----------//
 import { NavLink } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../App.js";
+import { motion } from "framer-motion-3d";
+
+//-----------Firebase-----------//
 import { auth } from "../firebase/firebase.js";
+
 //-----------Components-----------//
 import AppButton from "../Details/AppButton.js";
 //-----------Media-----------//
@@ -39,56 +43,62 @@ export default function HomePage() {
   }, []);
 
   return (
-    <>
-      <div className="flex h-screen flex-col items-center justify-center">
-        <header className="fixed top-0 flex w-screen flex-row justify-between p-3">
-          <div className="bg-white text-[10px]">
-            <p className="font-bold">State helper:</p>
-            <p>Pair Key: {context.pairKey}</p>
-            {context.isLoggedIn ? <p>Signed In</p> : <p>Signed Out</p>}
-            {context.isPairedUp ? <p>Paired Up</p> : <p>Not Paired</p>}
-            {context.isDemo ? <p>Demo</p> : <p>Not Demo</p>}
-          </div>
+    <motion.div
+      className="flex h-screen flex-col items-center justify-center"
+      initial={{ opacity: 0, scale: 0 }} // Initial state (hidden and scaled down)
+      animate={{ opacity: 1, scale: 1 }} // Final state (visible and at full scale)
+      transition={{
+        duration: 0.5, // Animation duration in seconds
+        ease: "easeInOut", // Easing function
+      }}
+    >
+      <header className="fixed top-0 flex w-screen flex-row justify-between p-3">
+        <div className="bg-white text-[10px]">
+          <p className="font-bold">State helper:</p>
+          <p>Pair Key: {context.pairKey}</p>
+          {context.isLoggedIn ? <p>Signed In</p> : <p>Signed Out</p>}
+          {context.isPairedUp ? <p>Paired Up</p> : <p>Not Paired</p>}
+          {context.isDemo ? <p>Demo</p> : <p>Not Demo</p>}
+        </div>
 
+        <img
+          src={logo}
+          alt="import profile"
+          className="h-[4em] rounded-xl bg-background object-scale-down p-1 shadow-lg"
+        />
+        <NavLink to="/settings">
           <img
-            src={logo}
+            src={profilePicture ? profilePicture : person1}
             alt="import profile"
-            className="h-[4em] rounded-xl bg-background object-scale-down p-1 shadow-lg"
+            className="h-[4em] w-[4em] rounded-full border-2 border-white bg-background object-contain shadow-md hover:translate-y-[-2px] hover:shadow-background"
           />
-          <NavLink to="/settings">
-            <img
-              src={profilePicture ? profilePicture : person1}
-              alt="import profile"
-              className="h-[4em] w-[4em] rounded-full border-2 border-white bg-background object-contain shadow-md hover:translate-y-[-2px] hover:shadow-background"
-            />
-          </NavLink>
-        </header>
-        <main
-          style={{ backgroundImage: `url(${background})` }}
-          className=" flex h-full w-screen flex-col items-center justify-between bg-background bg-cover bg-center bg-no-repeat"
+        </NavLink>
+      </header>
+      <main
+        style={{ backgroundImage: `url(${background})` }}
+        className=" flex h-full w-screen flex-col items-center justify-between  bg-background bg-cover bg-center bg-no-repeat"
+      >
+        <NavLink
+          to="/dates"
+          className="j mt-[90px] flex w-3/4 min-w-[20em] max-w-[40em] flex-row items-center rounded-xl bg-slate-300 bg-opacity-80 p-2 shadow-xl hover:bg-opacity-95"
         >
-          <NavLink
-            to="/dates"
-            className="j mt-[90px] flex w-3/4 min-w-[20em] max-w-[40em] flex-row items-center rounded-xl bg-slate-300 bg-opacity-80 p-2 shadow-xl hover:bg-opacity-95"
-          >
-            <p className="p-3 font-bold"> Next Date:</p>
-            <section>
-              <p className="font-bold"> 19 October 2023 (Thursday)</p>
-              <p> 10.00 am</p>
-              <p> Project Presentations</p>
-            </section>
-          </NavLink>
-          <CoupleDetails />
-          <nav className="mb-4 grid w-full max-w-[50em] grid-cols-3 gap-3 p-3 md:grid-cols-6">
-            <AppButton src={chat} nav="/chat" />
-            <AppButton src={memories} nav="/memories" />
-            <AppButton src={dates} nav="/dates" />
-            <AppButton src={bucketlist} nav="/bucket-list" />
-            <AppButton src={timeCapsule} />
-            <AppButton src={journal} />
-          </nav>
-        </main>
-      </div>
-    </>
+          <p className="p-3 font-bold"> Next Date:</p>
+          <section>
+            <p className="font-bold"> 19 October 2023 (Thursday)</p>
+            <p> 10.00 am</p>
+            <p> Project Presentations</p>
+          </section>
+        </NavLink>
+        <CoupleDetails />
+        <nav className="mb-4 grid w-full max-w-[50em] grid-cols-3 gap-3 p-3 md:grid-cols-6">
+          <AppButton src={chat} nav="/chat" />
+          <AppButton src={memories} nav="/memories" />
+          <AppButton src={dates} nav="/dates" />
+          <AppButton src={bucketlist} nav="/bucket-list" />
+          <AppButton src={timeCapsule} />
+          <AppButton src={journal} />
+        </nav>
+      </main>
+    </motion.div>
   );
 }

@@ -13,12 +13,14 @@ Contributors: Ignatius Tan, Gabriel Lim, Kenneth Lee
 - Daisy UI
 - Google Calendar API
 - React Router
+- Framer Motion
 
 ## Project Management
 
 - Kanban Board - Notion
 - Wireframing & User Flows - Miro
 - Communication - Slack
+- Designing - (iggy to add)
 
 ## Core Features [To update]
 
