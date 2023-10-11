@@ -2,7 +2,6 @@
 /*
 - Make background image updates work
 - Set default background image
-- Enable next date to pull the latest date
 - Remove state helper
 */
 //-----------Libraries-----------//
@@ -22,7 +21,7 @@ import StateHelper from "../Components/StateHelper.js";
 //-----------Media-----------//
 import logo from "../Images/LogosIcons/logo.png";
 import person1 from "../Images/LogosIcons/person1.png";
-import background from "../Images/test.png";
+import background from "../Images/wallpaper.png";
 import bucketlist from "../Images/LogosIcons/word-icon-bucketlist.png";
 import chat from "../Images/LogosIcons/word-icon-chat.png";
 import memories from "../Images/LogosIcons/word-icon-memories.png";
@@ -47,7 +46,7 @@ export default function HomePage() {
       initial={{ opacity: 0, scale: 0 }} // Initial state (hidden and scaled down)
       animate={{ opacity: 1, scale: 1 }} // Final state (visible and at full scale)
       transition={{
-        duration: 0.5, // Animation duration in seconds
+        duration: 0.8, // Animation duration in seconds
         ease: "easeInOut", // Easing function
       }}
     >
@@ -56,7 +55,7 @@ export default function HomePage() {
         <img
           src={logo}
           alt="import profile"
-          className="h-[4em] rounded-xl bg-background object-scale-down p-1 shadow-lg"
+          className="h-[4em] rounded-xl bg-background object-scale-down p-1 shadow-lg hover:animate-spin"
         />
         <NavLink to="/settings">
           <img

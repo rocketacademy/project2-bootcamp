@@ -21,16 +21,16 @@ const CoupleDetails = () => {
   const [displayName, setDisplayName] = useState("");
   const [profilePicture, setProfilePicture] = useState(null);
 
-  //Pull user data
+  //Pull User Data
   useEffect(() => {
     const user = auth.currentUser;
-
     if (user !== null) {
       setDisplayName(user.displayName);
       setProfilePicture(user.photoURL);
     }
   }, []);
 
+  //Pull start date from couple's room
   useEffect(() => {
     if (pairKey) {
       console.log("Pairkey", pairKey);
@@ -46,6 +46,7 @@ const CoupleDetails = () => {
     }
   });
 
+  //Calculate number of days together
   const daysTogether = (startDate) => {
     const currentDate = new Date();
     const parsedStartDate = new Date(startDate);
@@ -55,7 +56,7 @@ const CoupleDetails = () => {
   };
 
   return (
-    <article className="flex w-1/2 min-w-[16em] max-w-[28em] flex-col items-center rounded-xl bg-white bg-opacity-80 p-2 shadow-xl hover:animate-pulse">
+    <article className="flex w-1/2 min-w-[16em] max-w-[28em] flex-col items-center rounded-xl bg-white bg-opacity-80 p-2 shadow-lg hover:translate-y-[-2px] hover:shadow-window ">
       <img src={heart} alt="heartbeat" className=" h-[4em] w-[4em]"></img>
       {pairKey ? (
         <>
