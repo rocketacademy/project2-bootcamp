@@ -2,6 +2,10 @@
 import { useState, useEffect, useContext } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { UserContext } from "../App.js";
+//-----------Components-----------//
+import SignInForm from "../Components/Onboarding/SignInForm.js";
+import NavBar from "../Details/NavBar.js";
+import Footer from "../Details/Footer.js";
 //-----------Firebase-----------//
 import { auth } from "../firebase/firebase";
 import {
@@ -11,8 +15,6 @@ import {
 } from "firebase/auth";
 //-----------Images-----------//
 import person2 from "../Images/LogosIcons/person2.png";
-
-import SignInForm from "../Components/Onboarding/SignInForm.js";
 
 export default function SignInPage() {
   const [email, setEmail] = useState("");
@@ -71,12 +73,7 @@ export default function SignInPage() {
     <>
       <div className="flex h-screen flex-col items-center justify-center bg-background">
         <>
-          <header className="fixed top-0 flex w-screen flex-row items-center justify-between p-4">
-            <NavLink to="/onboarding" className="text-[2em]">
-              ←
-            </NavLink>
-            <p className="text-transparent">blank</p>
-          </header>
+          <NavBar nav="/onboarding" />
           <img
             src={person2}
             alt="import profile"
@@ -95,6 +92,7 @@ export default function SignInPage() {
           />
           {message && message}
         </>
+        <Footer />
       </div>
     </>
   );

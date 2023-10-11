@@ -5,6 +5,7 @@ import { UserContext } from "../App.js";
 import BucketForm from "../Components/BucketForm.js";
 import { database } from "../firebase/firebase";
 import { onChildAdded, ref, update } from "firebase/database";
+import NavBar from "../Details/NavBar.js";
 
 const REALTIME_DATABASE_KEY_BUCKET = "bucket-list";
 
@@ -72,17 +73,7 @@ export default function BucketListPage() {
   return (
     <>
       <div className=" flex h-screen flex-col items-center justify-center">
-        <header className="fixed top-0 flex w-screen flex-row items-center justify-between p-4">
-          <NavLink to="/" className="text-[2em]">
-            ←
-          </NavLink>
-          <p className="text-[2em]">Bucket List</p>
-          {context.isLoggedIn ? (
-            <p className="text-xs">Signed In</p>
-          ) : (
-            <p className="text-xs">Signed Out</p>
-          )}
-        </header>
+        <NavBar label="Bucket List" />
         <main>
           <button onClick={showBucketFormOnClick}>Add a bucket</button>
           {showBucketForm && <BucketForm onSubmit={hideBucketForm} />}

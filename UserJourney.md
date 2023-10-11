@@ -55,7 +55,7 @@
 
 # Onboarding - Sign In
 
-- (WIP) User can view their display photo and display name after email has been input
+- (Deprioritised) User can view their display photo and display name after email has been input
 - User can reset their password with forgot password
 - User can receive feedback message (e.g. invalid email, account exists etc.) during the signin process
 

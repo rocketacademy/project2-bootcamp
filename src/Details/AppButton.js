@@ -7,7 +7,7 @@ const AppButton = ({ src, nav }) => {
         <img
           src={src}
           alt="home apps"
-          className="border-1 h-[7em] rounded-full bg-background shadow-lg hover:translate-y-[-3px] hover:shadow-background active:translate-y-[2px]"
+          className="border-1 h-[6em] rounded-full bg-background shadow-lg hover:translate-y-[-3px] hover:shadow-background active:translate-y-[2px] sm:h-[7em]"
         />
       </NavLink>
     </div>

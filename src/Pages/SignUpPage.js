@@ -2,6 +2,12 @@
 import { useState, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 // import { UserContext } from "../App.js";
+//-----------Components-----------//
+import SignUpForm from "../Components/Onboarding/SignUpForm.js";
+import Button from "../Details/Button";
+import NavBar from "../Details/NavBar.js";
+import Footer from "../Details/Footer.js";
+import ProfileImage from "../Details/ProfileImage.js";
 
 //-----------Firebase-----------//
 import { storage, auth } from "../firebase/firebase";
@@ -11,11 +17,8 @@ import {
   // onAuthStateChanged,
   updateProfile,
 } from "firebase/auth";
-//-----------Images-----------//
-
+//-----------Media-----------//
 import person1 from "../Images/LogosIcons/person1.png";
-import SignUpForm from "../Components/Onboarding/SignUpForm.js";
-import Button from "../Details/Button";
 
 export default function SignUpPage() {
   const [isFilled, setIsFilled] = useState(false);
@@ -81,42 +84,34 @@ export default function SignUpPage() {
   }, [file]);
 
   return (
-    <>
-      <div className=" flex h-screen flex-col items-center justify-center bg-background">
-        <header className="fixed top-0 flex w-screen flex-row items-center justify-between p-4">
-          <NavLink to="/onboarding" className="text-[2em]">
-            ←
-          </NavLink>
-          <p className="text-[2em]">Sign Up</p>
-          <p className="text-transparent">blank</p>
-        </header>
-        {signingUp ? (
-          <>
-            <img
-              src={profilePicture ? profilePicture : person1}
-              alt="Profile"
-              className="h-[8em] w-[8em] rounded-full border-2 border-black bg-white object-contain p-1"
-            />
-            <h1 className="m-3 text-[2em] font-bold">Hello {displayName}!</h1>
-            <SignUpForm
-              signUp={signUp}
-              email={email}
-              password={password}
-              setEmail={setEmail}
-              setPassword={setPassword}
-              errorMessage={errorMessage}
-            />
-          </>
-        ) : (
-          <>
-            <h1 className="m-3 text-[2em] font-bold">
-              Upload your name and photo
-            </h1>
-            <label htmlFor="profile-picture" className="">
-              <img
+    <div className=" flex h-screen flex-col items-center justify-center bg-background">
+      <NavBar label="Sign Up" nav="/onboarding" />
+      {signingUp ? (
+        <>
+          <ProfileImage
+            src={profilePicture ? profilePicture : person1}
+            alt="Profile photo"
+          />
+          <h1 className="m-3 text-[1.5em] font-bold">Hello {displayName}!</h1>
+          <SignUpForm
+            signUp={signUp}
+            email={email}
+            password={password}
+            setEmail={setEmail}
+            setPassword={setPassword}
+            errorMessage={errorMessage}
+          />
+        </>
+      ) : (
+        <>
+          <h1 className="m-3 p-2 text-center text-[1.5em] font-bold">
+            Upload a photo and tell me your name!
+          </h1>
+          <form className="flex flex-col items-center">
+            <label htmlFor="profile-picture" style={{ cursor: "pointer" }}>
+              <ProfileImage
                 src={profilePicture ? profilePicture : person1}
-                alt="Upload"
-                className="h-[8em] w-[8em] rounded-full border-2 border-black bg-white object-contain p-1 hover:translate-y-[-2px]"
+                alt="Profile photo"
               />
             </label>
 
@@ -127,23 +122,22 @@ export default function SignUpPage() {
               style={{ display: "none" }} // Hide the input element
               onChange={handleImageUpload}
             />
-            <br />
-            <label>Your Name:</label>
-
+            <label className="mt-1">Your Name:</label>
             <input
               type="text"
-              className="input m-3 bg-white"
+              className="input m-2 bg-white"
               value={displayName}
               onChange={handleNameChange}
             ></input>
-            <Button
-              label="Next"
-              handleClick={setSigningUp}
-              disabled={!isFilled}
-            />
-          </>
-        )}
-      </div>
-    </>
+          </form>
+          <Button
+            label="Next"
+            handleClick={setSigningUp}
+            disabled={!isFilled}
+          />
+        </>
+      )}
+      <Footer />
+    </div>
   );
 }

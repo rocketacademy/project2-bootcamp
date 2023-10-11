@@ -1,20 +1,61 @@
 //-----------React-----------//
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
+
+//-----------Components-----------//
+import Button from "../Details/Button";
+import Footer from "../Details/Footer";
+import ProfileImage from "../Details/ProfileImage.js";
+import NavBar from "../Details/NavBar";
 
 //-----------Firebase-----------//
 import { auth } from "../firebase/firebase";
-import { signOut } from "firebase/auth";
+import { updateProfile, signOut } from "firebase/auth";
 
 //-----------Images-----------//
-import morty from "../Images/morty.png";
-import Button from "../Details/Button";
+import person1 from "../Images/LogosIcons/person1.png";
 
 export default function SettingsPage() {
+  const [profilePicture, setProfilePicture] = useState(null);
+  const [file, setFile] = useState(null);
+
   const [pairKey, setPairKey] = useState("");
   const [tempPairKey] = useState("Example123"); //temp pair key till able to import from database
 
   const navigate = useNavigate();
+
+  const authUpdate = () => {
+    updateProfile(auth.currentUser, {
+      pairKey: "wumbo",
+      phoneNumber: 1234,
+      displayName: "phone",
+    })
+      .then(() => {
+        console.log("Pairkey up");
+      })
+      .catch((error) => {
+        // An error occurred
+        // ...
+      });
+  };
+
+  const handleImageUpload = (event) => {
+    const file = event.target.files[0];
+    setFile(file);
+  };
+
+  useEffect(() => {
+    const user = auth.currentUser;
+    if (user !== null) {
+      user.providerData.forEach((profile) => {
+        console.log("Sign-in provider: " + profile.pairKey);
+        console.log(" PhoneNumber " + profile.phoneNumber);
+        console.log("  Name: " + profile.displayName);
+        console.log("  Email: " + profile.email);
+        console.log("  Photo URL: " + profile.photoURL);
+      });
+    }
+  }, []);
 
   // Toggle sign out + navigate back to onboarding
   const handleSignOut = () => {
@@ -39,20 +80,23 @@ export default function SettingsPage() {
 
   return (
     <div className=" flex h-screen flex-col items-center justify-center bg-background">
-      <header className="fixed top-0 flex w-screen flex-row items-center justify-between p-4">
-        <NavLink to="/" className="text-[2em]">
-          ←
-        </NavLink>
-        <p className="text-[2em]">Settings</p>
-        <p className="text-transparent">blank</p>
-      </header>
+      <NavBar label="Settings" />
+      <Button label="write auth" handleClick={authUpdate} />
       <main className="flex flex-col items-center">
-        <img
-          src={morty}
-          alt="import profile"
-          className="h-[8em] w-[8em] rounded-full"
-        />
-        <form className="mb-2 flex w-3/4 flex-col">
+        <form className="mb-2 flex w-3/4 flex-col items-center">
+          <label htmlFor="profile-picture" style={{ cursor: "pointer" }}>
+            <ProfileImage
+              src={profilePicture ? profilePicture : person1}
+              alt="Profile photo"
+            />
+          </label>
+          <input
+            type="file"
+            id="profile-picture"
+            accept="image/*" // Allow only image files to be selected
+            style={{ display: "none" }} // Hide the input element
+            onChange={handleImageUpload}
+          />
           <label>Display Name:</label>
           <input
             type="text"
@@ -121,15 +165,7 @@ export default function SettingsPage() {
           </div>
         </dialog>
       </main>
-      <footer className="absolute bottom-2 text-xs">
-        📍 Made with love, Singapore{" "}
-        <a
-          className="font-bold text-yellow-600"
-          href="https://github.com/gbrllim/paired-up"
-        >
-          Github
-        </a>
-      </footer>
+      <Footer />
     </div>
   );
 }

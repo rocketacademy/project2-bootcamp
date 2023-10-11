@@ -5,6 +5,7 @@ import Button from "../Details/Button";
 //-----------Styling-----------//
 import { motion } from "framer-motion-3d";
 import logo from "../Images/LogosIcons/logo.png";
+import Footer from "../Details/Footer";
 
 export default function Onboarding() {
   return (
@@ -20,9 +21,9 @@ export default function Onboarding() {
       <motion.img
         src={logo}
         alt="logo"
-        className="h-[20em] hover:translate-y-[-2px]"
+        className="h-[15em] hover:translate-y-[-2px] sm:h-[20em]"
       />
-      <ul className=" mb-2 rounded-md border-[1px] border-black p-2 shadow-lg hover:translate-y-[-2px]">
+      <ul className="mb-3 scale-90 rounded-md border-[1px] border-black p-2 shadow-lg hover:translate-y-[-2px] sm:scale-100">
         <li>📝 Plan Dates Together</li>
         <li>📅 Remember the important dates</li>
         <li>📹 Record your memories together</li>
@@ -42,15 +43,7 @@ export default function Onboarding() {
       >
         Try our App!
       </NavLink>
-      <footer className="absolute bottom-2 text-xs">
-        📍 Made with love, Singapore{" "}
-        <a
-          className="font-bold text-yellow-600"
-          href="https://github.com/gbrllim/paired-up"
-        >
-          Github
-        </a>
-      </footer>
+      <Footer />
     </motion.div>
   );
 }

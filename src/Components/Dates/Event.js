@@ -1,6 +1,6 @@
 export default function Event() {
   return (
-    <div className="bg-window flex w-full max-w-md flex-row items-center rounded-md p-2">
+    <div className="modal-box flex w-full max-w-md flex-row items-center rounded-md bg-window p-2">
       <header className="flex flex-col items-center justify-center border-r-[1.5px] p-2">
         <p>7</p>
         <p>days</p>

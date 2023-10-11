@@ -4,6 +4,8 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { UserContext } from "../App.js";
 //-----------Components-----------//
 import Button from "../Details/Button";
+import NavBar from "../Details/NavBar.js";
+import Footer from "../Details/Footer.js";
 
 //-----------Firebase-----------//
 import { database, auth } from "../firebase/firebase";
@@ -13,6 +15,7 @@ import { ref, set, child, get, update } from "firebase/database";
 import heart from "../Images/heart.gif";
 import person1 from "../Images/LogosIcons/person1.png";
 import person2 from "../Images/LogosIcons/person2.png";
+import ProfileImage from "../Details/ProfileImage.js";
 
 export default function PairUp() {
   const [pairKeyCreate, setPairKeyCreate] = useState("");
@@ -177,28 +180,19 @@ export default function PairUp() {
 
   return (
     <div className=" flex h-screen flex-col items-center justify-center bg-background">
-      <header className="fixed top-0 flex w-screen flex-row items-center justify-between p-4">
-        <NavLink to="/sign-in" className="text-[2em]">
-          ←
-        </NavLink>
-        <p className="text-[2em]">Pair Up</p>
-        <p className="text-transparent">blank</p>
-      </header>
-      <div className="flex flex-row">
-        <img
+      <NavBar label="Pair Up" nav="/sign-in" />
+
+      <div className=" flex flex-row">
+        <ProfileImage
           src={profilePicture ? profilePicture : person1}
-          alt="Profile"
-          className="m-1 h-[8em] w-[8em] scale-x-[-1] rounded-full border-2 border-black bg-white object-contain p-1"
+          alt="person1"
+          add="scale-x-[-1]"
         />
-        <img
-          src={person2}
-          alt="Profile"
-          className="m-1 h-[8em] w-[8em]  rounded-full border-2 border-black bg-white object-contain p-1"
-        />
+        <ProfileImage src={person2} alt="person2" />
       </div>
       {/* Create room */}
-      <main className="m-2 flex w-[30em] flex-col items-center rounded-lg border-[1px] border-slate-800 p-2">
-        <p className="mx-5 my-2 font-bold">
+      <main className="m-2 flex w-[20em] flex-col items-center rounded-lg border-[1px] border-slate-800 p-2 sm:w-[28em]">
+        <p className="mx-5 my-2 text-center font-bold">
           Create a unique pair key for you and your partner
         </p>
         <form className="flex flex-col items-center">
@@ -268,8 +262,8 @@ export default function PairUp() {
         </dialog>
       </main>
       {/* Join room */}
-      <main className="m-2 flex w-[30em] flex-col items-center rounded-lg border-[1px] border-slate-800  p-2">
-        <p className="mx-5 my-2 font-bold">
+      <main className="m-2 flex w-[20em] flex-col items-center rounded-lg border-[1px] border-slate-800 p-2  sm:w-[28em]">
+        <p className="mx-5 my-2 text-center font-bold">
           Already have a pair key? Enter your key below
         </p>
         <form className="flex flex-col items-center">
@@ -286,6 +280,7 @@ export default function PairUp() {
         </form>
         <Button label="Join Room" handleClick={joinRoom} />
       </main>
+      <Footer />
     </div>
   );
 }
