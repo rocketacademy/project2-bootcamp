@@ -79,18 +79,21 @@ function App() {
   const [pairKey, setPairKey] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isPairedUp, setIsPairedUp] = useState(false);
-  const [isDemo, setIsDemo] = useState(false);
+  // const [isDemo, setIsDemo] = useState(false);
+  const [email, setEmail] = useState("");
   const [user, setUser] = useState(null);
 
   const context = {
+    email,
     pairKey,
     isLoggedIn,
     isPairedUp,
-    isDemo,
+    // isDemo,
+    setEmail,
     setPairKey,
     setIsLoggedIn,
     setIsPairedUp,
-    setIsDemo,
+    // setIsDemo,
   };
   // Pull user email from Auth
   useEffect(() => {
@@ -99,6 +102,7 @@ function App() {
         setUser(userInfo);
         console.log(userInfo.email);
         fetchPairKey(userInfo.email);
+        setEmail(userInfo.email);
         setIsLoggedIn(true);
         // signed in user
       } else {
@@ -109,6 +113,7 @@ function App() {
     });
   }, []);
 
+  // Pull pairkey data from userRef db in Firebase database
   const fetchPairKey = async (userEmail) => {
     const userRef = ref(database, "userRef");
     const emailQuery = query(

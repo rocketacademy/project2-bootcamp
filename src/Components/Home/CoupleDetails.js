@@ -11,7 +11,7 @@ import { auth, database } from "../../firebase/firebase";
 import { ref, child, get } from "firebase/database";
 //-----------Media-----------//
 import heart from "../../Images/heart.gif";
-import ContextHelper from "../ContextHelper";
+import ContextHelper from "../Helpers/ContextHelper";
 import { NavLink } from "react-router-dom";
 
 const CoupleDetails = () => {

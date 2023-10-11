@@ -11,22 +11,22 @@ import ProfileImage from "../Details/ProfileImage.js";
 import NavBar from "../Details/NavBar";
 
 //-----------Firebase-----------//
-import { auth } from "../firebase/firebase";
+import { auth, database } from "../firebase/firebase";
 import { updateProfile, signOut } from "firebase/auth";
+import { ref, child, set } from "firebase/database";
 
 //-----------Images-----------//
 import person1 from "../Images/LogosIcons/person1.png";
-import ContextHelper from "../Components/ContextHelper.js";
+import ContextHelper from "../Components/Helpers/ContextHelper.js";
 
 export default function SettingsPage() {
   const [profilePicture, setProfilePicture] = useState(null);
   const [file, setFile] = useState(null);
+  const [startDate, setStartDate] = useState(null);
+  const [tempPairKey, setTempPairKey] = useState("");
 
-  const [pairKey, setPairKey] = useState("");
-  const tempPairKey = ContextHelper("pairKey");
-
+  const pairKey = ContextHelper("pairKey");
   const navigate = useNavigate();
-  const context = useContext(UserContext);
 
   // const authUpdate = () => {
   //   updateProfile(auth.currentUser, {
@@ -60,7 +60,23 @@ export default function SettingsPage() {
   //   }
   // }, []);
 
+  //Update Start Date of relationship
+  const updateStartDate = () => {
+    const roomRef = ref(database, pairKey);
+    const dateRef = child(roomRef, "startDate");
+
+    set(dateRef, startDate)
+      .then(() => {
+        console.log("Start date updated successfully.");
+      })
+      .catch((error) => {
+        console.error("Error updating start date:", error);
+      });
+  };
+
   // Toggle sign out + navigate back to onboarding
+  const context = useContext(UserContext);
+
   const handleSignOut = () => {
     signOut(auth)
       .then(() => {
@@ -104,7 +120,7 @@ export default function SettingsPage() {
           <label>Display Name:</label>
           <input
             type="text"
-            className=" input mb-1 w-full bg-white"
+            className=" mb-1 w-[14em] rounded-md border-[1px] border-black px-2"
             id="displayName"
             placeholder=""
           />
@@ -112,18 +128,23 @@ export default function SettingsPage() {
 
           <input
             type="file"
-            className="file-input mb-1 w-full bg-white"
+            className="mb-1 w-[14em] rounded-md border-[1px] border-black bg-white px-2"
             id="background photo"
             placeholder="Insert file"
           />
           <label>Start of relationship:</label>
           <input
             type="date"
-            className="input w-full bg-white"
-            id="background photo"
-            placeholder="Insert file"
+            max={new Date().toISOString().split("T")[0]}
+            className="mb-1 w-[14em] rounded-md border-[1px] border-black px-2"
+            id="startDate"
+            value={startDate}
+            onChange={(e) => {
+              setStartDate(e.target.value);
+            }}
           />
         </form>
+        <Button label="Update Info" handleClick={updateStartDate} />
         <Button label="🗓️ Link Calendar" />
         <Button label="🌴 Sign Out" handleClick={handleSignOut} />
         <Button
@@ -151,16 +172,16 @@ export default function SettingsPage() {
               , all images, chats and data for both users will be erased. Enter
               your pair key below to delete your pair.
             </p>
-            <p className="py-2">Your Pair Key: {tempPairKey}</p>
+            <p className="py-2">Your Pair Key: {pairKey}</p>
             <form>
               <input
                 className="input"
-                value={pairKey}
-                onChange={(e) => setPairKey(e.target.value)}
+                value={tempPairKey}
+                onChange={(e) => setTempPairKey(e.target.value)}
               ></input>
               <button
                 className="btn ml-2 bg-red-700 text-white hover:bg-red-900 disabled:text-slate-300"
-                disabled={!(pairKey === tempPairKey)}
+                disabled={!(tempPairKey === pairKey)}
                 onClick={deletePairKey}
               >
                 Confirm

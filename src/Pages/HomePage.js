@@ -16,7 +16,7 @@ import { auth } from "../firebase/firebase.js";
 import AppButton from "../Details/AppButton.js";
 import CoupleDetails from "../Components/Home/CoupleDetails.js";
 import NextDate from "../Components/Home/NextDate.js";
-import StateHelper from "../Components/StateHelper.js";
+import StateHelper from "../Components/Helpers/StateHelper.js";
 
 //-----------Media-----------//
 import logo from "../Images/LogosIcons/logo.png";
@@ -67,7 +67,7 @@ export default function HomePage() {
       </nav>
       <main
         style={{ backgroundImage: `url(${background})` }}
-        className=" flex h-full w-screen flex-col items-center justify-between  bg-background bg-cover bg-center bg-no-repeat"
+        className=" flex h-full w-screen flex-col items-center justify-between bg-background bg-cover bg-center bg-no-repeat"
       >
         <NextDate />
         <CoupleDetails />
