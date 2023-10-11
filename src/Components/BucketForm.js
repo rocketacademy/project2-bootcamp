@@ -4,7 +4,7 @@ import { database } from "../firebase/firebase";
 
 const REALTIME_DATABASE_KEY_BUCKET = "bucket-list";
 
-export default function BucketForm({ onSubmit }) {
+export default function BucketForm({ onSubmit, closeBucketFormModal }) {
   //State for bucketlist
   const [title, setTitle] = useState("");
   const [items, setItems] = useState([]);
@@ -20,7 +20,7 @@ export default function BucketForm({ onSubmit }) {
       return [
         ...currentItem,
         {
-          id: Math.floor(Math.random() * 10000),
+          id: new Date().getTime(),
           title: newItem,
           completed: false,
         },
@@ -38,7 +38,10 @@ export default function BucketForm({ onSubmit }) {
 
   //send data to database
   const writeData = () => {
-    const bucketListRef = ref(database, REALTIME_DATABASE_KEY_BUCKET);
+    const bucketListRef = ref(
+      database,
+      `dummypair/${REALTIME_DATABASE_KEY_BUCKET}`,
+    );
     const newBucketRef = push(bucketListRef);
 
     set(newBucketRef, {
@@ -55,9 +58,16 @@ export default function BucketForm({ onSubmit }) {
   };
 
   return (
-    <div>
-      <label>Bucket :</label>
+    <form
+      className="flex  w-96 w-full flex-col justify-center justify-items-center p-[20px] text-accent"
+      onSubmit={(e) => {
+        e.preventDefault();
+        closeBucketFormModal();
+      }}
+    >
+      <label className="mb-[5px]">Bucket :</label>
       <input
+        className="mb-[15px] mr-[15px] w-[15em] rounded-md bg-background  px-2"
         type="text"
         name="title"
         value={title}
@@ -66,50 +76,63 @@ export default function BucketForm({ onSubmit }) {
           setTitle(e.target.value);
         }}
       />
-      <br />
-      <label>Add your socks :</label>
-      <input
-        type="text"
-        name="newItem"
-        value={newItem}
-        placeholder="What you gonna do?"
-        onChange={(e) => {
-          setNewItem(e.target.value);
-        }}
-      />
-      <br />
-      <button onClick={handleSubmit}>Add</button>
+      <label className="mb-[5px]">Add your socks :</label>
+      <div className="input-button">
+        <input
+          className="mb-[15px] mr-[15px] w-[15em] rounded-md bg-background px-2"
+          type="text"
+          name="newItem"
+          value={newItem}
+          placeholder="What you gonna do?"
+          onChange={(e) => {
+            setNewItem(e.target.value);
+          }}
+        />
+        <button
+          className="rounded-full bg-background px-[15px]"
+          onClick={handleSubmit}
+        >
+          +
+        </button>
+      </div>
       <ul>
         {items.map((items) => {
           return (
-            <li key={items.id}>
-              <label>{items.title}</label>
+            <li
+              key={items.id}
+              className="mb-[15px] flex justify-between  rounded-md bg-background px-2 py-1"
+            >
+              <label className="mr-[15px]">{items.title}</label>
               <button onClick={() => deleteItem(items.id)}>Delete</button>
             </li>
           );
         })}
       </ul>
-      <input
-        className="check-for-date"
-        type="checkbox"
-        checked={isDateSelected}
-        onChange={() => setIsDateSelected(!isDateSelected)}
-      />
-      <label>Completion Date? :</label>
-      <input
-        type="date"
-        className="mb-2 w-[10em] rounded-md border-[1px] border-black px-2"
-        id="date"
-        value={date}
-        onChange={(e) => {
-          setDate(e.target.value);
-        }}
-        disabled={!isDateSelected}
-      />
-      <br />
-      <button className="bucket-button" onClick={writeData}>
+      <div className="complete-date mt-[15px]">
+        <input
+          className="checkbox-for-date mr-[5px]"
+          type="checkbox"
+          checked={isDateSelected}
+          onChange={() => setIsDateSelected(!isDateSelected)}
+        />
+        <label className="mr-[5px]">Completion Date? :</label>
+        <input
+          type="date"
+          className="mb-2 w-[10em] rounded-md border-[1px] bg-background px-2"
+          id="date"
+          value={date}
+          onChange={(e) => {
+            setDate(e.target.value);
+          }}
+          disabled={!isDateSelected}
+        />
+      </div>
+      <button
+        className="submit-btn my-[20px] rounded-full bg-background px-[15px]"
+        onClick={writeData}
+      >
         Submit
       </button>
-    </div>
+    </form>
   );
 }

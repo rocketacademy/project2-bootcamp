@@ -4,7 +4,8 @@ import { useContext, useState, useEffect } from "react";
 import { UserContext } from "../App.js";
 import BucketForm from "../Components/BucketForm.js";
 import { database } from "../firebase/firebase";
-import { onChildAdded, ref, update } from "firebase/database";
+import { onChildAdded, ref, update, remove } from "firebase/database";
+import BucketListImage from "../Images/LogosIcons/word-icon-bucketlist.png";
 import NavBar from "../Details/NavBar.js";
 
 const REALTIME_DATABASE_KEY_BUCKET = "bucket-list";
@@ -15,11 +16,13 @@ export default function BucketListPage() {
 
   //create state to view bucket list
   const [bucketList, setBucketList] = useState([]);
-  const [showBucketForm, setShowBucketForm] = useState(false);
 
   //to view bucket list
   useEffect(() => {
-    const bucketListRef = ref(database, REALTIME_DATABASE_KEY_BUCKET);
+    const bucketListRef = ref(
+      database,
+      `dummypair/${REALTIME_DATABASE_KEY_BUCKET}`,
+    );
 
     onChildAdded(bucketListRef, (data) => {
       setBucketList((state) => [...state, { key: data.key, val: data.val() }]);
@@ -57,50 +60,101 @@ export default function BucketListPage() {
         ...updatedBucketList.find((item) => item.key === bucketItemKey).val,
       },
     };
-    update(ref(database, REALTIME_DATABASE_KEY_BUCKET), updatedData);
+    update(
+      ref(database, `dummypair/${REALTIME_DATABASE_KEY_BUCKET}`),
+      updatedData,
+    );
   };
 
-  // Function to show the BucketForm
-  const showBucketFormOnClick = () => {
-    setShowBucketForm(true);
+  // function to delete data
+  const deleteBucketItem = (bucketItemKey) => {
+    // Remove the item from local state
+    const updatedBucketList = bucketList.filter(
+      (bucketItem) => bucketItem.key !== bucketItemKey,
+    );
+    setBucketList(updatedBucketList);
+
+    // Remove the item from Firebase
+    remove(
+      ref(
+        database,
+        `dummypair/${REALTIME_DATABASE_KEY_BUCKET}/${bucketItemKey}`,
+      ),
+    );
   };
 
-  // Function to hide the BucketForm
-  const hideBucketForm = () => {
-    setShowBucketForm(false);
+  //modal close button
+  const closeBucketFormModal = () => {
+    const modal = document.getElementById("bucket-form");
+    modal.close();
   };
 
   return (
     <>
       <div className=" flex h-screen flex-col items-center justify-center">
-        <NavBar label="Bucket List" />
+        <NavBar label="Bucket List" src={BucketListImage} />
         <main>
-          <button onClick={showBucketFormOnClick}>Add a bucket</button>
-          {showBucketForm && <BucketForm onSubmit={hideBucketForm} />}
-          <div className="bucket-lists">
+          <div className="bucket-lists m-4 grid w-full max-w-[60em] grid-cols-2 gap-4  p-3 md:grid-cols-3">
             {bucketList.map((bucketItem) => (
-              <div key={bucketItem.key}>
+              <div
+                key={bucketItem.key}
+                className="m-[20px] flex justify-between rounded-xl bg-text p-[20px] "
+              >
                 <div className="comment-container">
-                  <h1>{bucketItem.val.title}</h1>
+                  <div className="flex justify-between">
+                    <h1 className="text-lx">{bucketItem.val.title}</h1>
+                    <button
+                      className=""
+                      onClick={() => deleteBucketItem(bucketItem.key)}
+                    >
+                      Delete
+                    </button>
+                  </div>
                   {bucketItem.val.items.map((item) => (
-                    <div key={item.id}>
+                    <div className="justify-left flex py-[5px]" key={item.id}>
                       <input
+                        className="mr-[10px] accent-accent"
                         type="checkbox"
                         checked={item.completed}
                         onChange={() => toggleCheckBox(bucketItem.key, item.id)}
                       />
                       <h2>{item.title}</h2>
-                      {/* You can add more information about each item here */}
                     </div>
                   ))}
                   <h1>{bucketItem.val.items.title}</h1>
-                  {bucketItem.val.date !== "" && (
-                    <p>Date to complete! - {bucketItem.val.date}</p>
+                  {bucketItem.val.date !== "" ? (
+                    <p className="mb-[10px]">
+                      Date to complete! - {bucketItem.val.date}
+                    </p>
+                  ) : (
+                    <p className="mb-[10px]"></p>
                   )}
+                  <button className="rounded-full bg-background px-[10px] py-[5px]">
+                    Add to Memories
+                  </button>
                 </div>
               </div>
             ))}
-            <button>Add to mileStone</button>
+          </div>
+          <div className="absolute bottom-5 right-5">
+            <button
+              className="btn w-[10em] bg-text"
+              onClick={() => {
+                document.getElementById("bucket-form").showModal();
+              }}
+            >
+              Add a bucket
+            </button>
+            <dialog id="bucket-form" className="modal">
+              <div className="modal-box flex flex-col items-center rounded-2xl bg-text">
+                <form method="dialog">
+                  <button className="btn btn-circle btn-ghost btn-sm absolute right-5 top-5 ">
+                    ✕
+                  </button>
+                </form>
+                <BucketForm closeBucketFormModal={closeBucketFormModal} />
+              </div>
+            </dialog>
           </div>
         </main>
       </div>

@@ -13,6 +13,7 @@ import {
 import { Feed } from "../Components/Feed";
 import { Composer } from "../Components/Composer";
 import NavBar from "../Details/NavBar.js";
+import memoriesimage from "../Images/LogosIcons/word-icon-memories.png";
 
 const DUMMY_USERID = "dummyuser"; // to use these as subs
 const DUMMY_PAIRID = "dummypair"; // to use these as subs
@@ -37,8 +38,9 @@ export default function FeedPage() {
   return (
     <>
       <div className=" flex h-screen flex-col items-center justify-center">
-        <NavBar label="Feed" />
-        <main>
+        <NavBar label="Feed" src={memoriesimage} />
+        <div className="h-1/4">abc</div>
+        <main className="mt-[400px] bg-blue-300">
           <button
             onClick={() => document.getElementById("composer").showModal()}
           >
@@ -53,7 +55,6 @@ export default function FeedPage() {
             </form>
             <Composer postContent={null} />
           </dialog>
-          {/* <Composer postContent = {null} /> */}
           <Feed posts={posts} setPosts={setPosts} />
         </main>
       </div>

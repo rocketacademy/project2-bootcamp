@@ -3,6 +3,7 @@ module.exports = {
   content: ["./src/**/*.{html,js}"],
   daisyui: {
     themes: [{}], //enable only light theme dac0a3
+    themes: [{}], //enable only light theme dac0a3
   },
   theme: {
     extend: {
