@@ -1,6 +1,8 @@
 //-----------React-----------//
 import { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { UserContext } from "../App.js";
 
 //-----------Components-----------//
 import Button from "../Details/Button";
@@ -14,48 +16,49 @@ import { updateProfile, signOut } from "firebase/auth";
 
 //-----------Images-----------//
 import person1 from "../Images/LogosIcons/person1.png";
+import ContextHelper from "../Components/ContextHelper.js";
 
 export default function SettingsPage() {
   const [profilePicture, setProfilePicture] = useState(null);
   const [file, setFile] = useState(null);
 
   const [pairKey, setPairKey] = useState("");
-  const [tempPairKey] = useState("Example123"); //temp pair key till able to import from database
+  const tempPairKey = ContextHelper("pairKey");
 
   const navigate = useNavigate();
+  const context = useContext(UserContext);
 
-  const authUpdate = () => {
-    updateProfile(auth.currentUser, {
-      pairKey: "wumbo",
-      phoneNumber: 1234,
-      displayName: "phone",
-    })
-      .then(() => {
-        console.log("Pairkey up");
-      })
-      .catch((error) => {
-        // An error occurred
-        // ...
-      });
-  };
+  // const authUpdate = () => {
+  //   updateProfile(auth.currentUser, {
+  //     photoURL: file,
+  //     displayName: "phone",
+  //   })
+  //     .then(() => {
+  //       console.log("Pairkey up");
+  //     })
+  //     .catch((error) => {
+  //       // An error occurred
+  //       // ...
+  //     });
+  // };
 
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
     setFile(file);
   };
 
-  useEffect(() => {
-    const user = auth.currentUser;
-    if (user !== null) {
-      user.providerData.forEach((profile) => {
-        console.log("Sign-in provider: " + profile.pairKey);
-        console.log(" PhoneNumber " + profile.phoneNumber);
-        console.log("  Name: " + profile.displayName);
-        console.log("  Email: " + profile.email);
-        console.log("  Photo URL: " + profile.photoURL);
-      });
-    }
-  }, []);
+  // useEffect(() => {
+  //   const user = auth.currentUser;
+  //   if (user !== null) {
+  //     user.providerData.forEach((profile) => {
+  //       console.log("Sign-in provider: " + profile.pairKey);
+  //       console.log(" PhoneNumber " + profile.phoneNumber);
+  //       console.log("  Name: " + profile.displayName);
+  //       console.log("  Email: " + profile.email);
+  //       console.log("  Photo URL: " + profile.photoURL);
+  //     });
+  //   }
+  // }, []);
 
   // Toggle sign out + navigate back to onboarding
   const handleSignOut = () => {
@@ -63,6 +66,7 @@ export default function SettingsPage() {
       .then(() => {
         console.log("Signed Out");
         navigate("/onboarding");
+        context.setPairKey("");
       })
       .catch((error) => {
         console.log("Error Signing Out");
@@ -81,7 +85,7 @@ export default function SettingsPage() {
   return (
     <div className=" flex h-screen flex-col items-center justify-center bg-background">
       <NavBar label="Settings" />
-      <Button label="write auth" handleClick={authUpdate} />
+      {/* <Button label="write auth" handleClick={authUpdate} /> */}
       <main className="flex flex-col items-center">
         <form className="mb-2 flex w-3/4 flex-col items-center">
           <label htmlFor="profile-picture" style={{ cursor: "pointer" }}>

@@ -1,6 +1,6 @@
 //-----------React-----------//
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 //-----------Pages-----------//
@@ -18,6 +18,9 @@ import ErrorPage from "./Pages/ErrorPage";
 import BucketForm from "./Components/BucketForm";
 
 //-----------Firebase-----------//
+import { auth, database } from "./firebase/firebase";
+import { onAuthStateChanged } from "firebase/auth";
+import { ref, orderByChild, query, equalTo, get } from "firebase/database";
 
 //-----------Styling-----------//
 import "./App.css";
@@ -77,8 +80,9 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isPairedUp, setIsPairedUp] = useState(false);
   const [isDemo, setIsDemo] = useState(false);
+  const [user, setUser] = useState(null);
 
-  const user = {
+  const context = {
     pairKey,
     isLoggedIn,
     isPairedUp,
@@ -88,9 +92,50 @@ function App() {
     setIsPairedUp,
     setIsDemo,
   };
+  // Pull user email from Auth
+  useEffect(() => {
+    onAuthStateChanged(auth, (userInfo) => {
+      if (userInfo) {
+        setUser(userInfo);
+        console.log(userInfo.email);
+        fetchPairKey(userInfo.email);
+        setIsLoggedIn(true);
+        // signed in user
+      } else {
+        // no signed-in user
+        setIsLoggedIn(false);
+        console.log("Not logged In");
+      }
+    });
+  }, []);
+
+  const fetchPairKey = async (userEmail) => {
+    const userRef = ref(database, "userRef");
+    const emailQuery = query(
+      userRef,
+      orderByChild("email"),
+      equalTo(userEmail),
+    );
+
+    try {
+      const snapshot = await get(emailQuery);
+
+      if (snapshot.exists()) {
+        const userData = snapshot.val();
+        const userKey = Object.keys(userData)[0];
+        const pairKey = userData[userKey].pairKey;
+        console.log(`Pair Key: ${pairKey}`);
+        setPairKey(pairKey);
+      } else {
+        console.log("User not found");
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
   return (
-    <UserContext.Provider value={user}>
+    <UserContext.Provider value={context}>
       <RouterProvider router={router} />
     </UserContext.Provider>
   );

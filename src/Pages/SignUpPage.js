@@ -86,6 +86,7 @@ export default function SignUpPage() {
   return (
     <div className=" flex h-screen flex-col items-center justify-center bg-background">
       <NavBar label="Sign Up" nav="/onboarding" />
+      {/* Sign Up form */}
       {signingUp ? (
         <>
           <ProfileImage
@@ -104,6 +105,7 @@ export default function SignUpPage() {
         </>
       ) : (
         <>
+          {/* Upload photo and name */}
           <h1 className="m-3 p-2 text-center text-[1.5em] font-bold">
             Upload a photo and tell me your name!
           </h1>
@@ -114,12 +116,11 @@ export default function SignUpPage() {
                 alt="Profile photo"
               />
             </label>
-
             <input
               type="file"
               id="profile-picture"
-              accept="image/*" // Allow only image files to be selected
-              style={{ display: "none" }} // Hide the input element
+              accept="image/*"
+              style={{ display: "none" }}
               onChange={handleImageUpload}
             />
             <label className="mt-1">Your Name:</label>

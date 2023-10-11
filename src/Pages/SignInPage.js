@@ -11,7 +11,6 @@ import { auth } from "../firebase/firebase";
 import {
   signInWithEmailAndPassword,
   sendPasswordResetEmail,
-  onAuthStateChanged,
 } from "firebase/auth";
 //-----------Images-----------//
 import person2 from "../Images/LogosIcons/person2.png";
@@ -29,7 +28,6 @@ export default function SignInPage() {
   const signIn = async () => {
     try {
       const userInfo = await signInWithEmailAndPassword(auth, email, password);
-      console.log(userInfo);
       setEmail("");
       setPassword("");
       // setUser(userInfo);
@@ -55,19 +53,6 @@ export default function SignInPage() {
         setErrorMessage(error.message);
       });
   };
-
-  useEffect(() => {
-    onAuthStateChanged(auth, (userInfo) => {
-      if (userInfo) {
-        console.log(userInfo);
-        // signed in user
-        context.setIsLoggedIn(true);
-      } else {
-        // no signed-in user
-        context.setIsLoggedIn(false);
-      }
-    });
-  }, [context]);
 
   return (
     <>
