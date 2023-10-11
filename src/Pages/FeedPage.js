@@ -14,6 +14,7 @@ import { Feed } from "../Components/Feed";
 import { Composer } from "../Components/Composer";
 import NavBar from "../Details/NavBar.js";
 import memoriesimage from "../Images/LogosIcons/word-icon-memories.png";
+import { FilterButtonHolder } from "../Components/FilterButtonHolder.js";
 
 const DUMMY_USERID = "dummyuser"; // to use these as subs
 const DUMMY_PAIRID = "dummypair"; // to use these as subs
@@ -38,14 +39,12 @@ export default function FeedPage() {
   return (
     <>
       <div className=" flex h-screen flex-col items-center justify-center">
-        <NavBar label="Feed" src={memoriesimage} />
-        <div className="h-1/4">abc</div>
-        <main className="mt-[400px] bg-blue-300">
+        <NavBar src={memoriesimage} />
+        <nav className="fixed top-[6em] flex h-10 w-full items-center justify-center bg-window">
           <button
             onClick={() => document.getElementById("composer").showModal()}
           >
-            {" "}
-            +{" "}
+            +
           </button>
           <dialog id="composer" className="modal">
             <form method="dialog">
@@ -55,6 +54,9 @@ export default function FeedPage() {
             </form>
             <Composer postContent={null} />
           </dialog>
+        </nav>
+
+        <main className=" overscroll-contain bg-blue-300">
           <Feed posts={posts} setPosts={setPosts} />
         </main>
       </div>
