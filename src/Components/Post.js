@@ -41,7 +41,6 @@ export function Post(props) {
 
     return (      // to work out the edit button later
         <div className='w-1/5 bg-green-300 p-5 m-2 border-black border' key={props.postContent.key}>
-        {console.log(props.postContent.val)}
         <button onClick={() => document.getElementById("editPost").showModal()}> Edit </button>
         <dialog id="editPost" className = "modal">
         <button className="btn btn-circle btn-ghost btn-sm absolute right-2 top-2">✕</button>
@@ -58,7 +57,6 @@ export function Post(props) {
             <br />
             <input
               type='text'
-              id='Comment'
               placeholder='Comment?'
               onChange={(e) => {setCommentInput({
                 commentingUser: 'placeholder for context', 

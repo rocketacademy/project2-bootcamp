@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { database, storage } from "../firebase/firebase";
-import { ref as sRef, uploadBytes, getDownloadURL,} from 'firebase/storage';
-import { push, ref } from "firebase/database";
+import { ref as sRef, uploadBytes, getDownloadURL, list as sList} from 'firebase/storage';
+import { push, ref, set } from "firebase/database";
 
 const DB_FEED_KEY = "feed";
 const DUMMY_USERID = "dummyuser" // to use these as subs
@@ -32,24 +32,44 @@ export function Composer(props) {
         })
     };
 
-    const writeData = (event) => {
+    const writeData = async (event) => {
         event.preventDefault();
-        const fileRef = sRef(storage,`feedImages/${DUMMY_PAIRID}/${formInfo.file.name}`)
-        uploadBytes(fileRef, formInfo.file)
-          .then(() => getDownloadURL(fileRef))
-          .then((url) => {
-            const messageListRef = ref(database, `${DUMMY_PAIRID}/feed`);
-              push(messageListRef, {
-                  user: DUMMY_USERID,
-                  message: formInfo.postMessage,
-                  date: `${new Date().toLocaleString()}`,
-                  file: url,
-                  tags: formInfo.tags, //set elements are unique; register each element once only
-                  comments: [],
+        console.log('are we running?');
+        let fileRef = null;
+        sList(sRef(storage, `${DUMMY_PAIRID}/feedImages/`), null)
+            .then((result) => {
+                console.log(result.items.length)
+                fileRef = sRef(storage, `${DUMMY_PAIRID}/feedImages/image${result.items.length}`)
+                uploadBytes(fileRef, formInfo.file)
+            })
+            .then(() => getDownloadURL(fileRef))
+            .then((url) => { // if post was given, take the ref and set it; else take the parent folder and push it
+                // if (props.postContent !== null) {
+                //     const messageListRef = ref(database, `${DUMMY_PAIRID}/feed/${props.postContent.key}`)
+                //     set(messageListRef, {
+                //         user: DUMMY_USERID,
+                //         message: formInfo.postMessage,
+                //         date: `${new Date().toLocaleString()}`,
+                //         file: url,
+                //         tags: formInfo.tags, 
+                //         comments: [],
+                //     })
+                // } 
+                // else {
+                    const messageListRef = ref(database, `${DUMMY_PAIRID}/feed`);
+                    push(messageListRef, {
+                        user: DUMMY_USERID,
+                        message: formInfo.postMessage,
+                        date: `${new Date().toLocaleString()}`,
+                        file: url,
+                        tags: formInfo.tags,
+                        comments: [],
               })
+            // }
           })
           .then(() => {
             //reset form after submit
+            console.log('are we running?')
             setFormInfo({
                 file: null,
                 postMessage: '',
@@ -61,6 +81,7 @@ export function Composer(props) {
 
     return (
     <div>
+    {console.log(props.postContent)}
     Do not edit posts with Composer yet - I need to update the database methods - KL
         <form onSubmit={writeData} className = 'flex bg-yellow-300 justify-center'>
             <input
