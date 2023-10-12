@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 
 //-----------Firebase-----------//
 import { database } from "../firebase/firebase";
-import { onChildAdded, ref, update, remove } from "firebase/database";
+import { onChildAdded, ref, push, set, remove } from "firebase/database";
 
 //-----------Components-----------//
 import NavBar from "../Details/NavBar.js";
@@ -15,6 +15,7 @@ import dates from "../Images/LogosIcons/word-icon-dates.png";
 
 //Database key for date-list
 const REALTIME_DATABASE_KEY_DATE = "date-list";
+const REALTIME_DATABASE_KEY_ARCHIVE = "date-archive";
 
 export default function DatesPage() {
   //context helper to send to database
@@ -61,6 +62,41 @@ export default function DatesPage() {
     return daysLeft;
   };
 
+  // check and update if dates are done and send to archive
+  useEffect(() => {
+    // Check and update if dates are done and send to archive
+    dateList.forEach((dateItem) => {
+      const currentDate = new Date();
+      const targetDate = new Date(dateItem.val.date);
+
+      if (targetDate < currentDate) {
+        // Date has passed, move to the archive
+        const archiveRef = ref(
+          database,
+          `rooms/${REALTIME_DATABASE_KEY_PAIRKEY}/${REALTIME_DATABASE_KEY_ARCHIVE}`,
+        );
+
+        // Push the entire dateItem to the archive
+        const newArchiveItemRef = push(archiveRef);
+        set(newArchiveItemRef, {
+          id: dateItem.val.id,
+          title: dateItem.val.title,
+          items: dateItem.val.items,
+          date: dateItem.val.date,
+          time: dateItem.val.time,
+        });
+
+        // Remove the item from the current database
+        remove(
+          ref(
+            database,
+            `rooms/${REALTIME_DATABASE_KEY_PAIRKEY}/${REALTIME_DATABASE_KEY_DATE}/${dateItem.key}`,
+          ),
+        );
+      }
+    });
+  }, [dateList, REALTIME_DATABASE_KEY_PAIRKEY]);
+
   return (
     <div className="flex min-h-screen flex-col justify-center  bg-background">
       <NavBar src={dates} />
@@ -75,7 +111,7 @@ export default function DatesPage() {
               key={dateItem.key}
               className="m-[30px] flex w-[350px] flex-row items-start justify-between rounded-xl bg-text p-[10px] "
             >
-              <div className="wrap flex items-center justify-between">
+              <div className="wrap flex items-start justify-between">
                 <div className="group-for-days rounded-xl bg-background p-[20px]">
                   <h1 className="text-center text-xl font-bold">
                     {calculateDaysLeft(dateItem.val.date)}

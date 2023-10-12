@@ -76,7 +76,7 @@ export default function DateForm() {
           document.getElementById("bucket-form").showModal();
         }}
       >
-        Add a bucket
+        Make a Date
       </button>
       <dialog id="bucket-form" className="modal">
         <div className="modal-box flex flex-col items-center rounded-2xl bg-text">
