@@ -47,7 +47,7 @@ export default function PairUp() {
   // Create - Write data to firebase to create a new room + add the pairkey to the database
   const createRoom = () => {
     const pairKeyRef = ref(database, DB_PAIRKEY_KEY);
-    const roomRef = ref(database, pairKeyCreate);
+    const roomRef = ref(database, `rooms/${pairKeyCreate}`);
     const userRef = ref(database, "userRef");
 
     // Create pairKey Room
@@ -64,7 +64,7 @@ export default function PairUp() {
         });
       })
       .then(() => {
-        // Upload user data to room
+        // Upload user data to roomdb
         return set(roomRef, {
           pairKey: pairKeyCreate,
           startDate: startDate,
@@ -137,7 +137,7 @@ export default function PairUp() {
           if (snapshot.exists()) {
             console.log("Join - Pair Key exists!");
             // Check email2 does not exist within pairkey room
-            const roomRef = ref(database, pairKeyJoin);
+            const roomRef = ref(database, `rooms/${pairKeyJoin}`);
             const emailQuery = child(roomRef, "email2");
 
             get(emailQuery).then((emailSnapshot) => {
