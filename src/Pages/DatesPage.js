@@ -7,6 +7,7 @@ import CreateEvent from "../Components/Dates/CreateEvent.js";
 
 //-----------Media-----------//
 import dates from "../Images/LogosIcons/word-icon-dates.png";
+import SignInReminder from "../Components/Helpers/SignInReminder.js";
 
 export default function DatesPage() {
   return (

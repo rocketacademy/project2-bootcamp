@@ -10,7 +10,7 @@ const StateHelper = () => {
   return (
     <div className="bg-white text-[10px]">
       <p className="font-bold">StateHelper:</p>
-      {context.email && <p>context.email</p>}
+      {context.email && <p>{context.email}</p>}
       {context.pairKey && <p>Pair Key: {context.pairKey}</p>}
       {context.isLoggedIn ? <p>Signed In</p> : <p>Signed Out</p>}
       {/* {context.isPairedUp ? <p>Paired Up</p> : <p>Not Paired</p>} */}

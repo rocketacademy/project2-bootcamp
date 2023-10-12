@@ -11,7 +11,7 @@ import Footer from "../Details/Footer.js";
 import { database, auth } from "../firebase/firebase";
 import { ref, set, child, get, update, push } from "firebase/database";
 
-//-----------Images-----------//
+//-----------Media-----------//
 import heart from "../Images/heart.gif";
 import person1 from "../Images/LogosIcons/person1.png";
 import person2 from "../Images/LogosIcons/person2.png";
