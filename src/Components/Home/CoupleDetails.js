@@ -8,49 +8,72 @@
 import { useState, useEffect } from "react";
 //-----------Firebase-----------//
 import { auth, database } from "../../firebase/firebase";
+import { ref, child, get } from "firebase/database";
 //-----------Media-----------//
 import heart from "../../Images/heart.gif";
+import ContextHelper from "../Helpers/ContextHelper";
+import { NavLink } from "react-router-dom";
 
 const CoupleDetails = () => {
   //Import display photos
-
-  const [email, setEmail] = useState("");
+  const pairKey = ContextHelper("pairKey");
+  const [days, setDays] = useState(null);
   const [displayName, setDisplayName] = useState("");
   const [profilePicture, setProfilePicture] = useState(null);
 
-  //Pull user data
+  //Pull User Data
   useEffect(() => {
     const user = auth.currentUser;
-
     if (user !== null) {
       setDisplayName(user.displayName);
-      setEmail(user.email);
       setProfilePicture(user.photoURL);
     }
   }, []);
 
-  // useEffect(() => {
-  //   const roomRef = ref(database, pair);
-  //   const checkPairedQuery = child(roomRef, "isPairedUp");
-  //   get(checkPairedQuery).then((snapshot) => {
-  //     if (snapshot.exists()) {
-  //       console.log("PAIRED UP - redirect to main");
-  //       navigate("/");
-  //     } else {
-  //       console.log("Not paired up yet! Pls wait");
-  //     }
-  //   });
-  // });
+  //Pull start date from couple's room
+  useEffect(() => {
+    if (pairKey) {
+      console.log("Pairkey", pairKey);
+      const roomRef = ref(database, pairKey);
+      const dateQuery = child(roomRef, "startDate");
+      get(dateQuery).then((snapshot) => {
+        if (snapshot.exists()) {
+          setDays(daysTogether(snapshot.val()));
+        } else {
+          console.log("Issue Pulling Start Date");
+        }
+      });
+    }
+  });
+
+  //Calculate number of days together
+  const daysTogether = (startDate) => {
+    const currentDate = new Date();
+    const parsedStartDate = new Date(startDate);
+    const timeDifference = currentDate - parsedStartDate;
+    const daysDifference = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+    return daysDifference;
+  };
 
   return (
-    <article className=" flex w-1/2 min-w-[16em] max-w-[28em] flex-col items-center rounded-xl bg-white bg-opacity-80 p-2 shadow-xl hover:animate-pulse">
+    <article className="flex w-1/2 min-w-[16em] max-w-[28em] flex-col items-center rounded-xl bg-white bg-opacity-80 p-2 shadow-lg hover:translate-y-[-2px] hover:shadow-window ">
       <img src={heart} alt="heartbeat" className=" h-[4em] w-[4em]"></img>
-      <h1 className="text-[1em]">
-        {displayName ? displayName : "Person1"} & Morty
-      </h1>
+      {pairKey ? (
+        <>
+          <h1 className="text-[1em]">
+            {displayName ? displayName : "Person1"} & Morty
+          </h1>
 
-      <h1 className="text-[3em] font-bold leading-none">420 days</h1>
-      <p className="text-[1em]">Together</p>
+          <h1 className="text-center text-[2.6em] font-bold leading-none">
+            {days} days
+          </h1>
+          <p className="text-[1em]">Together</p>
+        </>
+      ) : (
+        <NavLink to="/onboarding" className="animate-bounce text-[1.2em]">
+          Click here to Sign In!
+        </NavLink>
+      )}
     </article>
   );
 };

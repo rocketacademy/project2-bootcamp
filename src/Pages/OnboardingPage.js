@@ -17,18 +17,18 @@ export default function Onboarding() {
       initial={{ opacity: 0, scale: 0 }} // Initial state (hidden and scaled down)
       animate={{ opacity: 1, scale: 1 }} // Final state (visible and at full scale)
       transition={{
-        duration: 0.8, // Animation duration in seconds
-        ease: "easeInOut", // Easing function
+        duration: 0.8,
+        ease: "easeInOut",
       }}
     >
-      <motion.img
+      <img
         src={logo}
         alt="logo"
         className="h-[15em] hover:translate-y-[-2px] sm:h-[20em]"
       />
       <ul className="mb-3 scale-90 rounded-md border-[1px] border-black p-2 shadow-lg hover:translate-y-[-2px] sm:scale-100">
         <li>
-          <AnimatedTextWord text="📝 Plan Dates Together" back={5} />
+          <AnimatedTextWord text="📝 Plan Dates Together" />
         </li>
         <li>
           <AnimatedTextWord text="📅 Remember the important dates" />

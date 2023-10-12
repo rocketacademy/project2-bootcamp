@@ -9,13 +9,14 @@ import Footer from "../Details/Footer.js";
 
 //-----------Firebase-----------//
 import { database, auth } from "../firebase/firebase";
-import { ref, set, child, get, update } from "firebase/database";
+import { ref, set, child, get, update, push } from "firebase/database";
 
-//-----------Images-----------//
+//-----------Media-----------//
 import heart from "../Images/heart.gif";
 import person1 from "../Images/LogosIcons/person1.png";
 import person2 from "../Images/LogosIcons/person2.png";
 import ProfileImage from "../Details/ProfileImage.js";
+import ClickToCopy from "../Components/Onboarding/ClickToCopy.js";
 
 export default function PairUp() {
   const [pairKeyCreate, setPairKeyCreate] = useState("");
@@ -25,24 +26,16 @@ export default function PairUp() {
   const [joinMessage, setJoinMessage] = useState("Enter your Pair Key:");
 
   //Toggles
-  const [copied, setCopied] = useState(false);
   const [isFilled, setIsFilled] = useState(false);
   const [isUnique, setIsUnique] = useState(false);
   //Profile data pulled from Auth
   const [email, setEmail] = useState("");
   const [displayName, setDisplayName] = useState("");
-
   const [profilePicture, setProfilePicture] = useState(null);
 
   const DB_PAIRKEY_KEY = "pairKeyRef";
   const context = useContext(UserContext);
   const navigate = useNavigate();
-
-  // Create - Copy clipboard
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(pairKeyCreate);
-    setCopied(true);
-  };
 
   // Create - Check if both inputs are filled and the pair key is unique
   useEffect(() => {
@@ -55,10 +48,21 @@ export default function PairUp() {
   const createRoom = () => {
     const pairKeyRef = ref(database, DB_PAIRKEY_KEY);
     const roomRef = ref(database, pairKeyCreate);
+    const userRef = ref(database, "userRef");
+
     // Create pairKey Room
     update(pairKeyRef, {
       [pairKeyCreate]: pairKeyCreate,
     })
+      .then(() => {
+        // Upload user data to userRef
+        return push(userRef, {
+          pairKey: pairKeyCreate,
+          displayName: displayName,
+          profilePicture: profilePicture,
+          email: email,
+        });
+      })
       .then(() => {
         // Upload user data to room
         return set(roomRef, {
@@ -149,6 +153,16 @@ export default function PairUp() {
                   profilePicture2: profilePicture,
                   email2: email,
                   isPairedUp: true,
+                }).then(() => {
+                  // Upload user data to userRef
+                  const userRef = ref(database, "userRef");
+
+                  return push(userRef, {
+                    pairKey: pairKeyJoin,
+                    displayName: displayName,
+                    profilePicture: profilePicture,
+                    email: email,
+                  });
                 });
               }
             });
@@ -157,6 +171,7 @@ export default function PairUp() {
             console.log("Join - Pair Key does NOT exist");
           }
         })
+
         .then(() => {
           // Set the pair key to global context
           context.setPairKey(pairKeyJoin);
@@ -181,7 +196,6 @@ export default function PairUp() {
   return (
     <div className=" flex h-screen flex-col items-center justify-center bg-background">
       <NavBar label="Pair Up" nav="/sign-in" />
-
       <div className=" flex flex-row">
         <ProfileImage
           src={profilePicture ? profilePicture : person1}
@@ -193,9 +207,10 @@ export default function PairUp() {
       {/* Create room */}
       <main className="m-2 flex w-[20em] flex-col items-center rounded-lg border-[1px] border-slate-800 p-2 sm:w-[28em]">
         <p className="mx-5 my-2 text-center font-bold">
-          Create a unique pair key for you and your partner
+          Create a unique pair key
         </p>
         <form className="flex flex-col items-center">
+          {/* Unique pair key confirmation message */}
           <label className=" p-1 text-sm">{message}</label>
           <input
             type="text"
@@ -207,8 +222,6 @@ export default function PairUp() {
             }}
             placeholder="rick&morty"
           />
-          {/* Unique pair key confirmation message */}
-
           <label className="pb-1 text-sm">Start of relationship:</label>
           <input
             type="date"
@@ -241,21 +254,10 @@ export default function PairUp() {
               </button>
             </form>
             <img src={heart} alt="heart" className="h-[8em]" />
-            {copied ? (
-              <p className="text-green-800">Pair key copied!</p>
-            ) : (
-              <p>Click to copy:</p>
-            )}
-            <button
-              id="copyToClipboard"
-              className="rounded-lg bg-window p-2 text-lg font-bold shadow-md hover:translate-y-[-1px] active:translate-y-[3px]"
-              onClick={copyToClipboard}
-            >
-              📑 {pairKeyCreate}
-            </button>
+            <ClickToCopy pairKey={pairKeyCreate} />
             <p className="py-3 text-center">
               Once your partner has entered your pair key you'll be put together
-              in the room.
+              in a room.
             </p>
             <Button label="Check Pairing" handleClick={checkPaired} />
           </div>
