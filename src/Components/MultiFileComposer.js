@@ -1,3 +1,5 @@
+// NOT IN USE...yet
+
 import { useState } from "react";
 import { database, storage } from "../firebase/firebase";
 import {
@@ -14,13 +16,12 @@ const DUMMY_PAIRID = "dummypair"; // to use these as subs
 //<Composer postContent = {post} />
 export function Composer(props) {
   const [formInfo, setFormInfo] = useState({
-    file: props.postContent ? 'props.postContent.val.file' : null,
     postMessage: props.postContent ? props.postContent.val.message : "",
     date: props.postContent ? props.postContent.val.date : null,
     tags: props.postContent ? props.postContent.val.tags : "",
+    fileArray: props.postContent ? props.postContent.val.fileArray : null,
   });
-  const [filePreview, setFilePreview] = useState(props.postContent ? props.postContent.val.file : '')
-
+  const [filePreviewArray, setFilePreviewArray] = useState(props.postContent ? props.postContent.val.fileArray : [])
 
   const textChange = (e) => {
     const name = e.target.id;
@@ -31,15 +32,13 @@ export function Composer(props) {
   };
 
   const imgChange = (e) => {
-    console.log(props.postContent)
     setFormInfo((prevState) => {
-      return { ...prevState, file: e.target.files[0] };
+      return { ...prevState, fileArray: e.target.files};
     });
     if (props.postContent && e.target.files.length === 0) {
-      console.log('original image')
-      setFilePreview(props.postContent.val.file)
+      setFilePreviewArray(props.postContent.val.fileArray)
     } else {
-      setFilePreview(URL.createObjectURL(e.target.files[0]))
+      setFilePreviewArray(e.target.files.map((file)=>URL.createObjectURL(file)))
     }
   };
 
@@ -52,18 +51,22 @@ export function Composer(props) {
           storage,
           `${DUMMY_PAIRID}/feedImages/image${result.items.length}`,
         );
-        return uploadBytes(fileRef, formInfo.file);
+        return Promise.all(//array of promises - map array of images to array of promises
+        formInfo.fileArray.map(async (file, index)=>{
+            fileRef = sRef(storage, `${DUMMY_PAIRID}/feedImages/image${result.items.length+index}`)
+           return uploadBytes(fileRef, file).then(() => getDownloadURL(fileRef))
+        })     
+        ) 
       })
-      .then(() => getDownloadURL(fileRef))
-      .then((url) => {
+      .then((urlArray) => {
         // if post was given, take the ref and set it; else take the parent folder and push it
         if (props.postContent !== null) {
             const messageListRef = ref(database, `${DUMMY_PAIRID}/feed/${props.postContent.key}`)
             set(messageListRef, {
                 user: DUMMY_USERID,
                 message: formInfo.postMessage,
-                date: props.postContent.val.date,
-                file: url ? url : props.postContent.val.file, //just take url from new file for now - need to figure out how to delete the old file
+                date: props.postContent.val.date,//this is the original value - can i just omit this line?
+                fileArray: urlArray, //just take url from new file for now - need to figure out how to delete the old file
                 tags: formInfo.tags,
                 comments: props.postContent.val.comments
             })
@@ -74,7 +77,7 @@ export function Composer(props) {
           user: DUMMY_USERID,
           message: formInfo.postMessage,
           date: `${new Date().toLocaleString()}`,
-          file: url,
+          file: urlArray,
           tags: formInfo.tags,
           comments: [],
         });
@@ -83,13 +86,27 @@ export function Composer(props) {
       .then(() => {
         //reset form after submit
         setFormInfo({
-          file: null,
+          fileArray: [],
           postMessage: "",
           date: null,
           tags: "",
         });
       });
   };
+
+const filePreviews = filePreviewArray.map((fileURL, index, arr)=> { //account for case of 1 file
+    const prevIndex = (index === 0 ? arr.length-1 : index-1)
+    const nextIndex = (index === arr.length ? 0 : index+1)
+    return (
+    <div id={`slide${index}`} className="carousel-item relative w-full">
+    <img src="/images/stock/photo-1625726411847-8cbb60cc71e6.jpg" className="w-full" />
+    <div className="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
+      <a href={`slide${prevIndex}`} className="btn btn-circle">❮</a> 
+      <a href={`slide${nextIndex}`} className="btn btn-circle">❯</a>
+    </div>
+  </div> 
+    )  
+})
 
   return (
     <div className = 'w-1/5'>

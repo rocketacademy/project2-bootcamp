@@ -92,7 +92,7 @@ export default function BucketListPage() {
   return (
     <>
       <div className=" flex h-screen flex-col items-center justify-center">
-        <NavBar label="Bucket List" src={BucketListImage} />
+        <NavBar src={BucketListImage} />
         <main>
           <div className="bucket-lists m-4 grid w-full max-w-[60em] grid-cols-2 gap-4  p-3 md:grid-cols-3">
             {bucketList.map((bucketItem) => (

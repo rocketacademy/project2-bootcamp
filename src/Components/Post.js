@@ -15,14 +15,14 @@ export function Post(props) {
     // /placeholderforuserid/${props.postContent.key}/comments
 
     useEffect(() => { // whenever app renders
-        const commentRef = ref(database, `${DB_FEED_KEY}/${DUMMY_PAIRID}/${props.postContent.key}/comments`); //setup reference 
+        const commentRef = ref(database, `${DUMMY_PAIRID}/${DB_FEED_KEY}/${props.postContent.key}/comments`); //setup reference 
         onChildAdded(commentRef, (data) => { //setup listener
             setCommentList((prevComments) => [...prevComments, { key: data.key, val: data.val() }]);
         });
     }, []);
 
     const writeComment = () => {
-        const commentRef = ref(database, `${DB_FEED_KEY}/${DUMMY_PAIRID}/${props.postContent.key}/comments`);
+        const commentRef = ref(database, `${DUMMY_PAIRID}/${DB_FEED_KEY}/${props.postContent.key}/comments`);
         push(commentRef, commentInput
         ).then(() => {
             //reset form after submit
@@ -41,10 +41,13 @@ export function Post(props) {
 
     return (      // to work out the edit button later
         <div className='w-1/5 bg-green-300 p-5 m-2 border-black border' key={props.postContent.key}>
-        <button onClick={() => document.getElementById("editPost").showModal()}> Edit </button>
-        <dialog id="editPost" className = "modal">
+        <button onClick={() => document.getElementById(`editPost-${props.postContent.key}`).showModal()}> Edit </button>
+        <dialog id={`editPost-${props.postContent.key}`} className = "modal">
+        <form method = 'dialog'>
         <button className="btn btn-circle btn-ghost btn-sm absolute right-2 top-2">✕</button>
-        <Composer key = {props.postContent.val.date} postContent = {props.postContent}/>
+        </form>
+        <Composer key = {`composer-${props.postContent.key}`} postContent = {props.postContent}/>
+        {/* this is a lot of composer components rendered- should i explore just selectively rendering one? */}
         </dialog>
         <br />
             {props.postContent.val.user}
@@ -59,7 +62,7 @@ export function Post(props) {
               type='text'
               placeholder='Comment?'
               onChange={(e) => {setCommentInput({
-                commentingUser: 'placeholder for context', 
+                commentingUser: DUMMY_USERID, 
                 commentText: e.target.value,
                 })}}
               value={commentInput.commentText}
