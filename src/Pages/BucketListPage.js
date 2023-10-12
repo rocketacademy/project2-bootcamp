@@ -1,12 +1,19 @@
-import React from "react";
-import { useState, useEffect } from "react";
-import BucketForm from "../Components/BucketForm.js";
+//-----------React-----------//
+import React, { useState, useEffect } from "react";
+
+//-----------Firebase-----------//
 import { database } from "../firebase/firebase";
 import { onChildAdded, ref, update, remove } from "firebase/database";
-import BucketListImage from "../Images/LogosIcons/word-icon-bucketlist.png";
+
+//-----------Components-----------//
+import BucketForm from "../Components/BucketForm.js";
 import NavBar from "../Details/NavBar.js";
 import ContextHelper from "../Components/Helpers/ContextHelper.js";
 
+//-----------Media-----------//
+import BucketListImage from "../Images/LogosIcons/word-icon-bucketlist.png";
+
+//Database key for bucket-list
 const REALTIME_DATABASE_KEY_BUCKET = "bucket-list";
 
 export default function BucketListPage() {
@@ -85,12 +92,6 @@ export default function BucketListPage() {
     );
   };
 
-  //modal close button
-  const closeBucketFormModal = () => {
-    const modal = document.getElementById("bucket-form");
-    modal.close();
-  };
-
   //send to milestone
 
   return (
@@ -134,26 +135,7 @@ export default function BucketListPage() {
               </button>
             </div>
           ))}
-        </div>
-        <div className="absolute bottom-[10px] right-[10px] m-[10px]">
-          <button
-            className="btn w-[10em] bg-text"
-            onClick={() => {
-              document.getElementById("bucket-form").showModal();
-            }}
-          >
-            Add a bucket
-          </button>
-          <dialog id="bucket-form" className="modal">
-            <div className="modal-box flex flex-col items-center rounded-2xl bg-text">
-              <form method="dialog">
-                <button className="btn btn-circle btn-ghost btn-sm absolute right-5 top-5 ">
-                  ✕
-                </button>
-              </form>
-              <BucketForm closeBucketFormModal={closeBucketFormModal} />
-            </div>
-          </dialog>
+          <BucketForm />
         </div>
       </main>
     </div>

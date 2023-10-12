@@ -1,8 +1,14 @@
+//-----------React-----------//
 import React, { useState } from "react";
+
+//-----------Firebase-----------//
 import { push, ref, set } from "firebase/database";
 import { database } from "../../firebase/firebase";
+
+//-----------Components-----------//
 import ContextHelper from "../Helpers/ContextHelper";
 
+//Database key for date-list
 const REALTIME_DATABASE_KEY_DATE = "date-list";
 
 export default function DateForm() {
@@ -24,6 +30,7 @@ export default function DateForm() {
     const newBucketRef = push(bucketListRef);
 
     set(newBucketRef, {
+      id: new Date().getTime(),
       title: title,
       items: items,
       date: date,
