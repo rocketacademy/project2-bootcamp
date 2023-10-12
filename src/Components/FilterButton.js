@@ -1,5 +1,7 @@
 //WORK IN PROGRESS - need to figure out how to update own state and parent state at same time
-//<FilterButton filterTag = {filterTag} setTagFilter = {setTagFilter} currentFilters = {currentFilters} />
+//<FilterButton filterTag = {filterTag} setTagFilter = {setTagFilter} tagFilter = {props.tagFilter} />
+//<FilterButton filterTag = 'Clear' setTagFilter = {props.setTagFilter} tagFilter = {props.tagFilter} 
+//setFilterText = {setFilterText} setCustomFilter = {props.setCustomFilter}/>
 import { useState } from "react"
 
 export function FilterButton(props) {
@@ -8,10 +10,11 @@ export function FilterButton(props) {
     const handleFilterButton = (e) => { 
         //const [isClicked, setIsClicked] = useState([])
         const filterName = e.target.id
-        console.log(props.currentFilters)
         if (filterName === 'Clear') {
             props.setTagFilter(new Set())
-        } else if (props.currentFilters.has(filterName)){
+            props.setFilterText('')
+            props.setCustomFilter('')
+        } else if (props.tagFilter.has(filterName)){
             setIsClicked(false)
             props.setTagFilter((prevState) => {
                 prevState.delete(filterName)
