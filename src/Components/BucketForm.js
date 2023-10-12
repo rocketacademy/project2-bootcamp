@@ -66,7 +66,7 @@ export default function BucketForm() {
   };
 
   return (
-    <div className="absolute bottom-[10px] right-[10px]">
+    <div className=" fixed bottom-[20px] right-[20px] flex-row ">
       <button
         className="btn w-[10em] bg-text"
         onClick={() => {

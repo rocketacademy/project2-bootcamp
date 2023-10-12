@@ -96,9 +96,9 @@ export default function BucketListPage() {
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      <NavBar label="" src={BucketListImage} />
-      <main className="mt-[110px]">
-        <div className="bucket-lists max-w-screen s:grid-cols-1 m-4 grid justify-center gap-4 p-3 sm:grid-cols-2 md:grid-cols-4">
+      <NavBar src={BucketListImage} />
+      <main className="mt-[110px] flex flex-col items-center justify-start">
+        <div className="bucket-lists max-w-screen m-4 grid justify-center gap-4 p-3 md:grid-cols-1 lg:grid-cols-3">
           {bucketList.map((bucketItem) => (
             <div
               key={bucketItem.key}
