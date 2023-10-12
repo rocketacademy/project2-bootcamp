@@ -1,17 +1,17 @@
 import React from "react";
-import { useContext, useState, useEffect } from "react";
-import { UserContext } from "../App.js";
+import { useState, useEffect } from "react";
 import BucketForm from "../Components/BucketForm.js";
 import { database } from "../firebase/firebase";
 import { onChildAdded, ref, update, remove } from "firebase/database";
 import BucketListImage from "../Images/LogosIcons/word-icon-bucketlist.png";
 import NavBar from "../Details/NavBar.js";
+import ContextHelper from "../Components/Helpers/ContextHelper.js";
 
 const REALTIME_DATABASE_KEY_BUCKET = "bucket-list";
 
 export default function BucketListPage() {
-  //Pull in context from App.js
-  const context = useContext(UserContext);
+  //context helper to send to database
+  const REALTIME_DATABASE_KEY_PAIRKEY = ContextHelper("pairKey");
 
   //create state to view bucket list
   const [bucketList, setBucketList] = useState([]);
@@ -20,13 +20,13 @@ export default function BucketListPage() {
   useEffect(() => {
     const bucketListRef = ref(
       database,
-      `dummypair/${REALTIME_DATABASE_KEY_BUCKET}`,
+      `rooms/${REALTIME_DATABASE_KEY_PAIRKEY}/${REALTIME_DATABASE_KEY_BUCKET}`,
     );
 
     onChildAdded(bucketListRef, (data) => {
       setBucketList((state) => [...state, { key: data.key, val: data.val() }]);
     });
-  }, []);
+  }, [REALTIME_DATABASE_KEY_PAIRKEY]);
 
   //create a toggle for checkbox
   const toggleCheckBox = (bucketItemKey, itemId) => {
@@ -60,7 +60,10 @@ export default function BucketListPage() {
       },
     };
     update(
-      ref(database, `dummypair/${REALTIME_DATABASE_KEY_BUCKET}`),
+      ref(
+        database,
+        `rooms/${REALTIME_DATABASE_KEY_PAIRKEY}/${REALTIME_DATABASE_KEY_BUCKET}`,
+      ),
       updatedData,
     );
   };
@@ -77,7 +80,7 @@ export default function BucketListPage() {
     remove(
       ref(
         database,
-        `dummypair/${REALTIME_DATABASE_KEY_BUCKET}/${bucketItemKey}`,
+        `rooms/${REALTIME_DATABASE_KEY_PAIRKEY}/${REALTIME_DATABASE_KEY_BUCKET}`,
       ),
     );
   };
@@ -94,31 +97,11 @@ export default function BucketListPage() {
     <div className="flex min-h-screen flex-col bg-background">
       <NavBar label="" src={BucketListImage} />
       <main className="mt-[110px]">
-        <div className="flex justify-center">
-          <button
-            className="btn w-[10em] bg-text"
-            onClick={() => {
-              document.getElementById("bucket-form").showModal();
-            }}
-          >
-            Add a bucket
-          </button>
-          <dialog id="bucket-form" className="modal">
-            <div className="modal-box flex flex-col items-center rounded-2xl bg-text">
-              <form method="dialog">
-                <button className="btn btn-circle btn-ghost btn-sm absolute right-5 top-5 ">
-                  ✕
-                </button>
-              </form>
-              <BucketForm closeBucketFormModal={closeBucketFormModal} />
-            </div>
-          </dialog>
-        </div>
-        <div className="bucket-lists max-w-screen m-4 grid w-full grid-cols-2 gap-4  p-3 md:grid-cols-4">
+        <div className="bucket-lists max-w-screen s:grid-cols-1 m-4 grid justify-center gap-4 p-3 sm:grid-cols-2 md:grid-cols-4">
           {bucketList.map((bucketItem) => (
             <div
               key={bucketItem.key}
-              className="m-[20px] flex flex-col rounded-xl bg-text p-[20px] "
+              className="m-[30px] flex w-[275px] flex-col rounded-xl bg-text p-[20px] "
             >
               <button
                 className="ml-auto"
@@ -126,7 +109,7 @@ export default function BucketListPage() {
               >
                 Delete
               </button>
-              <h1 className="">{bucketItem.val.title}</h1>
+              <h1 className="text-[18px] font-bold">{bucketItem.val.title}</h1>
               {bucketItem.val.items.map((item) => (
                 <div className="justify-left flex py-[5px]" key={item.id}>
                   <input
@@ -151,6 +134,26 @@ export default function BucketListPage() {
               </button>
             </div>
           ))}
+        </div>
+        <div className="absolute bottom-[10px] right-[10px] m-[10px]">
+          <button
+            className="btn w-[10em] bg-text"
+            onClick={() => {
+              document.getElementById("bucket-form").showModal();
+            }}
+          >
+            Add a bucket
+          </button>
+          <dialog id="bucket-form" className="modal">
+            <div className="modal-box flex flex-col items-center rounded-2xl bg-text">
+              <form method="dialog">
+                <button className="btn btn-circle btn-ghost btn-sm absolute right-5 top-5 ">
+                  ✕
+                </button>
+              </form>
+              <BucketForm closeBucketFormModal={closeBucketFormModal} />
+            </div>
+          </dialog>
         </div>
       </main>
     </div>

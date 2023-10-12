@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { push, ref, set } from "firebase/database";
 import { database } from "../firebase/firebase";
+import ContextHelper from "./Helpers/ContextHelper";
 
 const REALTIME_DATABASE_KEY_BUCKET = "bucket-list";
 
@@ -11,6 +12,9 @@ export default function BucketForm({ onSubmit, closeBucketFormModal }) {
   const [newItem, setNewItem] = useState("");
   const [date, setDate] = useState("");
   const [isDateSelected, setIsDateSelected] = useState(false);
+
+  //context helper to send to database
+  const REALTIME_DATABASE_KEY_PAIRKEY = ContextHelper("pairKey");
 
   //create input to add more items with + button...
   const handleSubmit = (e) => {
@@ -40,7 +44,7 @@ export default function BucketForm({ onSubmit, closeBucketFormModal }) {
   const writeData = () => {
     const bucketListRef = ref(
       database,
-      `dummypair/${REALTIME_DATABASE_KEY_BUCKET}`,
+      `rooms/${REALTIME_DATABASE_KEY_PAIRKEY}/${REALTIME_DATABASE_KEY_BUCKET}`,
     );
     const newBucketRef = push(bucketListRef);
 
