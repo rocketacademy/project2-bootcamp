@@ -4,6 +4,7 @@
 import Event from "../Components/Dates/Event.js";
 import NavBar from "../Details/NavBar.js";
 import CreateEvent from "../Components/Dates/CreateEvent.js";
+import DateForm from "../Components/Dates/DateForm.js";
 
 //-----------Media-----------//
 import dates from "../Images/LogosIcons/word-icon-dates.png";
@@ -43,8 +44,7 @@ export default function DatesPage() {
             event="Cycling at ECP"
             detail="Bring a Helmet"
           />
-
-          <CreateEvent />
+          <DateForm />
         </main>
       </div>
     </>
