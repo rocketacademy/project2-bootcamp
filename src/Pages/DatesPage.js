@@ -23,9 +23,11 @@ export default function DatesPage() {
 
   //create state to view date list
   const [dateList, setDateList] = useState([]);
+  const [archiveList, setArchiveList] = useState([]);
+  const [dateArchive, setDateArchive] = useState(false);
 
-  //to view Date list
   useEffect(() => {
+    //to view Date list
     const dateListRef = ref(
       database,
       `rooms/${REALTIME_DATABASE_KEY_PAIRKEY}/${REALTIME_DATABASE_KEY_DATE}`,
@@ -33,6 +35,16 @@ export default function DatesPage() {
 
     onChildAdded(dateListRef, (data) => {
       setDateList((state) => [...state, { key: data.key, val: data.val() }]);
+    });
+
+    //to view Archive list
+    const archiveListRef = ref(
+      database,
+      `rooms/${REALTIME_DATABASE_KEY_PAIRKEY}/${REALTIME_DATABASE_KEY_ARCHIVE}`,
+    );
+
+    onChildAdded(archiveListRef, (data) => {
+      setArchiveList((state) => [...state, { key: data.key, val: data.val() }]);
     });
   }, [REALTIME_DATABASE_KEY_PAIRKEY]);
 
@@ -97,26 +109,79 @@ export default function DatesPage() {
     });
   }, [dateList, REALTIME_DATABASE_KEY_PAIRKEY]);
 
+  //function to toggle
+  const toggleDateArchive = () => {
+    setDateArchive(!dateArchive);
+  };
+
+  //function to view date or archive list
+  const getListByName = (dateArchive) =>
+    dateArchive === false ? dateList : archiveList;
+
+  // // Function to clear data from the archive list
+  // const clearArchiveList = () => {
+  //   archiveList.forEach((archiveItem) => {
+  //     remove(
+  //       ref(
+  //         database,
+  //         `rooms/${REALTIME_DATABASE_KEY_PAIRKEY}/${REALTIME_DATABASE_KEY_ARCHIVE}/${archiveItem.key}`,
+  //       ),
+  //     );
+  //   });
+  // };
+
   return (
-    <div className="flex min-h-screen flex-col justify-center  bg-background">
+    <div className="flex min-h-screen flex-col justify-center  bg-background text-accent">
       <NavBar src={dates} />
       <main className="mt-[110px] flex flex-col items-center justify-start">
-        <div className="flex flex-row gap-3">
-          <button className="px-2 hover:bg-slate-300">Upcoming</button>
-          <button className="px-2 hover:bg-slate-300">Archive</button>
-        </div>
+        {dateArchive === false ? (
+          <div className="flex flex-row gap-3">
+            <button className="rounded-xl bg-text px-5">Upcoming</button>
+            <button
+              className="rounded-xl bg-background px-5"
+              onClick={toggleDateArchive}
+            >
+              Archive
+            </button>
+          </div>
+        ) : (
+          <div className="flex flex-row gap-3">
+            <button
+              className="rounded-xl bg-background px-5"
+              onClick={toggleDateArchive}
+            >
+              Upcoming
+            </button>
+            <button className="rounded-xl bg-text px-5">Archive</button>
+          </div>
+        )}
         <div className="date-lists max-w-screen m-4 grid justify-center gap-4 p-3 md:grid-cols-1 lg:grid-cols-3">
-          {dateList.map((dateItem) => (
+          {getListByName(dateArchive).map((dateItem) => (
             <div
               key={dateItem.key}
               className="m-[30px] flex w-[350px] flex-row items-start justify-between rounded-xl bg-text p-[10px] "
             >
               <div className="wrap flex items-start justify-between">
                 <div className="group-for-days rounded-xl bg-background p-[20px]">
-                  <h1 className="text-center text-xl font-bold">
-                    {calculateDaysLeft(dateItem.val.date)}
-                  </h1>
-                  <h2 className="font-bold">Days</h2>
+                  {dateArchive === false ? (
+                    <>
+                      <h1 className="text-center text-xl font-bold">
+                        {calculateDaysLeft(dateItem.val.date)}
+                      </h1>
+                      <h2 className="font-bold">Days</h2>
+                    </>
+                  ) : (
+                    <>
+                      <h1 className="text-center text-xl font-bold">
+                        {calculateDaysLeft(dateItem.val.date)}-
+                      </h1>
+                      <h2 className="text-center font-bold">
+                        Days
+                        <br />
+                        Ago
+                      </h2>
+                    </>
+                  )}
                 </div>
                 <div className="group-for-everythingelse ml-[10px]">
                   <h1 className="italic">
