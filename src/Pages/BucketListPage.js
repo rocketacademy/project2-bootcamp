@@ -1,5 +1,4 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
 import { useContext, useState, useEffect } from "react";
 import { UserContext } from "../App.js";
 import BucketForm from "../Components/BucketForm.js";
@@ -89,75 +88,71 @@ export default function BucketListPage() {
     modal.close();
   };
 
+  //send to milestone
+
   return (
-    <>
-      <div className=" flex h-screen flex-col items-center justify-center">
-        <NavBar label="Bucket List" src={BucketListImage} />
-        <main>
-          <div className="bucket-lists m-4 grid w-full max-w-[60em] grid-cols-2 gap-4  p-3 md:grid-cols-3">
-            {bucketList.map((bucketItem) => (
-              <div
-                key={bucketItem.key}
-                className="m-[20px] flex justify-between rounded-xl bg-text p-[20px] "
-              >
-                <div className="comment-container">
-                  <div className="flex justify-between">
-                    <h1 className="text-lx">{bucketItem.val.title}</h1>
-                    <button
-                      className=""
-                      onClick={() => deleteBucketItem(bucketItem.key)}
-                    >
-                      Delete
-                    </button>
-                  </div>
-                  {bucketItem.val.items.map((item) => (
-                    <div className="justify-left flex py-[5px]" key={item.id}>
-                      <input
-                        className="mr-[10px] accent-accent"
-                        type="checkbox"
-                        checked={item.completed}
-                        onChange={() => toggleCheckBox(bucketItem.key, item.id)}
-                      />
-                      <h2>{item.title}</h2>
-                    </div>
-                  ))}
-                  <h1>{bucketItem.val.items.title}</h1>
-                  {bucketItem.val.date !== "" ? (
-                    <p className="mb-[10px]">
-                      Date to complete! - {bucketItem.val.date}
-                    </p>
-                  ) : (
-                    <p className="mb-[10px]"></p>
-                  )}
-                  <button className="rounded-full bg-background px-[10px] py-[5px]">
-                    Add to Memories
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-          <div className="absolute bottom-5 right-5">
-            <button
-              className="btn w-[10em] bg-text"
-              onClick={() => {
-                document.getElementById("bucket-form").showModal();
-              }}
+    <div className="flex min-h-screen flex-col bg-background">
+      <NavBar label="" src={BucketListImage} />
+      <main className="mt-[110px]">
+        <div className="flex justify-center">
+          <button
+            className="btn w-[10em] bg-text"
+            onClick={() => {
+              document.getElementById("bucket-form").showModal();
+            }}
+          >
+            Add a bucket
+          </button>
+          <dialog id="bucket-form" className="modal">
+            <div className="modal-box flex flex-col items-center rounded-2xl bg-text">
+              <form method="dialog">
+                <button className="btn btn-circle btn-ghost btn-sm absolute right-5 top-5 ">
+                  ✕
+                </button>
+              </form>
+              <BucketForm closeBucketFormModal={closeBucketFormModal} />
+            </div>
+          </dialog>
+        </div>
+        <div className="bucket-lists max-w-screen m-4 grid w-full grid-cols-2 gap-4  p-3 md:grid-cols-4">
+          {bucketList.map((bucketItem) => (
+            <div
+              key={bucketItem.key}
+              className="m-[20px] flex flex-col rounded-xl bg-text p-[20px] "
             >
-              Add a bucket
-            </button>
-            <dialog id="bucket-form" className="modal">
-              <div className="modal-box flex flex-col items-center rounded-2xl bg-text">
-                <form method="dialog">
-                  <button className="btn btn-circle btn-ghost btn-sm absolute right-5 top-5 ">
-                    ✕
-                  </button>
-                </form>
-                <BucketForm closeBucketFormModal={closeBucketFormModal} />
-              </div>
-            </dialog>
-          </div>
-        </main>
-      </div>
-    </>
+              <button
+                className="ml-auto"
+                onClick={() => deleteBucketItem(bucketItem.key)}
+              >
+                Delete
+              </button>
+              <h1 className="">{bucketItem.val.title}</h1>
+              {bucketItem.val.items.map((item) => (
+                <div className="justify-left flex py-[5px]" key={item.id}>
+                  <input
+                    className="mr-[10px] accent-accent"
+                    type="checkbox"
+                    checked={item.completed}
+                    onChange={() => toggleCheckBox(bucketItem.key, item.id)}
+                  />
+                  <h2>{item.title}</h2>
+                </div>
+              ))}
+              <h1>{bucketItem.val.items.title}</h1>
+              {bucketItem.val.date !== "" ? (
+                <p className="mb-[10px]">
+                  Date to complete! - {bucketItem.val.date}
+                </p>
+              ) : (
+                <p className="mb-[10px]"></p>
+              )}
+              <button className="rounded-full bg-background px-[20px] py-[5px]">
+                Add to Memories
+              </button>
+            </div>
+          ))}
+        </div>
+      </main>
+    </div>
   );
 }
