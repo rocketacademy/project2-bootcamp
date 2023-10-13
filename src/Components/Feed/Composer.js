@@ -1,5 +1,8 @@
+//NOT IN USE - replaced by MultiFileComposer
+
+
 import { useState } from "react";
-import { database, storage } from "../firebase/firebase";
+import { database, storage } from "../../firebase/firebase";
 import {
   ref as sRef,
   uploadBytes,
@@ -11,10 +14,10 @@ import { push, ref, set } from "firebase/database";
 const DUMMY_USERID = "dummyuser"; // to use these as subs
 const DUMMY_PAIRID = "dummypair"; // to use these as subs
 
-//<Composer postContent = {post} />
+//<Composer postContent={null} closeComposerModal = {closeComposerModal}/>
 export function Composer(props) {
   const [formInfo, setFormInfo] = useState({
-    file: props.postContent ? 'props.postContent.val.file' : null,
+    file: null, //props.postContent ? 'props.postContent.val.file' :
     postMessage: props.postContent ? props.postContent.val.message : "",
     date: props.postContent ? props.postContent.val.date : null,
     tags: props.postContent ? props.postContent.val.tags : "",
@@ -25,6 +28,7 @@ export function Composer(props) {
   const textChange = (e) => {
     const name = e.target.id;
     const value = e.target.value;
+    console.log(formInfo.file)
     setFormInfo((prevState) => {
       return { ...prevState, [name]: value };
     });
@@ -45,37 +49,45 @@ export function Composer(props) {
 
   const writeData = async (event) => {
     event.preventDefault();
+    console.log(formInfo.file)
     let fileRef = null;
-    sList(sRef(storage, `${DUMMY_PAIRID}/feedImages/`), null)
+    sList(sRef(storage, `rooms/${DUMMY_PAIRID}/feedImages/`), null)
       .then((result) => {
         fileRef = sRef(
           storage,
-          `${DUMMY_PAIRID}/feedImages/image${result.items.length}`,
+          `rooms/${DUMMY_PAIRID}/feedImages/image${result.items.length}`,
         );
+        if (formInfo.file) {
         return uploadBytes(fileRef, formInfo.file);
+      } else return null;
       })
-      .then(() => getDownloadURL(fileRef))
+      .then(() => {
+        if(formInfo.file) {
+          return getDownloadURL(fileRef)
+        } else return null;
+      })
       .then((url) => {
         // if post was given, take the ref and set it; else take the parent folder and push it
+        console.log(url)
         if (props.postContent !== null) {
-            const messageListRef = ref(database, `${DUMMY_PAIRID}/feed/${props.postContent.key}`)
+            const messageListRef = ref(database, `rooms/${DUMMY_PAIRID}/feed/${props.postContent.key}`)
             set(messageListRef, {
                 user: DUMMY_USERID,
                 message: formInfo.postMessage,
                 date: props.postContent.val.date,
                 file: url ? url : props.postContent.val.file, //just take url from new file for now - need to figure out how to delete the old file
                 tags: formInfo.tags,
-                comments: props.postContent.val.comments
+                comments: props.postContent.val.comments ? props.postContent.val.comments : null
             })
         }
         else {
-        const messageListRef = ref(database, `${DUMMY_PAIRID}/feed`);
+        const messageListRef = ref(database, `rooms/${DUMMY_PAIRID}/feed`);
         push(messageListRef, {
           user: DUMMY_USERID,
           message: formInfo.postMessage,
           date: `${new Date().toLocaleString()}`,
           file: url,
-          tags: formInfo.tags,
+          tags: formInfo.tags, 
           comments: [],
         });
        }
@@ -88,6 +100,8 @@ export function Composer(props) {
           date: null,
           tags: "",
         });
+        setFilePreview('')
+        props.closeComposerModal()
       });
   };
 
@@ -120,6 +134,8 @@ export function Composer(props) {
         <input
           type="file"
           className = 'display: none'
+          accept='image/*'
+          // style= {{ display: "none"}}
           onChange={(e) => {
             imgChange(e);
           }}

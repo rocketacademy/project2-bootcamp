@@ -2,7 +2,7 @@ import { NavLink } from "react-router-dom";
 import { useContext } from "react";
 import { UserContext } from "../App.js";
 import { useState, useEffect } from "react";
-import { database, storage } from "../firebase/firebase";
+import { database } from "../firebase/firebase";
 import {
   onChildAdded,
   onChildChanged,
@@ -10,11 +10,11 @@ import {
   ref,
   onValue,
 } from "firebase/database";
-import { Feed } from "../Components/Feed";
-import { Composer } from "../Components/Composer";
+import { Feed } from "../Components/Feed/Feed";
+import {MultiFileComposer} from '../Components/Feed/MultiFileComposer.js'
 import NavBar from "../Details/NavBar.js";
 import memoriesimage from "../Images/LogosIcons/word-icon-memories.png";
-import { FilterButtonHolder } from "../Components/FilterButtonHolder.js";
+import { FilterButtonHolder } from "../Components/Feed/FilterButtonHolder.js";
 
 const DUMMY_USERID = "dummyuser"; // to use these as subs
 const DUMMY_PAIRID = "dummypair"; // to use these as subs
@@ -28,11 +28,14 @@ export default function FeedPage() {
 
   useEffect(() => {
     // whenever app renders
-    const postRef = ref(database, `${DUMMY_PAIRID}/feed`); //setup reference
+    const postRef = ref(database, `rooms/${DUMMY_PAIRID}/feed`); //setup reference
     onValue(postRef, (data) => {
-      const dataArray = Object.keys(data.val()).map((key) => {
-        return {key : key, val : data.val()[key]}
-      })
+      let dataArray = []
+      if (data.val()) {
+        dataArray = Object.keys(data.val()).map((key) => {
+          return { key: key, val: data.val()[key] }
+        })
+      } 
       setPosts(dataArray)
     })
   }, []);
@@ -49,21 +52,23 @@ export default function FeedPage() {
 
   return (
     <>
-      <div className=" flex flex-col w-screen items-center justify-center">
+      <div className=" flex flex-col w-screen items-center justify-center min-h-screen bg-background font-fontspring">
         <NavBar src={memoriesimage} />
-        <nav className="fixed top-[6em] flex h-10 w-screen items-center justify-center bg-window">
+        <nav className="fixed top-[6em] flex h-10 w-screen items-center justify-between bg-window z-10 ">
           <button
             onClick={() => document.getElementById("composer").showModal()}
+            className = 'text-left mx-1 bg-blue-300 max-h-6 w-1/5'
           >
-            +
+            Create +
           </button>
           <dialog id="composer" className="modal">
             <form method="dialog">
               <button className="btn btn-circle btn-ghost btn-sm absolute right-2 top-2">
                 ✕
               </button>
-              </form>
-            <Composer className = 'w-1/2 h-1/2 bg-blue-300 flex flex-col' postContent={null} closeComposerModal = {closeComposerModal}/>
+              </form> 
+            {/* <Composer className = 'w-1/2 h-1/2 bg-blue-300 flex flex-col' postContent={null} closeComposerModal = {closeComposerModal}/> */}
+            <MultiFileComposer className = 'w-1/2 h-1/2 bg-blue-300 flex flex-col' postContent={null} closeComposerModal = {closeComposerModal}/>
           </dialog>
           <FilterButtonHolder 
           tagFilter={tagFilter} 
@@ -72,7 +77,7 @@ export default function FeedPage() {
           setCustomFilter = {setCustomFilter}
           />
         </nav>
-        <main className="mt-[130px] overscroll-contain bg-blue-300">
+        <main className="mt-[130px] bg-blue-300 flex flex-col items-center justify-start">
           <Feed posts={posts} setPosts={setPosts} tagFilter = {customFilter ? new Set([customFilter, ...tagFilter]) : tagFilter}/>
         </main>
       </div>

@@ -29,6 +29,6 @@ export function FilterButton(props) {
 
     return  (
         //some styling can be added later based on whether isClicked is true
-    <button onClick={handleFilterButton} className = 'bg-red-300' key = {props.filterTag} id = {props.filterTag}>{props.filterTag}</button>
+    <button onClick={handleFilterButton} className = 'bg-blue-300 border-solid border-black rounded mx-1 border-2' key = {props.filterTag} id = {props.filterTag}>{props.filterTag}</button>
     )
 }
