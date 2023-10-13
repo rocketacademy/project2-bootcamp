@@ -174,7 +174,7 @@ export default function DatesPage() {
           {getListByName(dateArchive).map((dateItem) => (
             <div
               key={dateItem.key}
-              className="m-[30px] flex w-[350px] flex-row items-start justify-between rounded-xl bg-text p-[10px] "
+              className=" m-[30px] flex w-[350px] flex-row items-start justify-between rounded-xl bg-text p-[10px]"
             >
               <div className="wrap flex items-start justify-between">
                 <div className="group-for-days rounded-xl bg-background p-[20px]">
