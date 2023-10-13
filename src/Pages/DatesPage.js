@@ -115,20 +115,18 @@ export default function DatesPage() {
   };
 
   //function to view date or archive list
-  const getListByName = (dateArchive) =>
-    dateArchive === false ? dateList : archiveList;
+  const getListByName = (dateArchive) => {
+    const listToDisplay = dateArchive ? archiveList : dateList;
 
-  // // Function to clear data from the archive list
-  // const clearArchiveList = () => {
-  //   archiveList.forEach((archiveItem) => {
-  //     remove(
-  //       ref(
-  //         database,
-  //         `rooms/${REALTIME_DATABASE_KEY_PAIRKEY}/${REALTIME_DATABASE_KEY_ARCHIVE}/${archiveItem.key}`,
-  //       ),
-  //     );
-  //   });
-  // };
+    // Sorts by date
+    const sortedList = Array.from(listToDisplay).sort((a, b) => {
+      const daysLeftA = calculateDaysLeft(a.val.date);
+      const daysLeftB = calculateDaysLeft(b.val.date);
+      return daysLeftA - daysLeftB;
+    });
+
+    return sortedList;
+  };
 
   return (
     <div className="flex min-h-screen flex-col justify-center  bg-background text-accent">
@@ -155,7 +153,7 @@ export default function DatesPage() {
             <button className="rounded-xl bg-text px-5">Archive</button>
           </div>
         )}
-        <div className="date-lists max-w-screen m-4 grid justify-center gap-4 p-3 md:grid-cols-1 lg:grid-cols-3">
+        <div className="date-lists max-w-screen m-4 grid justify-center gap-4 p-3 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
           {getListByName(dateArchive).map((dateItem) => (
             <div
               key={dateItem.key}
@@ -173,7 +171,7 @@ export default function DatesPage() {
                   ) : (
                     <>
                       <h1 className="text-center text-xl font-bold">
-                        {calculateDaysLeft(dateItem.val.date)}-
+                        {calculateDaysLeft(dateItem.val.date) * -1}
                       </h1>
                       <h2 className="text-center font-bold">
                         Days

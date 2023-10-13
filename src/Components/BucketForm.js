@@ -63,6 +63,8 @@ export default function BucketForm() {
     setItems([]);
     setNewItem("");
     setDate("");
+
+    document.getElementById("bucket-form").close();
   };
 
   return (
@@ -108,12 +110,15 @@ export default function BucketForm() {
                 }}
               />
               <button
-                className="rounded-full bg-background px-[15px]"
+                className="rounded-full bg-background px-[7px] font-black"
                 onClick={handleSubmit}
               >
                 +
               </button>
             </div>
+            {items.length === 0 && (
+              <p className="text-s mt-[-15px] text-red-700">Must fill up</p>
+            )}
             <ul>
               {items.map((items) => {
                 return (
@@ -147,8 +152,9 @@ export default function BucketForm() {
               />
             </div>
             <button
-              className="submit-btn my-[20px] rounded-full bg-background px-[15px]"
+              className="submit-btn my-[20px] rounded-full bg-background px-[15px] disabled:bg-neutral-500 disabled:text-background"
               onClick={writeData}
+              disabled={items.length === 0}
             >
               Submit
             </button>

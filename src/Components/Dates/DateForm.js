@@ -66,6 +66,8 @@ export default function DateForm() {
     setNewItem("");
     setDate("");
     setTime("");
+
+    document.getElementById("date-form").close();
   };
 
   return (
@@ -73,12 +75,12 @@ export default function DateForm() {
       <button
         className="btn w-[10em] bg-text"
         onClick={() => {
-          document.getElementById("bucket-form").showModal();
+          document.getElementById("date-form").showModal();
         }}
       >
         Make a Date
       </button>
-      <dialog id="bucket-form" className="modal">
+      <dialog id="date-form" className="modal">
         <div className="modal-box flex flex-col items-center rounded-2xl bg-text">
           <form
             method="dialog"
@@ -111,12 +113,15 @@ export default function DateForm() {
                 }}
               />
               <button
-                className="rounded-full bg-background px-[15px]"
+                className="rounded-full bg-background px-[7px] font-black"
                 onClick={handleSubmit}
               >
                 +
               </button>
             </div>
+            {items.length === 0 && (
+              <p className="text-s mt-[-15px] text-red-700">Must fill up</p>
+            )}
             <ul>
               {items.map((items) => {
                 return (
@@ -155,7 +160,8 @@ export default function DateForm() {
               />
             </div>
             <button
-              className="submit-btn my-[20px] rounded-full bg-background px-[15px]"
+              className="submit-btn my-[20px] rounded-full bg-background px-[15px] disabled:bg-neutral-500 disabled:text-background"
+              disabled={items.length === 0}
               onClick={writeData}
             >
               Submit
