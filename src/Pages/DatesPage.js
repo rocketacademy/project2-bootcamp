@@ -48,7 +48,7 @@ export default function DatesPage() {
     });
   }, [REALTIME_DATABASE_KEY_PAIRKEY]);
 
-  // function to delete data
+  // function to delete data from date list
   const deleteDateItem = (dateItemKey) => {
     // Remove the item from local state
     const updatedDateList = dateList.filter(
@@ -61,6 +61,23 @@ export default function DatesPage() {
       ref(
         database,
         `rooms/${REALTIME_DATABASE_KEY_PAIRKEY}/${REALTIME_DATABASE_KEY_DATE}`,
+      ),
+    );
+  };
+
+  // function to delete data from date list
+  const deleteArchiveItem = (dateItemKey) => {
+    // Remove the item from local state
+    const updatedArchiveList = archiveList.filter(
+      (dateItem) => dateItem.key !== dateItemKey,
+    );
+    setDateList(updatedArchiveList);
+
+    // Remove the item from Firebase
+    remove(
+      ref(
+        database,
+        `rooms/${REALTIME_DATABASE_KEY_PAIRKEY}/${REALTIME_DATABASE_KEY_ARCHIVE}`,
       ),
     );
   };
@@ -197,7 +214,11 @@ export default function DatesPage() {
               </div>
               <button
                 className="ml-top"
-                onClick={() => deleteDateItem(dateItem.key)}
+                onClick={() =>
+                  dateArchive
+                    ? deleteArchiveItem(dateItem.key)
+                    : deleteDateItem(dateItem.key)
+                }
               >
                 Delete
               </button>
