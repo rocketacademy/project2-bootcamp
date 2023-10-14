@@ -14,6 +14,7 @@ import ChatPage from "./Pages/ChatPage";
 import BucketList from "./Pages/BucketListPage";
 import FeedPage from "./Pages/FeedPage";
 import DatesPage from "./Pages/DatesPage";
+import TimeCapsule from "./Pages/TimeCapsule";
 import ErrorPage from "./Pages/ErrorPage";
 import BucketForm from "./Components/BucketForm";
 
@@ -62,6 +63,10 @@ const router = createBrowserRouter([
   {
     path: "/dates",
     element: <DatesPage />,
+  },
+  {
+    path: "/time-capsule",
+    element: <TimeCapsule />,
   },
   {
     path: "/bucket-list",

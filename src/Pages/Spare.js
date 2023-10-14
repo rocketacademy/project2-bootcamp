@@ -1,12 +1,14 @@
 import NavBar from "../Details/NavBar.js";
 
-export default function ChatPage() {
+const Spare = () => {
   return (
     <div className=" flex h-screen flex-col items-center justify-center">
-      <NavBar label="Chat" />
+      <NavBar label="Title" />
       <main>
-        <p>Insert Chat</p>
+        <p>Content</p>
       </main>
     </div>
   );
-}
+};
+
+export default Spare;

@@ -38,6 +38,7 @@ Contributors: Ignatius Tan, Gabriel Lim, Kenneth Lee
 # Resources Used [To update]
 
 - Google Cal API Setup in Firebase https://developers.google.com/calendar/api/quickstart/js
+- Framer Motion text animations https://dev.to/chetanvermaa/how-to-create-awesome-text-animation-with-framer-motion-1cki
 
 # Launching
 

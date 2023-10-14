@@ -17,9 +17,9 @@
 
 # Home Page
 
-- (WIP) **Auth** - Users can only access the home page when logged in + paired up
+- **Auth** - Signed out users are prompted to sign in when on the home screen
 - (WIP) Users can view the next upcoming date on the top of the screen / displays no upcoming dates if empty
-- (WIP) Users can view the total number of days they have been together
+- Users can view the total number of days they have been together
 - (WIP) Users can see the display names of themselves and their partner on the homescreen
 - (WIP) Users can see the display pictures of themselves and their partner on the homescreen
 
@@ -29,9 +29,9 @@
 - (WIP) User can update their display photo
 - (WIP) User can update their display name
 - (WIP) User can replace their background photo (To test for landscape, portrait photos)
-- (WIP) User can update their start of relationship
+- User can update their start of relationship
 - (WIP) User can link their their google cal
-- (WIP) User can sign out of their account
+- User can sign out of their account
 
 # Onboarding - Sign Up
 

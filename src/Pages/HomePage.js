@@ -76,7 +76,7 @@ export default function HomePage() {
           <AppButton src={memories} nav="/memories" />
           <AppButton src={dates} nav="/dates" />
           <AppButton src={bucketlist} nav="/bucket-list" />
-          <AppButton src={timeCapsule} />
+          <AppButton src={timeCapsule} nav="/time-capsule" />
           <AppButton src={journal} />
         </nav>
       </main>
