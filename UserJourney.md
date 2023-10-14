@@ -63,11 +63,17 @@
 
 # Dates
 
-- (WIP) User can create and add a new date to the current list
-- (WIP) Dates created are sorted with the next one at the top
-- (WIP) User can delete cancelled dates
-- (WIP) Dates over are
+- Created date list
+- User can create a date with modal
+- User can delete cancelled dates
+- Dates that are over will go to archive
+- Dates created are sorted with the next one at the top
 
 # Feed
 
 # Bucket List
+
+- Created bucket list
+- User can create a bucketlist with modal
+- User can check off items once done
+- (WIP) use composer from Kenneth to send bucket list to feed
