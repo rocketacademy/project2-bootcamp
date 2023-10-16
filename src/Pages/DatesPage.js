@@ -214,7 +214,7 @@ export default function DatesPage() {
                 </div>
               </div>
               <div className="flex-col text-center">
-                <EditDateModal />
+                <EditDateModal dateKey={dateItem.key} />
                 <button
                   className="ml-top mt-[15px] rounded-full bg-background p-[5px] text-xs"
                   onClick={() =>

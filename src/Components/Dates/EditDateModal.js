@@ -10,19 +10,22 @@ import ContextHelper from "../Helpers/ContextHelper";
 
 //Database key for date-list
 const REALTIME_DATABASE_KEY_DATE = "date-list";
-const REALTIME_DATABASE_KEY_PAIRKEY = ContextHelper("pairKey");
 
-export default function EditDateModal() {
+export default function EditDateModal({ dateKey }) {
   //create state to view date list on modal
   const [dateList, setDateList] = useState([]);
 
   //states for date form format
-  const [title, setTitle] = useState(`${dateList.title}`);
-  const [items, setItems] = useState(`${dateList.items}`);
+  const [title, setTitle] = useState("");
+  const [items, setItems] = useState([]);
   const [newItem, setNewItem] = useState("");
-  const [date, setDate] = useState(`${dateList.date}`);
-  const [time, setTime] = useState(`${dateList.time}`);
+  const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
+  const [id, setId] = useState("");
+  //context helper to send to database
+  const REALTIME_DATABASE_KEY_PAIRKEY = ContextHelper("pairKey");
 
+  //get data from firebase and put into dateList
   useEffect(() => {
     //to view Date list
     const dateListRef = ref(
@@ -31,9 +34,54 @@ export default function EditDateModal() {
     );
 
     onChildAdded(dateListRef, (data) => {
-      setDateList((state) => [...state, { key: data.key, val: data.val() }]);
+      const dateListItem = data.val();
+      // Update the state variables with data from dateList
+      setTitle(dateListItem.title);
+      setItems(dateListItem.items);
+      setDate(dateListItem.date);
+      setTime(dateListItem.time);
+      setId(dateListItem.id);
+
+      setDateList((state) => [...state, { key: data.key, val: dateListItem }]);
     });
-  }, []);
+  }, [REALTIME_DATABASE_KEY_PAIRKEY]);
+
+  // useEffect(() => {
+  //   const dateListRef = ref(
+  //     database,
+  //     `rooms/${REALTIME_DATABASE_KEY_PAIRKEY}/${REALTIME_DATABASE_KEY_DATE}`,
+  //   );
+
+  //   onChildAdded(dateListRef, (data) => {
+  //     const dateListItem = data.val();
+  //     // Update the state variables with data from dateList
+  //     setTitle(dateListItem.title);
+  //     setItems(dateListItem.items);
+  //     setDate(dateListItem.date);
+  //     setTime(dateListItem.time);
+
+  //     setDateList((state) => [...state, { key: data.key, val: dateListItem }]);
+  //   });
+  // }, [REALTIME_DATABASE_KEY_PAIRKEY]);
+
+  //create a function to store the data from database to other states
+  const listDate = (dateKey) => {
+    // Find the data item in dateList that matches the dateKey
+    const selectedDate = dateList.find((item) => item.key === dateKey);
+
+    if (selectedDate) {
+      const { title, items, date, time } = selectedDate.val;
+
+      // Set the state variables based on the selected data
+      setTitle(title);
+      setItems(items);
+      setDate(date);
+      setTime(time);
+
+      // Show the edit form
+      document.getElementById("edit-date-form").showModal();
+    }
+  };
 
   //create input to add more items with + button...
   const handleSubmit = (e) => {
@@ -58,10 +106,11 @@ export default function EditDateModal() {
     });
   };
 
+  //function to update data
   const updateData = (keyToUpdate) => {
     // Create a new entry to update
     const updatedDateItem = {
-      id: keyToUpdate, // Specify the key of the entry to update
+      id: id,
       title: title,
       items: items,
       date: date,
@@ -90,19 +139,15 @@ export default function EditDateModal() {
   return (
     <div className=" rounded-full bg-background p-[5px] text-xs">
       <button
-        className="text-center"
         onClick={() => {
-          document.getElementById("edit-date-form").showModal();
+          listDate(dateKey);
         }}
       >
         Edit
       </button>
       <dialog id="edit-date-form" className="modal">
         <div className="modal-box flex flex-col items-center rounded-2xl bg-text">
-          <form
-            method="dialog"
-            className="flex  w-96 w-full flex-col justify-center justify-items-center p-[20px] text-accent"
-          >
+          <form method="dialog" className="flex flex-col p-[20px] text-accent">
             <button className="btn btn-circle btn-ghost btn-sm absolute right-5 top-5 ">
               ✕
             </button>
@@ -184,7 +229,7 @@ export default function EditDateModal() {
             <button
               className="submit-btn my-[20px] rounded-full bg-background px-[15px] disabled:bg-neutral-500 disabled:text-background"
               disabled={items.length === 0}
-              onClick={updateData}
+              onClick={() => updateData(dateKey)}
             >
               Submit
             </button>
@@ -194,62 +239,3 @@ export default function EditDateModal() {
     </div>
   );
 }
-
-// {
-//   getListByName(dateArchive).map((dateItem) => (
-//     <div
-//       key={dateItem.key}
-//       className=" m-[30px] flex w-[350px] flex-row items-start justify-between rounded-xl bg-text p-[10px]"
-//     >
-//       <div className="wrap flex items-start justify-between">
-//         <div className="group-for-days rounded-xl bg-background p-[20px]">
-//           {dateArchive === false ? (
-//             <>
-//               <h1 className="text-center text-xl font-bold">
-//                 {calculateDaysLeft(dateItem.val.date)}
-//               </h1>
-//               <h2 className="font-bold">Days</h2>
-//             </>
-//           ) : (
-//             <>
-//               <h1 className="text-center text-xl font-bold">
-//                 {calculateDaysLeft(dateItem.val.date) * -1}
-//               </h1>
-//               <h2 className="text-center font-bold">
-//                 Days
-//                 <br />
-//                 Ago
-//               </h2>
-//             </>
-//           )}
-//         </div>
-//         <div className="group-for-everythingelse ml-[10px]">
-//           <h1 className="italic">
-//             {dateItem.val.date}
-//             <br />
-//             {dateItem.val.time}
-//           </h1>
-//           <h1 className="font-bold">{dateItem.val.title}</h1>
-//           {dateItem.val.items.map((item) => (
-//             <div className="justify-left flex" key={item.id}>
-//               <h1>-{item.title}</h1>
-//             </div>
-//           ))}
-//         </div>
-//       </div>
-//       <div className="flex-col text-center">
-//         <EditDateModal />
-//         <button
-//           className="ml-top mt-[15px] rounded-full bg-background p-[5px] text-xs"
-//           onClick={() =>
-//             dateArchive
-//               ? deleteArchiveItem(dateItem.key)
-//               : deleteDateItem(dateItem.key)
-//           }
-//         >
-//           Delete
-//         </button>
-//       </div>
-//     </div>
-//   ));
-// }
