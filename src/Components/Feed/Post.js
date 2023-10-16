@@ -1,16 +1,23 @@
+//-----------React-----------//
 import { useState, useEffect } from "react";
+
+//-----------Firebase-----------//
 import { database } from "../../firebase/firebase";
 import { onChildAdded, push, ref } from "firebase/database";
+
+//-----------Components-----------//
 import { MultiFileComposer } from "./MultiFileComposer.js";
 import { ImageCarousel } from "./ImageCarousel";
 import ContextHelper from "../Helpers/ContextHelper";
+import Button from "../../Details/Button";
 
 export function Post(props) {
-  const DUMMY_USERID = ContextHelper("email"); // to use these as subs
-  const DUMMY_PAIRID = ContextHelper("pairKey"); // to use these as subs
-  console.log(props.postContent);
+  const DUMMY_USERID = ContextHelper("displayName");
+  const DUMMY_PAIRID = ContextHelper("pairKey");
+
   const [commentInput, setCommentInput] = useState({});
   const [commentList, setCommentList] = useState([]);
+
   const DB_FEED_KEY = `feed`;
 
   // Pull comments data
@@ -43,10 +50,11 @@ export function Post(props) {
 
   const commentListItems = commentList.map((comment) => (
     <div
-      className=" m-1 border border-black bg-green-300 p-1"
+      className=" my-1 rounded-lg border bg-background p-1"
       key={comment.key}
     >
-      {comment.val.commentingUser} : {comment.val.commentText}
+      <span className="font-bold">{comment.val.commentingUser}</span> :{" "}
+      {comment.val.commentText}
     </div>
   ));
 
@@ -55,6 +63,7 @@ export function Post(props) {
       className=" w-[300px] rounded-xl bg-window p-3 shadow-xl"
       key={props.postContent.key}
     >
+      {console.log(props.postContent.val.files)}
       {props.postContent.val.files ? (
         <ImageCarousel
           urlArray={
@@ -74,7 +83,7 @@ export function Post(props) {
             <p className="mx-1 rounded bg-text px-[3px]">{tag}</p>
           ))}
         </div>{" "}
-        <p className="text-sm">{props.postContent.val.date}</p>
+        <p className="text-xs">{props.postContent.val.date}</p>
       </section>
       <div className="flex justify-between"></div>
 
@@ -82,21 +91,22 @@ export function Post(props) {
       <div className="flex justify-between">
         <button
           onClick={() => document.getElementById("commentComposer").showModal()}
-          className="mx-1 max-h-6 w-1/5 bg-blue-300 text-left"
+          className="mt-1 max-h-6 rounded-lg bg-background px-2 text-left text-xs"
         >
           Comment
         </button>
         <dialog id="commentComposer" className="modal ">
-          <div className="modal-box bg-window">
+          <div className="modal-box bg-background">
             <form method="dialog">
               <button className="btn btn-circle btn-ghost btn-sm absolute right-2 top-2">
                 ✕
               </button>
             </form>
+            <h1>Share your thoughts!</h1>
             <div>
               <input // comment modal rather than a comment input, so one comment button and one edit
                 type="text"
-                placeholder="Comment?"
+                placeholder="Add Comments"
                 onChange={(e) => {
                   setCommentInput({
                     commentingUser: DUMMY_USERID,
@@ -104,42 +114,35 @@ export function Post(props) {
                   });
                 }}
                 value={commentInput.commentText}
-                className="p-1 text-black"
+                className="input bg-white text-black"
               />
-              <button
-                onClick={writeComment}
-                className="border-2 border-black bg-window p-1"
-              >
-                Post
-              </button>
+              <Button label="post" handleClick={writeComment} add="w-[100px]" />
             </div>
           </div>
         </dialog>
         <button
+          className="text-sm text-slate-500 hover:text-slate-700"
           onClick={() =>
             document
               .getElementById(`editPost-${props.postContent.key}`)
               .showModal()
           }
         >
-          {" "}
-          Edit{" "}
+          Edit
         </button>
       </div>
       <dialog id={`editPost-${props.postContent.key}`} className="modal">
-        <form method="dialog">
-          <button className="btn btn-circle btn-ghost btn-sm absolute right-2 top-2">
-            ✕
-          </button>
-        </form>
-        {console.log(
-          props.postContent.val.files ? props.postContent.val.files : "foo",
-        )}
-
-        <MultiFileComposer
-          key={`composer-${props.postContent.key}`}
-          postContent={props.postContent}
-        />
+        <div className="modal-box bg-background">
+          <form method="dialog">
+            <button className="btn btn-circle btn-ghost btn-sm absolute right-2 top-2">
+              ✕
+            </button>
+          </form>
+          <MultiFileComposer
+            key={`composer-${props.postContent.key}`}
+            postContent={props.postContent}
+          />
+        </div>
       </dialog>
     </div>
   );

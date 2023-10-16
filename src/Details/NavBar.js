@@ -4,7 +4,7 @@ import StateHelper from "../Components/Helpers/StateHelper";
 // Navbar takes in nav, label and src -> please use either label or src to input the header image
 const NavBar = ({ nav, label, src }) => {
   return (
-    <header className="fixed top-0 z-10 flex w-screen flex-row items-center justify-between bg-background p-3">
+    <header className="fixed top-0 flex w-screen flex-row items-center justify-between bg-background p-3 shadow-lg">
       {nav ? (
         <NavLink to={nav} className="text-[2em]">
           ←

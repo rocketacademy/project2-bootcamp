@@ -82,6 +82,7 @@ export const UserContext = React.createContext(null);
 
 function App() {
   const [pairKey, setPairKey] = useState("");
+  const [displayName, setDisplayName] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isPairedUp, setIsPairedUp] = useState(false);
   // const [isDemo, setIsDemo] = useState(false);
@@ -90,11 +91,13 @@ function App() {
 
   const context = {
     email,
+    displayName,
     pairKey,
     isLoggedIn,
     isPairedUp,
     // isDemo,
     setEmail,
+    setDisplayName,
     setPairKey,
     setIsLoggedIn,
     setIsPairedUp,
@@ -134,7 +137,8 @@ function App() {
         const userData = snapshot.val();
         const userKey = Object.keys(userData)[0];
         const pairKey = userData[userKey].pairKey;
-        console.log(`Pair Key: ${pairKey}`);
+        const displayName = userData[userKey].displayName;
+        setDisplayName(displayName);
         setPairKey(pairKey);
       } else {
         console.log("User not found");

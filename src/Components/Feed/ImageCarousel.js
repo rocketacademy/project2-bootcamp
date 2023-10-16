@@ -1,17 +1,18 @@
+//-----------React-----------//
 import { useState } from "react";
 
-//<ImageCarousel urlArray = {filePreviewArray} />
+//Props Format: <ImageCarousel urlArray = {filePreviewArray} />
 export function ImageCarousel(props) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-  const rotateCurrentImage = (direction) => {
-    if (direction === "up") {
+  const toggleCurrentImage = (direction) => {
+    if (direction === "left") {
       if (currentImageIndex === props.urlArray.length - 1) {
         setCurrentImageIndex(0);
       } else {
         setCurrentImageIndex((prevState) => prevState + 1);
       }
-    } else if (direction === "down") {
+    } else if (direction === "right") {
       if (currentImageIndex === 0) {
         setCurrentImageIndex(props.urlArray.length - 1);
       } else {
@@ -35,6 +36,7 @@ export function ImageCarousel(props) {
     // Return multi image array
     return (
       <div>
+        {console.log("Image Carousel", props.urlArray[0])}
         <div className="carousel relative m-1 flex w-full items-center justify-center rounded-lg bg-background">
           <p className="absolute left-2 top-2 rounded bg-black bg-opacity-50 px-2 py-1 text-xs text-white">
             {currentImageIndex + 1} of {props.urlArray.length}
@@ -48,13 +50,13 @@ export function ImageCarousel(props) {
           <div className="absolute left-3 right-3 top-1/2 flex -translate-y-1/2 flex-row justify-between">
             <button
               className="h-[2em] w-[2em] rounded-full bg-white hover:translate-x-[-3px] hover:bg-slate-300"
-              onClick={() => rotateCurrentImage("down")}
+              onClick={() => toggleCurrentImage("right")}
             >
               ❮
             </button>
             <button
               className="h-[2em] w-[2em] rounded-full bg-white hover:translate-x-[3px] hover:bg-slate-300 hover:shadow-lg"
-              onClick={() => rotateCurrentImage("up")}
+              onClick={() => toggleCurrentImage("left")}
             >
               ❯
             </button>

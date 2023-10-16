@@ -16,6 +16,8 @@ const ContextHelper = (type) => {
     result = context.pairKey || "";
   } else if (type === "isLoggedIn") {
     result = context.isLoggedIn || "";
+  } else if (type === "displayName") {
+    result = context.displayName || "";
   } else if (type === "email") {
     result = context.email || "";
   }

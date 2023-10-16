@@ -1,4 +1,7 @@
+//-----------React-----------//
 import { useState } from "react";
+
+//-----------Firebase-----------//
 import { database, storage } from "../../firebase/firebase";
 import {
   ref as sRef,
@@ -7,16 +10,19 @@ import {
   list as sList,
 } from "firebase/storage";
 import { push, ref, set, remove } from "firebase/database";
-import { useNavigate } from "react-router-dom";
+
+//-----------Components-----------//
 import { ImageCarousel } from "./ImageCarousel";
 import ContextHelper from "../Helpers/ContextHelper";
+import Button from "../../Details/Button";
 
-//<Composer postContent = {post} />
+//-----------Media-----------//
+import uploadimage from "../../Images/upload-image.png";
+
+//Props Format: <Composer postContent = {post} />
 export function MultiFileComposer(props) {
-  const navigate = useNavigate();
-
   // Variables
-  const DUMMY_USERID = ContextHelper("email");
+  const DUMMY_USERID = ContextHelper("displayName");
   const DUMMY_PAIRID = ContextHelper("pairKey");
 
   const [formInfo, setFormInfo] = useState({
@@ -45,16 +51,15 @@ export function MultiFileComposer(props) {
     if (props.postContent && e.target.files.length === 0) {
       setFilePreviewArray(props.postContent.val.fileArray);
     } else {
-      console.log(Object.values(e.target.files));
       setFilePreviewArray(
         Object.values(e.target.files).map((file) => URL.createObjectURL(file)),
       );
     }
   };
 
-  const writeData = (event) => {
-    event.preventDefault();
+  const writeData = () => {
     const fileRefArray = [];
+    console.log("Writing data");
     sList(sRef(storage, `rooms/${DUMMY_PAIRID}/feedImages/`), null)
       .then((result) => {
         if (formInfo.fileArray.length === 0) {
@@ -79,6 +84,7 @@ export function MultiFileComposer(props) {
       .then(() =>
         Promise.all(fileRefArray.map((fileRef) => getDownloadURL(fileRef))),
       )
+
       .then((urlArray) => {
         // if post was given, take the ref and set it; else take the parent folder and push it
         if (props.postContent !== null) {
@@ -119,8 +125,7 @@ export function MultiFileComposer(props) {
           date: null,
           tags: "",
         });
-        props.closeComposerModal();
-        navigate("../memories");
+        // navigate("../memories");
       });
   };
 
@@ -133,53 +138,74 @@ export function MultiFileComposer(props) {
     remove(postRef);
   };
 
+  const closeComposerModal = () => {
+    document.getElementById("composer").close();
+  };
+
   return (
-    <div className="w-4/5">
+    <div className="flex flex-col items-center justify-center">
+      <h1 className="mb-1">
+        {props.postContent ? "Edit Memory!" : "New Memory!"}
+      </h1>
       <ImageCarousel urlArray={filePreviewArray ? filePreviewArray : []} />
-      <form
-        onSubmit={writeData}
-        className="flex flex-col justify-center bg-window"
-      >
+      <form className=" flex flex-col items-center justify-center">
         <input
           type="text"
           id="postMessage"
-          placeholder="enter caption here:"
+          placeholder="Tell me about this memory!"
           onChange={(e) => {
             textChange(e);
           }}
           value={formInfo.postMessage}
-          className="text-black"
+          className="input my-1 w-[250px] bg-white text-sm"
         />
-        <br />
         <input
           type="text"
           id="tags"
-          placeholder="enter tags separated by spaces:"
+          placeholder="Enter tags separated by spaces:"
           onChange={(e) => {
             textChange(e);
           }}
           value={formInfo.tags}
-          className="text-black"
+          className="input my-1 w-[250px] bg-white text-sm"
         />
-        <br />
+        <label
+          htmlFor="upload-image"
+          style={{ cursor: "pointer" }}
+          className=" m-1 flex h-[48px] w-[170px] flex-row items-center justify-center
+ rounded-lg bg-slate-300 px-2 text-[14px] font-semibold shadow-lg hover:translate-y-[-2px] hover:bg-slate-400"
+        >
+          <img
+            src={uploadimage}
+            alt="camera icon"
+            className="h-[2em] translate-y-[1px]"
+          />
+          UPLOAD PHOTOS
+        </label>
         <input
           type="file"
+          id="upload-image"
           className="display: none"
           accept="image/*"
+          style={{ display: "none" }}
           onChange={(e) => {
             imgChange(e);
           }}
           multiple
         />
-        <br />
-        <input type="submit" value="Send" />
-        <br />
-        {props.postContent ? (
-          <button id="deletePost" onClick={(e) => handleDelete(e)}>
-            Delete Post
-          </button>
-        ) : null}
       </form>
+      <Button
+        label="Create Post!"
+        handleClick={() => {
+          writeData();
+          closeComposerModal();
+        }}
+      />
+      {props.postContent ? (
+        <button id="deletePost" onClick={(e) => handleDelete(e)}>
+          Delete Post
+        </button>
+      ) : null}
     </div>
   );
 }

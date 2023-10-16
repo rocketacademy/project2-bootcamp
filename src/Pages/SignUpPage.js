@@ -1,7 +1,6 @@
 //-----------React-----------//
 import { useState, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-// import { UserContext } from "../App.js";
 //-----------Components-----------//
 import SignUpForm from "../Components/Onboarding/SignUpForm.js";
 import Button from "../Details/Button";

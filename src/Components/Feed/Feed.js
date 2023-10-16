@@ -49,7 +49,7 @@ export function Feed(props) {
 
   return (
     <div>
-      <div className="max-w-screen grid gap-3 bg-background sm:grid-cols-2">
+      <div className="max-w-screen grid gap-3 bg-background sm:grid-cols-2 md:grid-cols-3">
         {allPosts}
       </div>
     </div>
