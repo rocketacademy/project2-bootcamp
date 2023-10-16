@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 
 //-----------Firebase-----------//
-import { ref, onChildAdded } from "firebase/database";
+import { ref, onChildAdded, set } from "firebase/database";
 import { database } from "../../firebase/firebase";
 
 //-----------Components-----------//
@@ -17,11 +17,11 @@ export default function EditDateModal() {
   const [dateList, setDateList] = useState([]);
 
   //states for date form format
-  const [title, setTitle] = useState("");
-  const [items, setItems] = useState([]);
+  const [title, setTitle] = useState(`${dateList.title}`);
+  const [items, setItems] = useState(`${dateList.items}`);
   const [newItem, setNewItem] = useState("");
-  const [date, setDate] = useState("");
-  const [time, setTime] = useState("");
+  const [date, setDate] = useState(`${dateList.date}`);
+  const [time, setTime] = useState(`${dateList.time}`);
 
   useEffect(() => {
     //to view Date list
@@ -34,6 +34,58 @@ export default function EditDateModal() {
       setDateList((state) => [...state, { key: data.key, val: data.val() }]);
     });
   }, []);
+
+  //create input to add more items with + button...
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    setItems((currentItem) => {
+      return [
+        ...currentItem,
+        {
+          id: new Date().getTime(),
+          title: newItem,
+        },
+      ];
+    });
+    setNewItem("");
+  };
+
+  //delete item
+  const deleteItem = (id) => {
+    setItems((currentItems) => {
+      return currentItems.filter((items) => items.id !== id);
+    });
+  };
+
+  const updateData = (keyToUpdate) => {
+    // Create a new entry to update
+    const updatedDateItem = {
+      id: keyToUpdate, // Specify the key of the entry to update
+      title: title,
+      items: items,
+      date: date,
+      time: time,
+    };
+
+    // Get a reference to the specific entry in the Firebase database
+    const dateListRef = ref(
+      database,
+      `rooms/${REALTIME_DATABASE_KEY_PAIRKEY}/${REALTIME_DATABASE_KEY_DATE}/${keyToUpdate}`,
+    );
+
+    // Update the entry in the database
+    set(dateListRef, updatedDateItem);
+
+    // Reset the form fields
+    setTitle("");
+    setItems([]);
+    setNewItem("");
+    setDate("");
+    setTime("");
+
+    document.getElementById("edit-date-form").close();
+  };
 
   return (
     <div className=" rounded-full bg-background p-[5px] text-xs">
@@ -132,7 +184,7 @@ export default function EditDateModal() {
             <button
               className="submit-btn my-[20px] rounded-full bg-background px-[15px] disabled:bg-neutral-500 disabled:text-background"
               disabled={items.length === 0}
-              onClick={writeData}
+              onClick={updateData}
             >
               Submit
             </button>
