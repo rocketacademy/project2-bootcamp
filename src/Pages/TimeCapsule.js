@@ -1,38 +1,51 @@
+import { authenticate } from "@google-cloud/local-auth";
+import { google } from "googleapis";
 import NavBar from "../Details/NavBar.js";
 
 const TimeCapsule = () => {
   const gapi = window.gapi;
-  const CLIENT_ID =
-    "49854561078-6egj91qtdgdupnm577rm9spobh7tov7r.apps.googleusercontent.com";
-  const API_KEY = "AIzaSyAbtNLfqwys1RbeB-IwQ5acdZJs9tn_mpI";
+  const google = window.google;
 
+  const CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
+  const API_KEY = process.env.REACT_APP_GOOGLE_API_KEY;
   // Discovery doc URL for APIs used by the quickstart
   const DISCOVERY_DOC =
     "https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest";
 
   // Authorization scopes required by the API; multiple scopes can be
   // included, separated by spaces.
-  const SCOPES = "https://www.googleapis.com/auth/calendar.readonly";
+  const SCOPES =
+    "https://www.googleapis.com/auth/calendar.readonly https://www.googleapis.com/auth/calendar";
 
-  const signIn = () => {
-    gapi.load("client:auth2", () => {
-      console.log("loaded gapi client");
-      gapi.client.init({
-        apiKey: API_KEY,
-        clientId: CLIENT_ID,
-        discoveryDocs: DISCOVERY_DOC,
-        scope: SCOPES,
-      });
+  async function loadSavedCredentialsIfExist() {
+    try {
+      const content = await fs.readFile(TOKEN_PATH);
+      const credentials = JSON.parse(content);
+      return google.auth.fromJSON(credentials);
+    } catch (err) {
+      return null;
+    }
+  }
 
-      gapi.client.load("calendar", "v3", () => console.log("bam!"));
+  // const signIn = () => {
+  //   gapi.load("client:auth2", () => {
+  //     console.log("loaded gapi client");
+  //     gapi.client.init({
+  //       apiKey: API_KEY,
+  //       clientId: CLIENT_ID,
+  //       discoveryDocs: DISCOVERY_DOC,
+  //       scope: SCOPES,
+  //     });
 
-      //   gapi.auth2
-      //     .getAuthInstance()
-      //     .signIn()
-      //     .then(() => {});
-      // });
-    });
-  };
+  //     gapi.client.load("calendar", "v3", () => console.log("bam!"));
+
+  //     //   gapi.auth2
+  //     //     .getAuthInstance()
+  //     //     .signIn()
+  //     //     .then(() => {});
+  //     // });
+  //   });
+  // };
 
   // const signIn = () => {
   //   gapi.load("client:auth2", () => {

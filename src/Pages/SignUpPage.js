@@ -1,6 +1,6 @@
 //-----------React-----------//
 import { useState, useEffect } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 // import { UserContext } from "../App.js";
 //-----------Components-----------//
 import SignUpForm from "../Components/Onboarding/SignUpForm.js";
@@ -12,11 +12,7 @@ import ProfileImage from "../Details/ProfileImage.js";
 //-----------Firebase-----------//
 import { storage, auth } from "../firebase/firebase";
 import { uploadBytes, ref as sRef, getDownloadURL } from "firebase/storage";
-import {
-  createUserWithEmailAndPassword,
-  // onAuthStateChanged,
-  updateProfile,
-} from "firebase/auth";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 //-----------Media-----------//
 import person1 from "../Images/LogosIcons/person1.png";
 
@@ -32,6 +28,7 @@ export default function SignUpPage() {
 
   const navigate = useNavigate();
 
+  // Ensure that name input is filled before proceeding
   const handleNameChange = (e) => {
     let newName = e.target.value;
     setDisplayName(newName);
@@ -68,6 +65,7 @@ export default function SignUpPage() {
     }
   };
 
+  // Upload image to firebase and retrieve the photo
   useEffect(() => {
     if (file) {
       const fileRef = sRef(storage, `image/${file.name}`);

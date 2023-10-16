@@ -1,11 +1,11 @@
 //-----------React-----------//
-import { useState, useEffect, useContext } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
-import { UserContext } from "../App.js";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 //-----------Components-----------//
 import SignInForm from "../Components/Onboarding/SignInForm.js";
 import NavBar from "../Details/NavBar.js";
 import Footer from "../Details/Footer.js";
+import Button from "../Details/Button.js";
 //-----------Firebase-----------//
 import { auth } from "../firebase/firebase";
 import {
@@ -23,7 +23,6 @@ export default function SignInPage() {
   const [errorMessage, setErrorMessage] = useState(null);
 
   const navigate = useNavigate();
-  const context = useContext(UserContext);
 
   const signIn = async () => {
     try {
