@@ -16,6 +16,13 @@ export default function EditDateModal() {
   //create state to view date list on modal
   const [dateList, setDateList] = useState([]);
 
+  //states for date form format
+  const [title, setTitle] = useState("");
+  const [items, setItems] = useState([]);
+  const [newItem, setNewItem] = useState("");
+  const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
+
   useEffect(() => {
     //to view Date list
     const dateListRef = ref(
@@ -47,26 +54,88 @@ export default function EditDateModal() {
             <button className="btn btn-circle btn-ghost btn-sm absolute right-5 top-5 ">
               ✕
             </button>
-            {dateList.map((dateItem) => (
-              <div
-                key={dateItem.key}
-                className=" m-[30px] flex w-[350px] flex-row items-start justify-between rounded-xl bg-text p-[10px]"
+            {title === "" ? (
+              <label className="mb-[5px] text-red-600">*Date :</label>
+            ) : (
+              <label className="mb-[5px]">Date :</label>
+            )}
+            <input
+              className="mb-[15px] mr-[15px] w-[15em] rounded-md bg-background  px-2"
+              type="text"
+              name="title"
+              value={title}
+              placeholder="What're yall doing?"
+              onChange={(e) => {
+                setTitle(e.target.value);
+              }}
+            />
+            {items.length === 0 ? (
+              <label className="mb-[5px] text-red-600">*Things needed :</label>
+            ) : (
+              <label className="mb-[5px]">Things needed :</label>
+            )}
+            <div className="input-button">
+              <input
+                className="mb-[15px] mr-[15px] w-[15em] rounded-md bg-background px-2"
+                type="text"
+                name="newItem"
+                value={newItem}
+                placeholder="What do you need to bring?"
+                onChange={(e) => {
+                  setNewItem(e.target.value);
+                }}
+              />
+              <button
+                className="rounded-full bg-background px-[7px] font-black"
+                onClick={handleSubmit}
               >
-                <div className="wrap flex items-start justify-between">
-                  <h1 className="italic">
-                    {dateItem.val.date}
-                    <br />
-                    {dateItem.val.time}
-                  </h1>
-                  <h1 className="font-bold">{dateItem.val.title}</h1>
-                  {dateItem.val.items.map((item) => (
-                    <div className="justify-left flex" key={item.id}>
-                      <h1>-{item.title}</h1>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
+                +
+              </button>
+            </div>
+            <ul>
+              {items.map((items) => {
+                return (
+                  <li
+                    key={items.id}
+                    className="mb-[15px] flex justify-between  rounded-md bg-background px-2 py-1"
+                  >
+                    <label className="mr-[15px]">{items.title}</label>
+                    <button onClick={() => deleteItem(items.id)}>Delete</button>
+                  </li>
+                );
+              })}
+            </ul>
+            <div className="date-for-date mt-[15px]">
+              <label className="mr-[5px]">Date for date :</label>
+              <input
+                type="date"
+                className="mb-2 w-[10em] rounded-md border-[1px] bg-background px-2"
+                id="date"
+                value={date}
+                onChange={(e) => {
+                  setDate(e.target.value);
+                }}
+              />
+            </div>
+            <div className="time mt-[15px]">
+              <label className="mr-[5px]">Time :</label>
+              <input
+                type="time"
+                className="mb-2 w-[10em] rounded-md border-[1px] bg-background px-2"
+                id="time"
+                value={time}
+                onChange={(e) => {
+                  setTime(e.target.value);
+                }}
+              />
+            </div>
+            <button
+              className="submit-btn my-[20px] rounded-full bg-background px-[15px] disabled:bg-neutral-500 disabled:text-background"
+              disabled={items.length === 0}
+              onClick={writeData}
+            >
+              Submit
+            </button>
           </form>
         </div>
       </dialog>
