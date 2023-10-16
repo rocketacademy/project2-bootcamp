@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 import SignInForm from "../Components/Onboarding/SignInForm.js";
 import NavBar from "../Details/NavBar.js";
 import Footer from "../Details/Footer.js";
-import Button from "../Details/Button.js";
 //-----------Firebase-----------//
 import { auth } from "../firebase/firebase";
 import {

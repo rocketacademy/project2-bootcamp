@@ -25,6 +25,7 @@ import { ref, orderByChild, query, equalTo, get } from "firebase/database";
 
 //-----------Styling-----------//
 import "./App.css";
+import Calendar from "./Pages/Calendar";
 
 const router = createBrowserRouter([
   {
@@ -69,6 +70,10 @@ const router = createBrowserRouter([
     element: <TimeCapsule />,
   },
   {
+    path: "/calendar",
+    element: <Calendar />,
+  },
+  {
     path: "/bucket-list",
     element: (
       <BucketList>
@@ -86,7 +91,6 @@ function App() {
   const [isPairedUp, setIsPairedUp] = useState(false);
   // const [isDemo, setIsDemo] = useState(false);
   const [email, setEmail] = useState("");
-  const [user, setUser] = useState(null);
 
   const context = {
     email,
@@ -104,8 +108,6 @@ function App() {
   useEffect(() => {
     onAuthStateChanged(auth, (userInfo) => {
       if (userInfo) {
-        setUser(userInfo);
-        console.log(userInfo.email);
         fetchPairKey(userInfo.email);
         setEmail(userInfo.email);
         setIsLoggedIn(true);
