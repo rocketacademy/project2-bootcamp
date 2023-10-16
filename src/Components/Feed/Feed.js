@@ -1,6 +1,4 @@
 import {Post} from './Post'
-import {FilterButtonHolder} from './FilterButtonHolder'
-import { useState } from "react";
 
 //<Feed posts={posts} setPosts={setPosts} />
 export function Feed(props) {
@@ -24,7 +22,7 @@ export function Feed(props) {
             {/* <div>
                 <FilterButtonHolder currentFilters={tagFilter} filters={availableFilters} setTagFilter = {setTagFilter}/>
             </div> */}
-            <div className='flex flex-row flex-wrap max-w-screen justify-center bg-red-300'>
+            <div className='flex flex-col max-w-screen bg-background'>
                 {posts}
             </div>
         </div>

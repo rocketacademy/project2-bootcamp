@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import { database } from "../firebase/firebase";
 import { onChildAdded, push, ref } from "firebase/database";
-import { Composer } from "./Composer";
+import { Composer } from "./Feed/Composer";
+import {MultiFileComposer} from '../Components/MultiFileComposer.js'
+import {ImageCarousel} from './ImageCarousel';
 
 const DUMMY_USERID = "dummyuser" // to use these as subs
 const DUMMY_PAIRID = 'dummypair' // to use these as subs
@@ -46,12 +48,15 @@ export function Post(props) {
         <form method = 'dialog'>
         <button className="btn btn-circle btn-ghost btn-sm absolute right-2 top-2">✕</button>
         </form>
-        <Composer key = {`composer-${props.postContent.key}`} postContent = {props.postContent}/>
+        {console.log(props.postContent.val.files ? props.postContent.val.files : 'foo')}
+        
+        <MultiFileComposer key = {`composer-${props.postContent.key}`} postContent = {props.postContent}/>
         {/* this is a lot of composer components rendered- should i explore just selectively rendering one? */}
         </dialog>
         <br />
             {props.postContent.val.user}
-            {props.postContent.val.file ? <img src={props.postContent.val.file} alt='Post message' /> : null}
+            {/* {props.postContent.val.file ? <img src={props.postContent.val.file} alt='Post message' /> : null} */}
+            {props.postContent.val.files ? <ImageCarousel urlArray = {props.postContent.val.files ? props.postContent.val.files:[]} />: null}
             {props.postContent.val.message}
             <br />
             {props.postContent.val.date}
