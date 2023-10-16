@@ -6,21 +6,20 @@ import { ImageCarousel } from "./ImageCarousel";
 import ContextHelper from "../Helpers/ContextHelper";
 
 export function Post(props) {
-  const DUMMY_USERID = "dummyuser"; // to use these as subs
+  const DUMMY_USERID = ContextHelper("email"); // to use these as subs
   const DUMMY_PAIRID = ContextHelper("pairKey"); // to use these as subs
   console.log(props.postContent);
   const [commentInput, setCommentInput] = useState({});
   const [commentList, setCommentList] = useState([]);
   const DB_FEED_KEY = `feed`;
 
+  // Pull comments data
   useEffect(() => {
-    // whenever app renders
     const commentRef = ref(
       database,
       `rooms/${DUMMY_PAIRID}/${DB_FEED_KEY}/${props.postContent.key}/comments`,
-    ); //setup reference
+    );
     onChildAdded(commentRef, (data) => {
-      //setup listener
       setCommentList((prevComments) => [
         ...prevComments,
         { key: data.key, val: data.val() },
@@ -53,10 +52,9 @@ export function Post(props) {
 
   return (
     <div
-      className=" max-h-1/5 m-2 border border-black bg-text"
+      className=" w-[300px] rounded-xl bg-window p-3 shadow-xl"
       key={props.postContent.key}
     >
-      {/* {props.postContent.val.file ? <img src={props.postContent.val.file} alt='Post message' /> : null} */}
       {props.postContent.val.files ? (
         <ImageCarousel
           urlArray={
@@ -64,21 +62,23 @@ export function Post(props) {
           }
         />
       ) : null}
-      {props.postContent.val.message}
-      <br />
-      <div className="flex justify-between">
-        <p className="font-bold">-{props.postContent.val.user} </p>
-        <p>{props.postContent.val.date}</p>
-      </div>
-      <div className="flex flex-row flex-wrap justify-center">
-        Tags:{" "}
-        {props.postContent.val.tags.split(" ").map((tag) => (
-          <p className="mx-1 rounded border-2 border-solid border-black bg-blue-300">
-            {tag}
-          </p>
-        ))}
-      </div>
-      {commentListItems}
+      {/* Username and caption message */}
+      <header className="flex flex-row">
+        <p className="text-sm font-bold">{props.postContent.val.user} </p>
+        <p className="mx-2  text-sm">{props.postContent.val.message}</p>
+      </header>
+      <section className="">
+        <div className="m-1 flex flex-row text-xs">
+          Tags:
+          {props.postContent.val.tags.split(" ").map((tag) => (
+            <p className="mx-1 rounded bg-text px-[3px]">{tag}</p>
+          ))}
+        </div>{" "}
+        <p className="text-sm">{props.postContent.val.date}</p>
+      </section>
+      <div className="flex justify-between"></div>
+
+      <figure className="text-xs">{commentListItems}</figure>
       <div className="flex justify-between">
         <button
           onClick={() => document.getElementById("commentComposer").showModal()}

@@ -5,6 +5,7 @@ export default function Spare() {
   //Pull in context from App.js
   const details = {
     message: "Hello",
+    time: "time syntax",
     tags: "memory",
   };
 

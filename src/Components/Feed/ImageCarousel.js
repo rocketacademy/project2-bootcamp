@@ -19,61 +19,48 @@ export function ImageCarousel(props) {
       }
     }
   };
+  // Return nothing if no images
   if (props.urlArray.length === 0) {
     return null;
   } else if (props.urlArray.length === 1) {
-    return <img src={props.urlArray[0]} />;
-  } else {
+    // return a single image if alone
     return (
-      <div className="bg-window">
-        <div className="carousel relative flex w-full justify-center">
-          {/* static flex flex-col */}
-
+      <img
+        src={props.urlArray[0]}
+        alt="display"
+        className=" m-1 rounded-lg bg-background"
+      />
+    );
+  } else {
+    // Return multi image array
+    return (
+      <div>
+        <div className="carousel relative m-1 flex w-full items-center justify-center rounded-lg bg-background">
+          <p className="absolute left-2 top-2 rounded bg-black bg-opacity-50 px-2 py-1 text-xs text-white">
+            {currentImageIndex + 1} of {props.urlArray.length}
+          </p>
           <img
             src={props.urlArray[currentImageIndex]}
-            className="max-h-1/4 flex"
+            alt="display2"
+            className=""
           />
 
-          <div className="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform flex-row justify-between">
+          <div className="absolute left-3 right-3 top-1/2 flex -translate-y-1/2 flex-row justify-between">
             <button
-              className="btn btn-circle"
+              className="h-[2em] w-[2em] rounded-full bg-white hover:translate-x-[-3px] hover:bg-slate-300"
               onClick={() => rotateCurrentImage("down")}
             >
               ❮
             </button>
             <button
-              className="btn btn-circle"
+              className="h-[2em] w-[2em] rounded-full bg-white hover:translate-x-[3px] hover:bg-slate-300 hover:shadow-lg"
               onClick={() => rotateCurrentImage("up")}
             >
               ❯
             </button>
           </div>
-          {/* <div className="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
-                    <div onClick = {()=>rotateCurrentImage('down')} className="btn btn-circle">❮</div>
-                    <div onClick = {()=>rotateCurrentImage('up')} className="btn btn-circle">❯</div>
-                </div> */}
         </div>
-        <p className="border-y-2 border-black text-center">
-          {" "}
-          Image {currentImageIndex + 1} of {props.urlArray.length}
-        </p>
       </div>
-
-      // <div className="carousel w-full">
-      //     {props.urlArray.map((fileURL, index, arr) => { //account for case of 1 file
-      //         const prevIndex = (index === 0 ? arr.length - 1 : index - 1)
-      //         const nextIndex = (index === arr.length ? 0 : index + 1)
-      //         return (
-      //             <div id={`slide${index}`} className="carousel-item relative w-full" key={fileURL}>
-      //                 <img src={fileURL} className="w-full" />
-      //                 <div className="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
-      //                     <a href={`slide${prevIndex}`} className="btn btn-circle">❮</a>
-      //                     <a href={`slide${nextIndex}`} className="btn btn-circle">❯</a>
-      //                 </div>
-      //             </div>
-      //         )
-      //     })}
-      // </div>
     );
   }
 }

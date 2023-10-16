@@ -13,18 +13,22 @@ import ContextHelper from "../Helpers/ContextHelper";
 
 //<Composer postContent = {post} />
 export function MultiFileComposer(props) {
-  const DUMMY_USERID = "dummyuser"; // to use these as subs
-  const DUMMY_PAIRID = ContextHelper("pairKey"); // to use these as subs
+  const navigate = useNavigate();
+
+  // Variables
+  const DUMMY_USERID = ContextHelper("email");
+  const DUMMY_PAIRID = ContextHelper("pairKey");
+
   const [formInfo, setFormInfo] = useState({
     postMessage: props.postContent ? props.postContent.val.message : "",
     date: props.postContent ? props.postContent.val.date : null,
     tags: props.postContent ? props.postContent.val.tags : "",
     fileArray: [],
   });
+
   const [filePreviewArray, setFilePreviewArray] = useState(
     props.postContent ? props.postContent.val.fileArray : [],
   );
-  const navigate = useNavigate();
 
   const textChange = (e) => {
     const name = e.target.id;

@@ -1,31 +1,57 @@
-import {Post} from './Post'
+//-----------React-----------//
+import { useState, useEffect } from "react";
 
-//<Feed posts={posts} setPosts={setPosts} />
+//-----------Firebase-----------//
+import { database } from "../../firebase/firebase";
+import { ref, onValue } from "firebase/database";
+
+//-----------Components-----------//
+import ContextHelper from "../Helpers/ContextHelper";
+import { Post } from "./Post";
+
 export function Feed(props) {
-    // const [tagFilter, setTagFilter] = useState(new Set()) // this is the active filters for post; pass setTagFilter to the FilterButtonHolder for button creation
+  const pairKey = ContextHelper("pairKey");
+  const [posts, setPosts] = useState([]);
 
-    const posts = props.posts.map((post, index) => {
-        //if post tag set length + tagfilter length = length(combined set, do not show post) - means no intersection
-        const tagsAsSet = new Set(post.val.tags.split(' '))
-        if (props.tagFilter.size === 0 || (tagsAsSet.size + props.tagFilter.size) !== new Set([...tagsAsSet, ...props.tagFilter]).size) {
-            return <Post postContent={post} setPosts={props.setPosts} key={post.key} postIndex={index} />
-        }
-    })
+  // Pull posts data from firebase
+  useEffect(() => {
+    const postRef = ref(database, `rooms/${pairKey}/feed`);
+    onValue(postRef, (data) => {
+      let dataArray = [];
+      if (data.val()) {
+        dataArray = Object.keys(data.val()).map((key) => {
+          return { key: key, val: data.val()[key] };
+        });
+      }
+      setPosts(dataArray);
+    });
+  }, [pairKey]);
 
-    // const availableFilters = props.posts.reduce((acc, post) => {
-    //     const tagsAsSet = new Set(post.val.tags.split(' '))
-    //     return new Set([...acc, ...tagsAsSet])     
-    // }, new Set())
+  // Map out posts based on filter
+  const allPosts = posts.map((post, index) => {
+    //if post tag set length + tagfilter length = length(combined set, do not show post) - means no intersection
+    const tagsAsSet = new Set(post.val.tags.split(" "));
+    if (
+      props.tagFilter.size === 0 ||
+      tagsAsSet.size + props.tagFilter.size !==
+        new Set([...tagsAsSet, ...props.tagFilter]).size
+    ) {
+      return (
+        <Post
+          postContent={post}
+          setPosts={props.setPosts}
+          key={post.key}
+          postIndex={index}
+        />
+      );
+    }
+  });
 
-    return (
-        <div>
-            {/* <div>
-                <FilterButtonHolder currentFilters={tagFilter} filters={availableFilters} setTagFilter = {setTagFilter}/>
-            </div> */}
-            <div className='flex flex-col max-w-screen bg-background'>
-                {posts}
-            </div>
-        </div>
-
-    )
+  return (
+    <div>
+      <div className="max-w-screen grid gap-3 bg-background sm:grid-cols-2">
+        {allPosts}
+      </div>
+    </div>
+  );
 }

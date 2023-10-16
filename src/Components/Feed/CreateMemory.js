@@ -29,6 +29,7 @@ const CreateMemory = ({ details }) => {
   const [formInfo, setFormInfo] = useState({
     message: details ? details.message : "",
     tags: details ? details.tags : "",
+    date: details ? details.date : "",
     fileArray: [],
   });
 
