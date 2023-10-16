@@ -106,6 +106,8 @@ export default function JournalForm() {
                 }}
               />
             </div>
+            <label className="mb-[5px]">Feeling?</label>
+            <img src={Happy} alt="happy" className="w-[3em]" />
             <button
               className="submit-btn my-[20px] rounded-full bg-background px-[15px] "
               onClick={writeData}
