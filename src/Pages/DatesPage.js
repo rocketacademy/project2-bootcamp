@@ -60,7 +60,7 @@ export default function DatesPage() {
     remove(
       ref(
         database,
-        `rooms/${REALTIME_DATABASE_KEY_PAIRKEY}/${REALTIME_DATABASE_KEY_DATE}`,
+        `rooms/${REALTIME_DATABASE_KEY_PAIRKEY}/${REALTIME_DATABASE_KEY_DATE}/${dateItemKey}`,
       ),
     );
   };
@@ -71,13 +71,13 @@ export default function DatesPage() {
     const updatedArchiveList = archiveList.filter(
       (dateItem) => dateItem.key !== dateItemKey,
     );
-    setDateList(updatedArchiveList);
+    setArchiveList(updatedArchiveList);
 
     // Remove the item from Firebase
     remove(
       ref(
         database,
-        `rooms/${REALTIME_DATABASE_KEY_PAIRKEY}/${REALTIME_DATABASE_KEY_ARCHIVE}`,
+        `rooms/${REALTIME_DATABASE_KEY_PAIRKEY}/${REALTIME_DATABASE_KEY_ARCHIVE}/${dateItemKey}`,
       ),
     );
   };

@@ -8,6 +8,9 @@ import { database } from "../../firebase/firebase";
 //-----------Components-----------//
 import ContextHelper from "../Helpers/ContextHelper";
 
+//-----------Media-----------//
+import post02 from "../../Images/LogosIcons/post02.png";
+
 //Database key for date-list
 const REALTIME_DATABASE_KEY_DATE = "date-list";
 
@@ -73,13 +76,14 @@ export default function DateForm() {
   return (
     <div className=" fixed bottom-[20px] right-[20px] flex-row ">
       <button
-        className="btn w-[10em] bg-text"
+        className=" w-[10em]"
         onClick={() => {
           document.getElementById("date-form").showModal();
         }}
       >
-        Make a Date
+        <img src={post02} alt="POST" />
       </button>
+
       <dialog id="date-form" className="modal">
         <div className="modal-box flex flex-col items-center rounded-2xl bg-text">
           <form
@@ -89,7 +93,11 @@ export default function DateForm() {
             <button className="btn btn-circle btn-ghost btn-sm absolute right-5 top-5 ">
               ✕
             </button>
-            <label className="mb-[5px]">Date :</label>
+            {title === "" ? (
+              <label className="mb-[5px] text-red-600">*Date :</label>
+            ) : (
+              <label className="mb-[5px]">Date :</label>
+            )}
             <input
               className="mb-[15px] mr-[15px] w-[15em] rounded-md bg-background  px-2"
               type="text"
@@ -100,7 +108,11 @@ export default function DateForm() {
                 setTitle(e.target.value);
               }}
             />
-            <label className="mb-[5px]">Things needed :</label>
+            {items.length === 0 ? (
+              <label className="mb-[5px] text-red-600">*Things needed :</label>
+            ) : (
+              <label className="mb-[5px]">Things needed :</label>
+            )}
             <div className="input-button">
               <input
                 className="mb-[15px] mr-[15px] w-[15em] rounded-md bg-background px-2"
@@ -119,9 +131,6 @@ export default function DateForm() {
                 +
               </button>
             </div>
-            {items.length === 0 && (
-              <p className="text-s mt-[-15px] text-red-700">Must fill up</p>
-            )}
             <ul>
               {items.map((items) => {
                 return (

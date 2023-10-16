@@ -35,45 +35,68 @@ export default function BucketListPage() {
     });
   }, [REALTIME_DATABASE_KEY_PAIRKEY]);
 
-  //create a toggle for checkbox
-  const toggleCheckBox = (bucketItemKey, itemId) => {
-    const updatedBucketList = bucketList.map((bucketItem) => {
-      if (bucketItem.key === bucketItemKey) {
-        const updatedItems = bucketItem.val.items.map((item) => {
-          if (item.id === itemId) {
-            return { ...item, completed: !item.completed };
-          }
-          return item;
-        });
+  // //create a toggle for checkbox
+  // const toggleCheckBox = (bucketItemKey, itemId) => {
+  //   const updatedBucketList = bucketList.map((bucketItem) => {
+  //     if (bucketItem.key === bucketItemKey) {
+  //       const updatedItems = bucketItem.val.items.map((item) => {
+  //         if (item.id === itemId) {
+  //           return { ...item, completed: !item.completed };
+  //         }
+  //         return item;
+  //       });
 
-        return {
-          ...bucketItem,
-          val: {
-            ...bucketItem.val,
-            items: updatedItems,
-          },
-        };
-      }
-      return bucketItem;
-    });
+  //       return {
+  //         ...bucketItem,
+  //         val: {
+  //           ...bucketItem.val,
+  //           items: updatedItems,
+  //         },
+  //       };
+  //     }
+  //     return bucketItem;
+  //   });
+  // };
 
-    // Update the state and Firebase with the updated data
-    setBucketList(updatedBucketList);
+  // //create a toggle for line across texts
+  // const toggleLineOnText = (bucketItemKey, itemId) => {
+  //   const updatedBucketList = bucketList.map((bucketItem) => {
+  //     if (bucketItem.key === bucketItemKey) {
+  //       const updatedItems = bucketItem.val.items.map((item) => {
+  //         if (item.id === itemId) {
+  //           return { ...item, completed: !item.completed };
+  //         }
+  //         return item;
+  //       });
 
-    // Update Firebase with the latest state data
-    const updatedData = {
-      [bucketItemKey]: {
-        ...updatedBucketList.find((item) => item.key === bucketItemKey).val,
-      },
-    };
-    update(
-      ref(
-        database,
-        `rooms/${REALTIME_DATABASE_KEY_PAIRKEY}/${REALTIME_DATABASE_KEY_BUCKET}`,
-      ),
-      updatedData,
-    );
-  };
+  //       return {
+  //         ...bucketItem,
+  //         val: {
+  //           ...bucketItem.val,
+  //           items: updatedItems,
+  //         },
+  //       };
+  //     }
+  //     return bucketItem;
+  //   });
+
+  //   // Update the state and Firebase with the updated data
+  //   setBucketList(updatedBucketList);
+
+  //   // Update Firebase with the latest state data
+  //   const updatedData = {
+  //     [bucketItemKey]: {
+  //       ...updatedBucketList.find((item) => item.key === bucketItemKey).val,
+  //     },
+  //   };
+  //   update(
+  //     ref(
+  //       database,
+  //       `rooms/${REALTIME_DATABASE_KEY_PAIRKEY}/${REALTIME_DATABASE_KEY_BUCKET}`,
+  //     ),
+  //     updatedData,
+  //   );
+  // };
 
   // function to delete data
   const deleteBucketItem = (bucketItemKey) => {
@@ -117,7 +140,7 @@ export default function BucketListPage() {
                     className="mr-[10px] accent-accent"
                     type="checkbox"
                     checked={item.completed}
-                    onChange={() => toggleCheckBox(bucketItem.key, item.id)}
+                    // onChange={() => toggleCheckBox(bucketItem.key, item.id)}
                   />
                   <h2>{item.title}</h2>
                 </div>
