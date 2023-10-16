@@ -1,29 +1,33 @@
 // NOT IN USE...yet
 
 import { useState } from "react";
-import { database, storage } from "../firebase/firebase";
+import { database, storage } from "../../firebase/firebase";
 import {
   ref as sRef,
   uploadBytes,
   getDownloadURL,
   list as sList,
 } from "firebase/storage";
-import { push, ref, set } from "firebase/database";
+import { push, ref, set, remove } from "firebase/database";
+import {useNavigate} from 'react-router-dom'
+import {ImageCarousel} from './ImageCarousel';
 
 const DUMMY_USERID = "dummyuser"; // to use these as subs
 const DUMMY_PAIRID = "dummypair"; // to use these as subs
 
 //<Composer postContent = {post} />
-export function Composer(props) {
+export function MultiFileComposer(props) {
   const [formInfo, setFormInfo] = useState({
     postMessage: props.postContent ? props.postContent.val.message : "",
     date: props.postContent ? props.postContent.val.date : null,
     tags: props.postContent ? props.postContent.val.tags : "",
-    fileArray: props.postContent ? props.postContent.val.fileArray : null,
+    fileArray: [],
   });
   const [filePreviewArray, setFilePreviewArray] = useState(props.postContent ? props.postContent.val.fileArray : [])
+  const navigate = useNavigate()
 
   const textChange = (e) => {
+    console.log(props) // why does this give null even when editing?
     const name = e.target.id;
     const value = e.target.value;
     setFormInfo((prevState) => {
@@ -33,51 +37,53 @@ export function Composer(props) {
 
   const imgChange = (e) => {
     setFormInfo((prevState) => {
-      return { ...prevState, fileArray: e.target.files};
+      return { ...prevState, fileArray: Object.values(e.target.files)};
     });
     if (props.postContent && e.target.files.length === 0) {
       setFilePreviewArray(props.postContent.val.fileArray)
     } else {
-      setFilePreviewArray(e.target.files.map((file)=>URL.createObjectURL(file)))
+      console.log(Object.values(e.target.files))
+      setFilePreviewArray(Object.values(e.target.files).map((file)=>URL.createObjectURL(file)))
     }
   };
 
-  const writeData = async (event) => {
+  const writeData = (event) => {
     event.preventDefault();
-    let fileRef = null;
-    sList(sRef(storage, `${DUMMY_PAIRID}/feedImages/`), null)
+    const fileRefArray = [];
+    sList(sRef(storage, `rooms/${DUMMY_PAIRID}/feedImages/`), null)
       .then((result) => {
-        fileRef = sRef(
-          storage,
-          `${DUMMY_PAIRID}/feedImages/image${result.items.length}`,
-        );
-        return Promise.all(//array of promises - map array of images to array of promises
-        formInfo.fileArray.map(async (file, index)=>{
-            fileRef = sRef(storage, `${DUMMY_PAIRID}/feedImages/image${result.items.length+index}`)
-           return uploadBytes(fileRef, file).then(() => getDownloadURL(fileRef))
-        })     
-        ) 
+        if (formInfo.fileArray.length === 0) {
+          return [];
+        } else {
+          return Promise.all(//array of promises - map array of images to array of promises
+            formInfo.fileArray.map(async (file, index) => {
+              fileRefArray.push(sRef(storage, `rooms/${DUMMY_PAIRID}/feedImages/image${result.items.length + index}`))
+              return uploadBytes(fileRefArray[index], file)
+            })
+          )
+        }
       })
+      .then(() => Promise.all(fileRefArray.map((fileRef)=>getDownloadURL(fileRef))))
       .then((urlArray) => {
         // if post was given, take the ref and set it; else take the parent folder and push it
         if (props.postContent !== null) {
-            const messageListRef = ref(database, `${DUMMY_PAIRID}/feed/${props.postContent.key}`)
+            const messageListRef = ref(database, `rooms/${DUMMY_PAIRID}/feed/${props.postContent.key}`)
             set(messageListRef, {
                 user: DUMMY_USERID,
                 message: formInfo.postMessage,
                 date: props.postContent.val.date,//this is the original value - can i just omit this line?
-                fileArray: urlArray, //just take url from new file for now - need to figure out how to delete the old file
+                files: urlArray.length !== 0 ? urlArray : props.postContent.val.fileArray, //just take url from new file for now - need to figure out how to delete the old file
                 tags: formInfo.tags,
-                comments: props.postContent.val.comments
+                comments: props.postContent.val.comments ?  props.postContent.val.comments : null
             })
         }
         else {
-        const messageListRef = ref(database, `${DUMMY_PAIRID}/feed`);
+        const messageListRef = ref(database, `rooms/${DUMMY_PAIRID}/feed`);
         push(messageListRef, {
           user: DUMMY_USERID,
           message: formInfo.postMessage,
           date: `${new Date().toLocaleString()}`,
-          file: urlArray,
+          files: urlArray,
           tags: formInfo.tags,
           comments: [],
         });
@@ -91,27 +97,21 @@ export function Composer(props) {
           date: null,
           tags: "",
         });
+        props.closeComposerModal()
+        navigate('../memories')
       });
   };
 
-const filePreviews = filePreviewArray.map((fileURL, index, arr)=> { //account for case of 1 file
-    const prevIndex = (index === 0 ? arr.length-1 : index-1)
-    const nextIndex = (index === arr.length ? 0 : index+1)
-    return (
-    <div id={`slide${index}`} className="carousel-item relative w-full">
-    <img src="/images/stock/photo-1625726411847-8cbb60cc71e6.jpg" className="w-full" />
-    <div className="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
-      <a href={`slide${prevIndex}`} className="btn btn-circle">❮</a> 
-      <a href={`slide${nextIndex}`} className="btn btn-circle">❯</a>
-    </div>
-  </div> 
-    )  
-})
+  const handleDelete=(e)=>{
+    console.log(props.postContent)
+    const postRef = ref(database, `rooms/${DUMMY_PAIRID}/feed/${props.postContent.key}`);
+    remove(postRef)
+  }
 
   return (
-    <div className = 'w-1/5'>
-    <img src = {filePreview} />
-      <form onSubmit={writeData} className="flex flex-col justify-center bg-yellow-300">
+    <div className = 'w-4/5'>
+    <ImageCarousel urlArray = {filePreviewArray ? filePreviewArray : []} />
+      <form onSubmit={writeData} className="flex flex-col justify-center bg-window">
         <input
           type="text"
           id="postMessage"
@@ -137,12 +137,19 @@ const filePreviews = filePreviewArray.map((fileURL, index, arr)=> { //account fo
         <input
           type="file"
           className = 'display: none'
+          accept='image/*'
           onChange={(e) => {
             imgChange(e);
           }}
+          multiple
         />
         <br />
         <input type="submit" value="Send" />
+        <br />
+        {props.postContent ? <button id='deletePost' onClick={(e) => handleDelete(e)}>
+          Delete Post
+        </button>
+          : null}
       </form>
     </div>
   );

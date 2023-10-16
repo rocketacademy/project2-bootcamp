@@ -21,19 +21,20 @@ export function FilterButtonHolder(props) {
       };
 
     return (
-    <div className = 'flex justify-center'>
+    <div className = 'flex justify-end text-center mx-1'>
         {/* {FilterButtons} */}
-        <FilterButton filterTag = 'Dates' setTagFilter = {props.setTagFilter} tagFilter = {props.tagFilter} />
-        <FilterButton filterTag = 'Milestones' setTagFilter = {props.setTagFilter} tagFilter = {props.tagFilter} />
+        <FilterButton filterTag = 'dates' setTagFilter = {props.setTagFilter} tagFilter = {props.tagFilter} />
+        <FilterButton filterTag = 'milestones' setTagFilter = {props.setTagFilter} tagFilter = {props.tagFilter} />
+        {/* <FilterButton filterTag = 'bucketlist' setTagFilter = {props.setTagFilter} tagFilter = {props.tagFilter} /> */}
         <input
           type="text"
           id="enterFilter"
-          placeholder="enter custom filter:"
+          placeholder="Custom filter"
+          className = 'mx-1 text-black w-1/3'
           onChange={(e) => {
             filterChange(e);
           }}
           value={filterText}
-          className="text-black"
         />
         <FilterButton 
         filterTag = 'Clear' 
