@@ -9,6 +9,7 @@ import { onChildAdded, ref, push, set, remove } from "firebase/database";
 import NavBar from "../Details/NavBar.js";
 import DateForm from "../Components/Dates/DateForm.js";
 import ContextHelper from "../Components/Helpers/ContextHelper.js";
+import EditDateModal from "../Components/Dates/EditDateModal.js";
 
 //-----------Media-----------//
 import dates from "../Images/LogosIcons/word-icon-dates.png";
@@ -212,16 +213,19 @@ export default function DatesPage() {
                   ))}
                 </div>
               </div>
-              <button
-                className="ml-top"
-                onClick={() =>
-                  dateArchive
-                    ? deleteArchiveItem(dateItem.key)
-                    : deleteDateItem(dateItem.key)
-                }
-              >
-                Delete
-              </button>
+              <div className="flex-col text-center">
+                <EditDateModal />
+                <button
+                  className="ml-top mt-[15px] rounded-full bg-background p-[5px] text-xs"
+                  onClick={() =>
+                    dateArchive
+                      ? deleteArchiveItem(dateItem.key)
+                      : deleteDateItem(dateItem.key)
+                  }
+                >
+                  Delete
+                </button>
+              </div>
             </div>
           ))}
         </div>

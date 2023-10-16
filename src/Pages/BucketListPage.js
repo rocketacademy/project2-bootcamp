@@ -35,29 +35,6 @@ export default function BucketListPage() {
     });
   }, [REALTIME_DATABASE_KEY_PAIRKEY]);
 
-  // //create a toggle for checkbox
-  // const toggleCheckBox = (bucketItemKey, itemId) => {
-  //   const updatedBucketList = bucketList.map((bucketItem) => {
-  //     if (bucketItem.key === bucketItemKey) {
-  //       const updatedItems = bucketItem.val.items.map((item) => {
-  //         if (item.id === itemId) {
-  //           return { ...item, completed: !item.completed };
-  //         }
-  //         return item;
-  //       });
-
-  //       return {
-  //         ...bucketItem,
-  //         val: {
-  //           ...bucketItem.val,
-  //           items: updatedItems,
-  //         },
-  //       };
-  //     }
-  //     return bucketItem;
-  //   });
-  // };
-
   //create a toggle for line across texts
   const toggleLineOnText = (bucketItemKey, itemId) => {
     const updatedBucketList = bucketList.map((bucketItem) => {
@@ -110,7 +87,7 @@ export default function BucketListPage() {
     remove(
       ref(
         database,
-        `rooms/${REALTIME_DATABASE_KEY_PAIRKEY}/${REALTIME_DATABASE_KEY_BUCKET}`,
+        `rooms/${REALTIME_DATABASE_KEY_PAIRKEY}/${REALTIME_DATABASE_KEY_BUCKET}//${bucketItemKey}`,
       ),
     );
   };
