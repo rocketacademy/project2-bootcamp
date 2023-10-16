@@ -1,10 +1,14 @@
 import { authenticate } from "@google-cloud/local-auth";
 import { google } from "googleapis";
+import firebase from "firebase/app";
+import "firebase/auth";
+
 import NavBar from "../Details/NavBar.js";
 
 const TimeCapsule = () => {
   const gapi = window.gapi;
   const google = window.google;
+  const googleProvider = new firebase.auth.GoogleAuthProvider();
 
   const CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
   const API_KEY = process.env.REACT_APP_GOOGLE_API_KEY;
@@ -17,15 +21,44 @@ const TimeCapsule = () => {
   const SCOPES =
     "https://www.googleapis.com/auth/calendar.readonly https://www.googleapis.com/auth/calendar";
 
-  async function loadSavedCredentialsIfExist() {
+  const authenticateWithGoogle = (auth) => {
+    const calendar = google.calendar({ version: "v3", auth });
+    return calendar;
+  };
+
+  // Make a call to list the user's events
+  const listEvents = async (auth) => {
+    const calendar = authenticateWithGoogle(auth);
     try {
-      const content = await fs.readFile(TOKEN_PATH);
-      const credentials = JSON.parse(content);
-      return google.auth.fromJSON(credentials);
-    } catch (err) {
-      return null;
+      const response = await calendar.events.list({
+        calendarId: "primary", // "primary" refers to the user's primary calendar
+      });
+      const events = response.data.items;
+      return events;
+    } catch (error) {
+      console.error("Error listing events:", error);
+      return [];
     }
-  }
+  };
+
+  // Implement a function to sign in with Google
+  const signInWithGoogle = async () => {
+    try {
+      await firebase.auth().signInWithPopup(googleProvider);
+      // After a successful sign-in, you can use the authenticated user to access the Google Calendar API.
+    } catch (error) {
+      console.error("Error signing in with Google:", error);
+    }
+  };
+
+  // Implement a function to sign out
+  const signOut = async () => {
+    try {
+      await firebase.auth().signOut();
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
+  };
 
   // const signIn = () => {
   //   gapi.load("client:auth2", () => {
