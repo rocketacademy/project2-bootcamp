@@ -1,5 +1,4 @@
 import React from "react";
-import ICAL from "ical.js";
 
 function CalendarButton({ eventDetails }) {
   const generateCalendarLink = () => {
