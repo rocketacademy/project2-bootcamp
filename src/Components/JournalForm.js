@@ -9,10 +9,10 @@ import { database } from "../firebase/firebase";
 import ContextHelper from "./Helpers/ContextHelper";
 
 //-----------Images-----------//
-import Angry from "../Images/LogosIcons/emo-angry.png";
-import Confused from "../Images/LogosIcons/emo-confused.png";
 import Happy from "../Images/LogosIcons/emo-happy.png";
 import Sad from "../Images/LogosIcons/emo-sad.png";
+import Angry from "../Images/LogosIcons/emo-angry.png";
+import Confused from "../Images/LogosIcons/emo-confused.png";
 import Sick from "../Images/LogosIcons/emo-sick.png";
 import Yuck from "../Images/LogosIcons/emo-yuck.png";
 
@@ -24,7 +24,7 @@ export default function JournalForm() {
   const [title, setTitle] = useState("");
   const [texts, setTexts] = useState("");
   const [date, setDate] = useState("");
-  const Emotions = [Angry, Confused, Happy, Sad, Sick, Yuck];
+  const Emotions = [Happy, Sad, Angry, Confused, Sick, Yuck];
 
   //context helper to send to database
   const REALTIME_DATABASE_KEY_PAIRKEY = ContextHelper("pairKey");
@@ -107,7 +107,45 @@ export default function JournalForm() {
               />
             </div>
             <label className="mb-[5px]">Feeling?</label>
-            <img src={Happy} alt="happy" className="w-[3em]" />
+            <div className="dropdown dropdown-hover left-[-10px]">
+              <label tabIndex={0} className="btn border-0">
+                <img src={Happy} alt="happy" className="w-[3em]" />
+              </label>
+              <ul
+                tabIndex={0}
+                className="menu dropdown-content rounded-box z-[1] flex-row bg-base-100 shadow"
+              >
+                {Emotions.map((items) => {
+                  return (
+                    <li>
+                      <img
+                        src={items}
+                        alt={items}
+                        className="m-[-5px] w-[5em]"
+                      />
+                    </li>
+                  );
+                })}
+                {/* <li>
+                  <img src={Happy} alt="happy" className="w-[5em]" />
+                </li>
+                <li>
+                  <img src={Sad} alt="sad" className="w-[5em]" />
+                </li>
+                <li>
+                  <img src={Angry} alt="angry" className="w-[5em]" />
+                </li>
+                <li>
+                  <img src={Confused} alt="confused" className="w-[5em]" />
+                </li>
+                <li>
+                  <img src={Sick} alt="sick" className="w-[5em]" />
+                </li>
+                <li>
+                  <img src={Yuck} alt="yuck" className="w-[5em]" />
+                </li> */}
+              </ul>
+            </div>
             <button
               className="submit-btn my-[20px] rounded-full bg-background px-[15px] "
               onClick={writeData}
