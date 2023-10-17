@@ -14,6 +14,7 @@ import ChatPage from "./Pages/ChatPage";
 import BucketList from "./Pages/BucketListPage";
 import FeedPage from "./Pages/FeedPage";
 import DatesPage from "./Pages/DatesPage";
+import TimeCapsule from "./Pages/TimeCapsule";
 import ErrorPage from "./Pages/ErrorPage";
 import BucketForm from "./Components/BucketForm";
 import Spare from "./Pages/Spare";
@@ -25,6 +26,7 @@ import { ref, orderByChild, query, equalTo, get } from "firebase/database";
 
 //-----------Styling-----------//
 import "./App.css";
+import Calendar from "./Pages/Calendar";
 
 const router = createBrowserRouter([
   {
@@ -69,6 +71,14 @@ const router = createBrowserRouter([
     element: <Spare />,
   },
   {
+    path: "/time-capsule",
+    element: <TimeCapsule />,
+  },
+  {
+    path: "/calendar",
+    element: <Calendar />,
+  },
+  {
     path: "/bucket-list",
     element: (
       <BucketList>
@@ -87,7 +97,6 @@ function App() {
   const [isPairedUp, setIsPairedUp] = useState(false);
   // const [isDemo, setIsDemo] = useState(false);
   const [email, setEmail] = useState("");
-  const [user, setUser] = useState(null);
 
   const context = {
     email,
@@ -107,8 +116,6 @@ function App() {
   useEffect(() => {
     onAuthStateChanged(auth, (userInfo) => {
       if (userInfo) {
-        setUser(userInfo);
-        console.log(userInfo.email);
         fetchPairKey(userInfo.email);
         setEmail(userInfo.email);
         setIsLoggedIn(true);

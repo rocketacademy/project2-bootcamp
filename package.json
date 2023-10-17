@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@react-three/fiber": "^8.14.5",
     "firebase": "^10.4.0",
     "framer-motion-3d": "^10.16.4",
+    "ical.js": "^1.5.0",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
     "react-router-dom": "^6.16.0",

@@ -17,7 +17,7 @@
 
 # Home Page
 
-- **Auth** - Users can only access the home page when logged in
+- **Auth** - Signed out users are prompted to sign in when on the home screen
 - (WIP) Users can view the next upcoming date on the top of the screen / displays no upcoming dates if empty
 - Users can view the total number of days they have been together
 - (WIP) Users can see the display names of themselves and their partner on the homescreen
