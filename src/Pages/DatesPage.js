@@ -197,14 +197,15 @@ export default function DatesPage() {
                 </div>
               </div>
               <div className="flex-col text-center">
-                <EditDateModal dateKey={dateItem.key} />
-                {dateArchive && (
+                {dateArchive ? (
                   <button
                     className="ml-top mt-[15px] rounded-full bg-background p-[5px] text-xs"
                     onClick={() => deleteArchiveItem(dateItem.key)}
                   >
                     Delete
                   </button>
+                ) : (
+                  <EditDateModal dateKey={dateItem.key} />
                 )}
               </div>
             </div>

@@ -2,7 +2,16 @@
 import React, { useState, useEffect } from "react";
 
 //-----------Firebase-----------//
-import { ref, onChildAdded, set, remove } from "firebase/database";
+import {
+  ref,
+  set,
+  remove,
+  orderByKey,
+  get,
+  query,
+  startAt,
+  limitToFirst,
+} from "firebase/database";
 import { database } from "../../firebase/firebase";
 
 //-----------Components-----------//
@@ -22,66 +31,44 @@ export default function EditDateModal({ dateKey }) {
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [id, setId] = useState("");
+  const [showModal, setShowModal] = useState(false);
   //context helper to send to database
   const REALTIME_DATABASE_KEY_PAIRKEY = ContextHelper("pairKey");
 
   //get data from firebase and put into dateList
   useEffect(() => {
     //to view Date list
-    const dateListRef = ref(
-      database,
-      `rooms/${REALTIME_DATABASE_KEY_PAIRKEY}/${REALTIME_DATABASE_KEY_DATE}`,
-    );
+    get(
+      query(
+        ref(
+          database,
+          `rooms/${REALTIME_DATABASE_KEY_PAIRKEY}/${REALTIME_DATABASE_KEY_DATE}`,
+        ),
+        orderByKey(),
+        startAt(dateKey),
+        limitToFirst(1),
+      ),
+    ).then((output) => {
+      const data = output.val();
 
-    onChildAdded(dateListRef, (data) => {
-      const dateListItem = data.val();
       // Update the state variables with data from dateList
-      setTitle(dateListItem.title);
-      setItems(dateListItem.items);
-      setDate(dateListItem.date);
-      setTime(dateListItem.time);
-      setId(dateListItem.id);
-
-      setDateList((state) => [...state, { key: data.key, val: dateListItem }]);
+      setTitle(data[dateKey].title);
+      setItems(data[dateKey].items);
+      setDate(data[dateKey].date);
+      setTime(data[dateKey].time);
+      setId(data[dateKey].id);
     });
   }, [REALTIME_DATABASE_KEY_PAIRKEY]);
 
-  // useEffect(() => {
-  //   const dateListRef = ref(
-  //     database,
-  //     `rooms/${REALTIME_DATABASE_KEY_PAIRKEY}/${REALTIME_DATABASE_KEY_DATE}`,
-  //   );
-
-  //   onChildAdded(dateListRef, (data) => {
-  //     const dateListItem = data.val();
-  //     // Update the state variables with data from dateList
-  //     setTitle(dateListItem.title);
-  //     setItems(dateListItem.items);
-  //     setDate(dateListItem.date);
-  //     setTime(dateListItem.time);
-
-  //     setDateList((state) => [...state, { key: data.key, val: dateListItem }]);
-  //   });
-  // }, [REALTIME_DATABASE_KEY_PAIRKEY]);
-
   //create a function to store the data from database to other states
-  const listDate = (dateKey) => {
-    // Find the data item in dateList that matches the dateKey
-    const selectedDate = dateList.find((item) => item.key === dateKey);
-
-    if (selectedDate) {
-      const { title, items, date, time } = selectedDate.val;
-
-      // Set the state variables based on the selected data
-      setTitle(title);
-      setItems(items);
-      setDate(date);
-      setTime(time);
-
-      // Show the edit form
-      document.getElementById("edit-date-form").showModal();
-    }
+  const listDate = () => {
+    setShowModal(true);
   };
+
+  useEffect(() => {
+    showModal &&
+      document.getElementById(`edit-date-form-${dateKey}`).showModal();
+  }, [showModal]);
 
   //create input to add more items with + button...
   const handleSubmit = (e) => {
@@ -132,15 +119,16 @@ export default function EditDateModal({ dateKey }) {
     setNewItem("");
     setDate("");
     setTime("");
+    setShowModal(false);
 
-    document.getElementById("edit-date-form").close();
+    document.getElementById(`edit-date-form-${dateKey}`).close();
   };
 
   // function to delete data from date list
-  const deleteDateItem = (dateItemKey) => {
+  const deleteDateItem = (dateKey) => {
     // Remove the item from local state
     const updatedDateList = dateList.filter(
-      (dateItem) => dateItem.key !== dateItemKey,
+      (dateItem) => dateItem.key !== dateKey,
     );
     setDateList(updatedDateList);
 
@@ -148,13 +136,13 @@ export default function EditDateModal({ dateKey }) {
     remove(
       ref(
         database,
-        `rooms/${REALTIME_DATABASE_KEY_PAIRKEY}/${REALTIME_DATABASE_KEY_DATE}/${dateItemKey}`,
+        `rooms/${REALTIME_DATABASE_KEY_PAIRKEY}/${REALTIME_DATABASE_KEY_DATE}/${dateKey}`,
       ),
     );
   };
 
   return (
-    <div className=" rounded-full bg-background p-[5px] text-xs">
+    <div className=" rounded-full bg-background p-[5px] px-[10px] text-xs">
       <button
         onClick={() => {
           listDate(dateKey);
@@ -162,10 +150,13 @@ export default function EditDateModal({ dateKey }) {
       >
         Edit
       </button>
-      <dialog id="edit-date-form" className="modal">
+      <dialog id={`edit-date-form-${dateKey}`} className="modal">
         <div className="modal-box flex flex-col items-center rounded-2xl bg-text">
           <form method="dialog" className="flex flex-col p-[20px] text-accent">
-            <button className="btn btn-circle btn-ghost btn-sm absolute right-5 top-5 ">
+            <button
+              className="btn btn-circle btn-ghost btn-sm absolute right-5 top-5 "
+              onClick={() => setShowModal(false)}
+            >
               ✕
             </button>
             {title === "" ? (
@@ -178,7 +169,7 @@ export default function EditDateModal({ dateKey }) {
               type="text"
               name="title"
               value={title}
-              placeholder="What're yall doing?"
+              placeholder={"What're yall doing?"}
               onChange={(e) => {
                 setTitle(e.target.value);
               }}
@@ -252,7 +243,7 @@ export default function EditDateModal({ dateKey }) {
             </button>
             <button
               className=" mt-[15px] rounded-full bg-background p-[5px]"
-              onClick={() => deleteDateItem(dateList.key)}
+              onClick={() => deleteDateItem(dateKey)}
             >
               Delete
             </button>
