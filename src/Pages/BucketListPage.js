@@ -35,8 +35,8 @@ export default function BucketListPage() {
     });
   }, [REALTIME_DATABASE_KEY_PAIRKEY]);
 
-  //create a toggle for checkbox
-  const toggleCheckBox = (bucketItemKey, itemId) => {
+  //create a toggle for line across texts
+  const toggleLineOnText = (bucketItemKey, itemId) => {
     const updatedBucketList = bucketList.map((bucketItem) => {
       if (bucketItem.key === bucketItemKey) {
         const updatedItems = bucketItem.val.items.map((item) => {
@@ -87,7 +87,7 @@ export default function BucketListPage() {
     remove(
       ref(
         database,
-        `rooms/${REALTIME_DATABASE_KEY_PAIRKEY}/${REALTIME_DATABASE_KEY_BUCKET}`,
+        `rooms/${REALTIME_DATABASE_KEY_PAIRKEY}/${REALTIME_DATABASE_KEY_BUCKET}//${bucketItemKey}`,
       ),
     );
   };
@@ -112,15 +112,22 @@ export default function BucketListPage() {
               </button>
               <h1 className="text-[18px] font-bold">{bucketItem.val.title}</h1>
               {bucketItem.val.items.map((item) => (
-                <div className="justify-left flex py-[5px]" key={item.id}>
-                  <input
-                    className="mr-[10px] accent-accent"
-                    type="checkbox"
-                    checked={item.completed}
-                    onChange={() => toggleCheckBox(bucketItem.key, item.id)}
-                  />
-                  <h2>{item.title}</h2>
-                </div>
+                // <div
+                //   className="justify-left flex py-[5px]"
+                //   key={item.id}
+                //   onClick={() => toggleLineOnText(bucketItem.key, item.id)}
+                // >
+                //   {item.title}
+                // </div>
+                <h2
+                  key={item.id}
+                  style={{
+                    textDecoration: item.completed ? "line-through" : "none",
+                  }}
+                  onClick={() => toggleLineOnText(bucketItem.key, item.id)}
+                >
+                  {item.title}
+                </h2>
               ))}
               <h1>{bucketItem.val.items.title}</h1>
               {bucketItem.val.date !== "" ? (

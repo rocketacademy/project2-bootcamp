@@ -86,7 +86,11 @@ export default function BucketForm() {
             <button className="btn btn-circle btn-ghost btn-sm absolute right-5 top-5 ">
               ✕
             </button>
-            <label className="mb-[5px]">Bucket :</label>
+            {title === "" ? (
+              <label className="mb-[5px] text-red-600">*Bucket :</label>
+            ) : (
+              <label className="mb-[5px]">Bucket :</label>
+            )}
             <input
               className="mb-[15px] mr-[15px] w-[15em] rounded-md bg-background  px-2"
               type="text"
@@ -97,7 +101,11 @@ export default function BucketForm() {
                 setTitle(e.target.value);
               }}
             />
-            <label className="mb-[5px]">Add your socks :</label>
+            {items.length === 0 ? (
+              <label className="mb-[5px] text-red-600">*Add your socks :</label>
+            ) : (
+              <label className="mb-[5px]">Add your socks :</label>
+            )}
             <div className="input-button">
               <input
                 className="mb-[15px] mr-[15px] w-[15em] rounded-md bg-background px-2"
@@ -116,9 +124,6 @@ export default function BucketForm() {
                 +
               </button>
             </div>
-            {items.length === 0 && (
-              <p className="text-s mt-[-15px] text-red-700">Must fill up</p>
-            )}
             <ul>
               {items.map((items) => {
                 return (

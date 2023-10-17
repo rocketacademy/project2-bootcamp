@@ -9,6 +9,7 @@ import { onChildAdded, ref, push, set, remove } from "firebase/database";
 import NavBar from "../Details/NavBar.js";
 import DateForm from "../Components/Dates/DateForm.js";
 import ContextHelper from "../Components/Helpers/ContextHelper.js";
+import EditDateModal from "../Components/Dates/EditDateModal.js";
 
 //-----------Media-----------//
 import dates from "../Images/LogosIcons/word-icon-dates.png";
@@ -49,35 +50,18 @@ export default function DatesPage() {
   }, [REALTIME_DATABASE_KEY_PAIRKEY]);
 
   // function to delete data from date list
-  const deleteDateItem = (dateItemKey) => {
-    // Remove the item from local state
-    const updatedDateList = dateList.filter(
-      (dateItem) => dateItem.key !== dateItemKey,
-    );
-    setDateList(updatedDateList);
-
-    // Remove the item from Firebase
-    remove(
-      ref(
-        database,
-        `rooms/${REALTIME_DATABASE_KEY_PAIRKEY}/${REALTIME_DATABASE_KEY_DATE}`,
-      ),
-    );
-  };
-
-  // function to delete data from date list
   const deleteArchiveItem = (dateItemKey) => {
     // Remove the item from local state
     const updatedArchiveList = archiveList.filter(
       (dateItem) => dateItem.key !== dateItemKey,
     );
-    setDateList(updatedArchiveList);
+    setArchiveList(updatedArchiveList);
 
     // Remove the item from Firebase
     remove(
       ref(
         database,
-        `rooms/${REALTIME_DATABASE_KEY_PAIRKEY}/${REALTIME_DATABASE_KEY_ARCHIVE}`,
+        `rooms/${REALTIME_DATABASE_KEY_PAIRKEY}/${REALTIME_DATABASE_KEY_ARCHIVE}/${dateItemKey}`,
       ),
     );
   };
@@ -212,16 +196,18 @@ export default function DatesPage() {
                   ))}
                 </div>
               </div>
-              <button
-                className="ml-top"
-                onClick={() =>
-                  dateArchive
-                    ? deleteArchiveItem(dateItem.key)
-                    : deleteDateItem(dateItem.key)
-                }
-              >
-                Delete
-              </button>
+              <div className="flex-col text-center">
+                {dateArchive ? (
+                  <button
+                    className="ml-top mt-[15px] rounded-full bg-background p-[5px] text-xs"
+                    onClick={() => deleteArchiveItem(dateItem.key)}
+                  >
+                    Delete
+                  </button>
+                ) : (
+                  <EditDateModal dateKey={dateItem.key} />
+                )}
+              </div>
             </div>
           ))}
         </div>
