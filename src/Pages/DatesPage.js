@@ -50,23 +50,6 @@ export default function DatesPage() {
   }, [REALTIME_DATABASE_KEY_PAIRKEY]);
 
   // function to delete data from date list
-  const deleteDateItem = (dateItemKey) => {
-    // Remove the item from local state
-    const updatedDateList = dateList.filter(
-      (dateItem) => dateItem.key !== dateItemKey,
-    );
-    setDateList(updatedDateList);
-
-    // Remove the item from Firebase
-    remove(
-      ref(
-        database,
-        `rooms/${REALTIME_DATABASE_KEY_PAIRKEY}/${REALTIME_DATABASE_KEY_DATE}/${dateItemKey}`,
-      ),
-    );
-  };
-
-  // function to delete data from date list
   const deleteArchiveItem = (dateItemKey) => {
     // Remove the item from local state
     const updatedArchiveList = archiveList.filter(
@@ -215,16 +198,14 @@ export default function DatesPage() {
               </div>
               <div className="flex-col text-center">
                 <EditDateModal dateKey={dateItem.key} />
-                <button
-                  className="ml-top mt-[15px] rounded-full bg-background p-[5px] text-xs"
-                  onClick={() =>
-                    dateArchive
-                      ? deleteArchiveItem(dateItem.key)
-                      : deleteDateItem(dateItem.key)
-                  }
-                >
-                  Delete
-                </button>
+                {dateArchive && (
+                  <button
+                    className="ml-top mt-[15px] rounded-full bg-background p-[5px] text-xs"
+                    onClick={() => deleteArchiveItem(dateItem.key)}
+                  >
+                    Delete
+                  </button>
+                )}
               </div>
             </div>
           ))}

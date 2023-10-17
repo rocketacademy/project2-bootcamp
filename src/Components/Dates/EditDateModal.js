@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 
 //-----------Firebase-----------//
-import { ref, onChildAdded, set } from "firebase/database";
+import { ref, onChildAdded, set, remove } from "firebase/database";
 import { database } from "../../firebase/firebase";
 
 //-----------Components-----------//
@@ -136,6 +136,23 @@ export default function EditDateModal({ dateKey }) {
     document.getElementById("edit-date-form").close();
   };
 
+  // function to delete data from date list
+  const deleteDateItem = (dateItemKey) => {
+    // Remove the item from local state
+    const updatedDateList = dateList.filter(
+      (dateItem) => dateItem.key !== dateItemKey,
+    );
+    setDateList(updatedDateList);
+
+    // Remove the item from Firebase
+    remove(
+      ref(
+        database,
+        `rooms/${REALTIME_DATABASE_KEY_PAIRKEY}/${REALTIME_DATABASE_KEY_DATE}/${dateItemKey}`,
+      ),
+    );
+  };
+
   return (
     <div className=" rounded-full bg-background p-[5px] text-xs">
       <button
@@ -232,6 +249,12 @@ export default function EditDateModal({ dateKey }) {
               onClick={() => updateData(dateKey)}
             >
               Submit
+            </button>
+            <button
+              className=" mt-[15px] rounded-full bg-background p-[5px]"
+              onClick={() => deleteDateItem(dateList.key)}
+            >
+              Delete
             </button>
           </form>
         </div>
