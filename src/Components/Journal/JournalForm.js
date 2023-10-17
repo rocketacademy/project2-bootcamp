@@ -19,6 +19,7 @@ export default function JournalForm() {
   const [title, setTitle] = useState("");
   const [texts, setTexts] = useState("");
   const [date, setDate] = useState("");
+  const [sign, setSign] = useState("");
   const [emotion, setEmotion] = useState(Happy);
 
   //context helper to send to database
@@ -43,11 +44,13 @@ export default function JournalForm() {
       texts: texts,
       date: date,
       emotion: emotion,
+      sign: sign,
     });
 
     setTitle("");
     setTexts("");
     setDate("");
+    setSign("");
     setEmotion(Happy);
 
     document.getElementById("journal-form").close();
@@ -96,23 +99,35 @@ export default function JournalForm() {
               />
             </div>
             <label className="mb-[5px]">Entry :</label>
-            <div className="input-button">
-              <textarea
-                maxLength="400"
-                className="textarea-bordered w-80 w-[15em] rounded-md bg-background px-2"
-                name="texts"
-                value={texts}
-                placeholder="thoughts"
-                onChange={(e) => {
-                  setTexts(e.target.value);
-                }}
-              />
-            </div>
-            <label className="mb-[5px]">Feeling?</label>
-            <EmotionComponent
-              selectedEmotion={emotion}
-              onSelect={handleEmotionSelect}
+            <textarea
+              maxLength="400"
+              className="textarea-bordered mb-[5px] w-80 w-[15em] rounded-md bg-background px-2"
+              name="texts"
+              value={texts}
+              placeholder="thoughts"
+              onChange={(e) => {
+                setTexts(e.target.value);
+              }}
             />
+            <div className="flex flex-row">
+              <div className="flex flex-col">
+                <label className="mb-[5px]">Signing Off :</label>
+                <input
+                  className="mb-[15px] mr-[15px] w-[15em] rounded-md bg-background  px-2"
+                  type="text"
+                  name="sign"
+                  value={sign}
+                  placeholder="sign off"
+                  onChange={(e) => {
+                    setSign(e.target.value);
+                  }}
+                />
+              </div>
+              <div className="flex flex-col">
+                <label className="mb-[-5px]">Feeling?</label>
+                <EmotionComponent onSelect={handleEmotionSelect} />
+              </div>
+            </div>
             <button
               className="submit-btn my-[20px] w-20 rounded-full bg-background px-[15px] "
               onClick={writeData}

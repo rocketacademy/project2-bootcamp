@@ -9,7 +9,7 @@ import Confused from "../../Images/LogosIcons/emo-confused.png";
 import Sick from "../../Images/LogosIcons/emo-sick.png";
 import Yuck from "../../Images/LogosIcons/emo-yuck.png";
 
-export default function JournalForm({ selectedEmotion, onSelect }) {
+export default function JournalForm({ onSelect }) {
   // state for emotions
   const [selectedEmo, setSelectedEmo] = useState(Happy);
   const Emotions = [Happy, Sad, Angry, Confused, Sick, Yuck];
@@ -22,12 +22,12 @@ export default function JournalForm({ selectedEmotion, onSelect }) {
 
   return (
     <div className="dropdown dropdown-hover left-[-10px]">
-      <label tabIndex={0} className="btn border-0">
+      <label tabIndex={0} className="btn border-0 ">
         <img src={selectedEmo} alt="selected-emotion" className="w-[3em]" />
       </label>
       <ul
         tabIndex={0}
-        className="menu dropdown-content rounded-box left-[50px] top-[-10px] z-[1] flex w-full flex-row bg-base-100 shadow"
+        className="menu dropdown-content rounded-box left-[-250px] top-[-10px] z-[1] flex w-[250px] flex-row justify-center bg-base-100 shadow"
       >
         {Emotions.map((emotion, index) => (
           <li key={index} onClick={() => handleEmotionSelect(emotion)}>

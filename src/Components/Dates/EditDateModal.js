@@ -1,29 +1,74 @@
 //-----------React-----------//
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 //-----------Firebase-----------//
-import { push, ref, set } from "firebase/database";
+import {
+  ref,
+  set,
+  remove,
+  orderByKey,
+  get,
+  query,
+  startAt,
+  limitToFirst,
+} from "firebase/database";
 import { database } from "../../firebase/firebase";
 
 //-----------Components-----------//
 import ContextHelper from "../Helpers/ContextHelper";
 
-//-----------Media-----------//
-import post02 from "../../Images/LogosIcons/post02.png";
-
 //Database key for date-list
 const REALTIME_DATABASE_KEY_DATE = "date-list";
 
-export default function DateForm() {
-  //State for date list
+export default function EditDateModal({ dateKey }) {
+  //create state to view date list on modal
+  const [dateList, setDateList] = useState([]);
+
+  //states for date form format
   const [title, setTitle] = useState("");
   const [items, setItems] = useState([]);
   const [newItem, setNewItem] = useState("");
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
-
+  const [id, setId] = useState("");
+  const [showModal, setShowModal] = useState(false);
   //context helper to send to database
   const REALTIME_DATABASE_KEY_PAIRKEY = ContextHelper("pairKey");
+
+  //get data from firebase and put into dateList
+  useEffect(() => {
+    //to view Date list
+    get(
+      query(
+        ref(
+          database,
+          `rooms/${REALTIME_DATABASE_KEY_PAIRKEY}/${REALTIME_DATABASE_KEY_DATE}`,
+        ),
+        orderByKey(),
+        startAt(dateKey),
+        limitToFirst(1),
+      ),
+    ).then((output) => {
+      const data = output.val();
+
+      // Update the state variables with data from dateList
+      setTitle(data[dateKey].title);
+      setItems(data[dateKey].items);
+      setDate(data[dateKey].date);
+      setTime(data[dateKey].time);
+      setId(data[dateKey].id);
+    });
+  }, [REALTIME_DATABASE_KEY_PAIRKEY]);
+
+  //create a function to store the data from database to other states
+  const listDate = () => {
+    setShowModal(true);
+  };
+
+  useEffect(() => {
+    showModal &&
+      document.getElementById(`edit-date-form-${dateKey}`).showModal();
+  }, [showModal]);
 
   //create input to add more items with + button...
   const handleSubmit = (e) => {
@@ -48,49 +93,70 @@ export default function DateForm() {
     });
   };
 
-  //send data to database
-  const writeData = () => {
-    const dateListRef = ref(
-      database,
-      `rooms/${REALTIME_DATABASE_KEY_PAIRKEY}/${REALTIME_DATABASE_KEY_DATE}`,
-    );
-    const newDateRef = push(dateListRef);
-
-    set(newDateRef, {
-      id: new Date().getTime(),
+  //function to update data
+  const updateData = (keyToUpdate) => {
+    // Create a new entry to update
+    const updatedDateItem = {
+      id: id,
       title: title,
       items: items,
       date: date,
       time: time,
-    });
+    };
 
+    // Get a reference to the specific entry in the Firebase database
+    const dateListRef = ref(
+      database,
+      `rooms/${REALTIME_DATABASE_KEY_PAIRKEY}/${REALTIME_DATABASE_KEY_DATE}/${keyToUpdate}`,
+    );
+
+    // Update the entry in the database
+    set(dateListRef, updatedDateItem);
+
+    // Reset the form fields
     setTitle("");
     setItems([]);
     setNewItem("");
     setDate("");
     setTime("");
+    setShowModal(false);
 
-    document.getElementById("date-form").close();
+    document.getElementById(`edit-date-form-${dateKey}`).close();
+  };
+
+  // function to delete data from date list
+  const deleteDateItem = (dateKey) => {
+    // Remove the item from local state
+    const updatedDateList = dateList.filter(
+      (dateItem) => dateItem.key !== dateKey,
+    );
+    setDateList(updatedDateList);
+
+    // Remove the item from Firebase
+    remove(
+      ref(
+        database,
+        `rooms/${REALTIME_DATABASE_KEY_PAIRKEY}/${REALTIME_DATABASE_KEY_DATE}/${dateKey}`,
+      ),
+    );
   };
 
   return (
-    <div className=" fixed bottom-[20px] right-[20px] flex-row ">
+    <div className=" rounded-full bg-background p-[5px] px-[10px] text-xs">
       <button
-        className=" w-[10em]"
         onClick={() => {
-          document.getElementById("date-form").showModal();
+          listDate(dateKey);
         }}
       >
-        <img src={post02} alt="POST" />
+        Edit
       </button>
-
-      <dialog id="date-form" className="modal">
+      <dialog id={`edit-date-form-${dateKey}`} className="modal">
         <div className="modal-box flex flex-col items-center rounded-2xl bg-text">
-          <form
-            method="dialog"
-            className="flex  w-96 w-full flex-col justify-center justify-items-center p-[20px] text-accent"
-          >
-            <button className="btn btn-circle btn-ghost btn-sm absolute right-5 top-5 ">
+          <form method="dialog" className="flex flex-col p-[20px] text-accent">
+            <button
+              className="btn btn-circle btn-ghost btn-sm absolute right-5 top-5 "
+              onClick={() => setShowModal(false)}
+            >
               ✕
             </button>
             {title === "" ? (
@@ -103,7 +169,7 @@ export default function DateForm() {
               type="text"
               name="title"
               value={title}
-              placeholder="What're yall doing?"
+              placeholder={"What're yall doing?"}
               onChange={(e) => {
                 setTitle(e.target.value);
               }}
@@ -171,9 +237,15 @@ export default function DateForm() {
             <button
               className="submit-btn my-[20px] rounded-full bg-background px-[15px] disabled:bg-neutral-500 disabled:text-background"
               disabled={items.length === 0}
-              onClick={writeData}
+              onClick={() => updateData(dateKey)}
             >
               Submit
+            </button>
+            <button
+              className=" mt-[15px] rounded-full bg-background p-[5px]"
+              onClick={() => deleteDateItem(dateKey)}
+            >
+              Delete
             </button>
           </form>
         </div>

@@ -6,6 +6,7 @@ import ContextHelper from "../ContextHelper";
 
 const pairKey = ContextHelper("pairKey"); // output: loverboy
 const isLoggedIn = ContextHelper("isLoggedIn"); // output: true
+const displayName = ContextHelper("displayName"); //output: Romeo
 const email = ContextHelper("email"); //output: xx@email.com */
 
 const ContextHelper = (type) => {
@@ -16,6 +17,8 @@ const ContextHelper = (type) => {
     result = context.pairKey || "";
   } else if (type === "isLoggedIn") {
     result = context.isLoggedIn || "";
+  } else if (type === "displayName") {
+    result = context.displayName || "";
   } else if (type === "email") {
     result = context.email || "";
   }

@@ -75,6 +75,11 @@ export default function JournalListPage() {
               />
               <h1 className="text-[18px] font-bold">{journalItem.val.title}</h1>
               <h1>{journalItem.val.texts}</h1>
+              {journalItem.val.sign === "" ? (
+                <></>
+              ) : (
+                <h1>- {journalItem.val.sign}</h1>
+              )}
               <hr className="my-[10px] rounded-full border-[1.5px] border-black" />
               <p className="mb-[10px]">{journalItem.val.date}</p>
             </div>
