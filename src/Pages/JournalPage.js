@@ -1,10 +1,13 @@
 //-----------Components-----------//
-import JournalForm from "../Components/JournalForm.js";
+import JournalForm from "../Components/Journal/JournalForm.js";
 import NavBar from "../Details/NavBar.js";
 import ContextHelper from "../Components/Helpers/ContextHelper.js";
 
 //-----------Media-----------//
 import JournalImage from "../Images/LogosIcons/word-icon-journal.png";
+
+//Database key for date-list
+const REALTIME_DATABASE_KEY_JOURNAL = "Journal-list";
 
 export default function JournalListPage() {
   return (

@@ -3,18 +3,11 @@ import React, { useState } from "react";
 
 //-----------Firebase-----------//
 import { push, ref, set } from "firebase/database";
-import { database } from "../firebase/firebase";
+import { database } from "../../firebase/firebase";
 
 //-----------Components-----------//
-import ContextHelper from "./Helpers/ContextHelper";
-
-//-----------Images-----------//
-import Happy from "../Images/LogosIcons/emo-happy.png";
-import Sad from "../Images/LogosIcons/emo-sad.png";
-import Angry from "../Images/LogosIcons/emo-angry.png";
-import Confused from "../Images/LogosIcons/emo-confused.png";
-import Sick from "../Images/LogosIcons/emo-sick.png";
-import Yuck from "../Images/LogosIcons/emo-yuck.png";
+import ContextHelper from "../Helpers/ContextHelper";
+import EmotionComponent from "./EmotionComponent";
 
 //Database key for date-list
 const REALTIME_DATABASE_KEY_JOURNAL = "Journal-list";
@@ -24,10 +17,15 @@ export default function JournalForm() {
   const [title, setTitle] = useState("");
   const [texts, setTexts] = useState("");
   const [date, setDate] = useState("");
-  const Emotions = [Happy, Sad, Angry, Confused, Sick, Yuck];
+  const [emotion, setEmotion] = useState("");
 
   //context helper to send to database
   const REALTIME_DATABASE_KEY_PAIRKEY = ContextHelper("pairKey");
+
+  //set emotion
+  const handleEmotionSelect = (selectedEmotion) => {
+    setEmotion(selectedEmotion);
+  };
 
   //send data to database
   const writeData = () => {
@@ -42,11 +40,13 @@ export default function JournalForm() {
       title: title,
       texts: texts,
       date: date,
+      emotion: emotion,
     });
 
     setTitle("");
     setTexts("");
     setDate("");
+    setEmotion("");
 
     document.getElementById("date-form").close();
   };
@@ -65,7 +65,7 @@ export default function JournalForm() {
         <div className="modal-box flex flex-col items-center rounded-2xl bg-text">
           <form
             method="dialog"
-            className="flex  w-96 w-full flex-col justify-center justify-items-center p-[20px] text-accent"
+            className="flex  w-full flex-col justify-center justify-items-center p-[20px] text-accent"
           >
             <button className="btn btn-circle btn-ghost btn-sm absolute right-5 top-5 ">
               ✕
@@ -97,7 +97,7 @@ export default function JournalForm() {
             <div className="input-button">
               <textarea
                 maxLength="400"
-                className="textarea-bordered w-[15em] rounded-md bg-background px-2"
+                className="textarea-bordered w-80 w-[15em] rounded-md bg-background px-2"
                 name="texts"
                 value={texts}
                 placeholder="thoughts"
@@ -107,47 +107,12 @@ export default function JournalForm() {
               />
             </div>
             <label className="mb-[5px]">Feeling?</label>
-            <div className="dropdown dropdown-hover left-[-10px]">
-              <label tabIndex={0} className="btn border-0">
-                <img src={Happy} alt="happy" className="w-[3em]" />
-              </label>
-              <ul
-                tabIndex={0}
-                className="menu dropdown-content rounded-box z-[1] flex-row bg-base-100 shadow"
-              >
-                {Emotions.map((items) => {
-                  return (
-                    <li>
-                      <img
-                        src={items}
-                        alt={items}
-                        className="m-[-5px] w-[5em]"
-                      />
-                    </li>
-                  );
-                })}
-                {/* <li>
-                  <img src={Happy} alt="happy" className="w-[5em]" />
-                </li>
-                <li>
-                  <img src={Sad} alt="sad" className="w-[5em]" />
-                </li>
-                <li>
-                  <img src={Angry} alt="angry" className="w-[5em]" />
-                </li>
-                <li>
-                  <img src={Confused} alt="confused" className="w-[5em]" />
-                </li>
-                <li>
-                  <img src={Sick} alt="sick" className="w-[5em]" />
-                </li>
-                <li>
-                  <img src={Yuck} alt="yuck" className="w-[5em]" />
-                </li> */}
-              </ul>
-            </div>
+            <EmotionComponent
+              selectedEmotion={emotion}
+              onSelect={handleEmotionSelect}
+            />
             <button
-              className="submit-btn my-[20px] rounded-full bg-background px-[15px] "
+              className="submit-btn my-[20px] w-20 rounded-full bg-background px-[15px] "
               onClick={writeData}
             >
               Submit
