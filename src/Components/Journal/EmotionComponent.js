@@ -21,7 +21,7 @@ export default function JournalForm({ selectedEmotion, onSelect }) {
   };
 
   return (
-    <div className="dropdown-hover dropdown left-[-10px]">
+    <div className="dropdown dropdown-hover left-[-10px]">
       <label tabIndex={0} className="btn border-0">
         <img src={selectedEmo} alt="selected-emotion" className="w-[3em]" />
       </label>

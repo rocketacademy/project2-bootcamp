@@ -9,6 +9,8 @@ import { database } from "../../firebase/firebase";
 import ContextHelper from "../Helpers/ContextHelper";
 import EmotionComponent from "./EmotionComponent";
 
+import Happy from "../../Images/LogosIcons/emo-happy.png";
+
 //Database key for date-list
 const REALTIME_DATABASE_KEY_JOURNAL = "Journal-list";
 
@@ -17,7 +19,7 @@ export default function JournalForm() {
   const [title, setTitle] = useState("");
   const [texts, setTexts] = useState("");
   const [date, setDate] = useState("");
-  const [emotion, setEmotion] = useState("");
+  const [emotion, setEmotion] = useState(Happy);
 
   //context helper to send to database
   const REALTIME_DATABASE_KEY_PAIRKEY = ContextHelper("pairKey");
@@ -29,13 +31,13 @@ export default function JournalForm() {
 
   //send data to database
   const writeData = () => {
-    const dateListRef = ref(
+    const journalListRef = ref(
       database,
       `rooms/${REALTIME_DATABASE_KEY_PAIRKEY}/${REALTIME_DATABASE_KEY_JOURNAL}`,
     );
-    const newDateRef = push(dateListRef);
+    const newJournaleRef = push(journalListRef);
 
-    set(newDateRef, {
+    set(newJournaleRef, {
       id: new Date().getTime(),
       title: title,
       texts: texts,
@@ -46,9 +48,9 @@ export default function JournalForm() {
     setTitle("");
     setTexts("");
     setDate("");
-    setEmotion("");
+    setEmotion(Happy);
 
-    document.getElementById("date-form").close();
+    document.getElementById("journal-form").close();
   };
 
   return (
@@ -56,12 +58,12 @@ export default function JournalForm() {
       <button
         className="btn w-[10em] bg-text"
         onClick={() => {
-          document.getElementById("date-form").showModal();
+          document.getElementById("journal-form").showModal();
         }}
       >
         Jolt a post
       </button>
-      <dialog id="date-form" className="modal">
+      <dialog id="journal-form" className="modal">
         <div className="modal-box flex flex-col items-center rounded-2xl bg-text">
           <form
             method="dialog"
