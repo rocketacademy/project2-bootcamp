@@ -9,6 +9,8 @@ import { database } from "../../firebase/firebase";
 import ContextHelper from "../Helpers/ContextHelper";
 import EmotionComponent from "./EmotionComponent";
 
+//-----------Images-----------//
+import post02 from "../../Images/LogosIcons/post02.png";
 import Happy from "../../Images/LogosIcons/emo-happy.png";
 
 //Database key for date-list
@@ -59,12 +61,12 @@ export default function JournalForm() {
   return (
     <div className=" fixed bottom-[20px] right-[20px] flex-row ">
       <button
-        className="btn w-[10em] bg-text"
+        className="btn w-[10em] border-0"
         onClick={() => {
           document.getElementById("journal-form").showModal();
         }}
       >
-        Jolt a post
+        <img src={post02} alt="POST" />
       </button>
       <dialog id="journal-form" className="modal">
         <div className="modal-box flex flex-col items-center rounded-2xl bg-text">

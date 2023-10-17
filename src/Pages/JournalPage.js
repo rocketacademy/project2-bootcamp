@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 
 //-----------Firebase-----------//
 import { database } from "../firebase/firebase";
-import { onChildAdded, ref, update, remove } from "firebase/database";
+import { onChildAdded, ref, remove } from "firebase/database";
 
 //-----------Components-----------//
 import JournalForm from "../Components/Journal/JournalForm.js";
