@@ -110,6 +110,7 @@ export function MultiFileComposer(props) {
 
   return (
     <div className = 'w-4/5'>
+    {console.log(filePreviewArray)}
     <ImageCarousel urlArray = {filePreviewArray ? filePreviewArray : []} />
       <form onSubmit={writeData} className="flex flex-col justify-center bg-window">
         <input
