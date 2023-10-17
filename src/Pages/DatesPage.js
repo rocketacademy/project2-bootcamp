@@ -3,13 +3,24 @@ import React, { useState, useEffect } from "react";
 
 //-----------Firebase-----------//
 import { database } from "../firebase/firebase";
-import { onChildAdded, ref, push, set, remove } from "firebase/database";
+import {
+  onChildAdded,
+  ref,
+  push,
+  set,
+  remove,
+  onChildChanged,
+  onChildRemoved,
+  off,
+} from "firebase/database";
 
 //-----------Components-----------//
 import NavBar from "../Details/NavBar.js";
 import DateForm from "../Components/Dates/DateForm.js";
 import ContextHelper from "../Components/Helpers/ContextHelper.js";
 import EditDateModal from "../Components/Dates/EditDateModal.js";
+import CreateButton2 from "../Components/Feed/CreateButton2";
+import MemoryComposer from "../Components/Feed/MemoryComposer";
 
 //-----------Media-----------//
 import dates from "../Images/LogosIcons/word-icon-dates.png";
@@ -34,8 +45,15 @@ export default function DatesPage() {
       `rooms/${REALTIME_DATABASE_KEY_PAIRKEY}/${REALTIME_DATABASE_KEY_DATE}`,
     );
 
-    onChildAdded(dateListRef, (data) => {
+    const dateListCallback = (data) => {
       setDateList((state) => [...state, { key: data.key, val: data.val() }]);
+    };
+
+    onChildAdded(dateListRef, dateListCallback);
+    onChildChanged(dateListRef, dateListCallback);
+    onChildRemoved(dateListRef, (data) => {
+      // Remove the item from the list
+      setDateList((state) => state.filter((item) => item.key !== data.key));
     });
 
     //to view Archive list
@@ -44,9 +62,21 @@ export default function DatesPage() {
       `rooms/${REALTIME_DATABASE_KEY_PAIRKEY}/${REALTIME_DATABASE_KEY_ARCHIVE}`,
     );
 
-    onChildAdded(archiveListRef, (data) => {
+    const archiveListCallback = (data) => {
       setArchiveList((state) => [...state, { key: data.key, val: data.val() }]);
+    };
+
+    onChildAdded(archiveListRef, archiveListCallback);
+    onChildChanged(archiveListRef, archiveListCallback);
+    onChildRemoved(archiveListRef, (data) => {
+      // Remove the item from the list
+      setArchiveList((state) => state.filter((item) => item.key !== data.key));
     });
+    // Clean up the listeners when the component unmounts
+    return () => {
+      off(dateListRef, dateListCallback);
+      off(archiveListRef, archiveListCallback);
+    };
   }, [REALTIME_DATABASE_KEY_PAIRKEY]);
 
   // function to delete data from date list
@@ -137,7 +167,7 @@ export default function DatesPage() {
           <div className="flex flex-row gap-3">
             <button className="rounded-xl bg-text px-5">Upcoming</button>
             <button
-              className="rounded-xl bg-background px-5"
+              className="rounded-xl bg-background px-5 hover:bg-window"
               onClick={toggleDateArchive}
             >
               Archive
@@ -146,7 +176,7 @@ export default function DatesPage() {
         ) : (
           <div className="flex flex-row gap-3">
             <button
-              className="rounded-xl bg-background px-5"
+              className="rounded-xl bg-background px-5 hover:bg-window"
               onClick={toggleDateArchive}
             >
               Upcoming
@@ -158,56 +188,79 @@ export default function DatesPage() {
           {getListByName(dateArchive).map((dateItem) => (
             <div
               key={dateItem.key}
-              className=" m-[30px] flex w-[350px] flex-row items-start justify-between rounded-xl bg-text p-[10px]"
+              className=" m-[30px] flex w-[360px] flex-row items-start justify-between rounded-xl bg-window p-[10px] shadow-lg hover:translate-y-[-2px]"
             >
-              <div className="wrap flex items-start justify-between">
-                <div className="group-for-days rounded-xl bg-background p-[20px]">
-                  {dateArchive === false ? (
-                    <>
-                      <h1 className="text-center text-xl font-bold">
-                        {calculateDaysLeft(dateItem.val.date)}
-                      </h1>
-                      <h2 className="font-bold">Days</h2>
-                    </>
-                  ) : (
-                    <>
-                      <h1 className="text-center text-xl font-bold">
-                        {calculateDaysLeft(dateItem.val.date) * -1}
-                      </h1>
-                      <h2 className="text-center font-bold">
-                        Days
-                        <br />
-                        Ago
-                      </h2>
-                    </>
-                  )}
-                </div>
-                <div className="group-for-everythingelse ml-[10px]">
-                  <h1 className="italic">
+              <div className="flex items-start justify-between">
+                {/* Days Section */}
+                <section className="flex w-[80px] flex-col items-center justify-center">
+                  <div className="flex h-[80px] w-full flex-col items-center justify-center rounded-xl bg-background">
+                    {dateArchive === false ? (
+                      <>
+                        <h1 className="text-center text-xl font-bold">
+                          {calculateDaysLeft(dateItem.val.date)}
+                        </h1>
+                        <h2 className="text-center text-sm font-bold">Days</h2>
+                      </>
+                    ) : (
+                      <>
+                        <h1 className="text-center text-xl font-bold">
+                          {calculateDaysLeft(dateItem.val.date) * -1}
+                        </h1>
+                        <h2 className="text-center text-sm font-bold">
+                          Days Ago
+                        </h2>
+                      </>
+                    )}
+                  </div>
+                  <h1 className="m-1 w-full rounded-md bg-text px-2 text-center text-[10px]">
                     {dateItem.val.date}
                     <br />
                     {dateItem.val.time}
                   </h1>
-                  <h1 className="font-bold">{dateItem.val.title}</h1>
+                </section>
+                {/* Date information section */}
+                <div className="ml-[10px] w-[190px]">
+                  <h1 className="w-full rounded-md bg-text px-2 font-bold">
+                    {dateItem.val.title}
+                  </h1>
                   {dateItem.val.items.map((item) => (
                     <div className="justify-left flex" key={item.id}>
-                      <h1>-{item.title}</h1>
+                      <h1>- {item.title}</h1>
                     </div>
                   ))}
                 </div>
               </div>
-              <div className="flex-col text-center">
-                {dateArchive ? (
-                  <button
-                    className="ml-top mt-[15px] rounded-full bg-background p-[5px] text-xs"
-                    onClick={() => deleteArchiveItem(dateItem.key)}
-                  >
-                    Delete
-                  </button>
-                ) : (
-                  <EditDateModal dateKey={dateItem.key} />
-                )}
-              </div>
+              <section className="ml-2 flex h-[130px] w-[60px] flex-col justify-between">
+                <div className="flex-col text-center">
+                  {dateArchive ? (
+                    <button
+                      className="ml-1 rounded-md bg-background p-1 text-xs"
+                      onClick={() => deleteArchiveItem(dateItem.key)}
+                    >
+                      Delete
+                    </button>
+                  ) : (
+                    <EditDateModal dateKey={dateItem.key} />
+                  )}
+                </div>
+                <div className="translate-x-2 translate-y-2">
+                  <CreateButton2
+                    handleClick={() =>
+                      document.getElementById("composer").showModal()
+                    }
+                  />
+                </div>
+                <dialog id="composer" className="modal">
+                  <div className="modal-box bg-background">
+                    <form method="dialog">
+                      <button className="btn btn-circle btn-ghost btn-sm absolute right-2 top-2">
+                        ✕
+                      </button>
+                    </form>
+                    <MemoryComposer postContent={null} />
+                  </div>
+                </dialog>
+              </section>
             </div>
           ))}
         </div>

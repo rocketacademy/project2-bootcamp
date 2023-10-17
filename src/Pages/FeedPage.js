@@ -9,7 +9,7 @@ import { FilterButtonHolder } from "../Components/Feed/FilterButtonHolder.js";
 
 //-----------Media-----------//
 import memoriesimage from "../Images/LogosIcons/word-icon-memories.png";
-import CreateEvent from "../Components/Feed/CreateEvent";
+import CreateButton from "../Components/Feed/CreateButton";
 import SignInReminder from "../Components/Helpers/SignInReminder";
 import ContextHelper from "../Components/Helpers/ContextHelper";
 
@@ -24,7 +24,7 @@ export default function FeedPage() {
       <NavBar src={memoriesimage} />
       {isLoggedIn && (
         <nav className="fixed bottom-5 z-10 flex h-12 scale-90 flex-row items-center justify-center rounded-lg bg-white shadow-lg sm:translate-x-0 sm:scale-100">
-          <CreateEvent
+          <CreateButton
             handleClick={() => document.getElementById("composer").showModal()}
           />
           <dialog id="composer" className="modal">

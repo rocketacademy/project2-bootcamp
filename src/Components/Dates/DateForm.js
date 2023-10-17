@@ -10,6 +10,8 @@ import ContextHelper from "../Helpers/ContextHelper";
 
 //-----------Media-----------//
 import post02 from "../../Images/LogosIcons/post02.png";
+import CreateButton from "../Feed/CreateButton";
+import Button from "../../Details/Button";
 
 //Database key for date-list
 const REALTIME_DATABASE_KEY_DATE = "date-list";
@@ -28,6 +30,9 @@ export default function DateForm() {
   //create input to add more items with + button...
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (e.target.value === "") {
+      return;
+    }
 
     setItems((currentItem) => {
       return [
@@ -75,31 +80,28 @@ export default function DateForm() {
 
   return (
     <div className=" fixed bottom-[20px] right-[20px] flex-row ">
-      <button
-        className=" w-[10em]"
-        onClick={() => {
+      <CreateButton
+        src={post02}
+        handleClick={() => {
           document.getElementById("date-form").showModal();
         }}
-      >
-        <img src={post02} alt="POST" />
-      </button>
-
+      />
       <dialog id="date-form" className="modal">
-        <div className="modal-box flex flex-col items-center rounded-2xl bg-text">
+        <div className="modal-box flex flex-col items-center rounded-2xl bg-background">
           <form
             method="dialog"
-            className="flex  w-96 w-full flex-col justify-center justify-items-center p-[20px] text-accent"
+            className="flex w-96 flex-col items-center justify-center p-[20px] text-accent"
           >
             <button className="btn btn-circle btn-ghost btn-sm absolute right-5 top-5 ">
               ✕
             </button>
             {title === "" ? (
-              <label className="mb-[5px] text-red-600">*Date :</label>
+              <label className="mb-[5px] text-red-600">Event: (Fill)</label>
             ) : (
-              <label className="mb-[5px]">Date :</label>
+              <label className="mb-[5px]">Event:</label>
             )}
             <input
-              className="mb-[15px] mr-[15px] w-[15em] rounded-md bg-background  px-2"
+              className="input mb-[15px] mr-[15px] w-72 bg-white"
               type="text"
               name="title"
               value={title}
@@ -109,13 +111,13 @@ export default function DateForm() {
               }}
             />
             {items.length === 0 ? (
-              <label className="mb-[5px] text-red-600">*Things needed :</label>
+              <label className="mb-[5px] text-red-600">Checklist: (Fill)</label>
             ) : (
-              <label className="mb-[5px]">Things needed :</label>
+              <label className="mb-[5px]">Checklist:</label>
             )}
             <div className="input-button">
               <input
-                className="mb-[15px] mr-[15px] w-[15em] rounded-md bg-background px-2"
+                className="input mb-[15px] mr-[15px] w-64 rounded-md bg-white px-2"
                 type="text"
                 name="newItem"
                 value={newItem}
@@ -125,7 +127,7 @@ export default function DateForm() {
                 }}
               />
               <button
-                className="rounded-full bg-background px-[7px] font-black"
+                className="rounded-full bg-window p-3 font-black leading-[12px] shadow-lg hover:translate-y-[-2px] hover:bg-text"
                 onClick={handleSubmit}
               >
                 +
@@ -136,10 +138,15 @@ export default function DateForm() {
                 return (
                   <li
                     key={items.id}
-                    className="mb-[15px] flex justify-between  rounded-md bg-background px-2 py-1"
+                    className="mb-[5px] flex w-72 justify-between rounded-md bg-window px-2 text-sm hover:translate-y-[-2px] hover:bg-text"
                   >
                     <label className="mr-[15px]">{items.title}</label>
-                    <button onClick={() => deleteItem(items.id)}>Delete</button>
+                    <button
+                      onClick={() => deleteItem(items.id)}
+                      className="text-sm hover:font-semibold"
+                    >
+                      Delete
+                    </button>
                   </li>
                 );
               })}
@@ -148,7 +155,7 @@ export default function DateForm() {
               <label className="mr-[5px]">Date for date :</label>
               <input
                 type="date"
-                className="mb-2 w-[10em] rounded-md border-[1px] bg-background px-2"
+                className="input mb-2 w-[10em] rounded-md border-[1px] bg-white"
                 id="date"
                 value={date}
                 onChange={(e) => {
@@ -160,7 +167,7 @@ export default function DateForm() {
               <label className="mr-[5px]">Time :</label>
               <input
                 type="time"
-                className="mb-2 w-[10em] rounded-md border-[1px] bg-background px-2"
+                className="input mb-2 w-[10em] bg-white"
                 id="time"
                 value={time}
                 onChange={(e) => {
@@ -168,13 +175,11 @@ export default function DateForm() {
                 }}
               />
             </div>
-            <button
-              className="submit-btn my-[20px] rounded-full bg-background px-[15px] disabled:bg-neutral-500 disabled:text-background"
+            <Button
+              label="Submit"
+              handleClick={writeData}
               disabled={items.length === 0}
-              onClick={writeData}
-            >
-              Submit
-            </button>
+            />
           </form>
         </div>
       </dialog>

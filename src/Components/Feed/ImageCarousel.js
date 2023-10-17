@@ -20,11 +20,11 @@ export function ImageCarousel(props) {
       }
     }
   };
-  // Return nothing if no images
+  // Return null if no images added to image carousel
   if (props.urlArray.length === 0) {
     return null;
   } else if (props.urlArray.length === 1) {
-    // return a single image if alone
+    // Return a single image if one image added to image carousel
     return (
       <img
         src={props.urlArray[0]}
@@ -33,10 +33,9 @@ export function ImageCarousel(props) {
       />
     );
   } else {
-    // Return multi image array
+    // Return multi image array with multiple images and side toggles
     return (
       <div>
-        {console.log("Image Carousel", props.urlArray[0])}
         <div className="carousel relative m-1 flex max-h-52 w-full items-center justify-center rounded-lg bg-background">
           <p className="absolute left-2 top-2 rounded bg-black bg-opacity-50 px-2 py-1 text-xs text-white">
             {currentImageIndex + 1} of {props.urlArray.length}

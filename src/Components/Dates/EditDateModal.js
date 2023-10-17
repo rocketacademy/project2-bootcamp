@@ -16,6 +16,7 @@ import { database } from "../../firebase/firebase";
 
 //-----------Components-----------//
 import ContextHelper from "../Helpers/ContextHelper";
+import Button from "../../Details/Button";
 
 //Database key for date-list
 const REALTIME_DATABASE_KEY_DATE = "date-list";
@@ -58,7 +59,7 @@ export default function EditDateModal({ dateKey }) {
       setTime(data[dateKey].time);
       setId(data[dateKey].id);
     });
-  }, [REALTIME_DATABASE_KEY_PAIRKEY]);
+  }, [REALTIME_DATABASE_KEY_PAIRKEY, dateKey]);
 
   //create a function to store the data from database to other states
   const listDate = () => {
@@ -142,7 +143,7 @@ export default function EditDateModal({ dateKey }) {
   };
 
   return (
-    <div className=" rounded-full bg-background p-[5px] px-[10px] text-xs">
+    <div className=" rounded-md bg-background p-1 px-2 text-xs">
       <button
         onClick={() => {
           listDate(dateKey);
@@ -151,8 +152,11 @@ export default function EditDateModal({ dateKey }) {
         Edit
       </button>
       <dialog id={`edit-date-form-${dateKey}`} className="modal">
-        <div className="modal-box flex flex-col items-center rounded-2xl bg-text">
-          <form method="dialog" className="flex flex-col p-[20px] text-accent">
+        <div className="modal-box flex flex-col items-center rounded-2xl bg-background">
+          <form
+            method="dialog"
+            className="flex w-96 flex-col items-center justify-center p-[20px] text-accent"
+          >
             <button
               className="btn btn-circle btn-ghost btn-sm absolute right-5 top-5 "
               onClick={() => setShowModal(false)}
@@ -160,12 +164,12 @@ export default function EditDateModal({ dateKey }) {
               ✕
             </button>
             {title === "" ? (
-              <label className="mb-[5px] text-red-600">*Date :</label>
+              <label className="mb-[5px] text-red-600">Event: (Fill)</label>
             ) : (
-              <label className="mb-[5px]">Date :</label>
+              <label className="mb-[5px]">Event:</label>
             )}
             <input
-              className="mb-[15px] mr-[15px] w-[15em] rounded-md bg-background  px-2"
+              className="input mb-[15px] w-72 bg-white"
               type="text"
               name="title"
               value={title}
@@ -175,13 +179,13 @@ export default function EditDateModal({ dateKey }) {
               }}
             />
             {items.length === 0 ? (
-              <label className="mb-[5px] text-red-600">*Things needed :</label>
+              <label className="mb-[5px] text-red-600">Checklist: (Fill)</label>
             ) : (
-              <label className="mb-[5px]">Things needed :</label>
+              <label className="mb-[5px]">Checklist:</label>
             )}
             <div className="input-button">
               <input
-                className="mb-[15px] mr-[15px] w-[15em] rounded-md bg-background px-2"
+                className="input mb-[15px] mr-[15px] w-64 rounded-md bg-white px-2"
                 type="text"
                 name="newItem"
                 value={newItem}
@@ -191,7 +195,7 @@ export default function EditDateModal({ dateKey }) {
                 }}
               />
               <button
-                className="rounded-full bg-background px-[7px] font-black"
+                className="rounded-full bg-window p-3 font-black leading-[10px] shadow-lg hover:translate-y-[-2px] hover:bg-text"
                 onClick={handleSubmit}
               >
                 +
@@ -202,10 +206,15 @@ export default function EditDateModal({ dateKey }) {
                 return (
                   <li
                     key={items.id}
-                    className="mb-[15px] flex justify-between  rounded-md bg-background px-2 py-1"
+                    className="mb-[5px] flex w-72 justify-between rounded-md bg-window px-2 text-sm hover:translate-y-[-2px] hover:bg-text"
                   >
                     <label className="mr-[15px]">{items.title}</label>
-                    <button onClick={() => deleteItem(items.id)}>Delete</button>
+                    <button
+                      onClick={() => deleteItem(items.id)}
+                      className="text-sm hover:font-semibold"
+                    >
+                      Delete
+                    </button>
                   </li>
                 );
               })}
@@ -214,7 +223,7 @@ export default function EditDateModal({ dateKey }) {
               <label className="mr-[5px]">Date for date :</label>
               <input
                 type="date"
-                className="mb-2 w-[10em] rounded-md border-[1px] bg-background px-2"
+                className="input mb-2 w-[10em] border-[1px] bg-white"
                 id="date"
                 value={date}
                 onChange={(e) => {
@@ -226,7 +235,7 @@ export default function EditDateModal({ dateKey }) {
               <label className="mr-[5px]">Time :</label>
               <input
                 type="time"
-                className="mb-2 w-[10em] rounded-md border-[1px] bg-background px-2"
+                className="input mb-2 w-[10em] border-[1px] bg-white"
                 id="time"
                 value={time}
                 onChange={(e) => {
@@ -234,19 +243,15 @@ export default function EditDateModal({ dateKey }) {
                 }}
               />
             </div>
-            <button
-              className="submit-btn my-[20px] rounded-full bg-background px-[15px] disabled:bg-neutral-500 disabled:text-background"
+            <Button
+              label="Submit"
+              handleClick={() => updateData(dateKey)}
               disabled={items.length === 0}
-              onClick={() => updateData(dateKey)}
-            >
-              Submit
-            </button>
-            <button
-              className=" mt-[15px] rounded-full bg-background p-[5px]"
-              onClick={() => deleteDateItem(dateKey)}
-            >
-              Delete
-            </button>
+            />
+            <Button
+              label="Delete"
+              handleClick={() => deleteDateItem(dateKey)}
+            />
           </form>
         </div>
       </dialog>
