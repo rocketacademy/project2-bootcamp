@@ -61,6 +61,7 @@ export default function SettingsPage() {
         navigate("/onboarding");
         context.setPairKey("");
         context.setEmail("");
+        context.setDisplayName("");
       })
       .catch((error) => {
         console.log("Error Signing Out");
