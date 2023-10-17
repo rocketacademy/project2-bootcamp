@@ -46,9 +46,9 @@ export function MultiFileComposer(props) {
 
   const selectChange = (e) => {
     const value = e.target.value;
-    // Set the value of the 'tags' input based on the selected option
     setFormInfo((prevState) => {
-      return { ...prevState, tags: value };
+      const updatedTags = prevState.tags ? `${prevState.tags} ${value}` : value;
+      return { ...prevState, tags: updatedTags };
     });
   };
 
@@ -67,7 +67,6 @@ export function MultiFileComposer(props) {
 
   const writeData = () => {
     const fileRefArray = [];
-    console.log("Writing data");
     sList(sRef(storage, `rooms/${DUMMY_PAIRID}/feedImages/`), null)
       .then((result) => {
         if (formInfo.fileArray.length === 0) {
@@ -133,12 +132,11 @@ export function MultiFileComposer(props) {
           date: null,
           tags: "",
         });
-        // navigate("../memories");
+        // navigate("../memories"); Not needed unless used in other pages
       });
   };
 
   const handleDelete = (e) => {
-    console.log(props.postContent);
     const postRef = ref(
       database,
       `rooms/${DUMMY_PAIRID}/feed/${props.postContent.key}`,
@@ -171,21 +169,21 @@ export function MultiFileComposer(props) {
         <select
           className="select select-bordered mb-1 w-full max-w-xs bg-white"
           onChange={(e) => selectChange(e)}
-          value={formInfo.tags}
         >
           <option disabled selected>
-            Milestone or Date?
+            Add a main tag
           </option>
           <option>milestone</option>
-          <option>date</option>
+          <option>dates</option>
+          <option>bucket-list</option>
         </select>
         <label className="text-sm">Add tags separated by spaces:</label>
         <input
           type="text"
           id="tags"
-          placeholder="Enter tags separated by spaces:"
+          placeholder="e.g. date travel bucket-list"
           onChange={(e) => {
-            textChange(e.target.value.toLowerCase());
+            textChange(e);
           }}
           value={formInfo.tags}
           className="input mb-2 w-[250px] bg-white text-sm"

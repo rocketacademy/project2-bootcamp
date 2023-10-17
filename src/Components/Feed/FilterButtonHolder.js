@@ -25,7 +25,6 @@ export function FilterButtonHolder(props) {
         setTagFilter={props.setTagFilter}
         tagFilter={props.tagFilter}
       />
-      {/* <FilterButton filterTag = 'bucketlist' setTagFilter = {props.setTagFilter} tagFilter = {props.tagFilter} /> */}
       <input
         type="text"
         id="enterFilter"

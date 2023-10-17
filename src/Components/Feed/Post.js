@@ -1,3 +1,5 @@
+// Outstanding bugs - Comments not working properly -> All comments being pushed to a single key
+
 //-----------React-----------//
 import { useState, useEffect } from "react";
 
@@ -63,7 +65,6 @@ export function Post(props) {
       className=" w-[300px] rounded-xl bg-window p-3 shadow-xl"
       key={props.postContent.key}
     >
-      {console.log(props.postContent.val.files)}
       {props.postContent.val.files ? (
         <ImageCarousel
           urlArray={
