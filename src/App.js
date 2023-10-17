@@ -16,6 +16,7 @@ import FeedPage from "./Pages/FeedPage";
 import DatesPage from "./Pages/DatesPage";
 import ErrorPage from "./Pages/ErrorPage";
 import BucketForm from "./Components/BucketForm";
+import Spare from "./Pages/Spare";
 
 //-----------Firebase-----------//
 import { auth, database } from "./firebase/firebase";
@@ -64,6 +65,10 @@ const router = createBrowserRouter([
     element: <DatesPage />,
   },
   {
+    path: "/spare",
+    element: <Spare />,
+  },
+  {
     path: "/bucket-list",
     element: (
       <BucketList>
@@ -77,6 +82,7 @@ export const UserContext = React.createContext(null);
 
 function App() {
   const [pairKey, setPairKey] = useState("");
+  const [displayName, setDisplayName] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isPairedUp, setIsPairedUp] = useState(false);
   // const [isDemo, setIsDemo] = useState(false);
@@ -85,11 +91,13 @@ function App() {
 
   const context = {
     email,
+    displayName,
     pairKey,
     isLoggedIn,
     isPairedUp,
     // isDemo,
     setEmail,
+    setDisplayName,
     setPairKey,
     setIsLoggedIn,
     setIsPairedUp,
@@ -129,7 +137,8 @@ function App() {
         const userData = snapshot.val();
         const userKey = Object.keys(userData)[0];
         const pairKey = userData[userKey].pairKey;
-        console.log(`Pair Key: ${pairKey}`);
+        const displayName = userData[userKey].displayName;
+        setDisplayName(displayName);
         setPairKey(pairKey);
       } else {
         console.log("User not found");
