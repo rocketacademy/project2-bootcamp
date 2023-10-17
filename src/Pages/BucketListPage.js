@@ -106,19 +106,37 @@ export default function BucketListPage() {
             >
               <button
                 className="ml-auto"
-                onClick={() => deleteBucketItem(bucketItem.key)}
+                onClick={() =>
+                  document
+                    .getElementById(`delete-bucket-modal-${bucketItem.key}`)
+                    .showModal()
+                }
               >
                 Delete
               </button>
+              <dialog
+                id={`delete-bucket-modal-${bucketItem.key}`}
+                className="modal "
+              >
+                <div className="modal-box flex-col justify-center bg-text p-[20px] text-center">
+                  <form method="dialog">
+                    <button className="btn btn-circle btn-ghost btn-sm absolute right-2 top-2">
+                      ✕
+                    </button>
+                    <h3 className="text-lg font-bold">
+                      Are you sure you want to delete this list?
+                    </h3>
+                    <button
+                      className="btn m-[20px] bg-red-700 text-white hover:bg-red-900"
+                      onClick={() => deleteBucketItem(bucketItem.key)}
+                    >
+                      Confirm
+                    </button>
+                  </form>
+                </div>
+              </dialog>
               <h1 className="text-[18px] font-bold">{bucketItem.val.title}</h1>
               {bucketItem.val.items.map((item) => (
-                // <div
-                //   className="justify-left flex py-[5px]"
-                //   key={item.id}
-                //   onClick={() => toggleLineOnText(bucketItem.key, item.id)}
-                // >
-                //   {item.title}
-                // </div>
                 <h2
                   key={item.id}
                   style={{

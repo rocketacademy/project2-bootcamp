@@ -140,9 +140,9 @@ export default function BucketForm() {
                 );
               })}
             </ul>
-            <div className="complete-date mt-[15px]">
+            <div className="complete-date mt-[15px] ">
               <input
-                className="checkbox-for-date mr-[5px]"
+                className="checkbox-for-date mr-[5px] accent-accent"
                 type="checkbox"
                 checked={isDateSelected}
                 onChange={() => setIsDateSelected(!isDateSelected)}
