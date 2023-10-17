@@ -16,12 +16,12 @@ export function FilterButtonHolder(props) {
     <div className="mx-1 flex justify-center text-center">
       {/* Default Filter Buttons */}
       <FilterButton
-        filterTag="Dates"
+        filterTag="dates"
         setTagFilter={props.setTagFilter}
         tagFilter={props.tagFilter}
       />
       <FilterButton
-        filterTag="Milestones"
+        filterTag="milestones"
         setTagFilter={props.setTagFilter}
         tagFilter={props.tagFilter}
       />
@@ -37,7 +37,7 @@ export function FilterButtonHolder(props) {
         value={filterText}
       />
       <FilterButton
-        filterTag="Clear"
+        filterTag="clear"
         setTagFilter={props.setTagFilter}
         tagFilter={props.tagFilter}
         setFilterText={setFilterText}

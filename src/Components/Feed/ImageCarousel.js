@@ -37,14 +37,14 @@ export function ImageCarousel(props) {
     return (
       <div>
         {console.log("Image Carousel", props.urlArray[0])}
-        <div className="carousel relative m-1 flex w-full items-center justify-center rounded-lg bg-background">
+        <div className="carousel relative m-1 flex max-h-52 w-full items-center justify-center rounded-lg bg-background">
           <p className="absolute left-2 top-2 rounded bg-black bg-opacity-50 px-2 py-1 text-xs text-white">
             {currentImageIndex + 1} of {props.urlArray.length}
           </p>
           <img
             src={props.urlArray[currentImageIndex]}
             alt="display2"
-            className=""
+            className="max-h-52 object-contain"
           />
 
           <div className="absolute left-3 right-3 top-1/2 flex -translate-y-1/2 flex-row justify-between">

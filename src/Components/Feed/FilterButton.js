@@ -1,3 +1,4 @@
+//-----------React-----------//
 import { useState } from "react";
 
 export function FilterButton(props) {
@@ -5,7 +6,7 @@ export function FilterButton(props) {
 
   const handleFilterButton = (e) => {
     const filterName = e.target.id;
-    if (filterName === "Clear") {
+    if (filterName === "clear") {
       props.setTagFilter(new Set());
       props.setFilterText("");
       props.setCustomFilter("");

@@ -44,6 +44,14 @@ export function MultiFileComposer(props) {
     });
   };
 
+  const selectChange = (e) => {
+    const value = e.target.value;
+    // Set the value of the 'tags' input based on the selected option
+    setFormInfo((prevState) => {
+      return { ...prevState, tags: value };
+    });
+  };
+
   const imgChange = (e) => {
     setFormInfo((prevState) => {
       return { ...prevState, fileArray: Object.values(e.target.files) };
@@ -144,11 +152,11 @@ export function MultiFileComposer(props) {
 
   return (
     <div className="flex flex-col items-center justify-center">
-      <h1 className="mb-1">
-        {props.postContent ? "Edit Memory!" : "New Memory!"}
-      </h1>
       <ImageCarousel urlArray={filePreviewArray ? filePreviewArray : []} />
       <form className=" flex flex-col items-center justify-center">
+        <label className="text-sm">
+          {props.postContent ? "Edit Memory:" : "New Memory: "}
+        </label>
         <input
           type="text"
           id="postMessage"
@@ -159,15 +167,28 @@ export function MultiFileComposer(props) {
           value={formInfo.postMessage}
           className="input my-1 w-[250px] bg-white text-sm"
         />
+        <label className="text-sm">Main Tag:</label>
+        <select
+          className="select select-bordered mb-1 w-full max-w-xs bg-white"
+          onChange={(e) => selectChange(e)}
+          value={formInfo.tags}
+        >
+          <option disabled selected>
+            Milestone or Date?
+          </option>
+          <option>milestone</option>
+          <option>date</option>
+        </select>
+        <label className="text-sm">Add tags separated by spaces:</label>
         <input
           type="text"
           id="tags"
           placeholder="Enter tags separated by spaces:"
           onChange={(e) => {
-            textChange(e);
+            textChange(e.target.value.toLowerCase());
           }}
           value={formInfo.tags}
-          className="input my-1 w-[250px] bg-white text-sm"
+          className="input mb-2 w-[250px] bg-white text-sm"
         />
         <label
           htmlFor="upload-image"
