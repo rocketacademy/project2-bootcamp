@@ -101,25 +101,25 @@ const NextDate = () => {
   return (
     <NavLink
       to="/dates"
-      className="j mt-[90px] flex w-3/4 min-w-[20em] max-w-[40em] flex-row items-center rounded-xl bg-window bg-opacity-80 p-2 shadow-xl hover:translate-y-[-2px] hover:scale-[1.05] hover:bg-opacity-95"
+      className="j mt-[90px] flex w-3/4 min-w-[20em] max-w-[30em] flex-row items-center rounded-xl bg-window bg-opacity-80 p-2 shadow-xl hover:translate-y-[-2px] hover:scale-[1.05] hover:bg-opacity-95"
     >
       {date && (
         <div key={date.key} className="w-full ">
           <div className="flex flex-row justify-center">
-            <div className="mx-[15px] flex h-[70px] w-20 flex-col items-center justify-center rounded-xl bg-background px-[20px]">
+            <div className="m-[10px] mr-[15px] flex h-[80px] w-20 flex-col items-center justify-center rounded-xl bg-background px-[20px]">
               <h1 className="text-center text-xl font-bold ">
                 {calculateDaysLeft(date.val.startTime)}
               </h1>
               <h2 className="text-center text-sm font-bold">Days</h2>
             </div>
-
-            <h1 className="item-center mx-[15px] h-[70px] w-20 rounded-md bg-text px-2 text-center text-[10px]">
-              {formattedDate(date.val.startTime)}
-              <hr className="my-[2px] rounded-full border-[1px] border-accent" />
-              {formattedDate(date.val.endTime)}
-            </h1>
-
-            <div className="mx-[15px] w-[190px]">
+            <div className="item-center m-[10px] mx-[15px] h-[80px] w-20 rounded-md bg-text px-2">
+              <h1 className="text-center text-[13px]">
+                {formattedDate(date.val.startTime)}
+                <hr className="my-[2px] rounded-full border-[1px] border-accent" />
+                {formattedDate(date.val.endTime)}
+              </h1>
+            </div>
+            <div className="ml-[15px] w-[190px]">
               <h1 className="w-full rounded-md bg-text px-2 text-center font-bold">
                 {date.val.title}
               </h1>
