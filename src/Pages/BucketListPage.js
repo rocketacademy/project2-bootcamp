@@ -135,7 +135,7 @@ export default function BucketListPage() {
                   </form>
                 </div>
               </dialog>
-              <h1 className="mt-[5px] rounded-md bg-text pl-[5px] text-[18px] font-bold">
+              <h1 className="mt-[5px] rounded-md bg-text pl-[5px] text-center text-[18px] font-bold">
                 {bucketItem.val.title}
               </h1>
               {bucketItem.val.items.map((item) => (

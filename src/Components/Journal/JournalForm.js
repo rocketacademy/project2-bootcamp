@@ -9,6 +9,7 @@ import { database } from "../../firebase/firebase";
 import ContextHelper from "../Helpers/ContextHelper";
 import EmotionComponent from "./EmotionComponent";
 import CreateButton from "../Feed/CreateButton";
+import Button from "../../Details/Button";
 
 //-----------Images-----------//
 import post02 from "../../Images/LogosIcons/post02.png";
@@ -68,17 +69,17 @@ export default function JournalForm() {
         }}
       />
       <dialog id="journal-form" className="modal">
-        <div className="modal-box flex flex-col items-center rounded-2xl bg-window">
+        <div className="modal-box flex flex-col items-center rounded-2xl bg-background">
           <form
             method="dialog"
-            className="flex flex-col items-center justify-center p-[20px] text-center text-accent"
+            className="flex w-96 flex-col items-center justify-center p-[20px] text-center text-accent"
           >
             <button className="btn btn-circle btn-ghost btn-sm absolute right-5 top-5 ">
               ✕
             </button>
             <label className="mb-[5px]">Title :</label>
             <input
-              className="mb-[15px] mr-[15px] w-[15em] justify-center rounded-md  bg-background px-2"
+              className="input mb-[15px] w-[15em] justify-center rounded-md  bg-white px-2"
               type="text"
               name="title"
               value={title}
@@ -91,7 +92,7 @@ export default function JournalForm() {
               <label className="mr-[5px]">Date :</label>
               <input
                 type="date"
-                className="mb-[15px] w-[10em] rounded-md border-[1px] bg-background px-2"
+                className="input mb-[15px] w-[10em] rounded-md border-[1px] bg-white px-2"
                 id="date"
                 value={date}
                 onChange={(e) => {
@@ -102,7 +103,7 @@ export default function JournalForm() {
             <label className="mb-[5px]">Entry :</label>
             <textarea
               maxLength="400"
-              className="textarea-bordered mb-[5px] w-80 w-[15em] rounded-md bg-background px-2"
+              className="input textarea-bordered mb-[5px] w-[15em] rounded-md bg-white px-2"
               name="texts"
               value={texts}
               placeholder="thoughts"
@@ -113,7 +114,7 @@ export default function JournalForm() {
             <div className="flex flex-col">
               <label className="mb-[5px]">Signing Off :</label>
               <input
-                className="mb-[15px] mr-[15px] w-[15em] rounded-md bg-background  px-2"
+                className="input mb-[15px] w-[15em] rounded-md bg-white  px-2"
                 type="text"
                 name="sign"
                 value={sign}
@@ -123,16 +124,11 @@ export default function JournalForm() {
                 }}
               />
             </div>
-            <div className="flex flex-row">
+            <div className="mb-[10px] flex flex-row">
               <label>Feeling?</label>
               <EmotionComponent onSelect={handleEmotionSelect} />
             </div>
-            <button
-              className="submit-btn my-[20px] w-20 rounded-full bg-background px-[15px] "
-              onClick={writeData}
-            >
-              Submit
-            </button>
+            <Button label="Submit" handleClick={writeData} />
           </form>
         </div>
       </dialog>
