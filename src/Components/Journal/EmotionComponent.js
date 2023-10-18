@@ -21,13 +21,13 @@ export default function JournalForm({ onSelect }) {
   };
 
   return (
-    <div className="dropdown-hover dropdown bottom-[10px]">
+    <div className="dropdown dropdown-hover bottom-[10px]">
       <label tabIndex={0} className="btn border-0 ">
         <img src={selectedEmo} alt="selected-emotion" className="w-[3em]" />
       </label>
       <ul
         tabIndex={0}
-        className="menu dropdown-content rounded-box left-[-120px] top-[40px] z-[1] flex w-[250px] flex-row justify-center bg-background shadow"
+        className="menu dropdown-content rounded-box left-[-120px] top-[40px] z-[1] flex w-[250px] flex-row justify-center bg-white shadow"
       >
         {Emotions.map((emotion, index) => (
           <li key={index} onClick={() => handleEmotionSelect(emotion)}>
