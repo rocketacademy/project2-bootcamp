@@ -63,7 +63,7 @@ export default function JournalListPage() {
               className="m-[30px] flex w-[350px] flex-col rounded-xl bg-window p-[20px] shadow-lg hover:translate-y-[-2px]"
             >
               <button
-                className=" z-10 ml-auto"
+                className=" z-10 ml-auto rounded-md bg-background px-[5px]"
                 onClick={() =>
                   document
                     .getElementById(`delete-bucket-modal-${journalItem.key}`)
@@ -76,13 +76,13 @@ export default function JournalListPage() {
                 id={`delete-bucket-modal-${journalItem.key}`}
                 className="modal "
               >
-                <div className="modal-box flex-col justify-center bg-text p-[20px] text-center">
+                <div className="modal-box flex-col justify-center bg-background p-[20px] text-center">
                   <form method="dialog">
                     <button className="btn btn-circle btn-ghost btn-sm absolute right-2 top-2">
                       ✕
                     </button>
                     <h3 className="text-lg font-bold">
-                      Are you sure you want to delete this list?
+                      Are you sure you want to delete this journal post?
                     </h3>
                     <button
                       className="btn m-[20px] bg-red-700 text-white hover:bg-red-900"

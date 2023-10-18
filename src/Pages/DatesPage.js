@@ -250,12 +250,41 @@ export default function DatesPage() {
               <section className="ml-2 flex h-[140px] w-[60px] flex-col justify-between">
                 <div className="flex-col text-center">
                   {dateArchive ? (
-                    <button
-                      className="ml-1 rounded-md bg-background p-1 text-xs"
-                      onClick={() => deleteArchiveItem(dateItem.key)}
-                    >
-                      Delete
-                    </button>
+                    <>
+                      <button
+                        className=" z-10 ml-auto rounded-md bg-background px-[5px]"
+                        onClick={() =>
+                          document
+                            .getElementById(
+                              `delete-archive-modal-${dateItem.key}`,
+                            )
+                            .showModal()
+                        }
+                      >
+                        Delete
+                      </button>
+                      <dialog
+                        id={`delete-archive-modal-${dateItem.key}`}
+                        className="modal "
+                      >
+                        <div className="modal-box flex-col justify-center bg-background p-[20px] text-center">
+                          <form method="dialog">
+                            <button className="btn btn-circle btn-ghost btn-sm absolute right-2 top-2">
+                              ✕
+                            </button>
+                            <h3 className="text-lg font-bold">
+                              Are you sure you want to delete this archive date?
+                            </h3>
+                            <button
+                              className="btn m-[20px] bg-red-700 text-white hover:bg-red-900"
+                              onClick={() => deleteArchiveItem(dateItem.key)}
+                            >
+                              Confirm
+                            </button>
+                          </form>
+                        </div>
+                      </dialog>
+                    </>
                   ) : (
                     <EditDateModal dateKey={dateItem.key} />
                   )}

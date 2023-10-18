@@ -32,6 +32,7 @@ import timeCapsule from "../Images/LogosIcons/word-icon-timecapsule.png";
 import journal from "../Images/LogosIcons/word-icon-journal.png";
 
 export default function HomePage() {
+  //states
   const [profilePicture, setProfilePicture] = useState(null);
   const [backgroundImage, setBackgroundImage] = useState(null);
   const pairKey = ContextHelper("pairKey");
