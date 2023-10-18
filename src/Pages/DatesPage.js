@@ -31,21 +31,13 @@ const REALTIME_DATABASE_KEY_DATE = "date-list";
 const REALTIME_DATABASE_KEY_ARCHIVE = "date-archive";
 
 export default function DatesPage() {
-  //context helper to send to database
+  //context helper to pull from database
   const REALTIME_DATABASE_KEY_PAIRKEY = ContextHelper("pairKey");
 
   //create state to view date list
   const [dateList, setDateList] = useState([]);
   const [archiveList, setArchiveList] = useState([]);
   const [dateArchive, setDateArchive] = useState(false);
-
-  const [eventDetails, setEventDetails] = useState({
-    startTime: "",
-    endTime: "",
-    summary: "",
-    description: "",
-    location: "",
-  });
 
   useEffect(() => {
     //to view Date list
@@ -114,6 +106,7 @@ export default function DatesPage() {
     return daysLeft;
   };
 
+  // Format date for presentation :)
   const formattedDate = (dateStr) => {
     const date = new Date(dateStr);
     return date.toLocaleString("en-US", {
@@ -123,6 +116,11 @@ export default function DatesPage() {
       hour: "2-digit",
       minute: "2-digit",
     });
+  };
+
+  // To map date items to be used in cal
+  const mapItemsToString = (items) => {
+    return items.map((item) => `${item.title}, `).join("\n");
   };
 
   useEffect(() => {
@@ -212,7 +210,7 @@ export default function DatesPage() {
               <div className="flex items-start justify-between">
                 {/* Days Section */}
                 <section className="flex w-[80px] flex-col items-center justify-center">
-                  <div className="flex h-[70px] w-full flex-col items-center justify-center rounded-xl bg-background">
+                  <div className="flex h-[90px] w-full flex-col items-center justify-center rounded-xl bg-background">
                     {dateArchive === false ? (
                       <>
                         <h1 className="text-center text-xl font-bold">
@@ -262,17 +260,19 @@ export default function DatesPage() {
                     <EditDateModal dateKey={dateItem.key} />
                   )}
                 </div>
+                {/* Add to calendar */}
                 <div className="translate-x-[17px] translate-y-7">
                   <CalendarButton
                     key={dateItem.key}
                     title={dateItem.val.title}
-                    description={dateItem.val.items}
+                    description={
+                      "Checklist: " + mapItemsToString(dateItem.val.items)
+                    }
                     startTime={dateItem.val.startTime}
                     endTime={dateItem.val.endTime}
-                    location="placeholder"
                   />
                 </div>
-
+                {/* Add to memories */}
                 <div className="translate-x-2 translate-y-2">
                   <CreateButton2
                     handleClick={() =>

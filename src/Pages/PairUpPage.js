@@ -111,10 +111,12 @@ export default function PairUp() {
 
   //Create - Check pairkey for isPairedUp to appear
   const checkPaired = () => {
+    console.log("Is runnign?");
     if (pairKeyCreate !== "") {
-      const roomRef = ref(database, pairKeyCreate);
+      const roomRef = ref(database, `rooms/${pairKeyCreate}`);
       const checkPairedQuery = child(roomRef, "isPairedUp");
       get(checkPairedQuery).then((snapshot) => {
+        // console.log("snapshot", snapshot);
         if (snapshot.exists()) {
           console.log("PAIRED UP - redirect to main");
           navigate("/");
