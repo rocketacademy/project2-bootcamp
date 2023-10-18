@@ -21,6 +21,8 @@ const ContextHelper = (type) => {
     result = context.displayName || "";
   } else if (type === "email") {
     result = context.email || "";
+  } else if (type==='setDisplayName') {
+    result =context.setDisplayName || ''
   }
   return result;
 };

@@ -32,6 +32,8 @@ export default function SettingsPage() {
 
   const isLoggedIn = ContextHelper("isLoggedIn");
   const email = ContextHelper("email");
+  const contextDisplayName = ContextHelper("displayName")
+  const setContextDisplayName = ContextHelper('setDisplayName')
   const pairKey = ContextHelper("pairKey");
   const navigate = useNavigate();
 
@@ -49,6 +51,7 @@ export default function SettingsPage() {
       setProfilePictureURL(val[userKeyArray[0]].profilePicture)
       }) 
   }, []);
+
 
   //Update start date of relationship in room
   
@@ -74,6 +77,7 @@ export default function SettingsPage() {
       return;
     }
     console.log('updating display name')
+    setContextDisplayName(displayName)
     const displayNameRef = ref(database, `userRef/${currentUserKey}/displayName`);
     Promise.all([
     set(displayNameRef, displayName),
@@ -82,6 +86,7 @@ export default function SettingsPage() {
     .then(()=>{
       console.log('setting')
       setDisplayName('')
+
     })
   }
 
@@ -189,7 +194,7 @@ const deletePairKey = () => {
               className=" mb-1 w-[14em] rounded-md border-[1px] border-black px-2"
               id="displayName"
               value={displayName}
-              placeholder=""
+              placeholder={contextDisplayName}
               onChange={(e) => {setDisplayName((e.target.value));}}
             />
             <label>Background Photo:</label>
