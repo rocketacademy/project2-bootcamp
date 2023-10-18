@@ -1,6 +1,6 @@
 //-----------React-----------//
 import { useState, useEffect, useContext } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { UserContext } from "../App.js";
 //-----------Components-----------//
 import Button from "../Details/Button";

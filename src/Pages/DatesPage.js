@@ -168,9 +168,9 @@ export default function DatesPage() {
 
     // Sorts by date
     const sortedList = Array.from(listToDisplay).sort((a, b) => {
-      const daysLeftA = calculateDaysLeft(a.val.date);
-      const daysLeftB = calculateDaysLeft(b.val.date);
-      return daysLeftA - daysLeftB;
+      const daysLeftA = calculateDaysLeft(a.val.startTime);
+      const daysLeftB = calculateDaysLeft(b.val.startTime);
+      return dateArchive ? daysLeftB - daysLeftA : daysLeftA - daysLeftB;
     });
 
     return sortedList;
@@ -210,7 +210,7 @@ export default function DatesPage() {
               <div className="flex items-start justify-between">
                 {/* Days Section */}
                 <section className="flex w-[80px] flex-col items-center justify-center">
-                  <div className="flex h-[90px] w-full flex-col items-center justify-center rounded-xl bg-background">
+                  <div className="flex h-[70px] w-full flex-col items-center justify-center rounded-xl bg-background">
                     {dateArchive === false ? (
                       <>
                         <h1 className="text-center text-xl font-bold">
@@ -273,7 +273,7 @@ export default function DatesPage() {
                   />
                 </div>
                 {/* Add to memories */}
-                <div className="translate-x-2 translate-y-2">
+                <div className="translate-x-4 translate-y-2">
                   <CreateButton2
                     handleClick={() =>
                       document

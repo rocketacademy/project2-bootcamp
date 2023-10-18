@@ -4,7 +4,7 @@ const CreateButton2 = ({ handleClick }) => {
     <div>
       <button
         onClick={handleClick}
-        className="flex w-[55px] items-center justify-center rounded-full px-2 py-1 leading-none hover:bg-slate-500  "
+        className="flex w-[40px] items-center justify-center rounded-full leading-none hover:bg-slate-400  "
       >
         <img src={memories} alt="memories" />
       </button>

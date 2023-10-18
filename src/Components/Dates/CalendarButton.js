@@ -19,7 +19,7 @@ function CalendarButton({ startTime, endTime, title, description }) {
   return (
     <button
       onClick={generateCalendarLink}
-      className="rounded-full bg-text p-[9px] text-lg leading-[18px] hover:bg-slate-400"
+      className="rounded-full p-[9px] text-lg leading-[18px] hover:bg-slate-400"
     >
       🗓️
     </button>
