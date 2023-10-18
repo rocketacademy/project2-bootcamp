@@ -7,12 +7,11 @@ import {
   list as sList,
 } from "firebase/storage";
 import { push, ref} from "firebase/database";
-import { Paperclip, SendHorizontal } from 'lucide-react';
+import { Paperclip, SendHorizontal, Check } from 'lucide-react';
 import questions from './questions.json'
+import ContextHelper from "../Helpers/ContextHelper";
 
 
-const DUMMY_USERID = "dummyuser2"; // to use these as subs
-const DUMMY_PAIRID = "dummypair"; // to use these as subs
 
 export function ChatComposer(props) {
     const [formInfo, setFormInfo] = useState({
@@ -20,6 +19,8 @@ export function ChatComposer(props) {
         chatMessage: "",
         date: null,
     });
+    const userEmail = ContextHelper("email");
+    const pairKey = ContextHelper("pairKey");
 
     const textChange = (e) => {
         const name = e.target.id;
@@ -48,14 +49,14 @@ export function ChatComposer(props) {
     const writeData = (event) => {
         event.preventDefault();
         const fileRefArray = [];
-        sList(sRef(storage, `rooms/${DUMMY_PAIRID}/chatImages/`), null)
+        sList(sRef(storage, `rooms/${pairKey}/chatImages/`), null)
           .then((result) => {
             if (formInfo.fileArray.length === 0) {
               return [];
             } else {
               return Promise.all(
-                formInfo.fileArray.map(async (file, index) => {
-                  fileRefArray.push(sRef(storage, `rooms/${DUMMY_PAIRID}/chatImages/image${result.items.length + index}`))
+                  formInfo.fileArray.map(async (file, index) => {
+                  fileRefArray.push(sRef(storage, `rooms/${pairKey}/chatImages/image${result.items.length + index}`))
                   return uploadBytes(fileRefArray[index], file)
                 })
               )
@@ -63,9 +64,9 @@ export function ChatComposer(props) {
           })
           .then(() => Promise.all(fileRefArray.map((fileRef)=>getDownloadURL(fileRef))))
           .then((urlArray) => {
-            const messageListRef = ref(database, `rooms/${DUMMY_PAIRID}/chat`);
+            const messageListRef = ref(database, `rooms/${pairKey}/chat`);
             push(messageListRef, {
-              user: DUMMY_USERID,
+              user: userEmail,
               message: formInfo.chatMessage,
               date: `${new Date().toLocaleString()}`,
               files: urlArray,
@@ -81,16 +82,29 @@ export function ChatComposer(props) {
           });
       };
 
+      const generateUploadFileText = (fileArray) => {
+        const uploadFileText = ''
+        if (fileArray.length === 1) {
+          return (`Pending upload: ${formInfo.fileArray[0].name}`)
+        } else if (fileArray.length > 1) {
+          return (`Pending upload: ${fileArray.length} files`)
+        }
+      }
+
     return (
         <form onSubmit={writeData} className="bg-window w-full fixed bottom-0 border-black border-t-2">
             <table className='w-full rounded-md'>
                 <tr className=''>
                     <td className='w-5/6  text-center'>
                     <button onClick = {pullQuestion} className = 'bg-text rounded-md border-black border-2 text-accent'>Get random question 🚀</button>
+                    <br />
+                    {console.log(formInfo.fileArray)}
+                    {generateUploadFileText(formInfo.fileArray)}
                     </td>
                     <td className='w-1/6'>
                         <label for='file-input' className = 'flex justify-center'>
                         <Paperclip />
+                        {formInfo.fileArray.length > 0 ? <Check color="#18fb20" /> : null}
                         </label>
                         <input
                             id='file-input'
@@ -102,6 +116,7 @@ export function ChatComposer(props) {
                             style={{ display: "none" }}
                             multiple
                         />
+                        
                     </td>
                 </tr>
                 <tr className='h-2/3'>
