@@ -125,7 +125,6 @@ export default function DatesPage() {
     });
   };
 
-  // check and update if dates are done and send to archive
   useEffect(() => {
     // Check and update if dates are done and send to archive
     dateList.forEach((dateItem) => {

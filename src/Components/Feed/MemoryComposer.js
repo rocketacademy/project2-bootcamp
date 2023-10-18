@@ -1,5 +1,5 @@
 //-----------React-----------//
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 //-----------Firebase-----------//
@@ -68,6 +68,7 @@ export default function MemoryComposer({
     );
   };
 
+  // Format date for final presentation
   const formattedDate = (dateStr) => {
     const date = new Date(dateStr);
     return date.toLocaleString("en-US", {
@@ -129,11 +130,6 @@ export default function MemoryComposer({
       });
   };
 
-  // Not needed as redirect
-  // const closeComposerModal = () => {
-  //   document.getElementById("composer").close();
-  // };
-
   return (
     <div className="flex flex-col items-center justify-center">
       <ImageCarousel urlArray={filePreviewArray ? filePreviewArray : []} />
@@ -176,7 +172,7 @@ export default function MemoryComposer({
         />
         <p>Event End: {formattedDate(formInfo.date)}</p>
         <label
-          htmlFor="upload-image"
+          htmlFor={formInfo.key}
           style={{ cursor: "pointer" }}
           className=" m-1 flex h-[48px] w-[170px] flex-row items-center justify-center
  rounded-lg bg-slate-300 px-2 text-[14px] font-semibold shadow-lg hover:translate-y-[-2px] hover:bg-slate-400"
@@ -190,7 +186,7 @@ export default function MemoryComposer({
         </label>
         <input
           type="file"
-          id="upload-image"
+          id={formInfo.key}
           className="display: none"
           accept="image/*"
           style={{ display: "none" }}
@@ -204,7 +200,6 @@ export default function MemoryComposer({
         label="Create Post!"
         handleClick={() => {
           writeData();
-          // closeComposerModal();
         }}
       />
     </div>

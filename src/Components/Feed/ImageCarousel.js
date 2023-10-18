@@ -1,5 +1,5 @@
 //-----------React-----------//
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 //Props Format: <ImageCarousel urlArray = {filePreviewArray} />
 export function ImageCarousel(props) {
@@ -20,6 +20,8 @@ export function ImageCarousel(props) {
       }
     }
   };
+
+  useEffect(() => {}, [props.urlArray]);
   // Return null if no images added to image carousel
   if (props.urlArray.length === 0) {
     return null;
