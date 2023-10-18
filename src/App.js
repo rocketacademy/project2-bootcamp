@@ -15,7 +15,7 @@ import BucketList from "./Pages/BucketListPage";
 import FeedPage from "./Pages/FeedPage";
 import DatesPage from "./Pages/DatesPage";
 import ErrorPage from "./Pages/ErrorPage";
-import BucketForm from "./Components/BucketForm";
+import JournalPage from "./Pages/JournalPage";
 import Spare from "./Pages/Spare";
 
 //-----------Firebase-----------//
@@ -70,11 +70,11 @@ const router = createBrowserRouter([
   },
   {
     path: "/bucket-list",
-    element: (
-      <BucketList>
-        <BucketForm />
-      </BucketList>
-    ),
+    element: <BucketList />,
+  },
+  {
+    path: "/journal",
+    element: <JournalPage />,
   },
 ]);
 

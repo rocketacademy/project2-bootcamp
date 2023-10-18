@@ -77,7 +77,7 @@ export default function HomePage() {
           <AppButton src={dates} nav="/dates" />
           <AppButton src={bucketlist} nav="/bucket-list" />
           <AppButton src={timeCapsule} />
-          <AppButton src={journal} />
+          <AppButton src={journal} nav="/journal" />
         </nav>
       </main>
     </motion.div>
