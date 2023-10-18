@@ -27,7 +27,7 @@ export default function JournalForm({ onSelect }) {
       </label>
       <ul
         tabIndex={0}
-        className="menu dropdown-content rounded-box left-[-250px] top-[-10px] z-[1] flex w-[250px] flex-row justify-center bg-base-100 shadow"
+        className="menu dropdown-content rounded-box left-[-250px] top-[-10px] z-[1] flex w-[250px] flex-row justify-center bg-background shadow"
       >
         {Emotions.map((emotion, index) => (
           <li key={index} onClick={() => handleEmotionSelect(emotion)}>

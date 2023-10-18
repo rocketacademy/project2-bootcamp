@@ -63,11 +63,36 @@ export default function JournalListPage() {
               className="m-[30px] flex w-[350px] flex-col rounded-xl bg-text p-[20px] "
             >
               <button
-                className="z-10 ml-auto"
-                onClick={() => deleteJournalItem(journalItem.key)}
+                className=" z-10 ml-auto"
+                onClick={() =>
+                  document
+                    .getElementById(`delete-bucket-modal-${journalItem.key}`)
+                    .showModal()
+                }
               >
                 Delete
               </button>
+              <dialog
+                id={`delete-bucket-modal-${journalItem.key}`}
+                className="modal "
+              >
+                <div className="modal-box flex-col justify-center bg-text p-[20px] text-center">
+                  <form method="dialog">
+                    <button className="btn btn-circle btn-ghost btn-sm absolute right-2 top-2">
+                      ✕
+                    </button>
+                    <h3 className="text-lg font-bold">
+                      Are you sure you want to delete this list?
+                    </h3>
+                    <button
+                      className="btn m-[20px] bg-red-700 text-white hover:bg-red-900"
+                      onClick={() => deleteJournalItem(journalItem.key)}
+                    >
+                      Confirm
+                    </button>
+                  </form>
+                </div>
+              </dialog>
               <img
                 className="mt-[-25px] w-[3em] rounded-xl bg-background"
                 src={journalItem.val.emotion}
