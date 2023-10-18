@@ -31,21 +31,13 @@ const REALTIME_DATABASE_KEY_DATE = "date-list";
 const REALTIME_DATABASE_KEY_ARCHIVE = "date-archive";
 
 export default function DatesPage() {
-  //context helper to send to database
+  //context helper to pull from database
   const REALTIME_DATABASE_KEY_PAIRKEY = ContextHelper("pairKey");
 
   //create state to view date list
   const [dateList, setDateList] = useState([]);
   const [archiveList, setArchiveList] = useState([]);
   const [dateArchive, setDateArchive] = useState(false);
-
-  const [eventDetails, setEventDetails] = useState({
-    startTime: "",
-    endTime: "",
-    summary: "",
-    description: "",
-    location: "",
-  });
 
   useEffect(() => {
     //to view Date list
@@ -114,6 +106,7 @@ export default function DatesPage() {
     return daysLeft;
   };
 
+  // Format date for presentation :)
   const formattedDate = (dateStr) => {
     const date = new Date(dateStr);
     return date.toLocaleString("en-US", {
@@ -123,6 +116,11 @@ export default function DatesPage() {
       hour: "2-digit",
       minute: "2-digit",
     });
+  };
+
+  // To map date items to be used in cal
+  const mapItemsToString = (items) => {
+    return items.map((item) => `${item.title}, `).join("\n");
   };
 
   useEffect(() => {
@@ -170,9 +168,9 @@ export default function DatesPage() {
 
     // Sorts by date
     const sortedList = Array.from(listToDisplay).sort((a, b) => {
-      const daysLeftA = calculateDaysLeft(a.val.date);
-      const daysLeftB = calculateDaysLeft(b.val.date);
-      return daysLeftA - daysLeftB;
+      const daysLeftA = calculateDaysLeft(a.val.startTime);
+      const daysLeftB = calculateDaysLeft(b.val.startTime);
+      return dateArchive ? daysLeftB - daysLeftA : daysLeftA - daysLeftB;
     });
 
     return sortedList;
@@ -232,14 +230,14 @@ export default function DatesPage() {
                     )}
                   </div>
                   <h1 className="m-1 w-full rounded-md bg-text px-2 text-center text-[10px]">
-                    {formattedDate(dateItem.val.startTime)} to
-                    <br />
+                    {formattedDate(dateItem.val.startTime)}
+                    <hr className="my-[2px] rounded-full border-[1px] border-accent" />
                     {formattedDate(dateItem.val.endTime)}
                   </h1>
                 </section>
                 {/* Date information section */}
                 <div className="ml-[10px] w-[190px]">
-                  <h1 className="w-full rounded-md bg-text px-2 font-bold">
+                  <h1 className="w-full rounded-md bg-text px-2 text-center font-bold">
                     {dateItem.val.title}
                   </h1>
                   {dateItem.val.items.map((item) => (
@@ -262,18 +260,20 @@ export default function DatesPage() {
                     <EditDateModal dateKey={dateItem.key} />
                   )}
                 </div>
+                {/* Add to calendar */}
                 <div className="translate-x-[17px] translate-y-7">
                   <CalendarButton
                     key={dateItem.key}
                     title={dateItem.val.title}
-                    description={dateItem.val.items}
+                    description={
+                      "Checklist: " + mapItemsToString(dateItem.val.items)
+                    }
                     startTime={dateItem.val.startTime}
                     endTime={dateItem.val.endTime}
-                    location="placeholder"
                   />
                 </div>
-
-                <div className="translate-x-2 translate-y-2">
+                {/* Add to memories */}
+                <div className="translate-x-4 translate-y-2">
                   <CreateButton2
                     handleClick={() =>
                       document

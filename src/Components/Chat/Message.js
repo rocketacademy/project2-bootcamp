@@ -1,4 +1,4 @@
-import {ImageCarousel} from '../Feed/ImageCarousel';
+import { ImageCarousel } from "../Feed/ImageCarousel";
 
 //<Message chatMessage={chatMessage} key={message.key} postIndex={index} />
 export function Message(props) {
@@ -12,7 +12,7 @@ export function Message(props) {
             <br />
             <p className = 'text-right text-xs'>{props.chatMessage.val.date.slice(12)}</p>
         </div>
-    </div>
 
-    )
+    </div>
+  );
 }

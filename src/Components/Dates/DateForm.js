@@ -7,11 +7,11 @@ import { database } from "../../firebase/firebase";
 
 //-----------Components-----------//
 import ContextHelper from "../Helpers/ContextHelper";
+import Button from "../../Details/Button";
+import CreateButton from "../Feed/CreateButton";
 
 //-----------Media-----------//
 import post02 from "../../Images/LogosIcons/post02.png";
-import CreateButton from "../Feed/CreateButton";
-import Button from "../../Details/Button";
 
 //Database key for date-list
 const REALTIME_DATABASE_KEY_DATE = "date-list";
@@ -96,7 +96,7 @@ export default function DateForm() {
             </button>
             {/* Event Details Section */}
             {title === "" ? (
-              <label className="mb-[5px] text-red-600">Event: (Fill)</label>
+              <label className="mb-[5px] text-red-600">*Event:</label>
             ) : (
               <label className="mb-[5px]">Event:</label>
             )}
@@ -111,7 +111,7 @@ export default function DateForm() {
               }}
             />
             {items.length === 0 ? (
-              <label className="mb-[5px] text-red-600">Checklist: (Fill)</label>
+              <label className="mb-[5px] text-red-600">*Checklist:</label>
             ) : (
               <label className="mb-[5px]">Checklist:</label>
             )}
@@ -176,7 +176,11 @@ export default function DateForm() {
             <Button
               label="Submit"
               handleClick={writeData}
-              disabled={items.length === 0}
+              disabled={
+                ![items, title, startTime, endTime].every(
+                  (field) => field.length > 0,
+                )
+              }
             />
           </form>
         </div>

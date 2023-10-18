@@ -60,7 +60,7 @@ export default function JournalListPage() {
           {journalList.map((journalItem) => (
             <div
               key={journalItem.key}
-              className="m-[30px] flex w-[350px] flex-col rounded-xl bg-text p-[20px] "
+              className="m-[30px] flex w-[350px] flex-col rounded-xl bg-window p-[20px] shadow-lg hover:translate-y-[-2px]"
             >
               <button
                 className=" z-10 ml-auto"
@@ -98,7 +98,9 @@ export default function JournalListPage() {
                 src={journalItem.val.emotion}
                 alt={journalItem.val.emotion}
               />
-              <h1 className="text-[18px] font-bold">{journalItem.val.title}</h1>
+              <h1 className="my-[15px] rounded-md bg-text pl-[5px] text-center text-[18px] font-bold">
+                {journalItem.val.title}
+              </h1>
               <h1>{journalItem.val.texts}</h1>
               {journalItem.val.sign === "" ? (
                 <></>

@@ -1,10 +1,10 @@
-import memories from "../../Images/LogosIcons/icon-memories.png";
+import memories from "../../Images/LogosIcons/icon-memories-no-bg.png";
 const CreateButton2 = ({ handleClick }) => {
   return (
     <div>
       <button
         onClick={handleClick}
-        className="flex w-[55px] items-center justify-center rounded-md px-2 py-1 leading-none hover:bg-slate-500  "
+        className="flex w-[40px] items-center justify-center rounded-full leading-none hover:bg-slate-400  "
       >
         <img src={memories} alt="memories" />
       </button>

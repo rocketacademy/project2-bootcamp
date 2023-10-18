@@ -1,7 +1,10 @@
 //-----------Libraries-----------//
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion-3d";
 
+//-----------Firebase-----------//
+import { auth } from "../firebase/firebase";
+import { signInWithEmailAndPassword } from "firebase/auth";
 //-----------Components-----------//
 import Button from "../Details/Button";
 import Footer from "../Details/Footer";
@@ -11,6 +14,21 @@ import logo from "../Images/LogosIcons/logo.png";
 import AnimatedTextWord from "../Components/Onboarding/AnimatedTextWord";
 
 export default function Onboarding() {
+  const navigate = useNavigate();
+
+  const demoSignIn = async () => {
+    try {
+      const userInfo = await signInWithEmailAndPassword(
+        auth,
+        "demo-1@email.com",
+        "123456",
+      );
+      if (userInfo) {
+        navigate("/");
+      }
+    } catch (error) {}
+  };
+
   return (
     <motion.div
       className=" flex h-screen flex-col items-center justify-center bg-background "
@@ -52,12 +70,12 @@ export default function Onboarding() {
       <NavLink to="/sign-in">
         <Button label="Existing user" />
       </NavLink>
-      <NavLink
-        to="/"
-        className="m-2 text-sm text-slate-500 hover:translate-y-[-2px] hover:text-slate-800"
+      <button
+        onClick={demoSignIn}
+        className="m-2 text-xs text-slate-500 hover:translate-y-[-2px] hover:text-slate-800"
       >
-        Try our App!
-      </NavLink>
+        Try our App! (Demo)
+      </button>
       <Footer />
     </motion.div>
   );

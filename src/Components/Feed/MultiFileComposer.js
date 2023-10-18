@@ -1,5 +1,5 @@
 //-----------React-----------//
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 //-----------Firebase-----------//
 import { database, storage } from "../../firebase/firebase";
@@ -51,6 +51,19 @@ export function MultiFileComposer(props) {
       return { ...prevState, tags: updatedTags };
     });
   };
+
+  // useEffect(() => {
+  //   console.log("Initial Info", formInfo.fileArray);
+  // });
+
+  useEffect(() => {
+    // Initial imgChange logic to handle any images in fileArray
+    if (formInfo.fileArray.length > 0) {
+      setFilePreviewArray(
+        formInfo.fileArray.map((file) => URL.createObjectURL(file)),
+      );
+    }
+  }, [formInfo.fileArray]); // Empty dependency array to run it only on component mount
 
   const imgChange = (e) => {
     setFormInfo((prevState) => {
@@ -173,7 +186,7 @@ export function MultiFileComposer(props) {
           <option disabled selected>
             Add a main tag
           </option>
-          <option>milestone</option>
+          <option>milestones</option>
           <option>dates</option>
           <option>bucket-list</option>
         </select>

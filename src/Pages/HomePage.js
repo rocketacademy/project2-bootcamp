@@ -1,17 +1,17 @@
 //-----------Todo-----------//
 /*
 - Make background image updates work
-- Set default background image
 - Remove state helper
 */
 //-----------Libraries-----------//
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion-3d";
 
 //-----------Firebase-----------//
 import { database, auth } from "../firebase/firebase.js";
 import { ref, onValue } from "firebase/database";
+import { onAuthStateChanged } from "firebase/auth";
 
 //-----------Components-----------//
 import AppButton from "../Details/AppButton.js";
@@ -36,6 +36,9 @@ export default function HomePage() {
   const [backgroundImage, setBackgroundImage] = useState(null);
   const pairKey = ContextHelper("pairKey");
 
+  const navigate = useNavigate();
+  // const isLoggedIn = ContextHelper("isLoggedIn");
+
   //Pull user data
   useEffect(() => {
     const user = auth.currentUser;
@@ -54,6 +57,16 @@ export default function HomePage() {
       }
     });
   }},[pairKey])
+
+  // Redirect to sign in
+  useEffect(
+    () =>
+      onAuthStateChanged(
+        auth,
+        (userInfo) => userInfo || navigate("/onboarding"),
+      ),
+    [],
+  );
 
   return (
     <motion.div
