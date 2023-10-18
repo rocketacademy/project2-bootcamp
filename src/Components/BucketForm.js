@@ -7,6 +7,7 @@ import { database } from "../firebase/firebase";
 
 //-----------Components-----------//
 import ContextHelper from "./Helpers/ContextHelper";
+import Button from "../Details/Button";
 
 //-----------Images-----------//
 import post01 from "../Images/LogosIcons/post01.png";
@@ -73,7 +74,7 @@ export default function BucketForm() {
   return (
     <div className=" fixed bottom-[20px] right-[20px] flex-row ">
       <button
-        className="btn w-[10em] border-0"
+        className="flex h-[2.5em] w-[2.5em] items-center justify-center rounded-full bg-window p-1 text-[28px] leading-none shadow-xl hover:translate-y-[-2px] hover:bg-text"
         onClick={() => {
           document.getElementById("bucket-form").showModal();
         }}
@@ -81,10 +82,10 @@ export default function BucketForm() {
         <img src={post01} alt="POST" />
       </button>
       <dialog id="bucket-form" className="modal">
-        <div className="modal-box flex flex-col items-center rounded-2xl bg-text">
+        <div className="modal-box flex flex-col items-center rounded-2xl bg-background">
           <form
             method="dialog"
-            className="flex  w-96 w-full flex-col justify-center justify-items-center p-[20px] text-accent"
+            className="flex flex-col items-center justify-center p-[20px] text-accent"
           >
             <button className="btn btn-circle btn-ghost btn-sm absolute right-5 top-5 ">
               ✕
@@ -95,7 +96,7 @@ export default function BucketForm() {
               <label className="mb-[5px]">Bucket :</label>
             )}
             <input
-              className="mb-[15px] mr-[15px] w-[15em] rounded-md bg-background  px-2"
+              className="input mb-[15px] w-64 rounded-md bg-white  px-2"
               type="text"
               name="title"
               value={title}
@@ -111,7 +112,7 @@ export default function BucketForm() {
             )}
             <div className="input-button">
               <input
-                className="mb-[15px] mr-[15px] w-[15em] rounded-md bg-background px-2"
+                className="input mb-[15px] mr-[15px] w-[15em] rounded-md bg-white px-2"
                 type="text"
                 name="newItem"
                 value={newItem}
@@ -121,7 +122,7 @@ export default function BucketForm() {
                 }}
               />
               <button
-                className="rounded-full bg-background px-[7px] font-black"
+                className="rounded-full bg-window p-3 font-black leading-[12px] shadow-lg hover:translate-y-[-2px] hover:bg-text"
                 onClick={handleSubmit}
               >
                 +
@@ -132,10 +133,15 @@ export default function BucketForm() {
                 return (
                   <li
                     key={items.id}
-                    className="mb-[15px] flex justify-between  rounded-md bg-background px-2 py-1"
+                    className="mb-[5px] flex w-72 justify-between rounded-md bg-window px-2 text-sm hover:translate-y-[-2px] hover:bg-text"
                   >
                     <label className="mr-[15px]">{items.title}</label>
-                    <button onClick={() => deleteItem(items.id)}>Delete</button>
+                    <button
+                      onClick={() => deleteItem(items.id)}
+                      className="text-sm hover:font-semibold"
+                    >
+                      Delete
+                    </button>
                   </li>
                 );
               })}
@@ -150,7 +156,7 @@ export default function BucketForm() {
               <label className="mr-[5px]">Completion Date? :</label>
               <input
                 type="date"
-                className="mb-2 w-[10em] rounded-md border-[1px] bg-background px-2"
+                className="input mb-[30px] w-[10em] rounded-md border-[1px] bg-white px-2"
                 id="date"
                 value={date}
                 onChange={(e) => {
@@ -159,13 +165,11 @@ export default function BucketForm() {
                 disabled={!isDateSelected}
               />
             </div>
-            <button
-              className="submit-btn my-[20px] rounded-full bg-background px-[15px] disabled:bg-neutral-500 disabled:text-background"
-              onClick={writeData}
+            <Button
+              label="Submit"
+              handleClick={writeData}
               disabled={items.length === 0}
-            >
-              Submit
-            </button>
+            />
           </form>
         </div>
       </dialog>

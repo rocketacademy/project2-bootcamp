@@ -96,7 +96,7 @@ export default function DateForm() {
             </button>
             {/* Event Details Section */}
             {title === "" ? (
-              <label className="mb-[5px] text-red-600">Event: (Fill)</label>
+              <label className="mb-[5px] text-red-600">*Event:</label>
             ) : (
               <label className="mb-[5px]">Event:</label>
             )}
@@ -111,7 +111,7 @@ export default function DateForm() {
               }}
             />
             {items.length === 0 ? (
-              <label className="mb-[5px] text-red-600">Checklist: (Fill)</label>
+              <label className="mb-[5px] text-red-600">*Checklist:</label>
             ) : (
               <label className="mb-[5px]">Checklist:</label>
             )}
