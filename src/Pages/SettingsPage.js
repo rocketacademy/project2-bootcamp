@@ -128,21 +128,24 @@ export default function SettingsPage() {
     updateStartDate()
   }
 
-// Toggle sign out + navigate back to onboarding
-const context = useContext(UserContext);
+  // Toggle sign out + navigate back to onboarding
+  const context = useContext(UserContext);
 
-const handleSignOut = () => {
-  signOut(auth)
-    .then(() => {
-      console.log("Signed Out");
-      navigate("/onboarding");
-      context.setPairKey("");
-      context.setEmail("");
-    })
-    .catch((error) => {
-      console.log("Error Signing Out");
-    });
-};
+  const handleSignOut = () => {
+    signOut(auth)
+      .then(() => {
+        console.log("Signed Out");
+        navigate("/onboarding");
+        context.setPairKey("");
+        context.setEmail("");
+        context.setDisplayName("");
+      })
+      .catch((error) => {
+        console.log("Error Signing Out");
+      });
+  };
+
+
 
 // Wipe pair account -> Delete all couple data + navigate back to onboarding
 const deletePairKey = () => {

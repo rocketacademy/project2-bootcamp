@@ -3,20 +3,24 @@ import React, { useState } from "react";
 
 //-----------Firebase-----------//
 import { push, ref, set } from "firebase/database";
-import { database } from "../firebase/firebase";
+import { database } from "../../firebase/firebase";
 
 //-----------Components-----------//
-import ContextHelper from "./Helpers/ContextHelper";
+import ContextHelper from "../Helpers/ContextHelper";
 
-const REALTIME_DATABASE_KEY_BUCKET = "bucket-list";
+//-----------Media-----------//
+import post02 from "../../Images/LogosIcons/post02.png";
 
-export default function BucketForm() {
-  //State for bucketlist
+//Database key for date-list
+const REALTIME_DATABASE_KEY_DATE = "date-list";
+
+export default function DateForm() {
+  //State for date list
   const [title, setTitle] = useState("");
   const [items, setItems] = useState([]);
   const [newItem, setNewItem] = useState("");
   const [date, setDate] = useState("");
-  const [isDateSelected, setIsDateSelected] = useState(false);
+  const [time, setTime] = useState("");
 
   //context helper to send to database
   const REALTIME_DATABASE_KEY_PAIRKEY = ContextHelper("pairKey");
@@ -31,7 +35,6 @@ export default function BucketForm() {
         {
           id: new Date().getTime(),
           title: newItem,
-          completed: false,
         },
       ];
     });
@@ -47,37 +50,41 @@ export default function BucketForm() {
 
   //send data to database
   const writeData = () => {
-    const bucketListRef = ref(
+    const dateListRef = ref(
       database,
-      `rooms/${REALTIME_DATABASE_KEY_PAIRKEY}/${REALTIME_DATABASE_KEY_BUCKET}`,
+      `rooms/${REALTIME_DATABASE_KEY_PAIRKEY}/${REALTIME_DATABASE_KEY_DATE}`,
     );
-    const newBucketRef = push(bucketListRef);
+    const newDateRef = push(dateListRef);
 
-    set(newBucketRef, {
+    set(newDateRef, {
+      id: new Date().getTime(),
       title: title,
       items: items,
       date: date,
+      time: time,
     });
 
     setTitle("");
     setItems([]);
     setNewItem("");
     setDate("");
+    setTime("");
 
-    document.getElementById("bucket-form").close();
+    document.getElementById("date-form").close();
   };
 
   return (
     <div className=" fixed bottom-[20px] right-[20px] flex-row ">
       <button
-        className="btn w-[10em] bg-text"
+        className=" w-[10em]"
         onClick={() => {
-          document.getElementById("bucket-form").showModal();
+          document.getElementById("date-form").showModal();
         }}
       >
-        Add a bucket
+        <img src={post02} alt="POST" />
       </button>
-      <dialog id="bucket-form" className="modal">
+
+      <dialog id="date-form" className="modal">
         <div className="modal-box flex flex-col items-center rounded-2xl bg-text">
           <form
             method="dialog"
@@ -87,24 +94,24 @@ export default function BucketForm() {
               ✕
             </button>
             {title === "" ? (
-              <label className="mb-[5px] text-red-600">*Bucket :</label>
+              <label className="mb-[5px] text-red-600">*Date :</label>
             ) : (
-              <label className="mb-[5px]">Bucket :</label>
+              <label className="mb-[5px]">Date :</label>
             )}
             <input
               className="mb-[15px] mr-[15px] w-[15em] rounded-md bg-background  px-2"
               type="text"
               name="title"
               value={title}
-              placeholder="Pick a title!"
+              placeholder="What're yall doing?"
               onChange={(e) => {
                 setTitle(e.target.value);
               }}
             />
             {items.length === 0 ? (
-              <label className="mb-[5px] text-red-600">*Add your socks :</label>
+              <label className="mb-[5px] text-red-600">*Things needed :</label>
             ) : (
-              <label className="mb-[5px]">Add your socks :</label>
+              <label className="mb-[5px]">Things needed :</label>
             )}
             <div className="input-button">
               <input
@@ -112,7 +119,7 @@ export default function BucketForm() {
                 type="text"
                 name="newItem"
                 value={newItem}
-                placeholder="What you gonna do?"
+                placeholder="What do you need to bring?"
                 onChange={(e) => {
                   setNewItem(e.target.value);
                 }}
@@ -137,14 +144,8 @@ export default function BucketForm() {
                 );
               })}
             </ul>
-            <div className="complete-date mt-[15px]">
-              <input
-                className="checkbox-for-date mr-[5px]"
-                type="checkbox"
-                checked={isDateSelected}
-                onChange={() => setIsDateSelected(!isDateSelected)}
-              />
-              <label className="mr-[5px]">Completion Date? :</label>
+            <div className="date-for-date mt-[15px]">
+              <label className="mr-[5px]">Date for date :</label>
               <input
                 type="date"
                 className="mb-2 w-[10em] rounded-md border-[1px] bg-background px-2"
@@ -153,13 +154,24 @@ export default function BucketForm() {
                 onChange={(e) => {
                   setDate(e.target.value);
                 }}
-                disabled={!isDateSelected}
+              />
+            </div>
+            <div className="time mt-[15px]">
+              <label className="mr-[5px]">Time :</label>
+              <input
+                type="time"
+                className="mb-2 w-[10em] rounded-md border-[1px] bg-background px-2"
+                id="time"
+                value={time}
+                onChange={(e) => {
+                  setTime(e.target.value);
+                }}
               />
             </div>
             <button
               className="submit-btn my-[20px] rounded-full bg-background px-[15px] disabled:bg-neutral-500 disabled:text-background"
-              onClick={writeData}
               disabled={items.length === 0}
+              onClick={writeData}
             >
               Submit
             </button>
