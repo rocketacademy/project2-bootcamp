@@ -8,6 +8,9 @@ import { database } from "../firebase/firebase";
 //-----------Components-----------//
 import ContextHelper from "./Helpers/ContextHelper";
 
+//-----------Images-----------//
+import post01 from "../Images/LogosIcons/post01.png";
+
 const REALTIME_DATABASE_KEY_BUCKET = "bucket-list";
 
 export default function BucketForm() {
@@ -70,12 +73,12 @@ export default function BucketForm() {
   return (
     <div className=" fixed bottom-[20px] right-[20px] flex-row ">
       <button
-        className="btn w-[10em] bg-text"
+        className="btn w-[10em] border-0"
         onClick={() => {
           document.getElementById("bucket-form").showModal();
         }}
       >
-        Add a bucket
+        <img src={post01} alt="POST" />
       </button>
       <dialog id="bucket-form" className="modal">
         <div className="modal-box flex flex-col items-center rounded-2xl bg-text">
@@ -137,9 +140,9 @@ export default function BucketForm() {
                 );
               })}
             </ul>
-            <div className="complete-date mt-[15px]">
+            <div className="complete-date mt-[15px] ">
               <input
-                className="checkbox-for-date mr-[5px]"
+                className="checkbox-for-date mr-[5px] accent-accent"
                 type="checkbox"
                 checked={isDateSelected}
                 onChange={() => setIsDateSelected(!isDateSelected)}
