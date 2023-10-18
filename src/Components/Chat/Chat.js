@@ -1,16 +1,17 @@
 import {Message} from './Message'
+import ContextHelper from "../Helpers/ContextHelper";
 
-const DUMMY_USERID = "dummyuser" // to use these as subs
-const DUMMY_PAIRID = 'dummypair' // to use these as subs
+
 
 //<Chat chat={chat} />
 export function Chat(props) {
+    const userEmail = ContextHelper('email')
     const messages = props.chat.map((chatMessage, index) => {
             return <Message 
             chatMessage={chatMessage} 
             key={chatMessage.key} 
             postIndex={index} 
-            sender={DUMMY_USERID === chatMessage.val.user ? 'self' : 'other'} />
+            sender={userEmail === chatMessage.val.user ? 'self' : 'other'} />
     })
 
     return (      

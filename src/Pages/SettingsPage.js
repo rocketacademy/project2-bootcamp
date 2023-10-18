@@ -37,7 +37,6 @@ export default function SettingsPage() {
 
   
   useEffect(() => { //pull profile pic when component mounts
-    const email = 'demo1@email.com' // use temporary dummy email; this will be pulled from context in future
     const userRef = ref(database, `userRef`); //setup reference
     onValue(userRef, (data)=> {
       const val = data.val();
@@ -87,7 +86,6 @@ export default function SettingsPage() {
   }
 
   const updateBackgroundPicture = (e) => {
-    const pairKey = 'dummypair' // for testing, to remove later
     if(!backgroundPicture) {
       return;
     }
@@ -108,7 +106,6 @@ export default function SettingsPage() {
   }
 
   const updateStartDate = () => {
-    const pairKey = 'dummypair' // for testing, to remove later
     if(!startDate) {
       return;
     }

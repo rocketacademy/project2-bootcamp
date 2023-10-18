@@ -7,19 +7,28 @@ import { Chat } from "../Components/Chat/Chat";
 import { database } from "../firebase/firebase";
 import { ref, onValue } from "firebase/database";
 import background from "../Images/wallpaper.png";
+import ContextHelper from "../Components/Helpers/ContextHelper.js";
 
-const DUMMY_USERID = "dummyuser"; // to use these as subs
-const DUMMY_PAIRID = "dummypair"; // to use these as subs
+
 
 export default function ChatPage() {
-  //Pull in context from App.js
-  const context = useContext(UserContext);
+  //Pull in context from App.js asd
+  const pairKey = ContextHelper("pairKey");
   const [chat, setChat] = useState([]);
   const [backgroundImage, setBackgroundImage] = useState(null);
 
   useEffect(() => {
-    // whenever app renders
-    const postRef = ref(database, `rooms/${DUMMY_PAIRID}/chat`); //setup reference
+    // whenever app renders asd
+    if (pairKey) {
+    const userRef = ref(database, `rooms/${pairKey}/backgroundImage`); //setup reference
+    onValue(userRef, (result) => {
+      const val = result.val()
+      if (val) {
+      setBackgroundImage(val.backgroundImageURL);
+      }
+    });
+
+    const postRef = ref(database, `rooms/${pairKey}/chat`); //setup reference
     onValue(postRef, (data) => {
       let dataArray = [];
       if (data.val()) {
@@ -29,18 +38,15 @@ export default function ChatPage() {
       }
       setChat(dataArray);
     });
-    const userRef = ref(database, `rooms/${DUMMY_PAIRID}/backgroundImage`); //setup reference
-    onValue(userRef, (data) => {
-      setBackgroundImage(data.val().backgroundImageURL);
-    });
-  }, []);
+  }
+  }, [pairKey]);
 
   return (
     <div className="h-screen">
       <NavBar label="Chat" />
       <main
-        className="mt-[70px] h-full w-screen"
-        style={{ backgroundImage: `url(${backgroundImage})` }}
+        className="mt-[100px] mb-[50px] h-auto w-screen"
+        style={backgroundImage ? { backgroundImage: `url(${backgroundImage})` } : null}
       >
         <Chat chat={chat} />
         <ChatComposer />

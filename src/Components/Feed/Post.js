@@ -52,13 +52,17 @@ export function Post(props) {
 
   const commentListItems = commentList.map((comment) => (
     <div
-      className=" my-1 rounded-lg border bg-background p-1"
+      className=" my-1 rounded-lg border bg-background p-1 break-words"
       key={comment.key}
     >
       <span className="font-bold">{comment.val.commentingUser}</span> :{" "}
       {comment.val.commentText}
     </div>
   ));
+
+  const closeCommentModal = () => {
+    document.getElementById(`commentComposer-${props.postContent.key}`).close();
+  };
 
   return (
     <div
@@ -91,12 +95,12 @@ export function Post(props) {
       <figure className="text-xs">{commentListItems}</figure>
       <div className="flex justify-between">
         <button
-          onClick={() => document.getElementById("commentComposer").showModal()}
+          onClick={() => document.getElementById(`commentComposer-${props.postContent.key}`).showModal()}
           className="mt-1 max-h-6 rounded-lg bg-background px-2 text-left text-xs"
         >
           Comment
         </button>
-        <dialog id="commentComposer" className="modal ">
+        <dialog id={`commentComposer-${props.postContent.key}`} className="modal ">
           <div className="modal-box bg-background">
             <form method="dialog">
               <button className="btn btn-circle btn-ghost btn-sm absolute right-2 top-2">
@@ -117,7 +121,10 @@ export function Post(props) {
                 value={commentInput.commentText}
                 className="input bg-white text-black"
               />
-              <Button label="post" handleClick={writeComment} add="w-[100px]" />
+              <Button label="post" handleClick={()=>{
+                writeComment()
+                closeCommentModal();
+                }} add="w-[100px]" />
             </div>
           </div>
         </dialog>
