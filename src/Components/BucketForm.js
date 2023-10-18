@@ -73,7 +73,7 @@ export default function BucketForm() {
   return (
     <div className=" fixed bottom-[20px] right-[20px] flex-row ">
       <button
-        className="btn w-[10em] border-0"
+        className="flex h-[2.5em] w-[2.5em] items-center justify-center rounded-full bg-window p-1 text-[28px] leading-none shadow-xl hover:translate-y-[-2px] hover:bg-text"
         onClick={() => {
           document.getElementById("bucket-form").showModal();
         }}
