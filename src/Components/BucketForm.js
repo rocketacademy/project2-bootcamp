@@ -96,7 +96,7 @@ export default function BucketForm() {
               <label className="mb-[5px]">Bucket :</label>
             )}
             <input
-              className="input mb-[15px] w-[15em] rounded-md bg-white  px-2"
+              className="input mb-[15px] w-64 rounded-md bg-white  px-2"
               type="text"
               name="title"
               value={title}

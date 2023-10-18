@@ -232,14 +232,14 @@ export default function DatesPage() {
                     )}
                   </div>
                   <h1 className="m-1 w-full rounded-md bg-text px-2 text-center text-[10px]">
-                    {formattedDate(dateItem.val.startTime)} to
-                    <br />
+                    {formattedDate(dateItem.val.startTime)}
+                    <hr className="my-[2px] rounded-full border-[1px] border-accent" />
                     {formattedDate(dateItem.val.endTime)}
                   </h1>
                 </section>
                 {/* Date information section */}
                 <div className="ml-[10px] w-[190px]">
-                  <h1 className="w-full rounded-md bg-text px-2 font-bold">
+                  <h1 className="w-full rounded-md bg-text px-2 text-center font-bold">
                     {dateItem.val.title}
                   </h1>
                   {dateItem.val.items.map((item) => (
