@@ -244,7 +244,11 @@ export default function EditDateModal({ dateKey }) {
             <Button
               label="Submit"
               handleClick={() => updateData(dateKey)}
-              disabled={items.length === 0}
+              disabled={
+                ![items, title, startTime, endTime].every(
+                  (field) => field.length > 0,
+                )
+              }
             />
             <Button
               label="Delete"

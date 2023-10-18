@@ -8,12 +8,12 @@ const StateHelper = () => {
   const context = useContext(UserContext);
 
   return (
-    <div className="bg-white text-[10px]">
+    <div className="bg-white text-[9px]">
       <p className="font-bold">StateHelper:</p>
       {context.displayName && <p>Name: {context.displayName}</p>}
       {context.email && <p>Email: {context.email}</p>}
       {context.pairKey && <p>Pair Key: {context.pairKey}</p>}
-      {context.isLoggedIn ? <p>Signed In</p> : <p>Signed Out</p>}
+      {context.isLoggedIn ? null : <p>Signed Out</p>}
     </div>
   );
 };
