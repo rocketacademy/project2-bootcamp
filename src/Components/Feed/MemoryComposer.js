@@ -21,7 +21,12 @@ import Button from "../../Details/Button";
 import uploadimage from "../../Images/upload-image.png";
 
 //Props Format: <Composer postContent = {post} />
-export default function MemoryComposer(props) {
+export default function MemoryComposer({
+  id,
+  uploadMessage,
+  uploadDate,
+  uploadTags,
+}) {
   const navigate = useNavigate();
 
   // Variables
@@ -29,9 +34,10 @@ export default function MemoryComposer(props) {
   const DUMMY_PAIRID = ContextHelper("pairKey");
 
   const [formInfo, setFormInfo] = useState({
-    postMessage: props.postContent ? props.postContent.val.message : "",
-    date: props.postContent ? props.postContent.val.date : null,
-    tags: props.postContent ? props.postContent.val.tags : "",
+    key: id,
+    postMessage: uploadMessage ? uploadMessage : "",
+    date: uploadDate ? uploadDate : null,
+    tags: uploadTags ? uploadTags : "",
     fileArray: [],
   });
 
@@ -57,13 +63,20 @@ export default function MemoryComposer(props) {
     setFormInfo((prevState) => {
       return { ...prevState, fileArray: Object.values(e.target.files) };
     });
-    if (props.postContent && e.target.files.length === 0) {
-      setFilePreviewArray(props.postContent.val.fileArray);
-    } else {
-      setFilePreviewArray(
-        Object.values(e.target.files).map((file) => URL.createObjectURL(file)),
-      );
-    }
+    setFilePreviewArray(
+      Object.values(e.target.files).map((file) => URL.createObjectURL(file)),
+    );
+  };
+
+  const formattedDate = (dateStr) => {
+    const date = new Date(dateStr);
+    return date.toLocaleString("en-US", {
+      year: "numeric",
+      month: "numeric",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
   };
 
   const writeData = () => {
@@ -94,36 +107,15 @@ export default function MemoryComposer(props) {
       )
 
       .then((urlArray) => {
-        // if post was given, take the ref and set it; else take the parent folder and push it
-        if (props.postContent !== null) {
-          const messageListRef = ref(
-            database,
-            `rooms/${DUMMY_PAIRID}/feed/${props.postContent.key}`,
-          );
-          set(messageListRef, {
-            user: DUMMY_USERID,
-            message: formInfo.postMessage,
-            date: props.postContent.val.date, //this is the original value - can i just omit this line?
-            files:
-              urlArray.length !== 0
-                ? urlArray
-                : props.postContent.val.fileArray, //just take url from new file for now - need to figure out how to delete the old file
-            tags: formInfo.tags,
-            comments: props.postContent.val.comments
-              ? props.postContent.val.comments
-              : null,
-          });
-        } else {
-          const messageListRef = ref(database, `rooms/${DUMMY_PAIRID}/feed`);
-          push(messageListRef, {
-            user: DUMMY_USERID,
-            message: formInfo.postMessage,
-            date: `${new Date().toLocaleString()}`,
-            files: urlArray,
-            tags: formInfo.tags,
-            comments: [],
-          });
-        }
+        const messageListRef = ref(database, `rooms/${DUMMY_PAIRID}/feed`);
+        push(messageListRef, {
+          user: DUMMY_USERID,
+          message: formInfo.postMessage,
+          date: formattedDate(formInfo.date),
+          files: urlArray,
+          tags: formInfo.tags,
+          comments: [],
+        });
       })
       .then(() => {
         //reset form after submit
@@ -137,16 +129,17 @@ export default function MemoryComposer(props) {
       });
   };
 
-  const closeComposerModal = () => {
-    document.getElementById("composer").close();
-  };
+  // Not needed as redirect
+  // const closeComposerModal = () => {
+  //   document.getElementById("composer").close();
+  // };
 
   return (
     <div className="flex flex-col items-center justify-center">
       <ImageCarousel urlArray={filePreviewArray ? filePreviewArray : []} />
       <form className=" flex flex-col items-center justify-center">
         <label className="text-sm">
-          {props.postContent ? "Edit Memory:" : "New Memory: "}
+          <p>New Memory:</p>
         </label>
         <input
           type="text"
@@ -181,6 +174,7 @@ export default function MemoryComposer(props) {
           value={formInfo.tags}
           className="input mb-2 w-[250px] bg-white text-sm"
         />
+        <p>Event End: {formattedDate(formInfo.date)}</p>
         <label
           htmlFor="upload-image"
           style={{ cursor: "pointer" }}
@@ -210,7 +204,7 @@ export default function MemoryComposer(props) {
         label="Create Post!"
         handleClick={() => {
           writeData();
-          closeComposerModal();
+          // closeComposerModal();
         }}
       />
     </div>

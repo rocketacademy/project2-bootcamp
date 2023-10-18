@@ -21,8 +21,8 @@ export default function DateForm() {
   const [title, setTitle] = useState("");
   const [items, setItems] = useState([]);
   const [newItem, setNewItem] = useState("");
-  const [date, setDate] = useState("");
-  const [time, setTime] = useState("");
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
 
   //context helper to send to database
   const REALTIME_DATABASE_KEY_PAIRKEY = ContextHelper("pairKey");
@@ -30,11 +30,10 @@ export default function DateForm() {
   //create input to add more items with + button...
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (e.target.value === "") {
-      return;
-    }
 
     setItems((currentItem) => {
+      console.log("handleSubmit");
+
       return [
         ...currentItem,
         {
@@ -65,15 +64,15 @@ export default function DateForm() {
       id: new Date().getTime(),
       title: title,
       items: items,
-      date: date,
-      time: time,
+      startTime: startTime,
+      endTime: endTime,
     });
 
     setTitle("");
     setItems([]);
     setNewItem("");
-    setDate("");
-    setTime("");
+    setStartTime("");
+    setEndTime("");
 
     document.getElementById("date-form").close();
   };
@@ -95,6 +94,7 @@ export default function DateForm() {
             <button className="btn btn-circle btn-ghost btn-sm absolute right-5 top-5 ">
               ✕
             </button>
+            {/* Event Details Section */}
             {title === "" ? (
               <label className="mb-[5px] text-red-600">Event: (Fill)</label>
             ) : (
@@ -151,30 +151,28 @@ export default function DateForm() {
                 );
               })}
             </ul>
-            <div className="date-for-date mt-[15px]">
-              <label className="mr-[5px]">Date for date :</label>
-              <input
-                type="date"
-                className="input mb-2 w-[10em] rounded-md border-[1px] bg-white"
-                id="date"
-                value={date}
-                onChange={(e) => {
-                  setDate(e.target.value);
-                }}
-              />
-            </div>
-            <div className="time mt-[15px]">
-              <label className="mr-[5px]">Time :</label>
-              <input
-                type="time"
-                className="input mb-2 w-[10em] bg-white"
-                id="time"
-                value={time}
-                onChange={(e) => {
-                  setTime(e.target.value);
-                }}
-              />
-            </div>
+            {/* Event Timings Section */}
+            <label>Start Time</label>
+            <input
+              className="input mb-1 bg-white"
+              type="datetime-local"
+              name="startTime"
+              value={startTime}
+              onChange={(e) => {
+                setStartTime(e.target.value);
+              }}
+            />
+            <label>End Time</label>
+
+            <input
+              className="input mb-1 bg-white"
+              type="datetime-local"
+              name="endTime"
+              value={endTime}
+              onChange={(e) => {
+                setEndTime(e.target.value);
+              }}
+            />
             <Button
               label="Submit"
               handleClick={writeData}

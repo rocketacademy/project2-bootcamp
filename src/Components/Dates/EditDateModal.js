@@ -29,8 +29,8 @@ export default function EditDateModal({ dateKey }) {
   const [title, setTitle] = useState("");
   const [items, setItems] = useState([]);
   const [newItem, setNewItem] = useState("");
-  const [date, setDate] = useState("");
-  const [time, setTime] = useState("");
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
   const [id, setId] = useState("");
   const [showModal, setShowModal] = useState(false);
   //context helper to send to database
@@ -55,8 +55,8 @@ export default function EditDateModal({ dateKey }) {
       // Update the state variables with data from dateList
       setTitle(data[dateKey].title);
       setItems(data[dateKey].items);
-      setDate(data[dateKey].date);
-      setTime(data[dateKey].time);
+      setStartTime(data[dateKey].startTime);
+      setEndTime(data[dateKey].endTime);
       setId(data[dateKey].id);
     });
   }, [REALTIME_DATABASE_KEY_PAIRKEY, dateKey]);
@@ -101,8 +101,8 @@ export default function EditDateModal({ dateKey }) {
       id: id,
       title: title,
       items: items,
-      date: date,
-      time: time,
+      startTime: startTime,
+      endTime: endTime,
     };
 
     // Get a reference to the specific entry in the Firebase database
@@ -118,8 +118,8 @@ export default function EditDateModal({ dateKey }) {
     setTitle("");
     setItems([]);
     setNewItem("");
-    setDate("");
-    setTime("");
+    setStartTime("");
+    setEndTime("");
     setShowModal(false);
 
     document.getElementById(`edit-date-form-${dateKey}`).close();
@@ -219,30 +219,28 @@ export default function EditDateModal({ dateKey }) {
                 );
               })}
             </ul>
-            <div className="date-for-date mt-[15px]">
-              <label className="mr-[5px]">Date for date :</label>
-              <input
-                type="date"
-                className="input mb-2 w-[10em] border-[1px] bg-white"
-                id="date"
-                value={date}
-                onChange={(e) => {
-                  setDate(e.target.value);
-                }}
-              />
-            </div>
-            <div className="time mt-[15px]">
-              <label className="mr-[5px]">Time :</label>
-              <input
-                type="time"
-                className="input mb-2 w-[10em] border-[1px] bg-white"
-                id="time"
-                value={time}
-                onChange={(e) => {
-                  setTime(e.target.value);
-                }}
-              />
-            </div>
+            <label>Start Time</label>
+            <input
+              className="input mb-1 bg-white"
+              type="datetime-local"
+              name="startTime"
+              value={startTime}
+              onChange={(e) => {
+                setStartTime(e.target.value);
+              }}
+            />
+            <label>End Time</label>
+
+            <input
+              className="input mb-1 bg-white"
+              type="datetime-local"
+              name="endTime"
+              value={endTime}
+              onChange={(e) => {
+                setEndTime(e.target.value);
+              }}
+            />
+
             <Button
               label="Submit"
               handleClick={() => updateData(dateKey)}
