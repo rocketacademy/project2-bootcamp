@@ -16,6 +16,7 @@ import { database } from "../../firebase/firebase";
 
 //-----------Components-----------//
 import ContextHelper from "../Helpers/ContextHelper";
+import Button from "../../Details/Button";
 
 //Database key for date-list
 const REALTIME_DATABASE_KEY_DATE = "date-list";
@@ -28,8 +29,8 @@ export default function EditDateModal({ dateKey }) {
   const [title, setTitle] = useState("");
   const [items, setItems] = useState([]);
   const [newItem, setNewItem] = useState("");
-  const [date, setDate] = useState("");
-  const [time, setTime] = useState("");
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
   const [id, setId] = useState("");
   const [showModal, setShowModal] = useState(false);
   //context helper to send to database
@@ -54,11 +55,11 @@ export default function EditDateModal({ dateKey }) {
       // Update the state variables with data from dateList
       setTitle(data[dateKey].title);
       setItems(data[dateKey].items);
-      setDate(data[dateKey].date);
-      setTime(data[dateKey].time);
+      setStartTime(data[dateKey].startTime);
+      setEndTime(data[dateKey].endTime);
       setId(data[dateKey].id);
     });
-  }, [REALTIME_DATABASE_KEY_PAIRKEY]);
+  }, [REALTIME_DATABASE_KEY_PAIRKEY, dateKey]);
 
   //create a function to store the data from database to other states
   const listDate = () => {
@@ -100,8 +101,8 @@ export default function EditDateModal({ dateKey }) {
       id: id,
       title: title,
       items: items,
-      date: date,
-      time: time,
+      startTime: startTime,
+      endTime: endTime,
     };
 
     // Get a reference to the specific entry in the Firebase database
@@ -117,8 +118,8 @@ export default function EditDateModal({ dateKey }) {
     setTitle("");
     setItems([]);
     setNewItem("");
-    setDate("");
-    setTime("");
+    setStartTime("");
+    setEndTime("");
     setShowModal(false);
 
     document.getElementById(`edit-date-form-${dateKey}`).close();
@@ -142,7 +143,7 @@ export default function EditDateModal({ dateKey }) {
   };
 
   return (
-    <div className=" rounded-full bg-background p-[5px] px-[10px] text-xs">
+    <div className=" rounded-md bg-background p-1 px-2 text-xs">
       <button
         onClick={() => {
           listDate(dateKey);
@@ -151,8 +152,11 @@ export default function EditDateModal({ dateKey }) {
         Edit
       </button>
       <dialog id={`edit-date-form-${dateKey}`} className="modal">
-        <div className="modal-box flex flex-col items-center rounded-2xl bg-text">
-          <form method="dialog" className="flex flex-col p-[20px] text-accent">
+        <div className="modal-box flex flex-col items-center rounded-2xl bg-background">
+          <form
+            method="dialog"
+            className="flex w-96 flex-col items-center justify-center p-[20px] text-accent"
+          >
             <button
               className="btn btn-circle btn-ghost btn-sm absolute right-5 top-5 "
               onClick={() => setShowModal(false)}
@@ -160,12 +164,12 @@ export default function EditDateModal({ dateKey }) {
               ✕
             </button>
             {title === "" ? (
-              <label className="mb-[5px] text-red-600">*Date :</label>
+              <label className="mb-[5px] text-red-600">Event: (Fill)</label>
             ) : (
-              <label className="mb-[5px]">Date :</label>
+              <label className="mb-[5px]">Event:</label>
             )}
             <input
-              className="mb-[15px] mr-[15px] w-[15em] rounded-md bg-background  px-2"
+              className="input mb-[15px] w-72 bg-white"
               type="text"
               name="title"
               value={title}
@@ -175,13 +179,13 @@ export default function EditDateModal({ dateKey }) {
               }}
             />
             {items.length === 0 ? (
-              <label className="mb-[5px] text-red-600">*Things needed :</label>
+              <label className="mb-[5px] text-red-600">Checklist: (Fill)</label>
             ) : (
-              <label className="mb-[5px]">Things needed :</label>
+              <label className="mb-[5px]">Checklist:</label>
             )}
             <div className="input-button">
               <input
-                className="mb-[15px] mr-[15px] w-[15em] rounded-md bg-background px-2"
+                className="input mb-[15px] mr-[15px] w-64 rounded-md bg-white px-2"
                 type="text"
                 name="newItem"
                 value={newItem}
@@ -191,7 +195,7 @@ export default function EditDateModal({ dateKey }) {
                 }}
               />
               <button
-                className="rounded-full bg-background px-[7px] font-black"
+                className="rounded-full bg-window p-3 font-black leading-[10px] shadow-lg hover:translate-y-[-2px] hover:bg-text"
                 onClick={handleSubmit}
               >
                 +
@@ -202,51 +206,50 @@ export default function EditDateModal({ dateKey }) {
                 return (
                   <li
                     key={items.id}
-                    className="mb-[15px] flex justify-between  rounded-md bg-background px-2 py-1"
+                    className="mb-[5px] flex w-72 justify-between rounded-md bg-window px-2 text-sm hover:translate-y-[-2px] hover:bg-text"
                   >
                     <label className="mr-[15px]">{items.title}</label>
-                    <button onClick={() => deleteItem(items.id)}>Delete</button>
+                    <button
+                      onClick={() => deleteItem(items.id)}
+                      className="text-sm hover:font-semibold"
+                    >
+                      Delete
+                    </button>
                   </li>
                 );
               })}
             </ul>
-            <div className="date-for-date mt-[15px]">
-              <label className="mr-[5px]">Date for date :</label>
-              <input
-                type="date"
-                className="mb-2 w-[10em] rounded-md border-[1px] bg-background px-2"
-                id="date"
-                value={date}
-                onChange={(e) => {
-                  setDate(e.target.value);
-                }}
-              />
-            </div>
-            <div className="time mt-[15px]">
-              <label className="mr-[5px]">Time :</label>
-              <input
-                type="time"
-                className="mb-2 w-[10em] rounded-md border-[1px] bg-background px-2"
-                id="time"
-                value={time}
-                onChange={(e) => {
-                  setTime(e.target.value);
-                }}
-              />
-            </div>
-            <button
-              className="submit-btn my-[20px] rounded-full bg-background px-[15px] disabled:bg-neutral-500 disabled:text-background"
+            <label>Start Time</label>
+            <input
+              className="input mb-1 bg-white"
+              type="datetime-local"
+              name="startTime"
+              value={startTime}
+              onChange={(e) => {
+                setStartTime(e.target.value);
+              }}
+            />
+            <label>End Time</label>
+
+            <input
+              className="input mb-1 bg-white"
+              type="datetime-local"
+              name="endTime"
+              value={endTime}
+              onChange={(e) => {
+                setEndTime(e.target.value);
+              }}
+            />
+
+            <Button
+              label="Submit"
+              handleClick={() => updateData(dateKey)}
               disabled={items.length === 0}
-              onClick={() => updateData(dateKey)}
-            >
-              Submit
-            </button>
-            <button
-              className=" mt-[15px] rounded-full bg-background p-[5px]"
-              onClick={() => deleteDateItem(dateKey)}
-            >
-              Delete
-            </button>
+            />
+            <Button
+              label="Delete"
+              handleClick={() => deleteDateItem(dateKey)}
+            />
           </form>
         </div>
       </dialog>

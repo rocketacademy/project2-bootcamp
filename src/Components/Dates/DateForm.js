@@ -10,6 +10,8 @@ import ContextHelper from "../Helpers/ContextHelper";
 
 //-----------Media-----------//
 import post02 from "../../Images/LogosIcons/post02.png";
+import CreateButton from "../Feed/CreateButton";
+import Button from "../../Details/Button";
 
 //Database key for date-list
 const REALTIME_DATABASE_KEY_DATE = "date-list";
@@ -19,8 +21,8 @@ export default function DateForm() {
   const [title, setTitle] = useState("");
   const [items, setItems] = useState([]);
   const [newItem, setNewItem] = useState("");
-  const [date, setDate] = useState("");
-  const [time, setTime] = useState("");
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
 
   //context helper to send to database
   const REALTIME_DATABASE_KEY_PAIRKEY = ContextHelper("pairKey");
@@ -30,6 +32,8 @@ export default function DateForm() {
     e.preventDefault();
 
     setItems((currentItem) => {
+      console.log("handleSubmit");
+
       return [
         ...currentItem,
         {
@@ -60,46 +64,44 @@ export default function DateForm() {
       id: new Date().getTime(),
       title: title,
       items: items,
-      date: date,
-      time: time,
+      startTime: startTime,
+      endTime: endTime,
     });
 
     setTitle("");
     setItems([]);
     setNewItem("");
-    setDate("");
-    setTime("");
+    setStartTime("");
+    setEndTime("");
 
     document.getElementById("date-form").close();
   };
 
   return (
     <div className=" fixed bottom-[20px] right-[20px] flex-row ">
-      <button
-        className=" w-[10em]"
-        onClick={() => {
+      <CreateButton
+        src={post02}
+        handleClick={() => {
           document.getElementById("date-form").showModal();
         }}
-      >
-        <img src={post02} alt="POST" />
-      </button>
-
+      />
       <dialog id="date-form" className="modal">
-        <div className="modal-box flex flex-col items-center rounded-2xl bg-text">
+        <div className="modal-box flex flex-col items-center rounded-2xl bg-background">
           <form
             method="dialog"
-            className="flex  w-96 w-full flex-col justify-center justify-items-center p-[20px] text-accent"
+            className="flex w-96 flex-col items-center justify-center p-[20px] text-accent"
           >
             <button className="btn btn-circle btn-ghost btn-sm absolute right-5 top-5 ">
               ✕
             </button>
+            {/* Event Details Section */}
             {title === "" ? (
-              <label className="mb-[5px] text-red-600">*Date :</label>
+              <label className="mb-[5px] text-red-600">Event: (Fill)</label>
             ) : (
-              <label className="mb-[5px]">Date :</label>
+              <label className="mb-[5px]">Event:</label>
             )}
             <input
-              className="mb-[15px] mr-[15px] w-[15em] rounded-md bg-background  px-2"
+              className="input mb-[15px] mr-[15px] w-72 bg-white"
               type="text"
               name="title"
               value={title}
@@ -109,13 +111,13 @@ export default function DateForm() {
               }}
             />
             {items.length === 0 ? (
-              <label className="mb-[5px] text-red-600">*Things needed :</label>
+              <label className="mb-[5px] text-red-600">Checklist: (Fill)</label>
             ) : (
-              <label className="mb-[5px]">Things needed :</label>
+              <label className="mb-[5px]">Checklist:</label>
             )}
             <div className="input-button">
               <input
-                className="mb-[15px] mr-[15px] w-[15em] rounded-md bg-background px-2"
+                className="input mb-[15px] mr-[15px] w-64 rounded-md bg-white px-2"
                 type="text"
                 name="newItem"
                 value={newItem}
@@ -125,7 +127,7 @@ export default function DateForm() {
                 }}
               />
               <button
-                className="rounded-full bg-background px-[7px] font-black"
+                className="rounded-full bg-window p-3 font-black leading-[12px] shadow-lg hover:translate-y-[-2px] hover:bg-text"
                 onClick={handleSubmit}
               >
                 +
@@ -136,45 +138,46 @@ export default function DateForm() {
                 return (
                   <li
                     key={items.id}
-                    className="mb-[15px] flex justify-between  rounded-md bg-background px-2 py-1"
+                    className="mb-[5px] flex w-72 justify-between rounded-md bg-window px-2 text-sm hover:translate-y-[-2px] hover:bg-text"
                   >
                     <label className="mr-[15px]">{items.title}</label>
-                    <button onClick={() => deleteItem(items.id)}>Delete</button>
+                    <button
+                      onClick={() => deleteItem(items.id)}
+                      className="text-sm hover:font-semibold"
+                    >
+                      Delete
+                    </button>
                   </li>
                 );
               })}
             </ul>
-            <div className="date-for-date mt-[15px]">
-              <label className="mr-[5px]">Date for date :</label>
-              <input
-                type="date"
-                className="mb-2 w-[10em] rounded-md border-[1px] bg-background px-2"
-                id="date"
-                value={date}
-                onChange={(e) => {
-                  setDate(e.target.value);
-                }}
-              />
-            </div>
-            <div className="time mt-[15px]">
-              <label className="mr-[5px]">Time :</label>
-              <input
-                type="time"
-                className="mb-2 w-[10em] rounded-md border-[1px] bg-background px-2"
-                id="time"
-                value={time}
-                onChange={(e) => {
-                  setTime(e.target.value);
-                }}
-              />
-            </div>
-            <button
-              className="submit-btn my-[20px] rounded-full bg-background px-[15px] disabled:bg-neutral-500 disabled:text-background"
+            {/* Event Timings Section */}
+            <label>Start Time</label>
+            <input
+              className="input mb-1 bg-white"
+              type="datetime-local"
+              name="startTime"
+              value={startTime}
+              onChange={(e) => {
+                setStartTime(e.target.value);
+              }}
+            />
+            <label>End Time</label>
+
+            <input
+              className="input mb-1 bg-white"
+              type="datetime-local"
+              name="endTime"
+              value={endTime}
+              onChange={(e) => {
+                setEndTime(e.target.value);
+              }}
+            />
+            <Button
+              label="Submit"
+              handleClick={writeData}
               disabled={items.length === 0}
-              onClick={writeData}
-            >
-              Submit
-            </button>
+            />
           </form>
         </div>
       </dialog>
