@@ -160,7 +160,7 @@ export default function BucketForm() {
               />
             </div>
             <button
-              className="submit-btn my-[20px] rounded-full bg-background px-[15px] disabled:bg-neutral-500 disabled:text-background"
+              className="submit-btn my-[20px] w-20 rounded-full bg-background px-[15px] disabled:bg-neutral-500 disabled:text-background"
               onClick={writeData}
               disabled={items.length === 0}
             >

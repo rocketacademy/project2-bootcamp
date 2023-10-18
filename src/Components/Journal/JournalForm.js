@@ -8,6 +8,7 @@ import { database } from "../../firebase/firebase";
 //-----------Components-----------//
 import ContextHelper from "../Helpers/ContextHelper";
 import EmotionComponent from "./EmotionComponent";
+import CreateButton from "../Feed/CreateButton";
 
 //-----------Images-----------//
 import post02 from "../../Images/LogosIcons/post02.png";
@@ -60,26 +61,24 @@ export default function JournalForm() {
 
   return (
     <div className=" fixed bottom-[20px] right-[20px] flex-row ">
-      <button
-        className="btn w-[10em] border-0"
-        onClick={() => {
+      <CreateButton
+        src={post02}
+        handleClick={() => {
           document.getElementById("journal-form").showModal();
         }}
-      >
-        <img src={post02} alt="POST" />
-      </button>
+      />
       <dialog id="journal-form" className="modal">
-        <div className="modal-box flex flex-col items-center rounded-2xl bg-text">
+        <div className="modal-box flex flex-col items-center rounded-2xl bg-window">
           <form
             method="dialog"
-            className="flex  w-full flex-col justify-center justify-items-center p-[20px] text-accent"
+            className="flex flex-col items-center justify-center p-[20px] text-center text-accent"
           >
             <button className="btn btn-circle btn-ghost btn-sm absolute right-5 top-5 ">
               ✕
             </button>
             <label className="mb-[5px]">Title :</label>
             <input
-              className="mb-[15px] mr-[15px] w-[15em] rounded-md bg-background  px-2"
+              className="mb-[15px] mr-[15px] w-[15em] justify-center rounded-md  bg-background px-2"
               type="text"
               name="title"
               value={title}
@@ -111,24 +110,22 @@ export default function JournalForm() {
                 setTexts(e.target.value);
               }}
             />
+            <div className="flex flex-col">
+              <label className="mb-[5px]">Signing Off :</label>
+              <input
+                className="mb-[15px] mr-[15px] w-[15em] rounded-md bg-background  px-2"
+                type="text"
+                name="sign"
+                value={sign}
+                placeholder="sign off"
+                onChange={(e) => {
+                  setSign(e.target.value);
+                }}
+              />
+            </div>
             <div className="flex flex-row">
-              <div className="flex flex-col">
-                <label className="mb-[5px]">Signing Off :</label>
-                <input
-                  className="mb-[15px] mr-[15px] w-[15em] rounded-md bg-background  px-2"
-                  type="text"
-                  name="sign"
-                  value={sign}
-                  placeholder="sign off"
-                  onChange={(e) => {
-                    setSign(e.target.value);
-                  }}
-                />
-              </div>
-              <div className="flex flex-col">
-                <label className="mb-[-5px]">Feeling?</label>
-                <EmotionComponent onSelect={handleEmotionSelect} />
-              </div>
+              <label>Feeling?</label>
+              <EmotionComponent onSelect={handleEmotionSelect} />
             </div>
             <button
               className="submit-btn my-[20px] w-20 rounded-full bg-background px-[15px] "
