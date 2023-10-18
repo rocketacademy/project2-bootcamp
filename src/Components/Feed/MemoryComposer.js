@@ -1,5 +1,6 @@
 //-----------React-----------//
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 //-----------Firebase-----------//
 import { database, storage } from "../../firebase/firebase";
@@ -20,21 +21,27 @@ import Button from "../../Details/Button";
 import uploadimage from "../../Images/upload-image.png";
 
 //Props Format: <Composer postContent = {post} />
-export function MultiFileComposer(props) {
+export default function MemoryComposer({
+  id,
+  uploadMessage,
+  uploadDate,
+  uploadTags,
+}) {
+  const navigate = useNavigate();
+
   // Variables
   const DUMMY_USERID = ContextHelper("displayName");
   const DUMMY_PAIRID = ContextHelper("pairKey");
 
   const [formInfo, setFormInfo] = useState({
-    postMessage: props.postContent ? props.postContent.val.message : "",
-    date: props.postContent ? props.postContent.val.date : null,
-    tags: props.postContent ? props.postContent.val.tags : "",
+    key: id,
+    postMessage: uploadMessage ? uploadMessage : "",
+    date: uploadDate ? uploadDate : null,
+    tags: uploadTags ? uploadTags : "",
     fileArray: [],
   });
 
-  const [filePreviewArray, setFilePreviewArray] = useState(
-    props.postContent ? props.postContent.val.fileArray : [],
-  );
+  const [filePreviewArray, setFilePreviewArray] = useState([]);
 
   const textChange = (e) => {
     const name = e.target.id;
@@ -56,13 +63,21 @@ export function MultiFileComposer(props) {
     setFormInfo((prevState) => {
       return { ...prevState, fileArray: Object.values(e.target.files) };
     });
-    if (props.postContent && e.target.files.length === 0) {
-      setFilePreviewArray(props.postContent.val.fileArray);
-    } else {
-      setFilePreviewArray(
-        Object.values(e.target.files).map((file) => URL.createObjectURL(file)),
-      );
-    }
+    setFilePreviewArray(
+      Object.values(e.target.files).map((file) => URL.createObjectURL(file)),
+    );
+  };
+
+  // Format date for final presentation
+  const formattedDate = (dateStr) => {
+    const date = new Date(dateStr);
+    return date.toLocaleString("en-US", {
+      year: "numeric",
+      month: "numeric",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
   };
 
   const writeData = () => {
@@ -93,36 +108,15 @@ export function MultiFileComposer(props) {
       )
 
       .then((urlArray) => {
-        // if post was given, take the ref and set it; else take the parent folder and push it
-        if (props.postContent !== null) {
-          const messageListRef = ref(
-            database,
-            `rooms/${DUMMY_PAIRID}/feed/${props.postContent.key}`,
-          );
-          set(messageListRef, {
-            user: DUMMY_USERID,
-            message: formInfo.postMessage,
-            date: props.postContent.val.date, //this is the original value - can i just omit this line?
-            files:
-              urlArray.length !== 0
-                ? urlArray
-                : props.postContent.val.fileArray, //just take url from new file for now - need to figure out how to delete the old file
-            tags: formInfo.tags,
-            comments: props.postContent.val.comments
-              ? props.postContent.val.comments
-              : null,
-          });
-        } else {
-          const messageListRef = ref(database, `rooms/${DUMMY_PAIRID}/feed`);
-          push(messageListRef, {
-            user: DUMMY_USERID,
-            message: formInfo.postMessage,
-            date: `${new Date().toLocaleString()}`,
-            files: urlArray,
-            tags: formInfo.tags,
-            comments: [],
-          });
-        }
+        const messageListRef = ref(database, `rooms/${DUMMY_PAIRID}/feed`);
+        push(messageListRef, {
+          user: DUMMY_USERID,
+          message: formInfo.postMessage,
+          date: formattedDate(formInfo.date),
+          files: urlArray,
+          tags: formInfo.tags,
+          comments: [],
+        });
       })
       .then(() => {
         //reset form after submit
@@ -132,20 +126,8 @@ export function MultiFileComposer(props) {
           date: null,
           tags: "",
         });
-        // navigate("../memories"); Not needed unless used in other pages
+        navigate("/memories");
       });
-  };
-
-  const handleDelete = (e) => {
-    const postRef = ref(
-      database,
-      `rooms/${DUMMY_PAIRID}/feed/${props.postContent.key}`,
-    );
-    remove(postRef);
-  };
-
-  const closeComposerModal = () => {
-    document.getElementById("composer").close();
   };
 
   return (
@@ -153,7 +135,7 @@ export function MultiFileComposer(props) {
       <ImageCarousel urlArray={filePreviewArray ? filePreviewArray : []} />
       <form className=" flex flex-col items-center justify-center">
         <label className="text-sm">
-          {props.postContent ? "Edit Memory:" : "New Memory: "}
+          <p>New Memory:</p>
         </label>
         <input
           type="text"
@@ -188,8 +170,9 @@ export function MultiFileComposer(props) {
           value={formInfo.tags}
           className="input mb-2 w-[250px] bg-white text-sm"
         />
+        <p>Event End: {formattedDate(formInfo.date)}</p>
         <label
-          htmlFor="upload-image"
+          htmlFor={formInfo.key}
           style={{ cursor: "pointer" }}
           className=" m-1 flex h-[48px] w-[170px] flex-row items-center justify-center
  rounded-lg bg-slate-300 px-2 text-[14px] font-semibold shadow-lg hover:translate-y-[-2px] hover:bg-slate-400"
@@ -203,7 +186,7 @@ export function MultiFileComposer(props) {
         </label>
         <input
           type="file"
-          id="upload-image"
+          id={formInfo.key}
           className="display: none"
           accept="image/*"
           style={{ display: "none" }}
@@ -217,14 +200,8 @@ export function MultiFileComposer(props) {
         label="Create Post!"
         handleClick={() => {
           writeData();
-          closeComposerModal();
         }}
       />
-      {props.postContent ? (
-        <button id="deletePost" onClick={(e) => handleDelete(e)}>
-          Delete Post
-        </button>
-      ) : null}
     </div>
   );
 }

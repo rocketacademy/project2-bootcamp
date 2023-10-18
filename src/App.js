@@ -14,8 +14,10 @@ import ChatPage from "./Pages/ChatPage";
 import BucketList from "./Pages/BucketListPage";
 import FeedPage from "./Pages/FeedPage";
 import DatesPage from "./Pages/DatesPage";
+import TimeCapsule from "./Pages/TimeCapsule";
 import ErrorPage from "./Pages/ErrorPage";
-import BucketForm from "./Components/BucketForm";
+import JournalPage from "./Pages/JournalPage";
+import Spare from "./Pages/Spare";
 
 //-----------Firebase-----------//
 import { auth, database } from "./firebase/firebase";
@@ -24,6 +26,7 @@ import { ref, orderByChild, query, equalTo, get } from "firebase/database";
 
 //-----------Styling-----------//
 import "./App.css";
+import Calendar from "./Pages/Calendar";
 
 const router = createBrowserRouter([
   {
@@ -64,12 +67,24 @@ const router = createBrowserRouter([
     element: <DatesPage />,
   },
   {
+    path: "/spare",
+    element: <Spare />,
+  },
+  {
+    path: "/time-capsule",
+    element: <TimeCapsule />,
+  },
+  {
+    path: "/calendar",
+    element: <Calendar />,
+  },
+  {
     path: "/bucket-list",
-    element: (
-      <BucketList>
-        <BucketForm />
-      </BucketList>
-    ),
+    element: <BucketList />,
+  },
+  {
+    path: "/journal",
+    element: <JournalPage />,
   },
 ]);
 
@@ -77,19 +92,21 @@ export const UserContext = React.createContext(null);
 
 function App() {
   const [pairKey, setPairKey] = useState("");
+  const [displayName, setDisplayName] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isPairedUp, setIsPairedUp] = useState(false);
   // const [isDemo, setIsDemo] = useState(false);
   const [email, setEmail] = useState("");
-  const [user, setUser] = useState(null);
 
   const context = {
     email,
+    displayName,
     pairKey,
     isLoggedIn,
     isPairedUp,
     // isDemo,
     setEmail,
+    setDisplayName,
     setPairKey,
     setIsLoggedIn,
     setIsPairedUp,
@@ -99,8 +116,6 @@ function App() {
   useEffect(() => {
     onAuthStateChanged(auth, (userInfo) => {
       if (userInfo) {
-        setUser(userInfo);
-        console.log(userInfo.email);
         fetchPairKey(userInfo.email);
         setEmail(userInfo.email);
         setIsLoggedIn(true);
@@ -129,7 +144,8 @@ function App() {
         const userData = snapshot.val();
         const userKey = Object.keys(userData)[0];
         const pairKey = userData[userKey].pairKey;
-        console.log(`Pair Key: ${pairKey}`);
+        const displayName = userData[userKey].displayName;
+        setDisplayName(displayName);
         setPairKey(pairKey);
       } else {
         console.log("User not found");
