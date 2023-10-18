@@ -76,8 +76,14 @@ export default function SettingsPage() {
     }
     console.log('updating display name')
     const displayNameRef = ref(database, `userRef/${currentUserKey}/displayName`);
-    set(displayNameRef, displayName)
+    Promise.all([
+    set(displayNameRef, displayName),
     updateProfile(auth.currentUser, {displayName:displayName})
+  ])
+    .then(()=>{
+      console.log('setting')
+      setDisplayName('')
+    })
   }
 
   const updateBackgroundPicture = (e) => {
@@ -182,6 +188,7 @@ const deletePairKey = () => {
               type="text"
               className=" mb-1 w-[14em] rounded-md border-[1px] border-black px-2"
               id="displayName"
+              value={displayName}
               placeholder=""
               onChange={(e) => {setDisplayName((e.target.value));}}
             />
