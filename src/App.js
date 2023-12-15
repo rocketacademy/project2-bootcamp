@@ -1,20 +1,31 @@
-import React from "react";
-import logo from "./logo.png";
 import "./App.css";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { Outlet } from "react-router-dom";
+import NaviBar from "./AfterLogin/NaviBar";
+export default function App() {
+  const [user, setUser] = useState(null);
+  const navi = useNavigate();
 
-class App extends React.Component {
-  render() {
-    return (
+  //useEffect to setUser
+
+  const haveUserDisplay = (
+    <div>
+      <NaviBar />
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-        </header>
+        <Outlet context={[user, setUser]} />
       </div>
-    );
-  }
-}
+    </div>
+  );
 
-export default App;
+  const noUserDisplay = (
+    <div className="App">
+      <h1>Flashcard</h1>
+      <h2>Spanish-English</h2>
+      <button onClick={() => navi("/register")}>Register</button>
+      <button onClick={() => navi("/signin")}>Sign in</button>
+    </div>
+  );
+
+  return user ? haveUserDisplay : noUserDisplay;
+}
