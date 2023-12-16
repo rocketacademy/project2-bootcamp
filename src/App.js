@@ -9,7 +9,7 @@ export default function App() {
 
   //useEffect to setUser
 
-  const haveUserDisplay = (
+  const userDisplay = (
     <div>
       <NaviBar />
       <div className="App">
@@ -18,7 +18,8 @@ export default function App() {
     </div>
   );
 
-  const noUserDisplay = (
+  //Display for User haven't login
+  const nonUserDisplay = (
     <div className="App">
       <h1>Flashcard</h1>
       <h2>Spanish-English</h2>
@@ -27,5 +28,5 @@ export default function App() {
     </div>
   );
 
-  return user ? haveUserDisplay : noUserDisplay;
+  return user ? userDisplay : nonUserDisplay;
 }
