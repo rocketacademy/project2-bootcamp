@@ -1,7 +1,7 @@
 import { useOutletContext } from "react-router-dom";
 //Take the user data from App.js state
 
-export default function EditPage() {
+export default function AddDeckPage() {
   const [user, setUser] = useOutletContext();
-  return <div>EditPage</div>;
+  return <div>AddDeckPage</div>;
 }

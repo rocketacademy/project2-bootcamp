@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import NaviBar from "./AfterLogin/NaviBar";
 export default function App() {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState("test");
   const navi = useNavigate();
 
   //useEffect to setUser

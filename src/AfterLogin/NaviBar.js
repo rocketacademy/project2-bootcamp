@@ -13,7 +13,7 @@ export default function NaviBar() {
         <Link to="/report">
           <LeaderboardIcon />
         </Link>
-        <Link to="/edit">
+        <Link to="/addDeck">
           <PostAddIcon />
         </Link>
         <LogoutIcon />
