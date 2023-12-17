@@ -6,7 +6,6 @@ import NaviBar from "./AfterLogin/NaviBar";
 export default function App() {
   const [user, setUser] = useState("test");
   const navi = useNavigate();
-
   //useEffect to setUser
 
   const userDisplay = (
