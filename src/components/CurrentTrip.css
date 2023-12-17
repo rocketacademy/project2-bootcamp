@@ -1,0 +1,48 @@
+.max-w-md {
+  max-width: 50rem !important;
+}
+
+.top-card-container {
+  display: flex;
+  justify-content: center;
+}
+
+.suggestions-container {
+  margin-bottom: 100px; 
+}
+
+@keyframes shake {
+  10%, 90% {
+    transform: translate3d(-1px, 0, 0);
+  }
+  20%, 80% {
+    transform: translate3d(2px, 0, 0);
+  }
+  30%, 50%, 70% {
+    transform: translate3d(-4px, 0, 0);
+  }
+  40%, 60% {
+    transform: translate3d(4px, 0, 0);
+  }
+}
+
+.shake {
+  animation: shake 0.6s cubic-bezier(.36, .07, .19, .97) both;
+}
+
+.gem-already-added {
+  opacity: 0.2;
+  pointer-events: none; /* This will make it non-clickable */
+}
+
+.title-font {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: bold;
+    font-size: 2rem;
+}
+
+.date-font {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.5rem;
+    color: #555;
+}
