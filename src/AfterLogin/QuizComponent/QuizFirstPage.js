@@ -47,8 +47,8 @@ export default function QuizFirstPage(props) {
     } else {
       props.setDecks((prev) => {
         const index = prev.indexOf(e.target.value);
-        prev.splice(index, 1);
-        return prev;
+        const reduced = prev.toSpliced(index, 1);
+        return reduced;
       });
     }
   };
@@ -75,8 +75,12 @@ export default function QuizFirstPage(props) {
         </h4>
         <h3>Please select decks include in the quiz.</h3>
         <FormGroup>{selection}</FormGroup>
-        <Button variant="contained" onClick={() => props.setQuizPage(1)}>
-          Start Quiz.
+        <Button
+          variant="contained"
+          disabled={!props.decks.length}
+          onClick={() => props.setQuizPage(1)}
+        >
+          Start
         </Button>
       </Card>
     </div>

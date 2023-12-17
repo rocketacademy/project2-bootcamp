@@ -13,6 +13,7 @@ export default function QuizPage() {
       {
         <QuizFirstPage
           user={user}
+          decks={decks}
           setDecks={setDecks}
           setQuizPage={setQuizPage}
         />
