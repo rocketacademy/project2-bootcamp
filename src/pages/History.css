@@ -1,0 +1,23 @@
+.nav-margin {
+  margin-top: 55px;
+}
+
+.trades-container {
+  margin: 5px;
+  padding: 10px;
+  background-color: bisque;
+}
+
+.trade-line {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  border-bottom: 2px solid;
+  border-bottom-color: black;
+}
+
+.trade-info {
+  display: inline-block;
+  padding: 10px;
+}
