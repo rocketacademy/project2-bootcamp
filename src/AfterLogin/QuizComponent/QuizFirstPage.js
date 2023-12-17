@@ -4,9 +4,9 @@ import { FormGroup, FormControlLabel, Checkbox } from "@mui/material";
 import { useEffect, useState } from "react";
 //Take the user data from App.js state
 
-export default function QuizFirstPage() {
-  const [deckIDs, setDeckIDs] = useState([]);
-  const [decks, setDecks] = useState([]);
+export default function QuizFirstPage(props) {
+  const [userDeckIDs, setUserDeckIDs] = useState([]);
+  const [userDecks, setUserDecks] = useState([]);
 
   //Need to replace TestingID with props.user.uid
   const TestingID = "DxXFVzvVUqSLfTtHfVUrjmV2MPW2";
@@ -29,19 +29,32 @@ export default function QuizFirstPage() {
         takeDeckIDsInfo(),
         takeDecksInfo(),
       ]);
-      setDeckIDs(newDecksIDs.val());
-      setDecks(newDecks.val());
+      setUserDeckIDs(newDecksIDs.val());
+      setUserDecks(newDecks.val());
     };
     takeAllInfo();
   }, []);
 
-  const selection = deckIDs.map((deckID) => {
-    const deckName = decks[`deck${deckID}`].deckName;
-    const cardsNum = decks[`deck${deckID}`].deckCards.length;
+  const handleChange = (e) => {
+    if (e.target.checked) {
+      props.setDecks((prev) => [...prev, e.target.value]);
+    } else {
+      props.setDecks((prev) => {
+        const index = prev.indexOf(e.target.value);
+        prev.splice(index, 1);
+        return prev;
+      });
+    }
+  };
+
+  const selection = userDeckIDs.map((deckID) => {
+    const deckName = userDecks[`deck${deckID}`].deckName;
+    const cardsNum = userDecks[`deck${deckID}`].deckCards.length;
     return (
       <FormControlLabel
-        control={<Checkbox />}
+        control={<Checkbox value={deckID} onChange={handleChange} />}
         label={`${deckName} (Cards: ${cardsNum})`}
+        key={deckName}
       />
     );
   });

@@ -5,6 +5,17 @@ import QuizFirstPage from "./QuizComponent/QuizFirstPage";
 
 export default function QuizPage() {
   const [user, setUser] = useOutletContext();
-  const [deck, setDeck] = useState(null);
-  return <div>{!deck && <QuizFirstPage user={user} setDeck={setDeck} />}</div>;
+  const [decks, setDecks] = useState({});
+  const [quizPage, setQuizPage] = useState(0);
+  return (
+    <div>
+      {!quizPage && (
+        <QuizFirstPage
+          user={user}
+          setDecks={setDecks}
+          setQuizPage={setQuizPage}
+        />
+      )}
+    </div>
+  );
 }
