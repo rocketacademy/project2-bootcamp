@@ -1,6 +1,12 @@
 import { ref, get, set } from "firebase/database";
 import { database } from "../../firebase";
-import { FormGroup, FormControlLabel, Checkbox } from "@mui/material";
+import {
+  FormGroup,
+  FormControlLabel,
+  Checkbox,
+  Button,
+  Card,
+} from "@mui/material";
 import { useEffect, useState } from "react";
 //Take the user data from App.js state
 
@@ -60,14 +66,19 @@ export default function QuizFirstPage(props) {
   });
 
   return (
-    <div>
-      <h3>Multiple Choice Quiz</h3>
-      <h4>
-        Hit the 'start' button to begin this quiz. You'll have 4 answer options
-        and your task is to select the correct option.
-      </h4>
-      <h3>Please select decks include in the quiz.</h3>
-      <FormGroup>{selection}</FormGroup>
+    <div className="quiz-page">
+      <Card className="quiz-first-page">
+        <h3>Multiple Choice Quiz</h3>
+        <h4>
+          Hit the 'start' button to begin this quiz. You'll have 4 answer
+          options and your task is to select the correct option.
+        </h4>
+        <h3>Please select decks include in the quiz.</h3>
+        <FormGroup>{selection}</FormGroup>
+        <Button variant="contained" onClick={() => props.setQuizPage(1)}>
+          Start Quiz.
+        </Button>
+      </Card>
     </div>
   );
 }

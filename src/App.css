@@ -32,3 +32,19 @@ a {
   align-items: center;
   justify-content: space-between;
 }
+
+.quiz-page {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.quiz-first-page {
+  width: 80%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  align-self: center;
+  padding: 1vh;
+}
