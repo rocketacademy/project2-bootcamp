@@ -1,24 +1,29 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useOutletContext } from "react-router-dom";
 //Take the user data from App.js state
 import QuizFirstPage from "./QuizComponent/QuizFirstPage";
 import McQuiz from "./QuizComponent/McQuiz";
 
 export default function QuizPage() {
-  const [user, setUser] = useOutletContext();
+  const [user] = useOutletContext();
   const [decks, setDecks] = useState([]);
   const [quizPage, setQuizPage] = useState(0);
+  //0 is the first page
+  //1 is the quiz page
+  //2 is the result page
+
+  console.log(decks);
   return (
     <div>
-      {
+      {!quizPage && (
         <QuizFirstPage
           user={user}
           decks={decks}
           setDecks={setDecks}
           setQuizPage={setQuizPage}
         />
-      }
-      {quizPage !== 0 && <McQuiz />}
+      )}
+      {quizPage === 1 && <McQuiz decks={decks} />}
     </div>
   );
 }

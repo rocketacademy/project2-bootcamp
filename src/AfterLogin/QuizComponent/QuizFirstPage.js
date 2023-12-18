@@ -1,4 +1,4 @@
-import { ref, get, set } from "firebase/database";
+import { ref, get } from "firebase/database";
 import { database } from "../../firebase";
 import {
   FormGroup,
@@ -42,11 +42,14 @@ export default function QuizFirstPage(props) {
   }, []);
 
   const handleChange = (e) => {
+    const decksInfo = userDecks[`deck${e.target.value}`];
     if (e.target.checked) {
-      props.setDecks((prev) => [...prev, e.target.value]);
+      props.setDecks((prev) => [...prev, decksInfo]);
     } else {
       props.setDecks((prev) => {
-        const index = prev.indexOf(e.target.value);
+        const index = prev.findIndex(
+          (deck) => deck.deckID === Number(e.target.value)
+        );
         const reduced = prev.toSpliced(index, 1);
         return reduced;
       });
@@ -66,7 +69,7 @@ export default function QuizFirstPage(props) {
   });
 
   return (
-    <div className="quiz-page">
+    <div className="quiz-sub-page">
       <Card className="quiz-first-page">
         <h3>Multiple Choice Quiz</h3>
         <h4>
