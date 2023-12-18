@@ -3,6 +3,7 @@ import { useOutletContext } from "react-router-dom";
 //Take the user data from App.js state
 import QuizFirstPage from "./QuizComponent/QuizFirstPage";
 import McQuiz from "./QuizComponent/McQuiz";
+import "./QuizComponent/QuizPage.css";
 
 export default function QuizPage() {
   const [user] = useOutletContext();
@@ -12,7 +13,7 @@ export default function QuizPage() {
   //1 is the quiz page
   //2 is the result page
   return (
-    <div className="page">
+    <div className="App">
       {!quizPage && (
         <QuizFirstPage
           user={user}

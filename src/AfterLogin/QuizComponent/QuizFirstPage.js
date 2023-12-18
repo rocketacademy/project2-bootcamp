@@ -1,15 +1,16 @@
 import { ref, get } from "firebase/database";
 import { database } from "../../firebase";
+import DisabledByDefaultOutlinedIcon from "@mui/icons-material/DisabledByDefaultOutlined";
 import {
   FormGroup,
   FormControlLabel,
   Checkbox,
   Button,
   Card,
-  Backdrop,
   CircularProgress,
 } from "@mui/material";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 //Take the user data from App.js state
 
 export default function QuizFirstPage(props) {
@@ -80,6 +81,9 @@ export default function QuizFirstPage(props) {
   return (
     <div className="quiz-sub-page">
       <Card className="quiz-card">
+        <Link to="/" className="homepage-button">
+          <DisabledByDefaultOutlinedIcon />
+        </Link>
         <h3>Multiple Choice Quiz</h3>
         <h4>
           Hit the 'start' button to begin this quiz. You'll have 4 answer

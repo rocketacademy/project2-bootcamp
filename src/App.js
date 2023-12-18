@@ -1,16 +1,17 @@
 import "./App.css";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import NaviBar from "./AfterLogin/NaviBar";
 export default function App() {
   const [user, setUser] = useState("test");
   const navi = useNavigate();
+  const path = useLocation();
   //useEffect to setUser
 
   const userDisplay = (
     <div>
-      <NaviBar />
+      {path.pathname !== "/quiz" && <NaviBar />}
       <div className="outlet">
         <Outlet context={[user, setUser]} />
       </div>

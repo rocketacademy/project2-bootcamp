@@ -1,0 +1,64 @@
+.homepage-button {
+  position: relative;
+  left: 45%;
+  top: 10px;
+}
+
+.quiz-sub-page {
+  min-width: 100%;
+  max-width: 100%;
+  min-height: 75vh;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  position: relative;
+}
+
+.quiz-card {
+  width: 60vw;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  align-self: center;
+  padding: 1vh;
+}
+
+.quiz-question {
+  width: 100vw;
+  max-width: 100%;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: row;
+}
+
+.quiz-sub-question-page {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  align-self: center;
+}
+
+.quiz-header {
+  width: 60%;
+  height: 25vh;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.quiz-subheader {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.progress-bar {
+  width: 100%;
+}
