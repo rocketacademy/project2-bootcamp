@@ -2,11 +2,10 @@ import { Backdrop, CircularProgress, cardClasses } from "@mui/material";
 import { get, ref } from "firebase/database";
 import { useEffect, useState } from "react";
 import { database } from "../../firebase";
+import McQuizQuestion from "../McQuizQuestion";
 
 export default function McQuiz(props) {
-  const [isCorrect, setIsCorrect] = useState(new Array(10).fill(false));
-  const [isAnswered, setIsAnswered] = useState(new Array(10).fill(false));
-  const [question, setQuestion] = useState([]);
+  const [questions, setQuestions] = useState([]);
 
   //only generate once when this component is rendered.
   useEffect(() => {
@@ -20,7 +19,6 @@ export default function McQuiz(props) {
         );
         const correctCardID = decks[randomDeckIndex].deckCards[randomCardIndex];
         //Delete that in the state deck to prevent repetition
-        console.log(decks);
         decks[randomDeckIndex].deckCards.splice(randomCardIndex, 1);
         return { deckName, randomDeckIndex, correctCardID };
       };
@@ -90,21 +88,21 @@ export default function McQuiz(props) {
       }
 
       const newQuestion = await Promise.all(promises);
-      setQuestion(newQuestion);
+      setQuestions(newQuestion);
     };
 
     genQuestion(props.decks);
   }, []);
-
-  console.log(question);
+  console.log(questions);
   return (
-    <div>
-      <Backdrop open={!question.length}>
+    <div className="page">
+      <Backdrop open={!questions.length}>
         <h3>Generating question</h3>
         <h1>
           <CircularProgress color="inherit" />
         </h1>
       </Backdrop>
+      {questions.length !== 0 && <McQuizQuestion questions={questions} />}
     </div>
   );
 }

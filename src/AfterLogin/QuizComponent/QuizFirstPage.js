@@ -79,7 +79,7 @@ export default function QuizFirstPage(props) {
 
   return (
     <div className="quiz-sub-page">
-      <Card className="quiz-first-page">
+      <Card className="quiz-card">
         <h3>Multiple Choice Quiz</h3>
         <h4>
           Hit the 'start' button to begin this quiz. You'll have 4 answer

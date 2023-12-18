@@ -26,25 +26,36 @@ a {
 
 .navi-icon-div {
   margin-right: 10px;
-  width: 30%;
+  width: 30vw;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
 }
 
+.page {
+  width: 100vw;
+}
+
 .quiz-sub-page {
-  width: 100%;
+  min-width: 100vw;
   display: flex;
   justify-content: center;
 }
 
-.quiz-first-page {
-  width: 80%;
+.quiz-card {
+  width: 60vw;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
   align-self: center;
   padding: 1vh;
+}
+
+.quiz-question {
+  width: 100vw;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: row;
 }
