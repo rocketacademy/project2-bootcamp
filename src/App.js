@@ -11,7 +11,7 @@ export default function App() {
   const userDisplay = (
     <div>
       <NaviBar />
-      <div className="App">
+      <div className="outlet">
         <Outlet context={[user, setUser]} />
       </div>
     </div>
