@@ -6,6 +6,8 @@ import {
   Checkbox,
   Button,
   Card,
+  Backdrop,
+  CircularProgress,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 //Take the user data from App.js state
@@ -56,17 +58,24 @@ export default function QuizFirstPage(props) {
     }
   };
 
-  const selection = userDeckIDs.map((deckID) => {
-    const deckName = userDecks[`deck${deckID}`].deckName;
-    const cardsNum = userDecks[`deck${deckID}`].deckCards.length;
-    return (
-      <FormControlLabel
-        control={<Checkbox value={deckID} onChange={handleChange} />}
-        label={`${deckName} (Cards: ${cardsNum})`}
-        key={deckName}
-      />
-    );
-  });
+  const selection = userDeckIDs.length ? (
+    userDeckIDs.map((deckID) => {
+      const deckName = userDecks[`deck${deckID}`].deckName;
+      const cardsNum = userDecks[`deck${deckID}`].deckCards.length;
+      return (
+        <FormControlLabel
+          control={<Checkbox value={deckID} onChange={handleChange} />}
+          label={`${deckName} (Cards: ${cardsNum})`}
+          key={deckName}
+        />
+      );
+    })
+  ) : (
+    <div>
+      Generating deck options
+      <CircularProgress color="inherit" />
+    </div>
+  );
 
   return (
     <div className="quiz-sub-page">

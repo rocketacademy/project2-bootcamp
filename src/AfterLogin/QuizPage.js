@@ -11,8 +11,6 @@ export default function QuizPage() {
   //0 is the first page
   //1 is the quiz page
   //2 is the result page
-
-  console.log(decks);
   return (
     <div>
       {!quizPage && (
