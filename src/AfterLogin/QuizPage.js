@@ -12,7 +12,7 @@ export default function QuizPage() {
   //1 is the quiz page
   //2 is the result page
   return (
-    <div>
+    <div className="page">
       {!quizPage && (
         <QuizFirstPage
           user={user}
