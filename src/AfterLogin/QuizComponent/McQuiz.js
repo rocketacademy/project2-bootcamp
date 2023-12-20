@@ -11,7 +11,7 @@ export default function McQuiz(props) {
   useEffect(() => {
     const genQuestion = async (decks) => {
       const questionID = [];
-      const genCorrectCard = () => {
+      const genCorrectCardID = () => {
         const randomDeckIndex = Math.floor(Math.random() * decks.length);
         const deckName = decks[randomDeckIndex].deckName;
         const randomCardIndex = Math.floor(
@@ -22,7 +22,7 @@ export default function McQuiz(props) {
         decks[randomDeckIndex].deckCards.splice(randomCardIndex, 1);
         return { deckName, randomDeckIndex, correctCardID };
       };
-      const genFalseCards = (randomDeckIndex) => {
+      const genFalseCardsID = (randomDeckIndex) => {
         const falseCardsID = [];
         //take 3 random answer without delete and repetition
         for (let j = 0; j < 3; j++) {
@@ -49,8 +49,8 @@ export default function McQuiz(props) {
             j--;
           }
         }
-        const { deckName, randomDeckIndex, correctCardID } = genCorrectCard();
-        const falseCardsID = genFalseCards(randomDeckIndex);
+        const { deckName, randomDeckIndex, correctCardID } = genCorrectCardID();
+        const falseCardsID = genFalseCardsID(randomDeckIndex);
         questionID.push({
           deckName: deckName,
           correct: correctCardID,
@@ -69,7 +69,11 @@ export default function McQuiz(props) {
         for (const falseCardID of falseCardIDs) {
           const falseCardRef = ref(database, `cards/card${falseCardID}`);
           const falseCard = await get(falseCardRef);
-          questionInfo.choice.push(falseCard.val().spanish);
+          //randomlize the choice order(length+1 for insert it into last index)
+          const random = Math.floor(
+            Math.random() * (questionInfo.choice.length + 1)
+          );
+          questionInfo.choice.splice(random, 0, falseCard.val().spanish);
         }
         return questionInfo;
       };
