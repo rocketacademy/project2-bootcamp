@@ -1,7 +1,3 @@
-/* .App {
-  text-align: center;
-}
-
 .App-logo {
   height: 40vmin;
   pointer-events: none;
@@ -16,4 +12,17 @@
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
-} */
+} 
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.ai-response {
+  animation: fadeIn 0.5s ease;
+}
