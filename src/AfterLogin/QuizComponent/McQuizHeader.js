@@ -13,7 +13,7 @@ export default function McQuizHeader(props) {
         <div className="dialog">
           Are you sure you want to exit?
           <p>All progress will not be saved</p>
-          <div className="dialog-button-div">
+          <div className="button-div">
             <Button variant="contained" onClick={() => navi("/")}>
               yes
             </Button>
@@ -24,7 +24,7 @@ export default function McQuizHeader(props) {
         </div>
       </Dialog>
       <div className="quiz-subheader">
-        <h2>{props.questions[props.currentQuestion].deckName}</h2>
+        <h3>{props.questions[props.currentQuestion].deckName}</h3>
         <DisabledByDefaultOutlinedIcon
           onClick={() => setDialog(true)}
           className="exit-button"

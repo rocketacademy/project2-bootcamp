@@ -82,10 +82,8 @@ export default function QuizFirstPage(props) {
   props.decks.forEach(
     (deck) => (questionAvailable += deck.deckCards.length - 3)
   );
-
   //must have enough cards to start the quiz
   const isEnoughCards = questionAvailable >= 10;
-  console.log(questionAvailable);
   return (
     <div className="quiz-sub-page">
       <Card className="quiz-card">

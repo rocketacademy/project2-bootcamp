@@ -52,14 +52,13 @@ export default function McQuizQuestion(props) {
           }}
         >
           <CardContent
-            className={`spanish-card-content 
-              ${
-                isCorrectAnswer && isQuestionAnswered
-                  ? "correct"
-                  : userChoice
-                  ? "wrong"
-                  : null
-              }`}
+            className={
+              isCorrectAnswer && isQuestionAnswered
+                ? "correct"
+                : userChoice
+                ? "wrong"
+                : null
+            }
           >
             {isQuestionAnswered && isCorrectAnswer && <span>✓</span>}
             {userChoice && !isCorrectAnswer && <span>X</span>}
@@ -81,9 +80,18 @@ export default function McQuizQuestion(props) {
             {question.english}
           </Card>
           {choicesDisplay}
-          <Button variant="contained" onClick={handleNextQuestion}>
-            Next Question
-          </Button>
+          <div className="button-div">
+            <Button variant="contained" className="question-button">
+              ←
+            </Button>
+            <Button
+              variant="contained"
+              className="question-button"
+              onClick={handleNextQuestion}
+            >
+              →
+            </Button>
+          </div>
         </div>
       </div>
     );

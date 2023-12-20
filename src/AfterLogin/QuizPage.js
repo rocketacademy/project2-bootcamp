@@ -11,7 +11,6 @@ export default function QuizPage() {
   const [quizPage, setQuizPage] = useState(0);
   //0 is the first page
   //1 is the quiz page
-  //2 is the result page
   return (
     <div className="App">
       {!quizPage && (
