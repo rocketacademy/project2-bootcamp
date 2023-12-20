@@ -49,7 +49,7 @@
 
 .quiz-header {
   width: 60%;
-  height: 25vh;
+  height: 20vh;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -102,10 +102,28 @@
 }
 
 .spanish-card {
+  position: relative;
   width: 60%;
+  height: 50px;
   margin: 10px;
+}
+
+.spanish-card-content {
+  padding: 0px;
+}
+
+.spanish-card span {
+  position: absolute;
+  left: 5px;
 }
 
 .spanish-card:hover {
   cursor: pointer;
+}
+
+.correct {
+  background-color: #34a853;
+}
+.wrong {
+  background-color: #db004f;
 }

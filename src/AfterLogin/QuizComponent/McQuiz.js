@@ -97,7 +97,7 @@ export default function McQuiz(props) {
 
     genQuestion(props.decks);
   }, []);
-  console.log(questions);
+
   return (
     <div className="page">
       <Backdrop open={!questions.length}>
