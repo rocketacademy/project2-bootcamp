@@ -1,6 +1,8 @@
-.App {
-  text-align: center;
-}
+/* .App {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+} */
 
 .App-logo {
   height: 40vmin;
@@ -16,4 +18,17 @@
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.ai-response {
+  animation: fadeIn 0.5s ease;
 }
