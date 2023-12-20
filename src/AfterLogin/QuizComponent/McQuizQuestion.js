@@ -1,7 +1,6 @@
-import { Button, Card, LinearProgress } from "@mui/material";
+import { Button, Card } from "@mui/material";
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import DisabledByDefaultOutlinedIcon from "@mui/icons-material/DisabledByDefaultOutlined";
+import McQuizHeader from "./McQuizHeader";
 
 export default function McQuizQuestion(props) {
   const [isCorrect, setIsCorrect] = useState(new Array(10).fill(false));
@@ -34,11 +33,14 @@ export default function McQuizQuestion(props) {
         onAnimationEnd={() => setAnimation(false)}
       >
         <div className="quiz-sub-question-page">
-          <Card>{question.english}</Card>
-          <Card>{question.choice[0]}</Card>
-          <Card>{question.choice[1]}</Card>
-          <Card>{question.choice[2]}</Card>
-          <Card>{question.choice[3]}</Card>
+          <Card className="english-card">
+            <h6>English</h6>
+            {question.english}
+          </Card>
+          <Card className="spanish-card">{question.choice[0]}</Card>
+          <Card className="spanish-card">{question.choice[1]}</Card>
+          <Card className="spanish-card">{question.choice[2]}</Card>
+          <Card className="spanish-card">{question.choice[3]}</Card>
           <Button variant="contained" onClick={handleNextQuestion}>
             Next Question
           </Button>
@@ -48,18 +50,10 @@ export default function McQuizQuestion(props) {
   });
   return (
     <div className="page">
-      <div className="quiz-header">
-        <div className="quiz-subheader">
-          <h2>{props.questions[currentQuestion].deckName}</h2>
-          <DisabledByDefaultOutlinedIcon />
-        </div>
-        <span className="progress-number">{currentQuestion + 1}/10</span>
-        <LinearProgress
-          variant="determinate"
-          value={(currentQuestion + 1) * 10}
-          className="progress-bar"
-        />
-      </div>
+      <McQuizHeader
+        currentQuestion={currentQuestion}
+        questions={props.questions}
+      />
       <div className="quiz-question">
         <style>{animate}</style> {/*put the animate style into use*/}
         {questionsDisplay}
