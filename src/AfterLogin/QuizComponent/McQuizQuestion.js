@@ -89,8 +89,6 @@ export default function McQuizQuestion(props) {
     );
   });
 
-  console.log(props.questions);
-  console.log(isAnswered);
   return (
     <div className="page">
       <McQuizHeader
