@@ -6,23 +6,42 @@ export default function McQuizQuestion(props) {
   const [isCorrect, setIsCorrect] = useState(new Array(10).fill(false));
   const [isAnswered, setIsAnswered] = useState(new Array(10));
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [startAnimation, setAnimation] = useState(false);
+  const [startAnimationNext, setAnimationNext] = useState(false);
+  const [startAnimationPrev, setAnimationPrev] = useState(false);
 
-  const animate = `@keyframes next-question{
+  const animateNext = `@keyframes next-question{
     0%{right:${(currentQuestion - 1) * 100}%;}
     100%{right:${currentQuestion * 100}%;}
   }`;
-  const inlineAnimate = {
-    animationName: startAnimation ? "next-question" : "none",
+  const animatePrev = `@keyframes prev-question{
+    0%{right:${(currentQuestion + 1) * 100}%;}
+    100%{right:${currentQuestion * 100}%;}
+  }`;
+
+  const inlineAnimateNext = {
+    animationName: startAnimationNext ? "next-question" : "none",
+    animationDuration: "0.5s",
+    postition: "relative",
+    right: `${currentQuestion * 100}%`,
+  };
+
+  const inlineAnimatePrev = {
+    animationName: startAnimationPrev ? "prev-question" : "none",
     animationDuration: "0.5s",
     postition: "relative",
     right: `${currentQuestion * 100}%`,
   };
 
   const handleNextQuestion = () => {
-    setAnimation(true);
+    setAnimationNext(true);
     setCurrentQuestion((prev) => prev + 1);
   };
+
+  const handlePrevQuestion = () => {
+    setAnimationPrev(true);
+    setCurrentQuestion((prev) => prev - 1);
+  };
+
   const handleSelectAns = (isCorrectAnswer, questionNo, choiceNo) => {
     if (isCorrectAnswer) {
       setIsCorrect((prev) => {
@@ -70,9 +89,12 @@ export default function McQuizQuestion(props) {
     return (
       <div
         className="quiz-sub-page"
-        key={`question${i + 1}`}
-        style={inlineAnimate}
-        onAnimationEnd={() => setAnimation(false)}
+        key={`question${i}`}
+        style={startAnimationNext ? inlineAnimateNext : inlineAnimatePrev}
+        onAnimationEnd={() => {
+          setAnimationNext(false);
+          setAnimationPrev(false);
+        }}
       >
         <div className="quiz-sub-question-page">
           <Card className="english-card">
@@ -81,13 +103,19 @@ export default function McQuizQuestion(props) {
           </Card>
           {choicesDisplay}
           <div className="button-div">
-            <Button variant="contained" className="question-button">
+            <Button
+              variant="contained"
+              className="question-button"
+              onClick={handlePrevQuestion}
+              disable={startAnimationNext || startAnimationPrev}
+            >
               ←
             </Button>
             <Button
               variant="contained"
               className="question-button"
               onClick={handleNextQuestion}
+              disable={startAnimationNext || startAnimationPrev}
             >
               →
             </Button>
@@ -104,7 +132,8 @@ export default function McQuizQuestion(props) {
         questions={props.questions}
       />
       <div className="quiz-question">
-        <style>{animate}</style> {/*put the animate style into use*/}
+        <style>{animateNext}</style> {/*put the animate style into use*/}
+        <style>{animatePrev}</style>
         {questionsDisplay}
       </div>
     </div>

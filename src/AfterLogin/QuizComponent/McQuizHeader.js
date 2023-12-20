@@ -13,7 +13,7 @@ export default function McQuizHeader(props) {
         <div className="dialog">
           Are you sure you want to exit?
           <p>All progress will not be saved</p>
-          <div className="button-div">
+          <div className="dialog-button-div">
             <Button variant="contained" onClick={() => navi("/")}>
               yes
             </Button>
