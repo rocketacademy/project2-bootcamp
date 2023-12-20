@@ -68,6 +68,21 @@
   width: 100%;
 }
 
+.exit-button:hover {
+  cursor: pointer;
+}
+
+.dialog {
+  padding: 10px;
+}
+
+.dialog-button-div {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+}
+
 .english-card {
   position: relative;
   width: 60%;
