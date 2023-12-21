@@ -4,7 +4,7 @@ import McQuizHeader from "./McQuizHeader";
 
 export default function McQuizQuestion(props) {
   const [isCorrect, setIsCorrect] = useState(new Array(10).fill(false));
-  const [isAnswered, setIsAnswered] = useState(new Array(10));
+  const [isAnswered, setIsAnswered] = useState(new Array(10).fill(""));
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [startAnimationNext, setAnimationNext] = useState(false);
   const [startAnimationPrev, setAnimationPrev] = useState(false);
@@ -42,7 +42,7 @@ export default function McQuizQuestion(props) {
     setCurrentQuestion((prev) => prev - 1);
   };
 
-  const handleSelectAns = (isCorrectAnswer, questionNo, choiceNo) => {
+  const handleSelectAns = (isCorrectAnswer, questionNo, choice) => {
     if (isCorrectAnswer) {
       setIsCorrect((prev) => {
         prev[questionNo] = true;
@@ -50,7 +50,7 @@ export default function McQuizQuestion(props) {
       });
     }
     setIsAnswered((prev) => {
-      prev[questionNo] = choiceNo;
+      prev[questionNo] = choice;
       return [...prev];
     });
   };
@@ -58,15 +58,15 @@ export default function McQuizQuestion(props) {
   const questionsDisplay = props.questions.map((question, i) => {
     const choicesDisplay = question.choice.map((choice, j) => {
       const isCorrectAnswer = choice === question.answer;
-      const isQuestionAnswered = isAnswered[i] < 4;
-      const userChoice = isAnswered[i] === j;
+      const isQuestionAnswered = Boolean(isAnswered[i].length);
+      const userChoice = isAnswered[i] === choice;
       return (
         <Card
           className="spanish-card"
           key={`question${i}choice${j}`}
           onClick={() => {
             if (!isQuestionAnswered) {
-              handleSelectAns(isCorrectAnswer, i, j);
+              handleSelectAns(isCorrectAnswer, i, choice);
             }
           }}
         >
@@ -107,7 +107,7 @@ export default function McQuizQuestion(props) {
               variant="contained"
               className="question-button"
               onClick={handlePrevQuestion}
-              disable={startAnimationNext || startAnimationPrev}
+              disabled={startAnimationNext || startAnimationPrev || i === 0}
             >
               ←
             </Button>
@@ -115,16 +115,21 @@ export default function McQuizQuestion(props) {
               variant="contained"
               className="question-button"
               onClick={handleNextQuestion}
-              disable={startAnimationNext || startAnimationPrev}
+              disabled={startAnimationNext || startAnimationPrev || i === 9}
             >
               →
             </Button>
           </div>
+          {isAnswered.every((ans) => ans.length) && (
+            <Button variant="contained" className="question-button">
+              Result
+            </Button>
+          )}
         </div>
       </div>
     );
   });
-
+  console.log(isAnswered);
   return (
     <div className="page">
       <McQuizHeader

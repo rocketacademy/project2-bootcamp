@@ -32,7 +32,7 @@ export default function McQuiz(props) {
           const randomFalseCard =
             decks[randomDeckIndex].deckCards[randomFalseCardIndex];
           //redraw a random card if the card is already drawn
-          if (falseCardsID.includes(randomFalseCardIndex)) {
+          if (falseCardsID.includes(randomFalseCard)) {
             j--;
             continue;
           }
