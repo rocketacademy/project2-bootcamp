@@ -1,6 +1,9 @@
 import { Button, Card, CardContent } from "@mui/material";
 import { useState } from "react";
 import McQuizHeader from "./McQuizHeader";
+import { useNavigate } from "react-router-dom";
+import { database } from "../../firebase";
+import { ref, get, set } from "firebase/database";
 
 export default function McQuizQuestion(props) {
   const [isCorrect, setIsCorrect] = useState(new Array(10).fill(false));
@@ -8,6 +11,9 @@ export default function McQuizQuestion(props) {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [startAnimationNext, setAnimationNext] = useState(false);
   const [startAnimationPrev, setAnimationPrev] = useState(false);
+  const navi = useNavigate();
+
+  const TESTINGID = "DxXFVzvVUqSLfTtHfVUrjmV2MPW2";
 
   const animateNext = `@keyframes next-question{
     0%{right:${(currentQuestion - 1) * 100}%;}
@@ -53,6 +59,27 @@ export default function McQuizQuestion(props) {
       prev[questionNo] = choice;
       return [...prev];
     });
+  };
+
+  const handleToResult = async () => {
+    const userQuizReportRef = ref(database, `userInfo/${TESTINGID}/quizReport`);
+    const userQuizReport = await get(userQuizReportRef);
+    const score = isCorrect.reduce((a, b) => a + b, 0) * 10;
+    const answer = props.questions.map(({ answer }) => answer);
+    const quizNo =
+      userQuizReport === null ? Object.values(userQuizReport.length + 1) : 1;
+    const newQuizReportRef = ref(
+      database,
+      `userInfo/${TESTINGID}/quizReport/quiz${quizNo}`
+    );
+    await set(newQuizReportRef, {
+      quizID: quizNo,
+      score: score,
+      choice: isAnswered,
+      answer: answer,
+      date: new Date().toLocaleDateString(),
+    });
+    navi(`/quizList/${quizNo}`);
   };
 
   const questionsDisplay = props.questions.map((question, i) => {
@@ -121,7 +148,11 @@ export default function McQuizQuestion(props) {
             </Button>
           </div>
           {isAnswered.every((ans) => ans.length) && (
-            <Button variant="contained" className="question-button">
+            <Button
+              variant="contained"
+              className="question-button"
+              onClick={() => handleToResult()}
+            >
               Result
             </Button>
           )}
@@ -129,7 +160,6 @@ export default function McQuizQuestion(props) {
       </div>
     );
   });
-  console.log(isAnswered);
   return (
     <div className="page">
       <McQuizHeader

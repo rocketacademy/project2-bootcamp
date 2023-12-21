@@ -17,8 +17,8 @@ export default function QuizFirstPage(props) {
   const [userDeckIDs, setUserDeckIDs] = useState([]);
   const [userDecks, setUserDecks] = useState([]);
 
-  //Need to replace TestingID with props.user.uid
-  const TestingID = "DxXFVzvVUqSLfTtHfVUrjmV2MPW2";
+  //Need to replace TESTINGID with props.user.uid
+  const TESTINGID = "DxXFVzvVUqSLfTtHfVUrjmV2MPW2";
 
   useEffect(() => {
     const takeDecksInfo = async () => {
@@ -29,7 +29,7 @@ export default function QuizFirstPage(props) {
 
     const takeDeckIDsInfo = async () => {
       //Taking the user Decks
-      const userDecksRef = ref(database, `userInfo/${TestingID}/decks`);
+      const userDecksRef = ref(database, `userInfo/${TESTINGID}/decks`);
       return await get(userDecksRef);
     };
 
