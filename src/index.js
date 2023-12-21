@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
-import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import HomePage from "./AfterLogin/HomePage";
 import StudyPage from "./AfterLogin/StudyPage";
 import ReportPage from "./AfterLogin/ReportPage";
@@ -11,7 +11,7 @@ import SignInPage from "./BeforeLogin/SignInPage";
 import RegisterPage from "./BeforeLogin/RegisterPage";
 import EditdeckPage from "./AfterLogin/EditDeckPage";
 import AddDeckPage from "./AfterLogin/AddDeckPage";
-import QuizList from "./AfterLogin/QuizList";
+import QuizReportList from "./AfterLogin/QuizReportList";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -23,7 +23,7 @@ root.render(
         <Route path="editDeck" element={<EditdeckPage />} />
         <Route path="study" element={<StudyPage />} />
         <Route path="report" element={<ReportPage />} />
-        <Route path="quizList/:quizNo" element={<QuizList />} />
+        <Route path="quizList/:quizNo" element={<QuizReportList />} />
         <Route path="quiz" element={<QuizPage />} />
         <Route path="*" element={<div>404</div>} />
       </Route>
