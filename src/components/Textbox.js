@@ -1,5 +1,4 @@
 export const TextboxWithLabels = ({ label }) => {
-  console.log(label);
   return (
     <label className="form-control w-full max-w-xs">
       <div className="label">
