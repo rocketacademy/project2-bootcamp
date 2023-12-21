@@ -11,7 +11,7 @@ import SignInPage from "./BeforeLogin/SignInPage";
 import RegisterPage from "./BeforeLogin/RegisterPage";
 import EditdeckPage from "./AfterLogin/EditDeckPage";
 import AddDeckPage from "./AfterLogin/AddDeckPage";
-import QuizReportList from "./AfterLogin/QuizReportList";
+import QuizReportList from "./AfterLogin/ReportComponent/QuizReportList";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(

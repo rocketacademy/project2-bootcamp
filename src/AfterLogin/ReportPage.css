@@ -1,0 +1,23 @@
+.divider {
+  width: 100%;
+}
+
+.info {
+  width: 100%;
+  flex-direction: column;
+  display: flex;
+  align-items: flex-start;
+}
+
+.info h4 {
+  margin: 0px;
+}
+
+.report-sub-page {
+  width: 60%;
+  height: 80vh;
+  flex-direction: column;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
