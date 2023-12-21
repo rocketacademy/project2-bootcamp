@@ -65,9 +65,11 @@ export default function McQuizQuestion(props) {
     const userQuizReportRef = ref(database, `userInfo/${TESTINGID}/quizReport`);
     const userQuizReport = await get(userQuizReportRef);
     const score = isCorrect.reduce((a, b) => a + b, 0) * 10;
-    const answer = props.questions.map(({ answer }) => answer);
+    const answer = props.questions.map(({ english, answer, deckName }) => {
+      return { english: english, spanish: answer, deckName: deckName };
+    });
     const quizNo =
-      userQuizReport === null
+      userQuizReport.val() === null
         ? 1
         : Object.values(userQuizReport.val()).length + 1;
     const newQuizReportRef = ref(
@@ -83,7 +85,6 @@ export default function McQuizQuestion(props) {
     });
     navi(`/quizList/${quizNo}`);
   };
-
   const questionsDisplay = props.questions.map((question, i) => {
     const choicesDisplay = question.choice.map((choice, j) => {
       const isCorrectAnswer = choice === question.answer;
