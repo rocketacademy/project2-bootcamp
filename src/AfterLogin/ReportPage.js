@@ -37,20 +37,22 @@ export default function ReportPage() {
     getUserAndDeckInfo();
   }, []);
 
-  const scoreOfEachQuiz = userInfo
-    ? Object.values(userInfo.quizReport).map(({ score }) => score)
-    : [];
+  const scoreOfEachQuiz =
+    userInfo && userInfo.quizReport
+      ? Object.values(userInfo.quizReport).map(({ score }) => score)
+      : [];
   const averageScore = Math.round(
     scoreOfEachQuiz.reduce((a, b) => a + b, 0) / scoreOfEachQuiz.length
   );
 
   let accumulateScore = 0;
-  const chartData = userInfo
-    ? Object.values(userInfo.quizReport).map(({ score, quizID }) => {
-        accumulateScore += score;
-        return { averageScore: accumulateScore / quizID, quiz: quizID };
-      })
-    : [];
+  const chartData =
+    userInfo && userInfo.quizReport
+      ? Object.values(userInfo.quizReport).map(({ score, quizID }) => {
+          accumulateScore += score;
+          return { averageScore: accumulateScore / quizID, quiz: quizID };
+        })
+      : [];
 
   const display =
     userInfo === null ? (
@@ -71,7 +73,11 @@ export default function ReportPage() {
           <div className="info">
             Average Score
             <Divider className="divider" />
-            <h4>{averageScore}/100 pts</h4>
+            {userInfo && userInfo.quizReport ? (
+              <h4>{averageScore}/100 pts</h4>
+            ) : (
+              "You need to take quiz first"
+            )}
           </div>
           <LineChart width={350} height={300} data={chartData}>
             <CartesianGrid strokeDasharray="3 3" />
