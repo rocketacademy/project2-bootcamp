@@ -67,7 +67,9 @@ export default function McQuizQuestion(props) {
     const score = isCorrect.reduce((a, b) => a + b, 0) * 10;
     const answer = props.questions.map(({ answer }) => answer);
     const quizNo =
-      userQuizReport === null ? Object.values(userQuizReport.length + 1) : 1;
+      userQuizReport === null
+        ? 1
+        : Object.values(userQuizReport.val()).length + 1;
     const newQuizReportRef = ref(
       database,
       `userInfo/${TESTINGID}/quizReport/quiz${quizNo}`
