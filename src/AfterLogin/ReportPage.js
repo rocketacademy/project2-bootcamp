@@ -5,6 +5,7 @@ import { database } from "../firebase";
 import { get, ref } from "firebase/database";
 import Divider from "@mui/material/Divider";
 import "./ReportPage.css";
+import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
 //Take the user data from App.js state
 
 export default function ReportPage() {
@@ -43,6 +44,14 @@ export default function ReportPage() {
     scoreOfEachQuiz.reduce((a, b) => a + b, 0) / scoreOfEachQuiz.length
   );
 
+  let accumulateScore = 0;
+  const chartData = userInfo
+    ? Object.values(userInfo.quizReport).map(({ score, quizID }) => {
+        accumulateScore += score;
+        return { averageScore: accumulateScore / quizID, quiz: quizID };
+      })
+    : [];
+
   const display =
     userInfo === null ? (
       <Backdrop open={userInfo === null}>
@@ -64,6 +73,24 @@ export default function ReportPage() {
             <Divider className="divider" />
             <h4>{averageScore}/100 pts</h4>
           </div>
+          <LineChart width={350} height={300} data={chartData}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis
+              dataKey="quiz"
+              label={{ value: "Quiz", position: "insideBottom", offset: 0 }}
+            />
+            <YAxis
+              type="number"
+              domain={[0, 100]}
+              label={{
+                value: "Average Score",
+                angle: -90,
+                position: "insideBottomLeft",
+                offset: 12,
+              }}
+            />
+            <Line type="monotone" dataKey="averageScore" />
+          </LineChart>
         </div>
       </div>
     );
