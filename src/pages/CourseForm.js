@@ -4,8 +4,8 @@ import { FileUploadWithLabel } from "../components/FileUpload";
 export const CourseForm = () => {
   return (
     <>
-      <div className="">
-        <p className="text-xl">Create A Course</p>
+      <div className="prose">
+        <h1>Create A Course</h1>
 
         <form>
           <TextboxWithLabels label={"Course Title"} />
