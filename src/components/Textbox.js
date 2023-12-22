@@ -1,4 +1,4 @@
-export const TextboxWithLabels = ({ label }) => {
+export const TextboxWithLabels = ({ label, value, onChange }) => {
   return (
     <label className="form-control w-full max-w-xs">
       <div className="label">
