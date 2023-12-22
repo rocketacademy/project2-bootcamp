@@ -21,3 +21,7 @@
   align-items: center;
   justify-content: space-around;
 }
+
+.quiz-list {
+  width: 360px;
+}

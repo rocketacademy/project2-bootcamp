@@ -1,6 +1,6 @@
-import { Backdrop, CircularProgress } from "@mui/material";
+import { Backdrop, Button, CircularProgress } from "@mui/material";
 import { useEffect, useState } from "react";
-import { useOutletContext } from "react-router-dom";
+import { useOutletContext, Link } from "react-router-dom";
 import { database } from "../firebase";
 import { get, ref } from "firebase/database";
 import Divider from "@mui/material/Divider";
@@ -56,7 +56,7 @@ export default function ReportPage() {
 
   const display =
     userInfo === null ? (
-      <Backdrop open={userInfo === null}>
+      <Backdrop open={true}>
         <h3>Getting User Infomation</h3>
         <h1>
           <CircularProgress color="inherit" />
@@ -74,16 +74,26 @@ export default function ReportPage() {
             Average Score
             <Divider className="divider" />
             {userInfo && userInfo.quizReport ? (
-              <h4>{averageScore}/100 pts</h4>
+              <div className="info">
+                <h4>{averageScore}/100 pts</h4>
+                <Link to="/quizList">
+                  <Button>View Quiz History Reports</Button>
+                </Link>
+              </div>
             ) : (
               "You need to take quiz first"
             )}
           </div>
+
           <LineChart width={350} height={300} data={chartData}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis
               dataKey="quiz"
-              label={{ value: "Quiz", position: "insideBottom", offset: 0 }}
+              label={{
+                value: "Quiz",
+                position: "insideLeft",
+                offset: -60,
+              }}
             />
             <YAxis
               type="number"
