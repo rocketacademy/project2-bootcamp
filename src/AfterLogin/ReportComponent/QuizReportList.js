@@ -1,4 +1,4 @@
-import { Backdrop, Button, CircularProgress } from "@mui/material";
+import { Backdrop, CircularProgress } from "@mui/material";
 import { get, ref } from "firebase/database";
 import { useEffect, useState } from "react";
 import { useOutletContext, useNavigate } from "react-router-dom";
@@ -28,11 +28,11 @@ export default function QuizReportList() {
 
   const listData =
     quizList &&
-    Object.values(quizList).map((quiz, i) => {
+    Object.keys(quizList).map((quizKey) => {
       return {
-        id: quiz.quizID,
-        score: quiz.score,
-        date: quiz.date,
+        id: quizList[quizKey].quizID,
+        score: quizList[quizKey].score,
+        date: quizList[quizKey].date,
       };
     });
 

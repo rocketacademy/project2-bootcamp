@@ -25,3 +25,11 @@
 .quiz-list {
   width: 360px;
 }
+
+.quiz-report-header {
+  width: 60%;
+  flex-direction: row;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}

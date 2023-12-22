@@ -135,10 +135,3 @@
 .spanish-card:hover {
   cursor: pointer;
 }
-
-.correct {
-  background-color: #34a853;
-}
-.wrong {
-  background-color: #db004f;
-}

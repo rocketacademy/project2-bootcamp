@@ -53,3 +53,10 @@ a {
   align-items: center;
   justify-content: center;
 }
+
+.correct {
+  background-color: #34a853;
+}
+.wrong {
+  background-color: #db004f;
+}
