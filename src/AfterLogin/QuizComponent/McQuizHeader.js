@@ -3,6 +3,7 @@ import DisabledByDefaultOutlinedIcon from "@mui/icons-material/DisabledByDefault
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+//mc question page header
 export default function McQuizHeader(props) {
   const [dialog, setDialog] = useState(false);
   const navi = useNavigate();

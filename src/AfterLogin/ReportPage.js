@@ -21,6 +21,7 @@ export default function ReportPage() {
       setUserInfo(newUserInfo.val());
       const decks = newUserInfo.val().decks;
 
+      //get promise for deck
       const decksPromise = decks.map((deck) => {
         const getDeckInfo = async () => {
           const deckRef = ref(database, `decks/deck${deck}`);
@@ -29,6 +30,8 @@ export default function ReportPage() {
         };
         return getDeckInfo();
       });
+
+      //get all cards number from each deck
       const promises = Promise.all(decksPromise);
       const wordsOfDecks = await promises;
       const totalWords = wordsOfDecks.reduce((a, b) => a + b, 0);
@@ -37,14 +40,13 @@ export default function ReportPage() {
     getUserAndDeckInfo();
   }, []);
 
+  //cal the score of Each Quiz in order to user to cal the average score after each quiz
   const scoreOfEachQuiz =
     userInfo && userInfo.quizReport
       ? Object.values(userInfo.quizReport).map(({ score }) => score)
       : [];
-  const averageScore = Math.round(
-    scoreOfEachQuiz.reduce((a, b) => a + b, 0) / scoreOfEachQuiz.length
-  );
 
+  //Data of each average score after each quiz
   let accumulateScore = 0;
   const chartData =
     userInfo && userInfo.quizReport
@@ -54,6 +56,12 @@ export default function ReportPage() {
         })
       : [];
 
+  //Total average score same as the last index
+  const averageScore =
+    chartData.length &&
+    Math.round(chartData[chartData.length - 1].averageScore);
+
+  //When Loading file from the databse, will show a backdrop
   const display =
     userInfo === null ? (
       <Backdrop open={true}>

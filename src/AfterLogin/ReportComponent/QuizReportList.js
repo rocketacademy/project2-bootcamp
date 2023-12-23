@@ -1,4 +1,4 @@
-import { Backdrop, CircularProgress } from "@mui/material";
+import { Backdrop, Button, CircularProgress } from "@mui/material";
 import { get, ref } from "firebase/database";
 import { useEffect, useState } from "react";
 import { useOutletContext, useNavigate } from "react-router-dom";
@@ -11,6 +11,7 @@ export default function QuizReportList() {
   const navi = useNavigate();
   const TESTINGID = "DxXFVzvVUqSLfTtHfVUrjmV2MPW2";
 
+  //get the quiz report List
   useEffect(() => {
     const getQuizReportList = async () => {
       const newQuizListRef = ref(database, `userInfo/${TESTINGID}/quizReport`);
@@ -20,12 +21,14 @@ export default function QuizReportList() {
     getQuizReportList();
   }, []);
 
+  //data for the DataGrid header use in display
   const columnData = [
     { field: "id", headerName: "ID", width: 90 },
     { field: "score", headerName: "Score", width: 110 },
     { field: "date", headerName: "Date", width: 100 },
   ];
 
+  //data for the DataGrid
   const listData =
     quizList &&
     Object.keys(quizList).map((quizKey) => {
@@ -36,6 +39,8 @@ export default function QuizReportList() {
       };
     });
 
+  //when getting data, show a backdrop
+  //otherwise, show dataGrid
   const display = quizList ? (
     <div>
       <DataGrid
@@ -45,6 +50,7 @@ export default function QuizReportList() {
         className="quiz-list"
       />
       <h6>Click on the row to view detailed report</h6>
+      <Button onClick={() => navi("/report")}>Back</Button>
     </div>
   ) : (
     <Backdrop open={true}>

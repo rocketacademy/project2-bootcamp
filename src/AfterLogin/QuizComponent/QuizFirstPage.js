@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 //Take the user data from App.js state
 
+//Component let user choose which decks to include in the quiz
 export default function QuizFirstPage(props) {
   const [userDeckIDs, setUserDeckIDs] = useState([]);
   const [userDecks, setUserDecks] = useState([]);
@@ -44,6 +45,7 @@ export default function QuizFirstPage(props) {
     takeAllInfo();
   }, []);
 
+  //handle change for user to choose/unchoose decks
   const handleChange = (e) => {
     const decksInfo = userDecks[`deck${e.target.value}`];
     if (e.target.checked) {
@@ -59,6 +61,7 @@ export default function QuizFirstPage(props) {
     }
   };
 
+  //component show the decks option
   const selection = userDeckIDs.length ? (
     userDeckIDs.map((deckID) => {
       const deckName = userDecks[`deck${deckID}`].deckName;
@@ -84,6 +87,7 @@ export default function QuizFirstPage(props) {
   );
   //must have enough cards to start the quiz
   const isEnoughCards = questionAvailable >= 10;
+
   return (
     <div className="quiz-sub-page">
       <Card className="quiz-card">

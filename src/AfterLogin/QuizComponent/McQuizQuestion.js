@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { database } from "../../firebase";
 import { ref, get, set } from "firebase/database";
 
+//mc question content component
 export default function McQuizQuestion(props) {
   const [isCorrect, setIsCorrect] = useState(new Array(10).fill(false));
   const [isAnswered, setIsAnswered] = useState(new Array(10).fill(""));
@@ -15,6 +16,7 @@ export default function McQuizQuestion(props) {
 
   const TESTINGID = "DxXFVzvVUqSLfTtHfVUrjmV2MPW2";
 
+  //animataion frames for wipe right/left
   const animateNext = `@keyframes next-question{
     0%{right:${(currentQuestion - 1) * 100}%;}
     100%{right:${currentQuestion * 100}%;}
@@ -24,13 +26,13 @@ export default function McQuizQuestion(props) {
     100%{right:${currentQuestion * 100}%;}
   }`;
 
+  //animataion style for wipe right/left
   const inlineAnimateNext = {
     animationName: startAnimationNext ? "next-question" : "none",
     animationDuration: "0.5s",
     postition: "relative",
     right: `${currentQuestion * 100}%`,
   };
-
   const inlineAnimatePrev = {
     animationName: startAnimationPrev ? "prev-question" : "none",
     animationDuration: "0.5s",
@@ -38,16 +40,19 @@ export default function McQuizQuestion(props) {
     right: `${currentQuestion * 100}%`,
   };
 
+  //wipe right and show animation
   const handleNextQuestion = () => {
     setAnimationNext(true);
     setCurrentQuestion((prev) => prev + 1);
   };
 
+  //wipe left and show animation
   const handlePrevQuestion = () => {
     setAnimationPrev(true);
     setCurrentQuestion((prev) => prev - 1);
   };
 
+  //handle after user choose choice for each question
   const handleSelectAns = (isCorrectAnswer, questionNo, choice) => {
     if (isCorrectAnswer) {
       setIsCorrect((prev) => {
@@ -61,6 +66,7 @@ export default function McQuizQuestion(props) {
     });
   };
 
+  //handle after all question is answered, and go to the report page
   const handleToResult = async () => {
     const userQuizReportRef = ref(database, `userInfo/${TESTINGID}/quizReport`);
     const userQuizReport = await get(userQuizReportRef);
@@ -85,6 +91,8 @@ export default function McQuizQuestion(props) {
     });
     navi(`/quizList/${quizNo}`);
   };
+
+  //display for each of the question page
   const questionsDisplay = props.questions.map((question, i) => {
     const choicesDisplay = question.choice.map((choice, j) => {
       const isCorrectAnswer = choice === question.answer;
@@ -163,6 +171,7 @@ export default function McQuizQuestion(props) {
       </div>
     );
   });
+
   return (
     <div className="page">
       <McQuizHeader

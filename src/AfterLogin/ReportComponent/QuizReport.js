@@ -19,6 +19,7 @@ export default function QuizReport() {
   const TESTINGID = "DxXFVzvVUqSLfTtHfVUrjmV2MPW2";
   const navi = useNavigate();
 
+  //get particular quiz report from the user's quiz report
   useEffect(() => {
     const getQuizInfo = async () => {
       const quizRef = ref(
@@ -31,6 +32,7 @@ export default function QuizReport() {
     getQuizInfo();
   }, [quizNo]);
 
+  //generate quiz detail formmatted to use in the table
   const quizDetail = !quizInfo
     ? null
     : quizInfo.answer.map(({ deckName, english, spanish }, i) => {

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { database } from "../../firebase";
 import McQuizQuestion from "./McQuizQuestion";
 
+//show the  mc question and mc header, and contain the question generation logic
 export default function McQuiz(props) {
   const [questions, setQuestions] = useState([]);
 
@@ -98,6 +99,7 @@ export default function McQuiz(props) {
     genQuestion(props.decks);
   }, []);
 
+  //show backdrop if question haven't been generated
   return (
     <div className="page">
       <Backdrop open={!questions.length}>
