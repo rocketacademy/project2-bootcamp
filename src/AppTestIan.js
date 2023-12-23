@@ -12,6 +12,7 @@ import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import { styled } from "@mui/system";
 // import { Typography } from "@mui/material/styles/createTypography";
+import MenuItem from "@mui/material/MenuItem";
 
 const libraries = ["places"];
 const mapContainerStyle = {
@@ -44,10 +45,27 @@ const StyledGridPills = styled("div")({
   marginLeft: "20px",
 });
 
+// SelectTextFields MUI
+const landmarks = [
+  {
+    value: "Singapore Zoo",
+    label: "Singapore Zoo",
+  },
+  {
+    value: "Singapore Flyer",
+    label: "Singapore Flyer",
+  },
+  {
+    value: "Sentosa",
+    label: "Sentosa",
+  },
+];
+
 const App = () => {
   const [userMessage, setUserMessage] = useState("");
   const [aiResponse, setAiResponse] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [selectedLandmark, setSelectedLandmark] = useState("Singapore Zoo");
 
   const [user, setUser] = useState({});
 
@@ -122,6 +140,7 @@ const App = () => {
                   signOut(auth);
                   setUser({});
                 }}
+                sx={{ marginLeft: "20px" }}
               >
                 Log out
               </Button>
@@ -178,7 +197,7 @@ const App = () => {
             <Button
               variant="contained"
               onClick={sendMessage}
-              sx={{ margin: "20px" }}
+              sx={{ mt: "20px", mb: "20px" }}
             >
               Send Message
             </Button>
@@ -195,14 +214,39 @@ const App = () => {
             <Button
               variant="contained"
               onClick={clearAIResponse}
-              sx={{ margin: "20px" }}
+              sx={{ mt: "20px", mb: "20px" }}
             >
               Clear
             </Button>
+            <Box
+              sx={{
+                "& .MuiTextField-root": { m: 1, width: "25ch" },
+              }}
+            >
+              <TextField
+                select
+                label="Select"
+                value={selectedLandmark}
+                onChange={(e) => setSelectedLandmark(e.target.value)}
+                helperText="Please select landmark"
+                sx={{ display: "block" }}
+              >
+                {landmarks.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Box>
           </StyledGridItem>
           <StyledGridItem
             item
-            style={{ width: "100%", height: "100%", position: "relative" }}
+            style={{
+              width: "100%",
+              height: "100%",
+              position: "relative",
+              marginTop: "20px",
+            }}
           >
             <GoogleMap
               mapContainerStyle={mapContainerStyle}

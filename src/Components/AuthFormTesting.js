@@ -62,6 +62,16 @@ export default function AuthForm() {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
+            "& .MuiTextField-root": {
+              width: "400px", // Adjust TextField width
+              marginBottom: "20px", // Increase bottom margin for spacing
+            },
+            "& .MuiButton-root": {
+              width: "150px", // Make buttons full width
+              height: "60px", // Increase button height
+              fontSize: "1.2rem", // Increase button text size
+              marginBottom: "20px", // Increase bottom margin for spacing
+            },
           }}
         >
           <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>

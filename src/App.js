@@ -7,15 +7,17 @@ import { auth } from "./firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 
 // MUI
-import { TextField, Box } from "@mui/material";
+import { TextField, Box, Typography } from "@mui/material";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import { styled } from "@mui/system";
+// import { Typography } from "@mui/material/styles/createTypography";
+import MenuItem from "@mui/material/MenuItem";
 
 const libraries = ["places"];
 const mapContainerStyle = {
-  width: "100vw",
-  height: "100vh",
+  width: "80vw",
+  height: "80vh",
 };
 const center = {
   lat: 1.35313, // default latitude
@@ -31,6 +33,25 @@ const StyledContainer = styled("div")({
 const StyledGridItem = styled(Grid)({
   width: "30%",
 });
+
+const StyledGridPills = styled("div")({
+  width: "150px", // Define the width of your container
+  height: "100px", // Define the height of your container
+  marginBottom: "30px",
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "flex-end",
+  marginRight: "20px",
+  marginLeft: "20px",
+});
+
+// SelectTextFields MUI
+const landmarks = [
+  {
+    value: "Singapore Zoo in 1 sentence",
+    label: "Singapore Zoo",
+  },
+];
 
 const App = () => {
   const [userMessage, setUserMessage] = useState("");
@@ -84,6 +105,10 @@ const App = () => {
     }
   };
 
+  const clearAIResponse = () => {
+    setAiResponse("");
+  };
+
   console.log(aiResponse);
 
   return (
@@ -92,6 +117,12 @@ const App = () => {
         {isLoggedIn && (
           <StyledContainer>
             <StyledGridItem item>
+              <Typography
+                variant="h4"
+                sx={{ fontFamily: "Comic Sans MS", color: "primary.main" }}
+              >
+                Merlion Landmarks
+              </Typography>
               <h2>Welcome back {user.email}</h2>
               <Button
                 variant="outlined"
@@ -100,21 +131,47 @@ const App = () => {
                   signOut(auth);
                   setUser({});
                 }}
+                sx={{ marginLeft: "20px" }}
               >
                 Log out
               </Button>
             </StyledGridItem>
-            <StyledGridItem item>
+            <StyledGridPills item>
               <Button
                 variant="outlined"
                 onClick={() => {
                   const message = "Singapore Flyer in 1 sentence";
                   sendMessage(message);
                 }}
+                sx={{ width: "150px", height: "50px" }}
               >
                 Singapore Flyer
               </Button>
-            </StyledGridItem>
+            </StyledGridPills>
+            <StyledGridPills item>
+              <Button
+                variant="outlined"
+                onClick={() => {
+                  const message = "Sentosa Island in 1 sentence";
+                  sendMessage(message);
+                }}
+                sx={{ width: "150px", height: "50px" }}
+              >
+                Sentosa Island
+              </Button>
+            </StyledGridPills>
+            <StyledGridPills item>
+              <Button
+                variant="outlined"
+                onClick={() => {
+                  const message = "Chinatown Singapore in 1 sentence";
+                  sendMessage(message);
+                }}
+                sx={{ width: "150px", height: "50px" }}
+              >
+                Chinatown
+              </Button>
+            </StyledGridPills>
           </StyledContainer>
         )}
       </Box>
@@ -122,45 +179,46 @@ const App = () => {
       {/* <Grid item className="LMFAO"> */}
       {isLoggedIn && (
         <StyledContainer>
-          <StyledGridItem item>
+          <StyledGridItem item sx={{ margin: "20px" }}>
             <TextField
               type="text"
               value={userMessage}
               onChange={(e) => setUserMessage(e.target.value)}
             />
-            <Button variant="contained" onClick={sendMessage}>
+            <Button
+              variant="contained"
+              onClick={sendMessage}
+              sx={{ mt: "20px", mb: "20px" }}
+            >
               Send Message
             </Button>
 
-            <Box marginTop={2}>
-              <Button
-                variant="outlined"
-                onClick={() => {
-                  const message = "Singapore Flyer in 1 sentence";
-                  sendMessage(message);
-                }}
-              >
-                Singapore Flyer
-              </Button>
-            </Box>
-            <Box marginTop={2}>
-              <Button
-                variant="outlined"
-                onClick={() => {
-                  const message = "Singapore Esplanade in 1 sentence";
-                  sendMessage(message);
-                }}
-              >
-                Esplanade
-              </Button>
-            </Box>
-
             <Box className="ai-response">
-              <p>AI Response:</p>
+              <Typography
+                variant="h4"
+                sx={{ fontFamily: "Comic Sans MS", color: "primary.main" }}
+              >
+                AI Response:
+              </Typography>
               <p>{aiResponse}</p>
             </Box>
+            <Button
+              variant="contained"
+              onClick={clearAIResponse}
+              sx={{ mt: "20px", mb: "20px" }}
+            >
+              Clear
+            </Button>
           </StyledGridItem>
-          <StyledGridItem item>
+          <StyledGridItem
+            item
+            style={{
+              width: "100%",
+              height: "100%",
+              position: "relative",
+              marginTop: "20px",
+            }}
+          >
             <GoogleMap
               mapContainerStyle={mapContainerStyle}
               mapId="6da2495ffc989dca"
