@@ -1,26 +1,27 @@
 import React from "react";
-import { GoogleMap, useLoadScript, Marker } from "@react-google-maps/api";
-import { useState, useEffect } from "react";
+import {
+  GoogleMap,
+  useLoadScript,
+  Marker,
+  InfoWindow,
+} from "@react-google-maps/api";
+import { useState, useEffect, useRef, useCallback } from "react";
 import "./App.css";
 import AuthFormTesting from "./Components/AuthFormTesting";
 import { auth } from "./firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
+import axios from "axios";
 
 // MUI
 import { TextField, Box } from "@mui/material";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import { Typography } from "@mui/material";
+import { mapToStyles } from "@popperjs/core/lib/modifiers/computeStyles";
+import { assertExpressionStatement } from "@babel/types";
 
 const libraries = ["places"];
-const mapContainerStyle = {
-  width: "100vw",
-  height: "100vh",
-};
-const center = {
-  lat: 1.35313, // default latitude
-  lng: 103.81404, // default longitude
-};
+// const axios = require("axios");
 
 const App = () => {
   const [userMessage, setUserMessage] = useState("");
@@ -31,7 +32,7 @@ const App = () => {
   const [wordIndex, setWordIndex] = useState(0);
 
   const [user, setUser] = useState({});
-
+  //Authentication Handling
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       console.log(user);
@@ -43,19 +44,7 @@ const App = () => {
     });
   }, []);
 
-  const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
-    libraries,
-  });
-
-  if (loadError) {
-    return <div>Error loading maps</div>;
-  }
-
-  if (!isLoaded) {
-    return <div>Loading maps</div>;
-  }
-
+  //Function to call OpenAI API
   const sendMessage = async (targetMessage) => {
     try {
       const messageToSend = userMessage === "" ? targetMessage : userMessage;
@@ -71,6 +60,7 @@ const App = () => {
       const data = await response.json();
       setAiResponse(data.message);
       setUserMessage("");
+      console.log(data.message);
     } catch (error) {
       console.error("Error sending message:", error);
       // Handle error state here if needed
@@ -78,6 +68,43 @@ const App = () => {
   };
 
   console.log(aiResponse, displayedWords);
+
+  //Rendering of Google Maps
+  const { isLoaded, loadError } = useLoadScript({
+    googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
+    libraries,
+  });
+
+  const mapRef = useRef();
+  const onMapLoad = useCallback((map) => {
+    mapRef.current = map;
+  }, []);
+
+  const [selectedLocation, setSelectedLocation] = useState(null);
+
+  const onMapClick = useCallback((event) => {
+    setSelectedLocation({
+      lat: event.latLng.lat(),
+      lng: event.latLng.lng(),
+    });
+    axios
+      .get(
+        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${event.latLng.lat()},${event.latLng.lng()}
+        &key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY},
+        result_type=street_address
+        `
+      )
+      //Parse reversed geocode API response to OpenAI
+      .then((res) => console.log(res))
+      .then((res) =>
+        sendMessage(
+          `What is the name of this location with the following address:${res}. Share with me its history, and what developments occured in the last 20 years in Singapore. Word limit is 30 words.`
+        )
+      );
+  }, []);
+
+  if (loadError) return "Error loading maps";
+  if (!isLoaded) return "Loading Maps";
 
   return (
     <div>
@@ -141,6 +168,33 @@ const App = () => {
                   <p>{aiResponse}</p>
                 </Box>
                 <GoogleMap
+                  id="map"
+                  mapContainerStyle={{
+                    width: "100vw",
+                    height: "100vh",
+                  }}
+                  zoom={12}
+                  center={{ lat: 1.3521, lng: 103.8198 }}
+                  onClick={onMapClick}
+                  onLoad={onMapLoad}
+                >
+                  {selectedLocation && (
+                    <InfoWindow
+                      position={{
+                        lat: selectedLocation.lat,
+                        lng: selectedLocation.lng,
+                      }}
+                      onCloseClick={() => setSelectedLocation(null)}
+                    >
+                      <div>
+                        <h2>Clicked location</h2>
+                        <p>Lat: {selectedLocation.lat}</p>
+                        <p>Lng: {selectedLocation.lng}</p>
+                      </div>
+                    </InfoWindow>
+                  )}
+                </GoogleMap>
+                {/* <GoogleMap
                   mapContainerStyle={mapContainerStyle}
                   mapId="6da2495ffc989dca"
                   zoom={12}
@@ -148,10 +202,10 @@ const App = () => {
                 >
                   <Marker position={center} />
                   <Marker
-                    position={{ lat: 1.40058, lng: 103.90899 }}
                     onClick={() => {
-                      const lat = 1.40058;
-                      const lng = 103.90899;
+                      // const lat = 1.40058;
+                      // const lng = 103.90899;
+                      
                       console.log("Marker clicked!");
                       console.log(lat);
                       console.log(lng);
@@ -159,7 +213,7 @@ const App = () => {
                       sendMessage(message);
                     }}
                   />
-                </GoogleMap>
+                </GoogleMap> */}
                 <Box>
                   {displayedWords.map((word, index) => (
                     <span key={index}>{word}&nbsp;</span>
