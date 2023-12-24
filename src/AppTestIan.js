@@ -61,6 +61,8 @@ const landmarks = [
   },
 ];
 
+const drawerWidth = 240;
+
 const App = () => {
   const [userMessage, setUserMessage] = useState("");
   const [aiResponse, setAiResponse] = useState("");
