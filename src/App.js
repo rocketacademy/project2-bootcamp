@@ -1,16 +1,10 @@
 import React from "react";
-import {
-  GoogleMap,
-  useLoadScript,
-  Marker,
-  InfoWindow,
-} from "@react-google-maps/api";
-import { useState, useEffect, useRef, useCallback } from "react";
+import RenderMap from "../src/Services/Maps/RenderMap";
+import { useState, useEffect } from "react";
 import "./App.css";
 import AuthFormTesting from "./Components/AuthFormTesting";
 import { auth } from "./firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
-import axios from "axios";
 
 // MUI
 import { TextField, Box, Typography } from "@mui/material";
@@ -19,19 +13,8 @@ import Grid from "@mui/material/Grid";
 import { styled } from "@mui/system";
 // import { Typography } from "@mui/material/styles/createTypography";
 import MenuItem from "@mui/material/MenuItem";
-import { mapToStyles } from "@popperjs/core/lib/modifiers/computeStyles";
-import { assertExpressionStatement } from "@babel/types";
-
-const axios = require('axios');
-const libraries = ["places"];
-const mapContainerStyle = {
-  width: "80vw",
-  height: "80vh",
-};
-const center = {
-  lat: 1.35313, // default latitude
-  lng: 103.81404, // default longitude
-};
+// import { mapToStyles } from "@popperjs/core/lib/modifiers/computeStyles";
+// import { assertExpressionStatement } from "@babel/types";
 
 // Styling MUI function
 const StyledContainer = styled("div")({
@@ -117,43 +100,6 @@ const App = () => {
   };
 
   console.log(aiResponse);
-
-  //Rendering of Google Maps
-  const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
-    libraries,
-  });
-
-  const mapRef = useRef();
-  const onMapLoad = useCallback((map) => {
-    mapRef.current = map;
-  }, []);
-
-  const [selectedLocation, setSelectedLocation] = useState(null);
-
-  const onMapClick = useCallback((event) => {
-    setSelectedLocation({
-      lat: event.latLng.lat(),
-      lng: event.latLng.lng(),
-    });
-    axios
-      .get(
-        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${event.latLng.lat()},${event.latLng.lng()}
-        &key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY},
-        result_type=street_address
-        `
-      )
-      //Parse reversed geocode API response to OpenAI
-      .then((res) => console.log(res))
-      .then((res) =>
-        sendMessage(
-          `What is the name of this location with the following address:${res}. Share with me its history, and what developments occured in the last 20 years in Singapore. Word limit is 30 words.`
-        )
-      );
-  }, []);
-
-  if (loadError) return "Error loading maps";
-  if (!isLoaded) return "Loading Maps";
 
   return (
     <Box>
@@ -283,6 +229,7 @@ const App = () => {
               marginTop: "20px",
             }}
           >
+            <RenderMap sendMessage={sendMessage} />
             {/*<GoogleMap
               mapContainerStyle={mapContainerStyle}
               mapId="6da2495ffc989dca"
