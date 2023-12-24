@@ -11,9 +11,8 @@ import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import { CssBaseline, Typography } from "@mui/material";
 import Box from "@mui/material/Box";
-import { createTheme, ThemeProvider } from "@mui/system";
-
-const defaultTheme = createTheme();
+import Avatar from "@mui/material/Avatar";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 
 export default function AuthForm() {
   const [email, setEmail] = useState("");
@@ -34,7 +33,6 @@ export default function AuthForm() {
   };
 
   return (
-    // <ThemeProvider theme={defaultTheme}>
     <Grid container sx={{ height: "100vh" }}>
       <CssBaseline />
       <Grid
@@ -64,14 +62,25 @@ export default function AuthForm() {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
+            "& .MuiTextField-root": {
+              width: "400px", // Adjust TextField width
+              marginBottom: "20px", // Increase bottom margin for spacing
+            },
+            "& .MuiButton-root": {
+              width: "150px", // Make buttons full width
+              height: "60px", // Increase button height
+              fontSize: "1.2rem", // Increase button text size
+              marginBottom: "20px", // Increase bottom margin for spacing
+            },
           }}
         >
-          {/* <Grid item xs={12}>
-          <Typography variant="h5" align="center">
-            Sign In / Sign Up
+          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+            <LockOutlinedIcon />
+          </Avatar>
+          <Typography component="h1" variant="h5" sx={{ margin: "40px" }}>
+            Welcome to the Merlion Landmarks App
           </Typography>
-        </Grid> */}
-          <Grid item xs={12}>
+          <Grid item xs={12} sx={{ mt: 3, mb: 2 }}>
             <TextField
               fullWidth
               label="Email Address"
@@ -90,8 +99,14 @@ export default function AuthForm() {
               placeholder="Password Here"
             />
           </Grid>
+
           <Grid item xs={12} sm={6}>
-            <Button variant="contained" fullWidth onClick={signIn}>
+            <Button
+              variant="contained"
+              fullWidth
+              sx={{ mt: 3, mb: 2 }}
+              onClick={signIn}
+            >
               Sign In
             </Button>
           </Grid>
@@ -103,6 +118,5 @@ export default function AuthForm() {
         </Box>
       </Grid>
     </Grid>
-    // </ThemeProvider>
   );
 }
