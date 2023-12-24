@@ -48,8 +48,16 @@ const StyledGridPills = styled("div")({
 // SelectTextFields MUI
 const landmarks = [
   {
-    value: "Singapore Zoo in 1 sentence",
+    value: "Singapore Zoo",
     label: "Singapore Zoo",
+  },
+  {
+    value: "Singapore Flyer",
+    label: "Singapore Flyer",
+  },
+  {
+    value: "Sentosa",
+    label: "Sentosa",
   },
 ];
 
@@ -57,6 +65,7 @@ const App = () => {
   const [userMessage, setUserMessage] = useState("");
   const [aiResponse, setAiResponse] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [selectedLandmark, setSelectedLandmark] = useState("Singapore Zoo");
 
   const [user, setUser] = useState({});
 
@@ -209,6 +218,26 @@ const App = () => {
             >
               Clear
             </Button>
+            <Box
+              sx={{
+                "& .MuiTextField-root": { m: 1, width: "25ch" },
+              }}
+            >
+              <TextField
+                select
+                label="Select"
+                value={selectedLandmark}
+                onChange={(e) => setSelectedLandmark(e.target.value)}
+                helperText="Please select landmark"
+                sx={{ display: "block" }}
+              >
+                {landmarks.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Box>
           </StyledGridItem>
           <StyledGridItem
             item
