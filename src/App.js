@@ -1,5 +1,5 @@
 import React from "react";
-import { GoogleMap, useLoadScript, Marker } from "@react-google-maps/api";
+import RenderMap from "../src/Services/Maps/RenderMap";
 import { useState, useEffect } from "react";
 import "./App.css";
 import AuthFormTesting from "./Components/AuthFormTesting";
@@ -13,16 +13,8 @@ import Grid from "@mui/material/Grid";
 import { styled } from "@mui/system";
 // import { Typography } from "@mui/material/styles/createTypography";
 import MenuItem from "@mui/material/MenuItem";
-
-const libraries = ["places"];
-const mapContainerStyle = {
-  width: "80vw",
-  height: "80vh",
-};
-const center = {
-  lat: 1.35313, // default latitude
-  lng: 103.81404, // default longitude
-};
+// import { mapToStyles } from "@popperjs/core/lib/modifiers/computeStyles";
+// import { assertExpressionStatement } from "@babel/types";
 
 // Styling MUI function
 const StyledContainer = styled("div")({
@@ -68,7 +60,7 @@ const App = () => {
   const [selectedLandmark, setSelectedLandmark] = useState("Singapore Zoo");
 
   const [user, setUser] = useState({});
-
+  //Authentication Handling
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       console.log(user);
@@ -80,19 +72,7 @@ const App = () => {
     });
   }, []);
 
-  const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
-    libraries,
-  });
-
-  if (loadError) {
-    return <div>Error loading maps</div>;
-  }
-
-  if (!isLoaded) {
-    return <div>Loading maps</div>;
-  }
-
+  //Function to call OpenAI API
   const sendMessage = async (targetMessage) => {
     try {
       const messageToSend = userMessage === "" ? targetMessage : userMessage;
@@ -108,6 +88,7 @@ const App = () => {
       const data = await response.json();
       setAiResponse(data.message);
       setUserMessage("");
+      console.log(data.message);
     } catch (error) {
       console.error("Error sending message:", error);
       // Handle error state here if needed
@@ -248,7 +229,8 @@ const App = () => {
               marginTop: "20px",
             }}
           >
-            <GoogleMap
+            <RenderMap sendMessage={sendMessage} />
+            {/*<GoogleMap
               mapContainerStyle={mapContainerStyle}
               mapId="6da2495ffc989dca"
               zoom={12}
@@ -267,7 +249,7 @@ const App = () => {
                   sendMessage(message);
                 }}
               />
-            </GoogleMap>
+            </GoogleMap>*/}
           </StyledGridItem>
         </StyledContainer>
       )}
