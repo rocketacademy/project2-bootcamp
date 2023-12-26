@@ -6,6 +6,7 @@ import Navbar from "../components/Navbar";
 import TradeLineItem from "../components/TradeLineItem";
 import FilterInputModal from "../components/FilterInputModal";
 import HistoryDropdown from "../components/HistoryDropdown";
+import AddTradeLineItem from "../components/AddTradeLineItem";
 
 // CSS
 import "./History.css";
@@ -21,6 +22,7 @@ const History = () => {
   const [tradesArr, setTradesArr] = useState(database[12345].trades[1]);
   const [isDark, setIsDark] = useState(false);
 
+  // setup database listener here
   useEffect(() => setTradesArr(sortTrades(tradesArr, sort)), [tradesArr, sort]);
   useEffect(() => filterTrades(filter), [filter]);
 
@@ -85,11 +87,14 @@ const History = () => {
         <div>
           <div className="trades-header">
             <h1>Your Trades</h1>
-            <HistoryDropdown
-              isDark={isDark}
-              setSort={setSort}
-              filterTradesInput={filterTradesInput}
-            />
+            <div className="flex-row">
+              <AddTradeLineItem />
+              <HistoryDropdown
+                isDark={isDark}
+                setSort={setSort}
+                filterTradesInput={filterTradesInput}
+              />
+            </div>
           </div>
           <div className="trades-container">
             <div className="trade-line">
