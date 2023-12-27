@@ -13,6 +13,7 @@ import Grid from "@mui/material/Grid";
 import { styled } from "@mui/system";
 // import { Typography } from "@mui/material/styles/createTypography";
 import MenuItem from "@mui/material/MenuItem";
+import CustomDrawer from "./Components/CustomDrawer";
 
 const libraries = ["places"];
 const mapContainerStyle = {
@@ -60,6 +61,8 @@ const landmarks = [
     label: "Sentosa",
   },
 ];
+
+const drawerWidth = 240;
 
 const App = () => {
   const [userMessage, setUserMessage] = useState("");
