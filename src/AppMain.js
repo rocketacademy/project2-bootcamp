@@ -33,8 +33,6 @@ const AppMain = () => {
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
-      console.log(user);
-
       if (user) {
         setIsLoggedIn(true);
         setUser(user);
@@ -54,6 +52,8 @@ const AppMain = () => {
   if (!isLoaded) {
     return <div>Loading maps</div>;
   }
+
+  console.log(user);
 
   return (
     <Router>
@@ -101,7 +101,7 @@ const AppMain = () => {
       <Routes>
         {isLoggedIn ? (
           <>
-            <Route path="/quizzes" element={<Quiz />} />
+            <Route path="/quizzes" element={<Quiz user={user} />} />
             <Route path="/" element={<App />} />
           </>
         ) : (

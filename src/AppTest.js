@@ -139,30 +139,29 @@ const App = () => {
   };
 
   console.log(aiResponse);
-  console.log(user);
 
   return (
     <Box>
       <Box>
         {/* {isLoggedIn ? (
-            <PersistentDrawerLeft
-              logoutButton={
-                <Button
-                  variant="outlined"
-                  onClick={(e) => {
-                    setIsLoggedIn(false);
-                    signOut(auth);
-                    setUser({});
-                  }}
-                  sx={{ marginLeft: "20px" }}
-                >
-                  Log Out
-                </Button>
-              }
-            ></PersistentDrawerLeft>
-          ) : (
-            <AuthFormTesting />
-          )} */}
+          <PersistentDrawerLeft
+            logoutButton={
+              <Button
+                variant="outlined"
+                onClick={(e) => {
+                  setIsLoggedIn(false);
+                  signOut(auth);
+                  setUser({});
+                }}
+                sx={{ marginLeft: "20px" }}
+              >
+                Log Out
+              </Button>
+            }
+          ></PersistentDrawerLeft>
+        ) : (
+          <AuthFormTesting />
+        )} */}
 
         {isLoggedIn && (
           <StyledContainer>
