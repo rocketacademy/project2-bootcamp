@@ -1,3 +1,4 @@
+// Use this file in index.js as the root only as backup!
 import React from "react";
 import { GoogleMap, useLoadScript, Marker } from "@react-google-maps/api";
 import { useState, useEffect } from "react";
@@ -5,6 +6,9 @@ import "./App.css";
 import AuthFormTesting from "./Components/AuthFormTesting";
 import { auth } from "./firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
+import PersistentDrawerLeft from "./Components/Drawer";
+import { BrowserRouter as Router, Link, Routes, Route } from "react-router-dom";
+import Quiz from "./Components/Quizzes";
 
 // MUI
 import { TextField, Box, Typography } from "@mui/material";
@@ -13,7 +17,6 @@ import Grid from "@mui/material/Grid";
 import { styled } from "@mui/system";
 // import { Typography } from "@mui/material/styles/createTypography";
 import MenuItem from "@mui/material/MenuItem";
-import CustomDrawer from "./Components/CustomDrawer";
 
 const libraries = ["places"];
 const mapContainerStyle = {
@@ -46,6 +49,17 @@ const StyledGridPills = styled("div")({
   marginLeft: "20px",
 });
 
+const linkStyle = {
+  marginRight: "50px",
+  marginLeft: "50px",
+  marginTop: "10px",
+  marginBottom: "10px",
+  textDecoration: "none",
+  color: "black",
+  fontWeight: "bold",
+  fontSize: "30px",
+};
+
 // SelectTextFields MUI
 const landmarks = [
   {
@@ -61,8 +75,6 @@ const landmarks = [
     label: "Sentosa",
   },
 ];
-
-const drawerWidth = 240;
 
 const App = () => {
   const [userMessage, setUserMessage] = useState("");
@@ -122,164 +134,221 @@ const App = () => {
   };
 
   console.log(aiResponse);
+  console.log(user);
 
   return (
-    <Box>
-      <Box>
-        {isLoggedIn && (
-          <StyledContainer>
-            <StyledGridItem item>
-              <Typography
-                variant="h4"
-                sx={{ fontFamily: "Comic Sans MS", color: "primary.main" }}
-              >
-                Merlion Landmarks
-              </Typography>
-              <h2>Welcome back {user.email}</h2>
-              <Button
-                variant="outlined"
-                onClick={(e) => {
-                  setIsLoggedIn(false);
-                  signOut(auth);
-                  setUser({});
-                }}
-                sx={{ marginLeft: "20px" }}
-              >
-                Log out
-              </Button>
-            </StyledGridItem>
-            <StyledGridPills item>
-              <Button
-                variant="outlined"
-                onClick={() => {
-                  const message = "Singapore Flyer in 1 sentence";
-                  sendMessage(message);
-                }}
-                sx={{ width: "150px", height: "50px" }}
-              >
-                Singapore Flyer
-              </Button>
-            </StyledGridPills>
-            <StyledGridPills item>
-              <Button
-                variant="outlined"
-                onClick={() => {
-                  const message = "Sentosa Island in 1 sentence";
-                  sendMessage(message);
-                }}
-                sx={{ width: "150px", height: "50px" }}
-              >
-                Sentosa Island
-              </Button>
-            </StyledGridPills>
-            <StyledGridPills item>
-              <Button
-                variant="outlined"
-                onClick={() => {
-                  const message = "Chinatown Singapore in 1 sentence";
-                  sendMessage(message);
-                }}
-                sx={{ width: "150px", height: "50px" }}
-              >
-                Chinatown
-              </Button>
-            </StyledGridPills>
-          </StyledContainer>
-        )}
-      </Box>
-
-      {/* <Grid item className="LMFAO"> */}
-      {isLoggedIn && (
-        <StyledContainer>
-          <StyledGridItem item sx={{ margin: "20px" }}>
-            <TextField
-              type="text"
-              value={userMessage}
-              onChange={(e) => setUserMessage(e.target.value)}
-            />
-            <Button
-              variant="contained"
-              onClick={sendMessage}
-              sx={{ mt: "20px", mb: "20px" }}
-            >
-              Send Message
-            </Button>
-
-            <Box className="ai-response">
-              <Typography
-                variant="h4"
-                sx={{ fontFamily: "Comic Sans MS", color: "primary.main" }}
-              >
-                AI Response:
-              </Typography>
-              <p>{aiResponse}</p>
-            </Box>
-            <Button
-              variant="contained"
-              onClick={clearAIResponse}
-              sx={{ mt: "20px", mb: "20px" }}
-            >
-              Clear
-            </Button>
-            <Box
-              sx={{
-                "& .MuiTextField-root": { m: 1, width: "25ch" },
-              }}
-            >
-              <TextField
-                select
-                label="Select"
-                value={selectedLandmark}
-                onChange={(e) => setSelectedLandmark(e.target.value)}
-                helperText="Please select landmark"
-                sx={{ display: "block" }}
-              >
-                {landmarks.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
-                    {option.label}
-                  </MenuItem>
-                ))}
-              </TextField>
-            </Box>
-          </StyledGridItem>
-          <StyledGridItem
-            item
-            style={{
-              width: "100%",
-              height: "100%",
-              position: "relative",
-              marginTop: "20px",
+    <Router>
+      {isLoggedIn && ( // Conditionally render the navigation if user is logged in
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <Typography
+            variant="h4"
+            sx={{
+              fontFamily: "Comic Sans MS",
+              color: "primary.main",
+              marginRight: "auto", // Pushes the header to the left
             }}
           >
-            <GoogleMap
-              mapContainerStyle={mapContainerStyle}
-              mapId="6da2495ffc989dca"
-              zoom={12}
-              center={center}
-            >
-              <Marker position={center} />
-              <Marker
-                position={{ lat: 1.40058, lng: 103.90899 }}
-                onClick={() => {
-                  const lat = 1.40058;
-                  const lng = 103.90899;
-                  console.log("Marker clicked!");
-                  console.log(lat);
-                  console.log(lng);
-                  const message = `What is the name of this location with the following address: 100 Punggol Central, Singapore 828839. Share with me its history, and what developments occured in the last 20 years in Singapore. Word limit is 30 words.`;
-                  sendMessage(message);
-                }}
-              />
-            </GoogleMap>
-          </StyledGridItem>
-        </StyledContainer>
+            Merlion Landmarks
+          </Typography>
+          <div
+            style={{
+              display: "flex",
+              flex: 1,
+              justifyContent: "center",
+              marginRight: "500px",
+            }}
+          >
+            <Link to="/" style={linkStyle}>
+              Home
+            </Link>
+            <Link to="/quizzes" style={linkStyle}>
+              Quizzes
+            </Link>
+          </div>
+        </div>
       )}
-      {/* </Grid> */}
+      <Routes>
+        {isLoggedIn ? (
+          <>
+            <Route path="/quizzes" element={<Quiz />} />
+          </>
+        ) : (
+          <Route path="/" element={<AuthFormTesting />} />
+        )}
+      </Routes>
 
-      <Box style={{ display: isLoggedIn ? "none" : "block" }}>
-        {!isLoggedIn && <AuthFormTesting />}
+      <Box>
+        <Box>
+          {/* {isLoggedIn ? (
+            <PersistentDrawerLeft
+              logoutButton={
+                <Button
+                  variant="outlined"
+                  onClick={(e) => {
+                    setIsLoggedIn(false);
+                    signOut(auth);
+                    setUser({});
+                  }}
+                  sx={{ marginLeft: "20px" }}
+                >
+                  Log Out
+                </Button>
+              }
+            ></PersistentDrawerLeft>
+          ) : (
+            <AuthFormTesting />
+          )} */}
+
+          {isLoggedIn && (
+            <StyledContainer>
+              <StyledGridItem item>
+                <h2>Welcome back {user.email}</h2>
+                <Button
+                  variant="outlined"
+                  onClick={(e) => {
+                    setIsLoggedIn(false);
+                    signOut(auth);
+                    setUser({});
+                  }}
+                  sx={{ marginLeft: "20px" }}
+                >
+                  Log out
+                </Button>
+              </StyledGridItem>
+              <StyledGridPills item>
+                <Button
+                  variant="outlined"
+                  onClick={() => {
+                    const message = "Singapore Flyer in 1 sentence";
+                    sendMessage(message);
+                  }}
+                  sx={{ width: "150px", height: "50px" }}
+                >
+                  Singapore Flyer
+                </Button>
+              </StyledGridPills>
+              <StyledGridPills item>
+                <Button
+                  variant="outlined"
+                  onClick={() => {
+                    const message = "Sentosa Island in 1 sentence";
+                    sendMessage(message);
+                  }}
+                  sx={{ width: "150px", height: "50px" }}
+                >
+                  Sentosa Island
+                </Button>
+              </StyledGridPills>
+              <StyledGridPills item>
+                <Button
+                  variant="outlined"
+                  onClick={() => {
+                    const message = "Chinatown Singapore in 1 sentence";
+                    sendMessage(message);
+                  }}
+                  sx={{ width: "150px", height: "50px" }}
+                >
+                  Chinatown
+                </Button>
+              </StyledGridPills>
+            </StyledContainer>
+          )}
+        </Box>
+
+        {isLoggedIn && (
+          <StyledContainer>
+            <StyledGridItem item sx={{ margin: "20px" }}>
+              <TextField
+                type="text"
+                value={userMessage}
+                onChange={(e) => setUserMessage(e.target.value)}
+              />
+              <Button
+                variant="contained"
+                onClick={sendMessage}
+                sx={{ mt: "20px", mb: "20px" }}
+              >
+                Send Message
+              </Button>
+
+              <Box className="ai-response">
+                <Typography
+                  variant="h4"
+                  sx={{
+                    fontFamily: "Comic Sans MS",
+                    color: "primary.main",
+                  }}
+                >
+                  AI Response:
+                </Typography>
+                <p>{aiResponse}</p>
+              </Box>
+              <Button
+                variant="contained"
+                onClick={clearAIResponse}
+                sx={{ mt: "20px", mb: "20px" }}
+              >
+                Clear
+              </Button>
+              <Box
+                sx={{
+                  "& .MuiTextField-root": { m: 1, width: "25ch" },
+                }}
+              >
+                <TextField
+                  select
+                  label="Select"
+                  value={selectedLandmark}
+                  onChange={(e) => setSelectedLandmark(e.target.value)}
+                  helperText="Please select landmark"
+                  sx={{ display: "block" }}
+                >
+                  {landmarks.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                      {option.label}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              </Box>
+            </StyledGridItem>
+            <StyledGridItem
+              item
+              style={{
+                width: "100%",
+                height: "100%",
+                position: "relative",
+                marginTop: "20px",
+              }}
+            >
+              <GoogleMap
+                mapContainerStyle={mapContainerStyle}
+                mapId="6da2495ffc989dca"
+                zoom={12}
+                center={center}
+              >
+                <Marker position={center} />
+                <Marker
+                  position={{ lat: 1.40058, lng: 103.90899 }}
+                  onClick={() => {
+                    const lat = 1.40058;
+                    const lng = 103.90899;
+                    console.log("Marker clicked!");
+                    console.log(lat);
+                    console.log(lng);
+                    const message = `What is the name of this location with the following address: 100 Punggol Central, Singapore 828839. Share with me its history, and what developments occured in the last 20 years in Singapore. Word limit is 30 words.`;
+                    sendMessage(message);
+                  }}
+                />
+              </GoogleMap>
+            </StyledGridItem>
+          </StyledContainer>
+        )}
+
+        <Box style={{ display: isLoggedIn ? "none" : "block" }}>
+          {!isLoggedIn && <AuthFormTesting />}
+        </Box>
       </Box>
-    </Box>
+    </Router>
   );
 };
 

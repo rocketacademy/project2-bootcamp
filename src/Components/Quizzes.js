@@ -1,30 +1,29 @@
 import { useState } from "react";
 
 // MUI
-import {
-  TextField,
-  Button,
-  Grid,
-  Typography,
-  Box,
-  Avatar,
-} from "@mui/material";
+import { Button, Grid, Typography, Box } from "@mui/material";
 
 export default function Quiz() {
   const quizData = [
     {
       question: "Where is the Merlion located?",
       options: ["Clarke Quay", "Marina Bay", "Ang Mo Kio"],
+      image:
+        "https://www.straitstimes.com/multimedia/graphics/2021/08/singapore-merlion-real-anatomy/assets/images/intro-proposed/1.jpg?v=62dce0b6",
       correctAnswer: "Clarke Quay",
     },
     {
       question: "When was the Merlion built?",
       options: [1972, 1968, 1980, 1955],
+      image:
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Singapore_-_Merlion_0003.jpg/285px-Singapore_-_Merlion_0003.jpg",
       correctAnswer: 1972,
     },
     {
       question: "Where is the Infinity Pool located",
       options: ["Marina Bay", "Clarke Quay", "Bishan"],
+      image:
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/SkyPark_Infinity_Pool_%28view_from_deckchair%29.jpg/1200px-SkyPark_Infinity_Pool_%28view_from_deckchair%29.jpg",
       correctAnswer: "Marina Bay",
     },
     {
@@ -39,10 +38,8 @@ export default function Quiz() {
   const handleAnswerClick = (selectedAnswer) => {
     setUserAnswer(selectedAnswer);
 
-    if (selectedAnswer === quizData[currentQuestion].correctAnswer) {
-      setScore(score + 1);
-
-      setTimeout(() => {
+    const moveToNextQuestion = () => {
+      return setTimeout(() => {
         if (currentQuestion + 1 < quizData.length) {
           setCurrentQuestion(currentQuestion + 1);
           setUserAnswer(null);
@@ -50,6 +47,14 @@ export default function Quiz() {
           console.log("Quiz ended:", score);
         }
       }, 2000);
+    };
+
+    if (selectedAnswer === quizData[currentQuestion].correctAnswer) {
+      setScore(score + 1);
+
+      moveToNextQuestion();
+    } else {
+      moveToNextQuestion();
     }
   };
 
@@ -73,6 +78,13 @@ export default function Quiz() {
             <Typography variant="h5">
               {quizData[currentQuestion].question}
             </Typography>
+            <Box>
+              <img
+                src={`${quizData[currentQuestion].image}`}
+                alt="Pic of Landmark"
+                style={{ width: "300px", height: "300px" }}
+              />
+            </Box>
             <Box
               sx={{
                 display: "flex",
