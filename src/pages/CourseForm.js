@@ -1,5 +1,5 @@
 import { TextboxWithLabels, TextboxWithoutLabels } from "../components/Textbox";
-import { FileUploadWithLabel } from "../components/FileUpload";
+import { FileUpload } from "../components/FileUpload";
 import { AssignCourseCard } from "../components/Card";
 import { useState } from "react";
 
@@ -25,26 +25,26 @@ export const CourseForm = () => {
         <h1 className="text-center">Create A Course</h1>
 
         {/* course form */}
-        <form className="pb-8 grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-6">
+        <form className="pb-8 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
           {/* Course Title Description File Upload */}
-          <div className="col-span-3">
+          <div className="sm:col-span-3">
             <TextboxWithLabels
               label={"Course Title"}
               onChange={handleCourseTitle}
             />
           </div>
-          <div className="col-span-3">
+          <div className="sm:col-span-3">
             <TextboxWithLabels
               label={"Course Description"}
               onChange={handleCourseDescription}
             />
           </div>
-          <div className="col-span-full">
-            <FileUploadWithLabel label={"Upload Course Materials"} />
+          <div className="sm:col-span-6">
+            <FileUpload />
           </div>
 
           {/* create quiz on gform*/}
-          <div className="col-span-2">
+          <div className="sm:col-span-2">
             <a
               role="button"
               className="btn btn-accent w-full"
@@ -57,7 +57,7 @@ export const CourseForm = () => {
           </div>
 
           {/* quiz link */}
-          <div className="col-span-4">
+          <div className="sm:col-span-4">
             <TextboxWithoutLabels
               inlineLabel={"Paste the SHAREABLE Google Form link here!"}
               onChange={handleQuizLink}
@@ -65,7 +65,7 @@ export const CourseForm = () => {
           </div>
 
           {/* assign course */}
-          <div className="col-span-full">
+          <div className="sm:col-span-6">
             <AssignCourseCard cardTitle={"Assign Course"} />
           </div>
         </form>
