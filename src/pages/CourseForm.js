@@ -1,4 +1,4 @@
-import { TextboxWithLabels } from "../components/Textbox";
+import { TextboxWithLabels, TextboxWithoutLabels } from "../components/Textbox";
 import { FileUploadWithLabel } from "../components/FileUpload";
 import { AssignCourseCard } from "../components/Card";
 import { useState } from "react";
@@ -25,7 +25,7 @@ export const CourseForm = () => {
         <h1 className="text-center">Create A Course</h1>
 
         {/* course form */}
-        <form className="pb-12 border-b border-gray-900/10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-2">
+        <form className="pb-8 grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2">
           <TextboxWithLabels
             label={"Course Title"}
             onChange={handleCourseTitle}
@@ -37,10 +37,8 @@ export const CourseForm = () => {
           <div className="col-span-full">
             <FileUploadWithLabel label={"Upload Course Materials"} />
           </div>
-        </form>
-        <div>
           {/* create quiz */}
-          <h2 className="text-center">
+          <h3 className="text-center col-span-full">
             <a
               href="https://g.co/createaquiz"
               target="_blank"
@@ -48,21 +46,29 @@ export const CourseForm = () => {
             >
               Create Quiz on Google Forms
             </a>
-          </h2>
-          <form className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-2">
-            {/* quiz link */}
-            <TextboxWithLabels
-              label={"Paste the SHAREABLE Google Form link here!"}
+          </h3>
+          {/* quiz link */}
+
+          <div className="col-span-full">
+            <TextboxWithoutLabels
+              inlineLabel={"Paste the SHAREABLE Google Form link here!"}
               onChange={handleQuizLink}
             />
-          </form>
-        </div>
-        {/* assign course */}
-        <div className="pt-12 pb-12 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-2">
+          </div>
+
+          {/* assign course */}
+
           <div className="col-span-full">
             <AssignCourseCard cardTitle={"Assign Course"} />
           </div>
-        </div>
+        </form>
+        <button
+          type="button"
+          // onClick={addQuestion}
+          className="bg-blue-500 text-white p-2 mt-4"
+        >
+          Submit
+        </button>
       </div>
     </>
   );
