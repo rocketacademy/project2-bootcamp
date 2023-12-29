@@ -13,11 +13,11 @@ const MCQAnswer = ({ optionNum }) => {
   );
 };
 
-export const MCQ = () => {
+export const MCQ = ({ questionNum }) => {
   return (
     <>
       {/* Question Title */}
-      <TextboxWithLabels label={"Question"} />
+      <TextboxWithLabels label={`Question ${questionNum}`} />
       {/* Options */}
       <MCQAnswer optionNum={1} />
       <MCQAnswer optionNum={2} />
