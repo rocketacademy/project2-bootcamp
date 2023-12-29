@@ -8,6 +8,8 @@ export const TextboxWithLabels = ({ label, value, onChange }) => {
         type="text"
         placeholder="Type here"
         className="input input-bordered w-full max-w-xs"
+        value={value}
+        onChange={onChange}
       />
     </label>
   );
