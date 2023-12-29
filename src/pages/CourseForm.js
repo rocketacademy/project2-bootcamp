@@ -1,12 +1,29 @@
 import { TextboxWithLabels, TextboxWithoutLabels } from "../components/Textbox";
 import { FileUpload } from "../components/FileUpload";
 import { AssignCourseCard } from "../components/Card";
-import { useState } from "react";
+import { push, ref, set, onChildAdded, remove } from "firebase/database";
+import { db } from "../firebase";
+import { useState, useEffect } from "react";
 
 export const CourseForm = () => {
   const [quizLink, setQuizLink] = useState("");
   const [courseTitle, setCourseTitle] = useState("");
   const [courseDescription, setCourseDescription] = useState("");
+  const DB_COURSE_KEY = "courses";
+  const coursesRef = ref(db, DB_COURSE_KEY);
+
+  const writeData = () => {
+    const newCoursesRef = push(coursesRef);
+    set(newCoursesRef, {
+      createdDate: new Date().toLocaleString(),
+      courseTitle: courseTitle,
+      courseDescription: courseDescription,
+      quizLink: quizLink,
+    });
+    setCourseTitle("");
+    setCourseDescription("");
+    setQuizLink("");
+  };
 
   const handleQuizLink = (e) => {
     setQuizLink(e.target.value);
@@ -31,12 +48,14 @@ export const CourseForm = () => {
             <TextboxWithLabels
               label={"Course Title"}
               onChange={handleCourseTitle}
+              value={courseTitle}
             />
           </div>
           <div className="sm:col-span-3">
             <TextboxWithLabels
               label={"Course Description"}
               onChange={handleCourseDescription}
+              value={courseDescription}
             />
           </div>
           <div className="sm:col-span-6">
@@ -61,6 +80,7 @@ export const CourseForm = () => {
             <TextboxWithoutLabels
               inlineLabel={"Paste the SHAREABLE Google Form link here!"}
               onChange={handleQuizLink}
+              value={quizLink}
             />
           </div>
 
@@ -69,7 +89,9 @@ export const CourseForm = () => {
             <AssignCourseCard cardTitle={"Assign Course"} />
           </div>
         </form>
-        <button className="btn btn-primary">Submit</button>
+        <button className="btn btn-primary" onClick={writeData}>
+          Submit
+        </button>
       </div>
     </>
   );
