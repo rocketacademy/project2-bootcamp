@@ -10,11 +10,9 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <BrowserRouter>
     <Link to="/courseform">Create Course</Link>
-    <Link to="/quizform">Create Quiz</Link>
     <Routes>
       <Route path="/" element={<App />} />
       <Route path="/courseform" element={<CourseForm />} />
-      <Route path="/quizform" element={<QuizForm />} />
     </Routes>
   </BrowserRouter>
 );
