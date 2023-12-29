@@ -4,24 +4,26 @@ import {
   uploadBytes,
   getDownloadURL,
 } from "firebase/storage";
-import { push, ref, set } from "firebase/database";
+import { push, ref, set, onChildAdded } from "firebase/database";
 import { db } from "../firebase";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export const FileUpload = () => {
   const STORAGE_KEY = `/courseMaterials`;
 
   const [fileInputFile, setFileInputFile] = useState(null);
+  const [fileDisplay, setFileDisplay] = useState([]);
 
   const handleFileUpload = (e) => {
     setFileInputFile(e.target.files[0]);
   };
 
-  const getURL = (url) => {
+  const writeData = (url, fileName) => {
     const fileUploadRef = ref(db, STORAGE_KEY);
     const newFileUploadRef = push(fileUploadRef);
     set(newFileUploadRef, {
       url: url,
+      fileName: fileName,
     });
   };
 
@@ -32,10 +34,27 @@ export const FileUpload = () => {
     );
     uploadBytes(fullStorageRef, fileInputFile).then((snapshot) => {
       getDownloadURL(fullStorageRef, fileInputFile.name).then((url) => {
-        getURL(url);
+        writeData(url, fileInputFile.name);
       });
     });
   };
+
+  let uploadedFiles = fileDisplay.map((file) => (
+    <tr key={file.key}>
+      <td>{file.val.fileName}</td>
+    </tr>
+  ));
+
+  const filesRef = ref(db, STORAGE_KEY);
+
+  useEffect(() => {
+    onChildAdded(filesRef, (data) => {
+      setFileDisplay((prevFiles) => [
+        ...prevFiles,
+        { key: data.key, val: data.val() },
+      ]);
+    });
+  }, []);
 
   return (
     <>
@@ -51,6 +70,16 @@ export const FileUpload = () => {
       </label>
       <div className="btn w-full" onClick={uploadFile}>
         Upload
+      </div>
+      <div className="overflow-x-auto">
+        <table className="table">
+          <thead>
+            <tr>
+              <th>Files Uploaded</th>
+            </tr>
+          </thead>
+          <tbody>{uploadedFiles}</tbody>
+        </table>
       </div>
     </>
   );
