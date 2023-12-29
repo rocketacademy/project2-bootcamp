@@ -18,9 +18,17 @@ export const CourseForm = () => {
         </form>
         <div>
           {/* create quiz */}
-          <h2 className="text-center">Create Quiz</h2>
+          <h2 className="text-center">
+            <a
+              href="https://g.co/createaquiz"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Create Quiz on Google Forms
+            </a>
+          </h2>
           <form className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-2">
-            {/* quiz form */}
+            {/* quiz link */}
           </form>
         </div>
         {/* assign course */}
