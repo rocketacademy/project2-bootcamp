@@ -37,18 +37,19 @@ export const CourseForm = () => {
           <div className="col-span-full">
             <FileUploadWithLabel label={"Upload Course Materials"} />
           </div>
-          {/* create quiz */}
-          <h3 className="text-center col-span-full">
-            <a
-              href="https://g.co/createaquiz"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Create Quiz on Google Forms
-            </a>
-          </h3>
-          {/* quiz link */}
 
+          {/* create quiz on gform*/}
+          <a
+            role="button"
+            className="btn btn-accent"
+            href="https://g.co/createaquiz"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Create Quiz on Google Forms
+          </a>
+
+          {/* quiz link */}
           <div className="col-span-full">
             <TextboxWithoutLabels
               inlineLabel={"Paste the SHAREABLE Google Form link here!"}
@@ -57,18 +58,11 @@ export const CourseForm = () => {
           </div>
 
           {/* assign course */}
-
           <div className="col-span-full">
             <AssignCourseCard cardTitle={"Assign Course"} />
           </div>
         </form>
-        <button
-          type="button"
-          // onClick={addQuestion}
-          className="bg-blue-500 text-white p-2 mt-4"
-        >
-          Submit
-        </button>
+        <button className="btn btn-primary">Submit</button>
       </div>
     </>
   );
