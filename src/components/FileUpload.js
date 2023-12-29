@@ -3,8 +3,9 @@ import {
   ref as storageRef,
   uploadBytes,
   getDownloadURL,
+  deleteObject,
 } from "firebase/storage";
-import { push, ref, set, onChildAdded } from "firebase/database";
+import { push, ref, set, onChildAdded, remove } from "firebase/database";
 import { db } from "../firebase";
 import { useState, useEffect } from "react";
 
@@ -30,7 +31,7 @@ export const FileUpload = () => {
   const uploadFile = () => {
     const fullStorageRef = storageRef(
       storage,
-      STORAGE_KEY + "_" + fileInputFile.name
+      `${STORAGE_KEY}_${fileInputFile.name}`
     );
     uploadBytes(fullStorageRef, fileInputFile).then((snapshot) => {
       getDownloadURL(fullStorageRef, fileInputFile.name).then((url) => {
@@ -39,9 +40,22 @@ export const FileUpload = () => {
     });
   };
 
+  const deleteFile = (fileKey, fileName) => {
+    const fileRef = storageRef(storage, `${STORAGE_KEY}_${fileName}`);
+    deleteObject(fileRef).then(() => {
+      const fileUploadRef = ref(db, `${STORAGE_KEY}/${fileKey}`);
+      remove(fileUploadRef);
+    });
+  };
+
   let uploadedFiles = fileDisplay.map((file) => (
     <tr key={file.key}>
       <td>{file.val.fileName}</td>
+      <td>
+        <button onClick={() => deleteFile(file.key, file.val.fileName)}>
+          Delete
+        </button>
+      </td>
     </tr>
   ));
 
