@@ -14,9 +14,11 @@ export const FileUpload = ({ courseID }) => {
   const STORAGE_FOLDER = `/${STORAGE_KEY}/${courseID}`;
 
   const [fileInputFile, setFileInputFile] = useState(null);
+  const [fileInputValue, setFileInputValue] = useState("");
 
   const handleFileUpload = (e) => {
     setFileInputFile(e.target.files[0]);
+    setFileInputValue(e.target.value);
   };
 
   const writeData = (url, fileName) => {
@@ -27,6 +29,7 @@ export const FileUpload = ({ courseID }) => {
       fileName: fileName,
       courseID: courseID,
     });
+    setFileInputValue("");
   };
 
   const uploadFile = () => {
@@ -51,6 +54,7 @@ export const FileUpload = ({ courseID }) => {
           type="file"
           className="file-input file-input-bordered"
           onChange={handleFileUpload}
+          value={fileInputValue}
         />
       </label>
       <div className="btn w-full" onClick={uploadFile}>
