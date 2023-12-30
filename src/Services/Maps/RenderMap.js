@@ -26,24 +26,12 @@ const center = {
   lng: 103.81404,
 };
 
-const historicalLandmarks = {
-  Merlion: { lat: 1.2868, lng: 103.8545 },
-  MarinaBaySands: { lat: 1.2836, lng: 103.8585 },
-  GardensByTheBay: { lat: 1.2816, lng: 103.8636 },
-  SentosaIsland: { lat: 1.2494, lng: 103.8303 },
-  UniversalStudios: { lat: 1.254, lng: 103.8238 },
-  OrchardRoad: { lat: 1.3048, lng: 103.8318 },
-  RafflesHotel: { lat: 1.2946, lng: 103.8534 },
-  Chinatown: { lat: 1.2839, lng: 103.8436 },
-  LittleIndia: { lat: 1.3064, lng: 103.8495 },
-  ClarkeQuay: { lat: 1.2905, lng: 103.8466 },
-};
-
-const RenderMap = ({ sendMessage }) => {
+const RenderMap = ({ sendMessage, landmarks }) => {
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
     libraries,
   });
+  const [markerLoaded, setMarkerLoaded] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState();
   const [selectedPlace, setSelectedPlace] = useState({
     lat: 1.3513,
@@ -54,6 +42,11 @@ const RenderMap = ({ sendMessage }) => {
   const onMapLoad = useCallback((map) => {
     mapRef.current = map;
   }, []);
+
+  const onMarkerClick = (position) => {
+    mapRef.current.panTo(position);
+    mapRef.current.setZoom(15);
+  };
 
   const writeCoordinatesData = (lat = null, lng = null) => {
     const db = realTimeDatabase;
@@ -76,6 +69,10 @@ const RenderMap = ({ sendMessage }) => {
     const lat = event.latLng.lat();
     const lng = event.latLng.lng();
     setSelectedLocation({
+      lat: event.latLng.lat(),
+      lng: event.latLng.lng(),
+    });
+    onMarkerClick({
       lat: event.latLng.lat(),
       lng: event.latLng.lng(),
     });
@@ -112,21 +109,23 @@ const RenderMap = ({ sendMessage }) => {
       onLoad={onMapLoad}
     >
       {selectedLocation && <Marker position={selectedLocation} />}
-      {Object.entries(historicalLandmarks).map(([name, location]) => (
+      {Object.entries(landmarks).map(([name, position]) => (
         <Marker
           key={name}
-          position={location}
+          position={position}
           onClick={onMapClick}
           //icon={icon}
           //scaledSize="10%"
         />
       ))}
-      <Marker position={selectedLocation}>
-        {/* <InfoWindow>
-          <div>
-            <h2>{selectedPlace.formatted_address}</h2>
-          </div>
-        </InfoWindow> */}
+      <Marker position={selectedLocation} onLoad={() => setMarkerLoaded(true)}>
+        {markerLoaded && (
+          <InfoWindow>
+            <div>
+              <h2>{selectedPlace.formatted_address}</h2>
+            </div>
+          </InfoWindow>
+        )}
       </Marker>
     </GoogleMap>
   );
