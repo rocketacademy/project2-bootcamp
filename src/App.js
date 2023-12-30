@@ -179,26 +179,6 @@ const App = () => {
 
       <Box>
         <Box>
-          {/* {isLoggedIn ? (
-            <PersistentDrawerLeft
-              logoutButton={
-                <Button
-                  variant="outlined"
-                  onClick={(e) => {
-                    setIsLoggedIn(false);
-                    signOut(auth);
-                    setUser({});
-                  }}
-                  sx={{ marginLeft: "20px" }}
-                >
-                  Log Out
-                </Button>
-              }
-            ></PersistentDrawerLeft>
-          ) : (
-            <AuthFormTesting />
-          )} */}
-
           {isLoggedIn && (
             <StyledContainer>
               <StyledGridItem item>

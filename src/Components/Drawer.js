@@ -15,11 +15,25 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
+import { TextField } from "@mui/material";
 
-const drawerWidth = 240;
+import { Button } from "@mui/material";
+import { AppLinks } from "../AppMain";
+
+const drawerWidth = 380;
+
+const linkStyle = {
+  // marginRight: "50px",
+  // marginLeft: "50px",
+  // marginTop: "10px",
+  // marginBottom: "10px",
+  // textDecoration: "none",
+  // color: "black",
+  // fontWeight: "bold",
+  // fontSize: "30px",
+  display: "flex",
+  flexDirection: "column",
+};
 
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
   ({ theme, open }) => ({
@@ -66,9 +80,23 @@ const DrawerHeader = styled("div")(({ theme }) => ({
   justifyContent: "flex-end",
 }));
 
-export default function PersistentDrawerLeft({ logoutButton }) {
+export default function PersistentDrawerLeft({
+  logoutButton,
+  aiResponse,
+  clearAIResponse,
+  onDrawerOpen,
+  sendMessage,
+}) {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
+  const [userMessage, setUserMessage] = React.useState("");
+
+  React.useEffect(() => {
+    if (onDrawerOpen) {
+      // When prop changes (i.e., passed from parent component), it sets handleDrawerOpen function as the reference received
+      onDrawerOpen(handleDrawerOpen);
+    }
+  }, [onDrawerOpen]); // Watching for changes to onDrawerOpen prop
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -92,8 +120,8 @@ export default function PersistentDrawerLeft({ logoutButton }) {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap component="div">
-            Persistent drawer
+          <Typography variant="h4" noWrap component="div">
+            Merlion Landmarks
           </Typography>
         </Toolbar>
       </AppBar>
@@ -120,17 +148,46 @@ export default function PersistentDrawerLeft({ logoutButton }) {
           </IconButton>
         </DrawerHeader>
         <Divider />
+
         <List>
-          {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
-            <ListItem key={text} disablePadding>
-              <ListItemButton>
-                <ListItemIcon>
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItemButton>
-            </ListItem>
-          ))}
+          <ListItem sx={{ display: "flex", flexDirection: "column" }}>
+            <Box sx={{ marginBottom: "20px", width: "75%" }}>
+              <Button
+                variant="contained"
+                onClick={() => {
+                  const message = "Singapore Flyer's history in 1 sentence";
+                  sendMessage(message);
+                }}
+                sx={{ width: "50%", marginBottom: "20px" }}
+              >
+                Singapore Flyer
+              </Button>
+            </Box>
+            <Box sx={{ marginBottom: "20px", width: "75%" }}>
+              <Button
+                variant="contained"
+                onClick={() => {
+                  const message = "Sentosa Island's history in 1 sentence";
+                  sendMessage(message);
+                }}
+                sx={{ width: "50%" }}
+              >
+                Sentosa Island
+              </Button>
+            </Box>
+            <Box sx={{ marginBottom: "20px", width: "75%" }}>
+              <Button
+                variant="contained"
+                onClick={() => {
+                  const message = "Singapore Chinatown's history in 1 sentence";
+                  sendMessage(message);
+                }}
+                sx={{ width: "50%" }}
+              >
+                Chinatown SG
+              </Button>
+            </Box>
+          </ListItem>
         </List>
         <Divider />
         <List>
@@ -141,18 +198,42 @@ export default function PersistentDrawerLeft({ logoutButton }) {
           </ListItem>
         </List>
         <Divider />
-        <List>
-          {["All mail", "Trash", "Spam"].map((text, index) => (
-            <ListItem key={text} disablePadding>
-              <ListItemButton>
-                <ListItemIcon>
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
+        <Box>
+          <TextField
+            type="text"
+            value={userMessage}
+            onChange={(e) => setUserMessage(e.target.value)}
+          />
+          <Button
+            variant="contained"
+            onClick={sendMessage}
+            sx={{ mt: "20px", mb: "20px" }}
+          >
+            Send Message
+          </Button>
+        </Box>
+        <Divider />
+
+        <Box>
+          <Box className="ai-response">
+            <Typography
+              variant="h4"
+              sx={{ fontFamily: "Comic Sans MS", color: "primary.main" }}
+            >
+              AI Response:
+            </Typography>
+            <p>{aiResponse}</p>
+          </Box>
+          <Box>
+            <Button
+              variant="contained"
+              onClick={clearAIResponse}
+              sx={{ mt: "20px", mb: "20px" }}
+            >
+              Clear
+            </Button>
+          </Box>
+        </Box>
       </Drawer>
       <Main open={open}>
         <DrawerHeader />

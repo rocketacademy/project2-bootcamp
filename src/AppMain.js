@@ -25,7 +25,21 @@ const linkStyle = {
   color: "black",
   fontWeight: "bold",
   fontSize: "30px",
+  display: "flex",
+  flexDirection: "column",
 };
+
+// A separate component to render Links
+const AppLinks = () => (
+  <>
+    <Link to="/" style={linkStyle}>
+      Map
+    </Link>
+    <Link to="/quizzes" style={linkStyle}>
+      Quizzes
+    </Link>
+  </>
+);
 
 const AppMain = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -59,16 +73,6 @@ const AppMain = () => {
     <Router>
       {isLoggedIn && ( // Conditionally render the navigation if user is logged in
         <div style={{ display: "flex", alignItems: "center" }}>
-          <Typography
-            variant="h4"
-            sx={{
-              fontFamily: "Comic Sans MS",
-              color: "primary.main",
-              marginRight: "auto", // Pushes the header to the left
-            }}
-          >
-            Merlion Landmarks
-          </Typography>
           <div
             style={{
               display: "flex",
@@ -115,4 +119,4 @@ const AppMain = () => {
   );
 };
 
-export default AppMain;
+export { AppMain, AppLinks };

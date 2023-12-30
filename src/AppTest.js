@@ -6,14 +6,7 @@ import AuthFormTesting from "./Components/AuthFormTesting";
 import { auth } from "./firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import PersistentDrawerLeft from "./Components/Drawer";
-import {
-  BrowserRouter as Router,
-  Link,
-  Routes,
-  Route,
-  NavLink,
-} from "react-router-dom";
-import Quiz from "./Components/Quizzes";
+import { AppLinks } from "./AppMain";
 
 // MUI
 import { TextField, Box, Typography } from "@mui/material";
@@ -21,9 +14,14 @@ import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import { styled } from "@mui/system";
 // import { Typography } from "@mui/material/styles/createTypography";
-import MenuItem from "@mui/material/MenuItem";
 
 const libraries = ["places"];
+
+const useLoadScriptOptions = {
+  googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
+  libraries,
+};
+
 const mapContainerStyle = {
   width: "80vw",
   height: "80vh",
@@ -54,40 +52,15 @@ const StyledGridPills = styled("div")({
   marginLeft: "20px",
 });
 
-const linkStyle = {
-  marginRight: "50px",
-  marginLeft: "50px",
-  marginTop: "10px",
-  marginBottom: "10px",
-  textDecoration: "none",
-  color: "black",
-  fontWeight: "bold",
-  fontSize: "30px",
-};
-
-// SelectTextFields MUI
-const landmarks = [
-  {
-    value: "Singapore Zoo",
-    label: "Singapore Zoo",
-  },
-  {
-    value: "Singapore Flyer",
-    label: "Singapore Flyer",
-  },
-  {
-    value: "Sentosa",
-    label: "Sentosa",
-  },
-];
-
 const App = () => {
   const [userMessage, setUserMessage] = useState("");
   const [aiResponse, setAiResponse] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [selectedLandmark, setSelectedLandmark] = useState("Singapore Zoo");
 
   const [user, setUser] = useState({});
+
+  // drawerRef holds the reference to the drawer open function from PersistentDrawerLeft component -> holds the function handleDrawerOpen from Drawer.js
+  const [drawerRef, setDrawerRef] = useState(null);
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
@@ -100,10 +73,18 @@ const App = () => {
     });
   }, []);
 
-  const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
-    libraries,
-  });
+  useEffect(() => {
+    if (drawerRef) {
+      drawerRef();
+    }
+  }, [drawerRef]); // Listening for changes to drawerRef if it contains the handleDrawerOpen method from Drawer.js
+
+  // const { isLoaded, loadError } = useLoadScript({
+  //   googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
+  //   libraries,
+  // });
+
+  const { isLoaded, loadError } = useLoadScript(useLoadScriptOptions);
 
   if (loadError) {
     return <div>Error loading maps</div>;
@@ -138,35 +119,26 @@ const App = () => {
     setAiResponse("");
   };
 
-  console.log(aiResponse);
-
   return (
     <Box>
       <Box>
-        {/* {isLoggedIn ? (
+        {isLoggedIn ? (
           <PersistentDrawerLeft
-            logoutButton={
-              <Button
-                variant="outlined"
-                onClick={(e) => {
-                  setIsLoggedIn(false);
-                  signOut(auth);
-                  setUser({});
-                }}
-                sx={{ marginLeft: "20px" }}
-              >
-                Log Out
-              </Button>
-            }
-          ></PersistentDrawerLeft>
+            aiResponse={aiResponse}
+            clearAIResponse={clearAIResponse}
+            // onDrawerOpen: the function to set drawerRef state is passed as argument to onDrawerOpen
+            onDrawerOpen={(func) => setDrawerRef(func)}
+            sendMessage={sendMessage}
+          />
         ) : (
           <AuthFormTesting />
-        )} */}
+        )}
 
         {isLoggedIn && (
           <StyledContainer>
             <StyledGridItem item>
-              <h2>Welcome back {user.email}</h2>
+              {/* <h2>Welcome back {user.email}</h2> */}
+              <AppLinks />
             </StyledGridItem>
             <StyledGridPills item>
               <Button
@@ -211,7 +183,7 @@ const App = () => {
       {isLoggedIn && (
         <StyledContainer>
           <StyledGridItem item sx={{ margin: "20px" }}>
-            <TextField
+            {/* <TextField
               type="text"
               value={userMessage}
               onChange={(e) => setUserMessage(e.target.value)}
@@ -222,47 +194,7 @@ const App = () => {
               sx={{ mt: "20px", mb: "20px" }}
             >
               Send Message
-            </Button>
-
-            <Box className="ai-response">
-              <Typography
-                variant="h4"
-                sx={{
-                  fontFamily: "Comic Sans MS",
-                  color: "primary.main",
-                }}
-              >
-                AI Response:
-              </Typography>
-              <p>{aiResponse}</p>
-            </Box>
-            <Button
-              variant="contained"
-              onClick={clearAIResponse}
-              sx={{ mt: "20px", mb: "20px" }}
-            >
-              Clear
-            </Button>
-            <Box
-              sx={{
-                "& .MuiTextField-root": { m: 1, width: "25ch" },
-              }}
-            >
-              <TextField
-                select
-                label="Select"
-                value={selectedLandmark}
-                onChange={(e) => setSelectedLandmark(e.target.value)}
-                helperText="Please select landmark"
-                sx={{ display: "block" }}
-              >
-                {landmarks.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
-                    {option.label}
-                  </MenuItem>
-                ))}
-              </TextField>
-            </Box>
+            </Button> */}
           </StyledGridItem>
           <StyledGridItem
             item
@@ -305,3 +237,11 @@ const App = () => {
 };
 
 export default App;
+
+/** opening of drawer when sendMessage is called:
+  1. onDrawerOpen={(func)=> setDrawerRef(func)} is passed as a prop into PersistentDrawerLeft and sets up drawerRef with the handleDrawerOpen when app renders for the first time
+
+  2. When sendMessage is invoked, it updates aiResponse and clears userMessage, triggering a re-render of App component
+
+  3. The re-render of the entire App component causes the useEffect() for drawerRef to run and calls the handleDrawerOpen via drawerRef()
+ */
