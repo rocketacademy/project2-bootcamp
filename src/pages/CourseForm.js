@@ -1,7 +1,7 @@
 import { TextboxWithLabels, TextboxWithoutLabels } from "../components/Textbox";
 import { FileUpload } from "../components/FileUpload";
 import { AssignCourseCard } from "../components/Card";
-import { push, ref, set, onChildAdded, remove } from "firebase/database";
+import { push, ref, set } from "firebase/database";
 import { db } from "../firebase";
 import { useState, useEffect } from "react";
 

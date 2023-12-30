@@ -3,17 +3,17 @@ import {
   ref as storageRef,
   uploadBytes,
   getDownloadURL,
-  deleteObject,
 } from "firebase/storage";
-import { push, ref, set, onChildAdded, remove } from "firebase/database";
+import { push, ref, set } from "firebase/database";
 import { db } from "../firebase";
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { CurrentUploadedFiles } from "./CurrentUploadedFiles";
 
 export const FileUpload = ({ courseID }) => {
   const STORAGE_KEY = `/courseMaterials`;
+  const STORAGE_FOLDER = `/${STORAGE_KEY}/${courseID}`;
 
   const [fileInputFile, setFileInputFile] = useState(null);
-  const [fileDisplay, setFileDisplay] = useState([]);
 
   const handleFileUpload = (e) => {
     setFileInputFile(e.target.files[0]);
@@ -32,7 +32,7 @@ export const FileUpload = ({ courseID }) => {
   const uploadFile = () => {
     const fullStorageRef = storageRef(
       storage,
-      `${courseID}_${fileInputFile.name}`
+      `${STORAGE_FOLDER}/${fileInputFile.name}`
     );
     uploadBytes(fullStorageRef, fileInputFile).then((snapshot) => {
       getDownloadURL(fullStorageRef, fileInputFile.name).then((url) => {
@@ -40,36 +40,6 @@ export const FileUpload = ({ courseID }) => {
       });
     });
   };
-
-  const deleteFile = (fileKey, fileName) => {
-    const fileRef = storageRef(storage, `${STORAGE_KEY}_${fileName}`);
-    deleteObject(fileRef).then(() => {
-      const fileUploadRef = ref(db, `${STORAGE_KEY}/${fileKey}`);
-      remove(fileUploadRef);
-    });
-  };
-
-  let uploadedFiles = fileDisplay.map((file) => (
-    <tr key={file.key}>
-      <td>{file.val.fileName}</td>
-      <td>
-        <button onClick={() => deleteFile(file.key, file.val.fileName)}>
-          Delete
-        </button>
-      </td>
-    </tr>
-  ));
-
-  const filesRef = ref(db, STORAGE_KEY);
-
-  useEffect(() => {
-    onChildAdded(filesRef, (data) => {
-      setFileDisplay((prevFiles) => [
-        ...prevFiles,
-        { key: data.key, val: data.val() },
-      ]);
-    });
-  }, []);
 
   return (
     <>
@@ -86,15 +56,8 @@ export const FileUpload = ({ courseID }) => {
       <div className="btn w-full" onClick={uploadFile}>
         Upload
       </div>
-      <div className="overflow-x-auto">
-        <table className="table">
-          <thead>
-            <tr>
-              <th>Files Uploaded</th>
-            </tr>
-          </thead>
-          <tbody>{uploadedFiles}</tbody>
-        </table>
+      <div>
+        <CurrentUploadedFiles />
       </div>
     </>
   );
