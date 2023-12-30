@@ -15,7 +15,7 @@ const deleteFile = (fileKey, fileName) => {
   });
 };
 
-export const CurrentUploadedFiles = () => {
+export const CurrentUploadedFiles = ({ currentCourseID }) => {
   const [fileDisplay, setFileDisplay] = useState([]);
 
   useEffect(() => {
@@ -28,7 +28,11 @@ export const CurrentUploadedFiles = () => {
     });
   }, []);
 
-  const UploadedFilesDisplay = fileDisplay.map((file) => {
+  const filteredFiles = fileDisplay.filter(
+    (file) => file.val.courseID === currentCourseID
+  );
+
+  const UploadedFilesDisplay = filteredFiles.map((file) => {
     console.log("File Object:", file);
     return (
       <tr key={file.key}>

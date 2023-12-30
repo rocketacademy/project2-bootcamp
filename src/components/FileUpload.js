@@ -57,7 +57,7 @@ export const FileUpload = ({ courseID }) => {
         Upload
       </div>
       <div>
-        <CurrentUploadedFiles />
+        <CurrentUploadedFiles currentCourseID={courseID} />
       </div>
     </>
   );
