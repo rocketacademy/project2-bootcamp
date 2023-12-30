@@ -5,12 +5,43 @@ import { push, ref, set, onChildAdded, remove } from "firebase/database";
 import { db } from "../firebase";
 import { useState, useEffect } from "react";
 
+const generateRandomAlphanumeric = (length) => {
+  const characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let result = "";
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * characters.length);
+    result += characters.charAt(randomIndex);
+  }
+  return result;
+};
+
+const generateCourseID = () => {
+  const currentDate = new Date();
+  const year = currentDate.getFullYear();
+  const month = String(currentDate.getMonth() + 1).padStart(2, "0");
+  const day = String(currentDate.getDate()).padStart(2, "0");
+  const randomPart = generateRandomAlphanumeric(10);
+
+  const courseID = `${year}${month}${day}${randomPart}`;
+  return courseID;
+};
+
 export const CourseForm = () => {
   const [quizLink, setQuizLink] = useState("");
   const [courseTitle, setCourseTitle] = useState("");
   const [courseDescription, setCourseDescription] = useState("");
+  const [courseID, setCourseID] = useState("");
   const DB_COURSE_KEY = "courses";
   const coursesRef = ref(db, DB_COURSE_KEY);
+
+  useEffect(() => {
+    getCourseID();
+  }, []);
+
+  const getCourseID = () => {
+    setCourseID(generateCourseID());
+  };
 
   const writeData = () => {
     const newCoursesRef = push(coursesRef);
@@ -19,10 +50,12 @@ export const CourseForm = () => {
       courseTitle: courseTitle,
       courseDescription: courseDescription,
       quizLink: quizLink,
+      courseID: courseID,
     });
     setCourseTitle("");
     setCourseDescription("");
     setQuizLink("");
+    getCourseID(); //regenerate courseID after clicking submit
   };
 
   const handleQuizLink = (e) => {
@@ -36,6 +69,7 @@ export const CourseForm = () => {
     setCourseDescription(e.target.value);
   };
 
+  console.log(courseID);
   return (
     <>
       <div className="prose flex flex-col p-6">
