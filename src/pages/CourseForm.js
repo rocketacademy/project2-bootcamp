@@ -93,7 +93,7 @@ export const CourseForm = () => {
             />
           </div>
           <div className="sm:col-span-6">
-            <FileUpload />
+            <FileUpload courseID={courseID} />
           </div>
 
           {/* create quiz on gform*/}

@@ -9,7 +9,7 @@ import { push, ref, set, onChildAdded, remove } from "firebase/database";
 import { db } from "../firebase";
 import { useState, useEffect } from "react";
 
-export const FileUpload = () => {
+export const FileUpload = ({ courseID }) => {
   const STORAGE_KEY = `/courseMaterials`;
 
   const [fileInputFile, setFileInputFile] = useState(null);
@@ -25,13 +25,14 @@ export const FileUpload = () => {
     set(newFileUploadRef, {
       url: url,
       fileName: fileName,
+      courseID: courseID,
     });
   };
 
   const uploadFile = () => {
     const fullStorageRef = storageRef(
       storage,
-      `${STORAGE_KEY}_${fileInputFile.name}`
+      `${courseID}_${fileInputFile.name}`
     );
     uploadBytes(fullStorageRef, fileInputFile).then((snapshot) => {
       getDownloadURL(fullStorageRef, fileInputFile.name).then((url) => {
