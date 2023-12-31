@@ -1,11 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { auth } from "../firebase";
-import {
-  createUserWithEmailAndPassword,
-  onAuthStateChanged,
-  updateProfile,
-} from "firebase/auth";
-import { useState, useEffect } from "react";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { useState } from "react";
 
 // need to add logic to Register with firebase auth
 //After register into the auth, return to "/"
@@ -15,7 +11,6 @@ export default function RegisterPage(props) {
   const [password, setPassword] = useState("");
   const [errorCode, setErrorCode] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const [user, setUser] = useState("");
   const navi = useNavigate();
   const register = async () => {
     await createUserWithEmailAndPassword(auth, email, password, name)
@@ -33,15 +28,6 @@ export default function RegisterPage(props) {
         setErrorMessage(error.message);
       });
   };
-
-  useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      // If user is logged in, save logged-in user to state
-      if (user) {
-        setUser(user);
-      }
-    });
-  });
 
   return (
     <div className="App">
@@ -80,9 +66,6 @@ export default function RegisterPage(props) {
       <div className="errorMessage">
         <p>{errorCode && `Error code: ${errorCode}`}</p>
         <p>{errorMessage && `Error message: ${errorMessage}`}</p>
-      </div>
-      <div className="currUser">
-        {user ? <span> Logged in user: {user.displayName} </span> : null}
       </div>
     </div>
   );
