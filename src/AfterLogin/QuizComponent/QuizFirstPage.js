@@ -15,7 +15,7 @@ import { Link } from "react-router-dom";
 
 //Component let user choose which decks to include in the quiz
 export default function QuizFirstPage(props) {
-  const [userDeckIDs, setUserDeckIDs] = useState([]);
+  const [userDeckIDs, setUserDeckIDs] = useState(`loading`);
   const [userDecks, setUserDecks] = useState([]);
 
   //Need to replace TESTINGID with props.user.uid
@@ -39,6 +39,7 @@ export default function QuizFirstPage(props) {
         takeDeckIDsInfo(),
         takeDecksInfo(),
       ]);
+      console.log(newDecksIDs.val());
       setUserDeckIDs(newDecksIDs.val());
       setUserDecks(newDecks.val());
     };
@@ -62,7 +63,7 @@ export default function QuizFirstPage(props) {
   };
 
   //component show the decks option
-  const selection = userDeckIDs.length ? (
+  const selection = Array.isArray(userDeckIDs) ? (
     userDeckIDs.map((deckID) => {
       const deckName = userDecks[`deck${deckID}`].deckName;
       const cardsNum = userDecks[`deck${deckID}`].deckCards.length;
@@ -75,12 +76,15 @@ export default function QuizFirstPage(props) {
       );
     })
   ) : (
+    <p>You need to add deck before taking the quiz.</p>
+  );
+
+  const loadingPhase = (
     <div>
       Generating deck options
       <CircularProgress color="inherit" />
     </div>
   );
-
   let questionAvailable = 0;
   props.decks.forEach(
     (deck) => (questionAvailable += deck.deckCards.length - 3)
@@ -100,7 +104,9 @@ export default function QuizFirstPage(props) {
           options and your task is to select the correct option.
         </h4>
         <h3>Please select decks include in the quiz.</h3>
-        <FormGroup>{selection}</FormGroup>
+        <FormGroup>
+          {userDeckIDs === "loading" ? loadingPhase : selection}
+        </FormGroup>
         <Button
           variant="contained"
           disabled={!isEnoughCards}

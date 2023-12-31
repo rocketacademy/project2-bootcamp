@@ -97,7 +97,7 @@ export default function McQuiz(props) {
     };
 
     genQuestion(props.decks);
-  }, []);
+  }, [props.decks]);
 
   //show backdrop if question haven't been generated
   return (
