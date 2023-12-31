@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import "bootstrap/dist/css/bootstrap.css";
 import { auth } from "../firebase";
 import { signInWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { useState } from "react";
@@ -30,31 +31,41 @@ export default function SignInPage() {
 
   return (
     <div className="App">
-      <label>
-        Email:
-        <input
-          type="text"
-          name="email"
-          placeholder="Enter your email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        ></input>
-      </label>
-      <label>
-        Password:
-        <input
-          type="text"
-          name="password"
-          placeholder="Enter your password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        ></input>
-      </label>
-      <button onClick={logIn}>Log in</button>
+      <h2 className="mb-5">Welcome back! </h2>
+      <div class="mb-3">
+        <label className="form-label">
+          Email:
+          <input
+            type="email"
+            class="form-control"
+            name="email"
+            placeholder="brian123@brian.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          ></input>
+        </label>
+      </div>
+      <div class="mb-3">
+        <label className="form-label">
+          Password:
+          <input
+            type="text"
+            class="form-control"
+            name="password"
+            placeholder="*******"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          ></input>
+        </label>
+      </div>
+      <button type="button" className="btn btn-dark mb-4" onClick={logIn}>
+        Log in
+      </button>
 
       <div className="errorMessage">
-        <p>{errorCode && `Error code: ${errorCode}`}</p>
-        <p>{errorMessage && `Error message: ${errorMessage}`}</p>
+        {errorCode ? <h4>Oops! Something went wrong! </h4> : null}
+        <h6>{errorCode}</h6>
+        <h6>{errorMessage}</h6>
       </div>
     </div>
   );
