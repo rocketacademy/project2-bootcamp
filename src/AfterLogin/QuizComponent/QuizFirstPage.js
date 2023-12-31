@@ -39,7 +39,6 @@ export default function QuizFirstPage(props) {
         takeDeckIDsInfo(),
         takeDecksInfo(),
       ]);
-      console.log(newDecksIDs.val());
       setUserDeckIDs(newDecksIDs.val());
       setUserDecks(newDecks.val());
     };
