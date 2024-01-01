@@ -8,7 +8,8 @@ import { onAuthStateChanged, signOut } from "firebase/auth";
 
 import { BrowserRouter as Router, Link, Routes, Route } from "react-router-dom";
 import Quiz from "./Components/Quizzes";
-import App from "./AppTest";
+import AppTest from "./AppTest";
+import App from "./App";
 
 import { Typography, Button } from "@mui/material";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
@@ -37,6 +38,9 @@ const AppLinks = () => (
     </Link>
     <Link to="/quizzes" style={linkStyle}>
       Quizzes
+    </Link>
+    <Link to="/map" style={linkStyle}>
+      Charles Map
     </Link>
   </>
 );
@@ -81,12 +85,6 @@ const AppMain = () => {
               marginRight: "500px",
             }}
           >
-            <Link to="/" style={linkStyle}>
-              Map
-            </Link>
-            <Link to="/quizzes" style={linkStyle}>
-              Quizzes
-            </Link>
             <IconButton
               variant="outlined"
               onClick={(e) => {
@@ -106,7 +104,8 @@ const AppMain = () => {
         {isLoggedIn ? (
           <>
             <Route path="/quizzes" element={<Quiz user={user} />} />
-            <Route path="/" element={<App />} />
+            <Route path="/" element={<AppTest />} />
+            <Route path="/map" element={<App />} />
           </>
         ) : (
           <>

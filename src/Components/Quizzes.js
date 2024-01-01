@@ -7,6 +7,7 @@ import {
   doc,
 } from "firebase/firestore";
 import { db } from "../firebase";
+import { AppLinks } from "../AppMain";
 
 // MUI
 import { Button, Grid, Typography, Box } from "@mui/material";
@@ -121,56 +122,64 @@ export default function Quiz({ user }) {
   console.log(user);
 
   return (
-    <Grid
-      container
-      sx={{ height: "100vh", display: "flex", justifyContent: "center" }}
-    >
-      <Box>
-        {currentQuestion < quizData.length - 1 ? (
-          <Box component="form" noValidate sx={{ mt: 1 }}>
-            <Typography variant="h5">
-              {quizData[currentQuestion].question}
-            </Typography>
-            <Box>
-              <img
-                src={`${quizData[currentQuestion].image}`}
-                alt="Pic of Landmark"
-                style={{ width: "300px", height: "300px" }}
-              />
-            </Box>
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-              }}
-            >
-              {quizData[currentQuestion].options.map((option, index) => (
-                <Button
-                  key={index}
-                  variant="contained"
-                  onClick={() => handleAnswerClick(option)}
-                  disabled={userAnswer !== null}
-                  sx={{ mt: 1, width: "100%" }}
-                >
-                  {option}
-                </Button>
-              ))}
-            </Box>
-          </Box>
-        ) : (
-          <Box>
-            <Typography variant="h5">Quiz Finished</Typography>
-            <Typography variant="body1">Your final score: {score}</Typography>
-            <Button variant="contained" onClick={(e) => resetButton()}>
-              Reset
-            </Button>
-            <Button variant="contained" onClick={() => deleteUsersCollection()}>
-              Delete score
-            </Button>
-          </Box>
-        )}
+    <Box>
+      <Box sx={{ display: "flex", justifyContent: "center" }}>
+        <AppLinks />
       </Box>
-    </Grid>
+      <Grid
+        container
+        sx={{ height: "100vh", display: "flex", justifyContent: "center" }}
+      >
+        <Box>
+          {currentQuestion < quizData.length - 1 ? (
+            <Box component="form" noValidate sx={{ mt: 1 }}>
+              <Typography variant="h5">
+                {quizData[currentQuestion].question}
+              </Typography>
+              <Box>
+                <img
+                  src={`${quizData[currentQuestion].image}`}
+                  alt="Pic of Landmark"
+                  style={{ width: "300px", height: "300px" }}
+                />
+              </Box>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                }}
+              >
+                {quizData[currentQuestion].options.map((option, index) => (
+                  <Button
+                    key={index}
+                    variant="contained"
+                    onClick={() => handleAnswerClick(option)}
+                    disabled={userAnswer !== null}
+                    sx={{ mt: 1, width: "100%" }}
+                  >
+                    {option}
+                  </Button>
+                ))}
+              </Box>
+            </Box>
+          ) : (
+            <Box>
+              <Typography variant="h5">Quiz Finished</Typography>
+              <Typography variant="body1">Your final score: {score}</Typography>
+              <Button variant="contained" onClick={(e) => resetButton()}>
+                Reset
+              </Button>
+              <Button
+                variant="contained"
+                onClick={() => deleteUsersCollection()}
+              >
+                Delete score
+              </Button>
+            </Box>
+          )}
+        </Box>
+      </Grid>
+    </Box>
   );
 }

@@ -206,12 +206,16 @@ export default function PersistentDrawerLeft({
           />
           <Button
             variant="contained"
-            onClick={sendMessage}
+            // onClick={sendMessage}
+            onClick={() => {
+              sendMessage(userMessage);
+            }}
             sx={{ mt: "20px", mb: "20px" }}
           >
             Send Message
           </Button>
         </Box>
+
         <Divider />
 
         <Box>

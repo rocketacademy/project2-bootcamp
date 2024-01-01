@@ -52,7 +52,7 @@ const StyledGridPills = styled("div")({
   marginLeft: "20px",
 });
 
-const App = () => {
+const AppTest = () => {
   const [userMessage, setUserMessage] = useState("");
   const [aiResponse, setAiResponse] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -97,6 +97,7 @@ const App = () => {
   const sendMessage = async (targetMessage) => {
     try {
       const messageToSend = userMessage === "" ? targetMessage : userMessage;
+      console.log(messageToSend);
 
       const response = await fetch("http://localhost:3002/send-message", {
         method: "POST",
@@ -236,7 +237,7 @@ const App = () => {
   );
 };
 
-export default App;
+export default AppTest;
 
 /** opening of drawer when sendMessage is called:
   1. onDrawerOpen={(func)=> setDrawerRef(func)} is passed as a prop into PersistentDrawerLeft and sets up drawerRef with the handleDrawerOpen when app renders for the first time
