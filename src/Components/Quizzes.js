@@ -126,40 +126,75 @@ export default function Quiz({ user }) {
       <Box sx={{ display: "flex", justifyContent: "center" }}>
         <AppLinks />
       </Box>
-      <Grid
-        container
-        sx={{ height: "100vh", display: "flex", justifyContent: "center" }}
+      <Box
+        sx={{
+          height: "100vh",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
       >
         <Box>
           {currentQuestion < quizData.length - 1 ? (
             <Box component="form" noValidate sx={{ mt: 1 }}>
-              <Typography variant="h5">
+              <Typography
+                variant="h4"
+                sx={{
+                  marginLeft: "16px", // Adjust the gap between index and option
+                  // fontSize: "1.2rem", // Change font size
+                  fontWeight: "bold", // Make it bold
+                  color: "blue", // Change the color
+                }}
+              >
                 {quizData[currentQuestion].question}
               </Typography>
-              <Box>
+
+              {/* Image goes here */}
+              {/* <Box>
                 <img
                   src={`${quizData[currentQuestion].image}`}
                   alt="Pic of Landmark"
                   style={{ width: "300px", height: "300px" }}
                 />
-              </Box>
+              </Box> */}
               <Box
                 sx={{
                   display: "flex",
                   flexDirection: "column",
                   alignItems: "center",
+                  width: "100%",
                 }}
               >
                 {quizData[currentQuestion].options.map((option, index) => (
-                  <Button
-                    key={index}
-                    variant="contained"
-                    onClick={() => handleAnswerClick(option)}
-                    disabled={userAnswer !== null}
-                    sx={{ mt: 1, width: "100%" }}
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      width: "100%",
+                      marginRight: "8px",
+                      marginBottom: "10px",
+                    }}
                   >
-                    {option}
-                  </Button>
+                    <Typography
+                      sx={{
+                        marginRight: "16px", // Adjust the gap between index and option
+                        fontSize: "1.2rem", // Change font size
+                        fontWeight: "bold", // Make it bold
+                        color: "blue", // Change the color
+                      }}
+                    >
+                      {index + 1}
+                    </Typography>
+                    <Button
+                      key={index}
+                      variant="contained"
+                      onClick={() => handleAnswerClick(option)}
+                      disabled={userAnswer !== null}
+                      sx={{ mt: 1, width: "100%" }}
+                    >
+                      {option}
+                    </Button>
+                  </Box>
                 ))}
               </Box>
             </Box>
@@ -174,12 +209,12 @@ export default function Quiz({ user }) {
                 variant="contained"
                 onClick={() => deleteUsersCollection()}
               >
-                Delete score
+                Delete score from Cloud Firestore
               </Button>
             </Box>
           )}
         </Box>
-      </Grid>
+      </Box>
     </Box>
   );
 }
