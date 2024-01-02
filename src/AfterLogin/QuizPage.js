@@ -21,7 +21,7 @@ export default function QuizPage() {
           setQuizPage={setQuizPage}
         />
       )}
-      {quizPage === 1 && <McQuiz decks={decks} />}
+      {quizPage === 1 && <McQuiz user={user} decks={decks} />}
     </div>
   );
 }

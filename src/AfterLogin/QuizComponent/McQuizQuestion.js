@@ -14,8 +14,6 @@ export default function McQuizQuestion(props) {
   const [startAnimationPrev, setAnimationPrev] = useState(false);
   const navi = useNavigate();
 
-  const TESTINGID = "DxXFVzvVUqSLfTtHfVUrjmV2MPW2";
-
   //animataion frames for wipe right/left
   const animateNext = `@keyframes next-question{
     0%{right:${(currentQuestion - 1) * 100}%;}
@@ -68,7 +66,10 @@ export default function McQuizQuestion(props) {
 
   //handle after all question is answered, and go to the report page
   const handleToResult = async () => {
-    const userQuizReportRef = ref(database, `userInfo/${TESTINGID}/quizReport`);
+    const userQuizReportRef = ref(
+      database,
+      `userInfo/${props.user.uid}/quizReport`
+    );
     const userQuizReport = await get(userQuizReportRef);
     const score = isCorrect.reduce((a, b) => a + b, 0) * 10;
     const answer = props.questions.map(({ english, answer, deckName }) => {
@@ -80,7 +81,7 @@ export default function McQuizQuestion(props) {
         : Object.values(userQuizReport.val()).length + 1;
     const newQuizReportRef = ref(
       database,
-      `userInfo/${TESTINGID}/quizReport/quiz${quizNo}`
+      `userInfo/${props.user.uid}/quizReport/quiz${quizNo}`
     );
     await set(newQuizReportRef, {
       quizID: quizNo,

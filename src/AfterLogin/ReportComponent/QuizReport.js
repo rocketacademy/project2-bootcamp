@@ -16,7 +16,6 @@ export default function QuizReport() {
   const [user] = useOutletContext();
   const { quizNo } = useParams();
   const [quizInfo, setQuizInfo] = useState(null);
-  const TESTINGID = "DxXFVzvVUqSLfTtHfVUrjmV2MPW2";
   const navi = useNavigate();
 
   //get particular quiz report from the user's quiz report
@@ -24,13 +23,13 @@ export default function QuizReport() {
     const getQuizInfo = async () => {
       const quizRef = ref(
         database,
-        `userInfo/${TESTINGID}/quizReport/quiz${quizNo}`
+        `userInfo/${user.uid}/quizReport/quiz${quizNo}`
       );
       const quizReport = await get(quizRef);
       setQuizInfo(quizReport.val());
     };
     getQuizInfo();
-  }, [quizNo]);
+  }, [quizNo, user.uid]);
 
   //generate quiz detail formmatted to use in the table
   const quizDetail = !quizInfo

@@ -108,7 +108,9 @@ export default function McQuiz(props) {
           <CircularProgress color="inherit" />
         </h1>
       </Backdrop>
-      {questions.length !== 0 && <McQuizQuestion questions={questions} />}
+      {questions.length !== 0 && (
+        <McQuizQuestion user={props.user} questions={questions} />
+      )}
     </div>
   );
 }

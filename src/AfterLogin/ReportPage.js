@@ -12,11 +12,10 @@ export default function ReportPage() {
   const [user, setUser] = useOutletContext();
   const [userInfo, setUserInfo] = useState(null);
   const [userWords, setUserWords] = useState(0);
-  const TESTINGID = "DxXFVzvVUqSLfTtHfVUrjmV2MPW2";
 
   useEffect(() => {
     const getUserAndDeckInfo = async () => {
-      const userInfoRef = ref(database, `userInfo/${TESTINGID}`);
+      const userInfoRef = ref(database, `userInfo/${user.uid}`);
       const newUserInfo = await get(userInfoRef);
       setUserInfo(newUserInfo.val());
       const decks = newUserInfo.val().decks;
@@ -38,7 +37,7 @@ export default function ReportPage() {
       setUserWords(totalWords);
     };
     getUserAndDeckInfo();
-  }, []);
+  }, [user.uid]);
 
   //cal the score of Each Quiz in order to user to cal the average score after each quiz
   const scoreOfEachQuiz =
