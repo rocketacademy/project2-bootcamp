@@ -17,7 +17,18 @@ a {
   font-size: calc(10px + 2vmin);
 }
 
+.outlet {
+  text-align: center;
+  min-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+}
+
 .navi-bar {
+  height: 10vh;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -25,10 +36,27 @@ a {
 }
 
 .navi-icon-div {
-  margin-right: 10px;
-  width: 30%;
+  padding-right: 10px;
+  width: 30vw;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
+}
+
+.page {
+  width: 100vw;
+  max-width: 100%;
+  min-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.correct {
+  background-color: #34a853;
+}
+.wrong {
+  background-color: #db004f;
 }
