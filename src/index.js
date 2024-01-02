@@ -23,6 +23,7 @@ root.render(
         <Route path="addDeck" element={<AddDeckPage />} />
         <Route path="editDeck" element={<EditdeckPage />} />
         <Route path="study" element={<StudyPage />} />
+        <Route path="/study/:deckID" element={<StudyPage />} />
         <Route path="report" element={<ReportPage />} />
         <Route path="quizList" element={<QuizReportList />} />
         <Route path="quizList/:quizNo" element={<QuizReport />} />
