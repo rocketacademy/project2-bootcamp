@@ -5,6 +5,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./App.css";
 import Auth from "./pages/Auth";
 import Teacher from "./pages/Teacher";
+import { CourseForm } from "./pages/CourseForm";
 
 const App = () => {
   return (
@@ -18,6 +19,7 @@ const App = () => {
           <Routes>
             <Route path="/" element={<Auth />} />
             <Route path="teacher" element={<Teacher />} />
+            <Route path="courseform" element={<CourseForm />} />
           </Routes>
         </BrowserRouter>
       </header>
