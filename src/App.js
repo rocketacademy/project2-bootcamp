@@ -1,13 +1,21 @@
 import "./App.css";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import NaviBar from "./AfterLogin/NaviBar";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "./firebase";
 export default function App() {
-  const [user, setUser] = useState("CMfyMYSIgpYfxV0x2OjOh911wd03");
+  const [user, setUser] = useState(null);
   const navi = useNavigate();
   const path = useLocation();
   //useEffect to setUser
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      // If user is logged in, save logged-in user to state
+      setUser(user);
+    });
+  });
 
   const userDisplay = (
     <div>

@@ -9,12 +9,11 @@ export default function QuizReportList() {
   const [user, setUser] = useOutletContext();
   const [quizList, setQuizList] = useState(null);
   const navi = useNavigate();
-  const TESTINGID = "DxXFVzvVUqSLfTtHfVUrjmV2MPW2";
 
   //get the quiz report List
   useEffect(() => {
     const getQuizReportList = async () => {
-      const newQuizListRef = ref(database, `userInfo/${TESTINGID}/quizReport`);
+      const newQuizListRef = ref(database, `userInfo/${user.uid}/quizReport`);
       const newQuizList = await get(newQuizListRef);
       setQuizList(newQuizList.val());
     };

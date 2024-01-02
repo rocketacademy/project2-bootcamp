@@ -2,14 +2,12 @@ import { ref, get } from "firebase/database";
 import { database } from "../firebase";
 import { Card } from "@mui/material";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 
 export default function HomePage() {
+  const [user, setUser] = useOutletContext();
   const [userDeckIDs, setUserDeckIDs] = useState();
   const [userDecks, setUserDecks] = useState([]);
-
-  //Need to replace TESTINGID with props.user.uid
-  const TESTINGID = "DxXFVzvVUqSLfTtHfVUrjmV2MPW2";
 
   useEffect(() => {
     const takeDecksInfo = async () => {
@@ -20,7 +18,7 @@ export default function HomePage() {
 
     const takeDeckIDsInfo = async () => {
       //Taking the user Decks
-      const userDecksRef = ref(database, `userInfo/${TESTINGID}/decks`);
+      const userDecksRef = ref(database, `userInfo/${user.uid}/decks`);
       return await get(userDecksRef);
     };
 
@@ -63,6 +61,7 @@ export default function HomePage() {
 
   return (
     <div>
+      <div>Hi, {user.displayName ? user.displayName : "user"}.</div>
       <p>Your current deck:</p>
       {deckList}
     </div>
