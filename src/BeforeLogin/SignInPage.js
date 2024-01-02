@@ -49,7 +49,7 @@ export default function SignInPage() {
         <label className="form-label">
           Password:
           <input
-            type="text"
+            type="password"
             class="form-control"
             name="password"
             placeholder="*******"

@@ -13,21 +13,16 @@ export default function RegisterPage(props) {
   const [errorCode, setErrorCode] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const navi = useNavigate();
+
   const register = async () => {
-    await createUserWithEmailAndPassword(auth, email, password, name)
-      .then(() => {
-        updateProfile(auth.currentUser, {
-          displayName: name,
-        });
-        setEmail("");
-        setPassword("");
-        setName("");
-        navi("/");
-      })
-      .catch((error) => {
-        setErrorCode(error.code);
-        setErrorMessage(error.message);
-      });
+    await createUserWithEmailAndPassword(auth, email, password, name);
+    await updateProfile(auth.currentUser, {
+      displayName: name,
+    });
+    setEmail("");
+    setPassword("");
+    setName("");
+    navi("/");
   };
 
   return (

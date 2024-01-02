@@ -1,28 +1,26 @@
 import "./App.css";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import NaviBar from "./AfterLogin/NaviBar";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./firebase";
 export default function App() {
-  const [user, setUser] = useState("");
+  const [user, setUser] = useState(null);
   const navi = useNavigate();
-
+  const path = useLocation();
   //useEffect to setUser
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       // If user is logged in, save logged-in user to state
-      if (user) {
-        setUser(user);
-      }
+      setUser(user);
     });
   });
 
   const userDisplay = (
     <div>
-      <NaviBar />
-      <div className="App">
+      {path.pathname !== "/quiz" && <NaviBar />}
+      <div className="outlet">
         <Outlet context={[user, setUser]} />
       </div>
     </div>
@@ -37,6 +35,6 @@ export default function App() {
       <button onClick={() => navi("/signin")}>Sign in</button>
     </div>
   );
-  console.log(user);
+
   return user ? userDisplay : nonUserDisplay;
 }
