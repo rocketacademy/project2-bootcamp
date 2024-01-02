@@ -15,11 +15,11 @@ export default function StudyPage() {
 
   useEffect(() => {
     const takeDecksInfo = async () => {
-      //Taking the decks Info
       const decksRef = ref(database, `decks/deck${deckID}`);
       return await get(decksRef);
     };
 
+    //will improve to just fetch selected cards instead of all cards.
     const takeCardsInfo = async () => {
       const cardsRef = ref(database, `cards`);
       return await get(cardsRef);
@@ -88,19 +88,17 @@ export default function StudyPage() {
         {currentIndex + 1}/{totalCards}
       </p>
       {progressBar({ current: currentIndex + 1, total: totalCards })}
-      <Card
-        onClick={handleClick}
-        className={`study-card ${displayEnglish ? "english-bg" : "spanish-bg"}`}
-      >
+
+      <Card className="study-card">
         {displayEnglish ? (
           <>
             <div className="study-card-header">
               <p>English</p>
             </div>
-            <div className="study-word">
+            <div className="study-word" onClick={handleClick}>
               <h1>{currentCard.english}</h1>
             </div>
-            <p className="hint">Hint: Tap on this card to flip to other side</p>
+            <p className="hint">Hint: Tap to flip to other side</p>
           </>
         ) : (
           <>
@@ -108,10 +106,10 @@ export default function StudyPage() {
               <p>Spanish</p>
               <button>Audio</button>
             </div>
-            <div className="study-word">
+            <div className="study-word" onClick={handleClick}>
               <h1>{currentCard.spanish}</h1>
             </div>
-            <p className="hint">Hint: Tap on this card to flip to other side</p>
+            <p className="hint">Hint: Tap to flip to other side</p>
           </>
         )}
       </Card>
