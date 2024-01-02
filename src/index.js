@@ -11,6 +11,8 @@ import SignInPage from "./BeforeLogin/SignInPage";
 import RegisterPage from "./BeforeLogin/RegisterPage";
 import EditdeckPage from "./AfterLogin/EditDeckPage";
 import AddDeckPage from "./AfterLogin/AddDeckPage";
+import QuizReportList from "./AfterLogin/ReportComponent/QuizReportList";
+import QuizReport from "./AfterLogin/ReportComponent/QuizReport";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -22,6 +24,8 @@ root.render(
         <Route path="editDeck" element={<EditdeckPage />} />
         <Route path="study" element={<StudyPage />} />
         <Route path="report" element={<ReportPage />} />
+        <Route path="quizList" element={<QuizReportList />} />
+        <Route path="quizList/:quizNo" element={<QuizReport />} />
         <Route path="quiz" element={<QuizPage />} />
         <Route path="*" element={<div>404</div>} />
       </Route>
