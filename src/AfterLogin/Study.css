@@ -1,9 +1,20 @@
+.study-header {
+  display: flex;
+  justify-content: left;
+}
+
+.shuffle-quiz {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+}
+
 .study-card {
-  width: 80vw;
+  width: 60vw;
   height: 50vh;
-  background-color: aliceblue;
-  box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.1);
   text-align: left;
+  margin-bottom: 10px;
+  padding: 10px;
 }
 
 .study-word {
@@ -12,4 +23,35 @@
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.study-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 10%;
+  font-size: 1rem;
+}
+
+.hint {
+  font-size: 1rem;
+  text-align: center;
+}
+
+.prev-next {
+  display: flex;
+  justify-content: space-between;
+}
+
+.current-index {
+  font-size: 0.9rem;
+  text-align: left;
+}
+
+.english-bg {
+  background-color: white;
+}
+
+.spanish-bg {
+  background-color: #dde2fc;
 }

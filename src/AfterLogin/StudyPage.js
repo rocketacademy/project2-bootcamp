@@ -2,6 +2,8 @@ import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { ref, get } from "firebase/database";
 import { database } from "../firebase";
+import { Card, Button } from "@mui/material";
+import LinearProgress from "@mui/material/LinearProgress";
 import "./Study.css";
 
 export default function StudyPage() {
@@ -58,34 +60,73 @@ export default function StudyPage() {
 
   const totalCards = decks.deckCards.length;
 
+  const progressBar = ({ current, total }) => {
+    const progress = (current / total) * 100;
+    return (
+      <LinearProgress
+        variant="determinate"
+        value={progress}
+        color="error"
+        sx={{ marginBottom: 2 }}
+      />
+    );
+  };
+
   const deckName = decks.deckName;
 
   return (
     <div>
-      <p>{deckName}</p>
-      <p>
+      <div className="study-header">
+        <p>{deckName}</p>
+        <div className="shuffle-quiz">
+          <Button>Shuffle</Button>
+          <Button>Quiz</Button>
+        </div>
+      </div>
+
+      <p className="current-index">
         {currentIndex + 1}/{totalCards}
       </p>
-      <div onClick={handleClick} className="study-card">
+      {progressBar({ current: currentIndex + 1, total: totalCards })}
+      <Card
+        onClick={handleClick}
+        className={`study-card ${displayEnglish ? "english-bg" : "spanish-bg"}`}
+      >
         {displayEnglish ? (
           <>
-            <p>English</p>
+            <div className="study-card-header">
+              <p>English</p>
+            </div>
             <div className="study-word">
               <h1>{currentCard.english}</h1>
             </div>
+            <p className="hint">Hint: Tap on this card to flip to other side</p>
           </>
         ) : (
           <>
-            <p>Spanish</p>
+            <div className="study-card-header">
+              <p>Spanish</p>
+              <button>Audio</button>
+            </div>
             <div className="study-word">
               <h1>{currentCard.spanish}</h1>
             </div>
+            <p className="hint">Hint: Tap on this card to flip to other side</p>
           </>
         )}
-      </div>
+      </Card>
 
-      <button onClick={handlePrevCard}>Prev</button>
-      <button onClick={handleNextCard}>Next</button>
+      <div className="prev-next">
+        <Button onClick={handlePrevCard} disabled={currentIndex <= 0}>
+          Prev
+        </Button>
+        <Button
+          onClick={handleNextCard}
+          disabled={currentIndex >= totalCards - 1}
+        >
+          Next
+        </Button>
+      </div>
     </div>
   );
 }
