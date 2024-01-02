@@ -91,15 +91,12 @@ export default function StudyPage() {
         <p>{deckName}</p>
         <div className="shuffle-quiz">
           <Button>Shuffle</Button>
-          <Button>Quiz</Button>
         </div>
       </div>
-
       <p className="current-index">
         {currentIndex + 1}/{totalCards}
       </p>
       {progressBar({ current: currentIndex + 1, total: totalCards })}
-
       <Card className="study-card">
         {displayEnglish ? (
           <>
@@ -115,7 +112,7 @@ export default function StudyPage() {
           <>
             <div className="study-card-header">
               <p>Spanish</p>
-              <button>Audio</button>
+              <Button>Audio</Button>
             </div>
             <div className="study-word" onClick={handleClick}>
               <h1>{currentCard.spanish}</h1>
@@ -124,7 +121,6 @@ export default function StudyPage() {
           </>
         )}
       </Card>
-
       <div className="prev-next">
         <Button onClick={handlePrevCard} disabled={currentIndex <= 0}>
           Prev
@@ -133,6 +129,8 @@ export default function StudyPage() {
           {currentIndex === totalCards - 1 ? "Done" : "Next"}
         </Button>
       </div>
+
+      {/* showing dialog after reviewing done */}
       {studyDone && (
         <StudyDone open={studyDone} onClose={handleCloseStudyDone} />
       )}
