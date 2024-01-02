@@ -1,9 +1,11 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { ref, get } from "firebase/database";
 import { database } from "../firebase";
+
 import { Card, Button } from "@mui/material";
 import LinearProgress from "@mui/material/LinearProgress";
+import StudyDone from "./StudyComponent/StudyDone";
 import "./Study.css";
 
 export default function StudyPage() {
@@ -12,6 +14,7 @@ export default function StudyPage() {
   const { deckID } = useParams();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [displayEnglish, setDisplayEnglish] = useState(true);
+  const [studyDone, setStudyDone] = useState(false);
 
   useEffect(() => {
     const takeDecksInfo = async () => {
@@ -40,6 +43,8 @@ export default function StudyPage() {
     if (currentIndex < decks.deckCards.length - 1) {
       setCurrentIndex(currentIndex + 1);
       setDisplayEnglish(true);
+    } else {
+      setStudyDone(true);
     }
   };
 
@@ -52,6 +57,12 @@ export default function StudyPage() {
 
   const handleClick = () => {
     setDisplayEnglish((prevDisplayEnglish) => !prevDisplayEnglish);
+  };
+  const navigate = useNavigate();
+
+  const handleCloseStudyDone = () => {
+    setStudyDone(false);
+    navigate(`/`);
   };
 
   //need to make sure the data is fetched before performing these.
@@ -118,13 +129,13 @@ export default function StudyPage() {
         <Button onClick={handlePrevCard} disabled={currentIndex <= 0}>
           Prev
         </Button>
-        <Button
-          onClick={handleNextCard}
-          disabled={currentIndex >= totalCards - 1}
-        >
-          Next
+        <Button onClick={handleNextCard}>
+          {currentIndex === totalCards - 1 ? "Done" : "Next"}
         </Button>
       </div>
+      {studyDone && (
+        <StudyDone open={studyDone} onClose={handleCloseStudyDone} />
+      )}
     </div>
   );
 }
