@@ -3,10 +3,10 @@ import { useState, useEffect } from "react";
 
 // Components
 import Navbar from "../components/Navbar";
-import TradeLineItem from "../components/TradeLineItem";
-import FilterInputModal from "../components/FilterInputModal";
-import HistoryDropdown from "../components/HistoryDropdown";
-import AddTradeLineItem from "../components/AddTradeLineItem";
+import TradeLineItem from "../components/History/TradeLineItem";
+import FilterInputModal from "../components/History/FilterInputModal";
+import HistoryDropdown from "../components/History/HistoryDropdown";
+import AddTradeLineItem from "../components/History/AddTradeLineItem";
 
 // CSS
 import "./History.css";
