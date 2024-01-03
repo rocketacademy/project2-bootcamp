@@ -21,6 +21,7 @@ export default function SignInPage() {
         setPassword("");
         setName("");
         navi("/");
+        console.log(auth.currentUser.displayName);
       })
       .catch((error) => {
         setErrorCode(error.code);
@@ -30,7 +31,7 @@ export default function SignInPage() {
   return (
     <div className="App">
       <h2 className="mb-5">Welcome back! </h2>
-      <div class="mb-3">
+      <div className="mb-3">
         <label className="form-label">
           Email:
           <input
@@ -43,12 +44,12 @@ export default function SignInPage() {
           ></input>
         </label>
       </div>
-      <div class="mb-3">
+      <div className="mb-3">
         <label className="form-label">
           Password:
           <input
             type="password"
-            class="form-control"
+            className="form-control"
             name="password"
             placeholder="*******"
             value={password}
