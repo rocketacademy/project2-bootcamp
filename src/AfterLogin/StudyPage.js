@@ -5,6 +5,7 @@ import { database } from "../firebase";
 
 import { Card, Button } from "@mui/material";
 import LinearProgress from "@mui/material/LinearProgress";
+import { Backdrop, CircularProgress } from "@mui/material";
 import StudyDone from "./StudyComponent/StudyDone";
 import "./Study.css";
 
@@ -66,10 +67,10 @@ export default function StudyPage() {
   };
 
   //need to make sure the data is fetched before performing these.
-  const cardNum = "card" + decks.deckCards[currentIndex];
-  const currentCard = cards[cardNum];
+  const currentCard =
+    decks.deckCards && cards[`card${decks.deckCards[currentIndex]}`];
 
-  const totalCards = decks.deckCards.length;
+  const totalCards = decks.deckCards ? decks.deckCards.length : 0;
 
   const progressBar = ({ current, total }) => {
     const progress = (current / total) * 100;
@@ -87,48 +88,58 @@ export default function StudyPage() {
 
   return (
     <div>
-      <div className="study-header">
-        <p>{deckName}</p>
-        <div className="shuffle-quiz">
-          <Button>Shuffle</Button>
-        </div>
-      </div>
-      <p className="current-index">
-        {currentIndex + 1}/{totalCards}
-      </p>
-      {progressBar({ current: currentIndex + 1, total: totalCards })}
-      <Card className="study-card">
-        {displayEnglish ? (
-          <>
-            <div className="study-card-header">
-              <p>English</p>
+      <Backdrop open={!decks.deckCards}>
+        <h3>Generating deck</h3>
+        <h1>
+          <CircularProgress color="inherit" />
+        </h1>
+      </Backdrop>
+      {decks.deckCards && decks.deckCards.length > 0 && (
+        <>
+          <div className="study-header">
+            <p>{deckName}</p>
+            <div className="shuffle-quiz">
+              <Button>Shuffle</Button>
             </div>
-            <div className="study-word" onClick={handleClick}>
-              <h1>{currentCard.english}</h1>
-            </div>
-            <p className="hint">Hint: Tap to flip to other side</p>
-          </>
-        ) : (
-          <>
-            <div className="study-card-header">
-              <p>Spanish</p>
-              <Button>Audio</Button>
-            </div>
-            <div className="study-word" onClick={handleClick}>
-              <h1>{currentCard.spanish}</h1>
-            </div>
-            <p className="hint">Hint: Tap to flip to other side</p>
-          </>
-        )}
-      </Card>
-      <div className="prev-next">
-        <Button onClick={handlePrevCard} disabled={currentIndex <= 0}>
-          Prev
-        </Button>
-        <Button onClick={handleNextCard}>
-          {currentIndex === totalCards - 1 ? "Done" : "Next"}
-        </Button>
-      </div>
+          </div>
+          <p className="current-index">
+            {currentIndex + 1}/{totalCards}
+          </p>
+          {progressBar({ current: currentIndex + 1, total: totalCards })}
+          <Card className="study-card">
+            {displayEnglish ? (
+              <>
+                <div className="study-card-header">
+                  <p>English</p>
+                </div>
+                <div className="study-word" onClick={handleClick}>
+                  <h1>{currentCard.english}</h1>
+                </div>
+                <p className="hint">Hint: Tap to flip to the other side</p>
+              </>
+            ) : (
+              <>
+                <div className="study-card-header">
+                  <p>Spanish</p>
+                  <Button>Audio</Button>
+                </div>
+                <div className="study-word" onClick={handleClick}>
+                  <h1>{currentCard.spanish}</h1>
+                </div>
+                <p className="hint">Hint: Tap to flip to the other side</p>
+              </>
+            )}
+          </Card>
+          <div className="prev-next">
+            <Button onClick={handlePrevCard} disabled={currentIndex <= 0}>
+              Prev
+            </Button>
+            <Button onClick={handleNextCard}>
+              {currentIndex === totalCards - 1 ? "Done" : "Next"}
+            </Button>
+          </div>
+        </>
+      )}
 
       {/* showing dialog after reviewing done */}
       {studyDone && (
