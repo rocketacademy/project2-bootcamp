@@ -2,6 +2,8 @@ import { useNavigate } from "react-router-dom";
 import { auth } from "../firebase";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { useState } from "react";
+import { ref, set } from "firebase/database";
+import { database } from "../firebase";
 import "bootstrap/dist/css/bootstrap.css";
 
 // need to add logic to Register with firebase auth
@@ -11,18 +13,30 @@ export default function RegisterPage(props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorCode, setErrorCode] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
+  // const [errorMessage, setErrorMessage] = useState("");
   const navi = useNavigate();
-
   const register = async () => {
-    await createUserWithEmailAndPassword(auth, email, password, name);
-    await updateProfile(auth.currentUser, {
-      displayName: name,
+    await createUserWithEmailAndPassword(auth, email, password, name)
+      .then(() => {
+        updateProfile(auth.currentUser, {
+          displayName: name,
+        });
+        writeUserData(auth.currentUser.uid);
+        setEmail("");
+        setPassword("");
+        setName("");
+        navi("/");
+      })
+      .catch((error) => {
+        setErrorCode(error.code);
+        // setErrorMessage(error.message);
+      });
+  };
+
+  const writeUserData = () => {
+    set(ref(database, "userInfo/" + auth.currentUser.uid), {
+      userID: auth.currentUser.uid,
     });
-    setEmail("");
-    setPassword("");
-    setName("");
-    navi("/");
   };
 
   return (
@@ -58,7 +72,7 @@ export default function RegisterPage(props) {
         <label className="form-label">
           Password:
           <input
-            type="text"
+            type="password"
             className="form-control"
             name="password"
             placeholder="********"
@@ -74,7 +88,7 @@ export default function RegisterPage(props) {
       <div className="errorMessage">
         {errorCode ? <h4>Oops! Something went wrong! </h4> : null}
         <h6>{errorCode}</h6>
-        <h6>{errorMessage}</h6>
+        {/* <h6>{errorMessage}</h6> */}
       </div>
     </div>
   );
