@@ -70,7 +70,6 @@ const AddTradeLineItem = () => {
         type={item.type}
         onChange={(e) => handleChange(e, item.setter)}
       />
-      <p>{item.value}</p>
     </Form.Group>
   ));
 

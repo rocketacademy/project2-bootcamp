@@ -8,18 +8,27 @@ import FilterInputModal from "../components/History/FilterInputModal";
 import HistoryDropdown from "../components/History/HistoryDropdown";
 import AddTradeLineItem from "../components/History/AddTradeLineItem";
 
+// Firebase
+import { onChildAdded, ref, get } from "firebase/database";
+import { database } from "../firebase.js";
+import { auth } from "../firebase.js";
+
 // CSS
 import "./History.css";
 
 // dummy data
-import database from "./historyDummyData";
+import dummyDatabase from "./historyDummyData";
+
+const TRADES_KEY = "trades";
 
 const History = () => {
+  const [user, setUser] = useState("noUser");
+  const [userDisplayName, setUserDisplayName] = useState("noUserDisplayName");
   const [sort, setSort] = useState("timeA");
   const [filter, setFilter] = useState("none");
   const [filterCat, setFilterCat] = useState("none");
   const [showModal, setShowModal] = useState(false);
-  const [tradesArr, setTradesArr] = useState(database[12345].trades[1]);
+  const [tradesArr, setTradesArr] = useState([]);
   const [isDark, setIsDark] = useState(false);
 
   // setup database listener here
@@ -27,10 +36,39 @@ const History = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => filterTrades(filter), [filter]);
 
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged(() => {
+      if (auth.currentUser === null) {
+        setUser("noUser");
+        setUserDisplayName("noUserDisplayName");
+      } else {
+        setUser(auth.currentUser.uid);
+        setUserDisplayName(auth.currentUser.displayName);
+      }
+    });
+    return () => {
+      unsubscribe();
+    };
+  });
+
+  useEffect(() => {
+    let loadedTrades = [];
+    const tradesRef = ref(database, `${user}/${TRADES_KEY}`);
+    // onChildAdded will return data for every child at the reference and every subsequent new child
+    const unsubscribe = onChildAdded(tradesRef, (data) => {
+      // Add the subsequent child to local component state, initialising a new array to trigger re-render
+      loadedTrades = [...loadedTrades, { key: data.key, val: data.val() }];
+      setTradesArr(loadedTrades);
+    });
+    return () => {
+      unsubscribe();
+    };
+  }, [user]);
+
   const sortTrades = (arr, sortMethod) => {
     const isAscending = sortMethod === "timeA" ? true : false;
     const sortedArr = arr.sort(
-      (objA, objB) => (isAscending ? 1 : -1) * (objB.date - objA.date)
+      (objA, objB) => (isAscending ? 1 : -1) * (objB.val.date - objA.val.date)
     );
     return sortedArr;
   };
@@ -45,13 +83,19 @@ const History = () => {
       return;
     }
     const loadedTrades = [];
-    const trades = database[12345].trades[1];
-    for (let i = 0; i < trades.length; i++) {
-      if (trades[i][filterCat] === filter) {
-        loadedTrades.push(trades[i]);
+    let trades = {};
+    const tradesRef = ref(database, `${user}/${TRADES_KEY}`);
+    get(tradesRef).then((snapshot) => {
+      trades = snapshot.val();
+      console.log(trades);
+      for (let key in trades) {
+        console.log(trades[key][filterCat]);
+        if (trades[key][filterCat] === filter) {
+          loadedTrades.push({ key: key, val: trades[key] });
+        }
       }
-    }
-    setTradesArr(loadedTrades);
+      setTradesArr(loadedTrades);
+    });
   };
 
   const handleClose = () => setShowModal(false);
@@ -63,14 +107,14 @@ const History = () => {
     </div>
   );
 
-  const tradeLines = tradesArr.map((lineItem, index) => (
+  const tradeLines = tradesArr.map((obj) => (
     <TradeLineItem
-      key={index}
-      stockName={lineItem.stockName}
-      stockCode={lineItem.stockCode}
-      tradeTime={lineItem.date}
-      tradePrice={lineItem.price + lineItem.currency}
-      platform={lineItem.platform}
+      key={obj.key}
+      stockName={obj.val.stockName}
+      stockCode={obj.val.stockCode}
+      tradeTime={obj.val.date}
+      tradePrice={obj.val.price + obj.val.currency}
+      platform={obj.val.platform}
     />
   ));
 
