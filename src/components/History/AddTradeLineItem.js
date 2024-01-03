@@ -64,7 +64,7 @@ const AddTradeLineItem = () => {
   ];
 
   const inputFields = fieldList.map((item) => (
-    <Form.Group controlId="date" bsSize="large">
+    <Form.Group controlId="date" bsSize="large" key={item.header}>
       <Form.Label>{item.header}</Form.Label>
       <Form.Control
         type={item.type}

@@ -31,11 +31,6 @@ const History = () => {
   const [tradesArr, setTradesArr] = useState([]);
   const [isDark, setIsDark] = useState(false);
 
-  // setup database listener here
-  useEffect(() => setTradesArr(sortTrades(tradesArr, sort)), [tradesArr, sort]);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => filterTrades(filter), [filter]);
-
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(() => {
       if (auth.currentUser === null) {
@@ -50,7 +45,6 @@ const History = () => {
       unsubscribe();
     };
   });
-
   useEffect(() => {
     let loadedTrades = [];
     const tradesRef = ref(database, `${user}/${TRADES_KEY}`);
@@ -63,12 +57,18 @@ const History = () => {
     return () => {
       unsubscribe();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
+  useEffect(() => setTradesArr(sortTrades(tradesArr, sort)), [tradesArr, sort]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    filterTrades(filter);
+  }, [filter]);
 
   const sortTrades = (arr, sortMethod) => {
-    const isAscending = sortMethod === "timeA" ? true : false;
     const sortedArr = arr.sort(
-      (objA, objB) => (isAscending ? 1 : -1) * (objB.val.date - objA.val.date)
+      (objA, objB) =>
+        (sortMethod === "timeA" ? 1 : -1) * (objB.val.date - objA.val.date)
     );
     return sortedArr;
   };
@@ -79,23 +79,28 @@ const History = () => {
   };
 
   const filterTrades = (filter) => {
-    if (filter === "none") {
-      return;
-    }
     const loadedTrades = [];
     let trades = {};
     const tradesRef = ref(database, `${user}/${TRADES_KEY}`);
-    get(tradesRef).then((snapshot) => {
-      trades = snapshot.val();
-      console.log(trades);
-      for (let key in trades) {
-        console.log(trades[key][filterCat]);
-        if (trades[key][filterCat] === filter) {
+    if (filter === "none") {
+      get(tradesRef).then((snapshot) => {
+        trades = snapshot.val();
+        for (let key in trades) {
           loadedTrades.push({ key: key, val: trades[key] });
         }
-      }
-      setTradesArr(loadedTrades);
-    });
+        setTradesArr(loadedTrades);
+      });
+    } else {
+      get(tradesRef).then((snapshot) => {
+        trades = snapshot.val();
+        for (let key in trades) {
+          if (trades[key][filterCat] === filter) {
+            loadedTrades.push({ key: key, val: trades[key] });
+          }
+        }
+        setTradesArr(loadedTrades);
+      });
+    }
   };
 
   const handleClose = () => setShowModal(false);
@@ -138,6 +143,7 @@ const History = () => {
                 isDark={isDark}
                 setSort={setSort}
                 filterTradesInput={filterTradesInput}
+                setFilter={setFilter}
               />
             </div>
           </div>
