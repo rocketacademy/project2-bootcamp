@@ -13,7 +13,6 @@ export default function RegisterPage(props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorCode, setErrorCode] = useState("");
-  // const [errorMessage, setErrorMessage] = useState("");
   const navi = useNavigate();
   const register = async () => {
     await createUserWithEmailAndPassword(auth, email, password, name)
@@ -29,7 +28,6 @@ export default function RegisterPage(props) {
       })
       .catch((error) => {
         setErrorCode(error.code);
-        // setErrorMessage(error.message);
       });
   };
 
@@ -88,7 +86,6 @@ export default function RegisterPage(props) {
       <div className="errorMessage">
         {errorCode ? <h4>Oops! Something went wrong! </h4> : null}
         <h6>{errorCode}</h6>
-        {/* <h6>{errorMessage}</h6> */}
       </div>
     </div>
   );

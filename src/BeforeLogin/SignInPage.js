@@ -10,7 +10,6 @@ export default function SignInPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorCode, setErrorCode] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
   const navi = useNavigate();
   const logIn = async () => {
     await signInWithEmailAndPassword(auth, email, password)
@@ -25,7 +24,6 @@ export default function SignInPage() {
       })
       .catch((error) => {
         setErrorCode(error.code);
-        setErrorMessage(error.message);
       });
   };
 
@@ -65,7 +63,6 @@ export default function SignInPage() {
       <div className="errorMessage">
         {errorCode ? <h4>Oops! Something went wrong! </h4> : null}
         <h6>{errorCode}</h6>
-        <h6>{errorMessage}</h6>
       </div>
     </div>
   );
