@@ -15,14 +15,19 @@ export default function RegisterPage(props) {
   const navi = useNavigate();
 
   const register = async () => {
-    await createUserWithEmailAndPassword(auth, email, password, name);
-    await updateProfile(auth.currentUser, {
-      displayName: name,
-    });
-    setEmail("");
-    setPassword("");
-    setName("");
-    navi("/");
+    try {
+      await createUserWithEmailAndPassword(auth, email, password, name);
+      await updateProfile(auth.currentUser, {
+        displayName: name,
+      });
+      setEmail("");
+      setPassword("");
+      setName("");
+      navi("/");
+    } catch (error) {
+      setErrorCode(error.code);
+      setErrorMessage(error.message);
+    }
   };
 
   return (
