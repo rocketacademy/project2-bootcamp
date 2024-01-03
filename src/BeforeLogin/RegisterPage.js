@@ -38,7 +38,7 @@ export default function RegisterPage(props) {
 
   return (
     <div className="App">
-      <h2 className="mb-5">Hi, nice to meet you!</h2>
+      <h2 className="mb-5">Hello, nice to meet you!</h2>
       <div className="mb-3">
         <label className="form-label">
           Name or nickname:
