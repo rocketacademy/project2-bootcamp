@@ -56,3 +56,9 @@
   align-items: center;
   justify-content: center;
 }
+
+.options {
+  display: flex;
+  justify-content: right;
+  margin-right: auto;
+}
