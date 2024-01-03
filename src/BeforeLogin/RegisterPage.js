@@ -20,13 +20,17 @@ export default function RegisterPage(props) {
       await updateProfile(auth.currentUser, {
         displayName: name,
       });
+<<<<<<< HEAD
       writeUserData(auth.currentUser.uid);
+=======
+>>>>>>> 4789f1741c8ad0e42d8f88fc331937380c145d4f
       setEmail("");
       setPassword("");
       setName("");
       navi("/");
     } catch (error) {
       setErrorCode(error.code);
+<<<<<<< HEAD
     }
   };
 
@@ -34,6 +38,10 @@ export default function RegisterPage(props) {
     set(ref(database, "userInfo/" + auth.currentUser.uid), {
       userID: auth.currentUser.uid,
     });
+=======
+      setErrorMessage(error.message);
+    }
+>>>>>>> 4789f1741c8ad0e42d8f88fc331937380c145d4f
   };
 
   return (
