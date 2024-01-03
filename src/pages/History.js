@@ -24,6 +24,7 @@ const History = () => {
 
   // setup database listener here
   useEffect(() => setTradesArr(sortTrades(tradesArr, sort)), [tradesArr, sort]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => filterTrades(filter), [filter]);
 
   const sortTrades = (arr, sortMethod) => {
