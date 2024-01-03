@@ -21,7 +21,6 @@ export default function SignInPage() {
         setPassword("");
         setName("");
         navi("/");
-        console.log(auth.currentUser.displayName);
       })
       .catch((error) => {
         setErrorCode(error.code);
@@ -36,7 +35,7 @@ export default function SignInPage() {
           Email:
           <input
             type="email"
-            class="form-control"
+            className="form-control"
             name="email"
             placeholder="brian123@brian.com"
             value={email}
