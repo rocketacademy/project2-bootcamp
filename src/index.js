@@ -22,6 +22,7 @@ root.render(
         <Route path="" element={<HomePage />} />
         <Route path="addDeck" element={<AddDeckPage />} />
         <Route path="editDeck" element={<EditdeckPage />} />
+        <Route path="/editDeck/:deckID" element={<EditdeckPage />} />
         <Route path="study" element={<StudyPage />} />
         <Route path="/study/:deckID" element={<StudyPage />} />
         <Route path="report" element={<ReportPage />} />

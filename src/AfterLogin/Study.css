@@ -69,3 +69,12 @@
   flex-direction: column;
   justify-content: center;
 }
+
+.edit-card {
+  display: flex;
+  gap: 100px;
+  margin-top: 20px;
+}
+
+.edit-card .MuiInputLabel-root {
+}
