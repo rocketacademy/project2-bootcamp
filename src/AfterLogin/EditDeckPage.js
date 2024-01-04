@@ -4,6 +4,7 @@ import { ref, get, update } from "firebase/database";
 import { storage, database } from "../firebase";
 import { Button, Card, TextField, Typography } from "@mui/material";
 import { Backdrop, CircularProgress } from "@mui/material";
+import axios from "axios";
 import "./Study.css";
 
 export default function EditdeckPage() {
@@ -51,16 +52,18 @@ export default function EditdeckPage() {
 
   const handleTranslate = async (cardID) => {
     const englishWord = cards[`card${cardID}`].english;
-    const apiResponse = await fetch(
+    const response = await axios.get(
       `https://www.dictionaryapi.com/api/v3/references/spanish/json/${englishWord}?key=b62458ec-20b6-4fc4-a681-0e682a4ea74e`
     );
-    if (apiResponse.ok) {
-      const apiData = await apiResponse.json();
+
+    if (response.status === 200) {
+      const apiData = response.data;
+
       if (apiData && apiData.length > 0) {
         // Extract the first translation
         const word = apiData[0].shortdef[0].split(",")[0];
         const capitalizedWord = word.charAt(0).toUpperCase() + word.slice(1);
-        console.log(capitalizedWord);
+
         const updatedCards = { ...cards };
         updatedCards[`card${cardID}`].spanish = capitalizedWord;
         setCards(updatedCards);
@@ -76,9 +79,9 @@ export default function EditdeckPage() {
           <CircularProgress color="inherit" />
         </h1>
       </Backdrop>
-      <form onClick={handleSave}>
+      <form>
         <h1>{deckName}</h1>
-        <Button>Save</Button>
+        <Button onClick={handleSave}>Save</Button>
         {decks.deckCards &&
           decks.deckCards.map((cardID) => (
             <div className="edit-card">
