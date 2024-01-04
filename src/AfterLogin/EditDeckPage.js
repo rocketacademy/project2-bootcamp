@@ -53,7 +53,7 @@ export default function EditdeckPage() {
   const handleTranslate = async (cardID) => {
     const englishWord = cards[`card${cardID}`].english;
     const response = await axios.get(
-      `https://www.dictionaryapi.com/api/v3/references/spanish/json/${englishWord}?key=b62458ec-20b6-4fc4-a681-0e682a4ea74e`
+      `https://www.dictionaryapi.com/api/v3/references/spanish/json/${englishWord}?key=process.env.REACT_APP_SPANISH_KEY`
     );
 
     if (response.status === 200) {
