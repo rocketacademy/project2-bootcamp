@@ -81,8 +81,10 @@ export default function HomePage() {
             <MenuItem>Delete</MenuItem>
             <MenuItem>Copy</MenuItem>
           </Menu>
-          <h4 onClick={() => handleClick(deckID)}>{deckName}</h4>
-          <p>{cardsNum} cards</p>
+          <div onClick={() => handleClick(deckID)}>
+            <h4>{deckName}</h4>
+            <p>{cardsNum} cards</p>
+          </div>
         </Card>
       );
     })
