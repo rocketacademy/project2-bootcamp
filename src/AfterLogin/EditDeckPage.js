@@ -49,6 +49,25 @@ export default function EditdeckPage() {
     }
   };
 
+  const handleTranslate = async (cardID) => {
+    const englishWord = cards[`card${cardID}`].english;
+    const apiResponse = await fetch(
+      `https://www.dictionaryapi.com/api/v3/references/spanish/json/${englishWord}?key=b62458ec-20b6-4fc4-a681-0e682a4ea74e`
+    );
+    if (apiResponse.ok) {
+      const apiData = await apiResponse.json();
+      if (apiData && apiData.length > 0) {
+        // Extract the first translation
+        const word = apiData[0].shortdef[0].split(",")[0];
+        const capitalizedWord = word.charAt(0).toUpperCase() + word.slice(1);
+        console.log(capitalizedWord);
+        const updatedCards = { ...cards };
+        updatedCards[`card${cardID}`].spanish = capitalizedWord;
+        setCards(updatedCards);
+      }
+    }
+  };
+
   return (
     <div>
       <Backdrop open={!decks.deckCards}>
@@ -64,15 +83,22 @@ export default function EditdeckPage() {
           decks.deckCards.map((cardID) => (
             <div className="edit-card">
               <TextField
-                key={cardID}
+                key={`en{cardID}`}
                 value={cards[`card${cardID}`] && cards[`card${cardID}`].english}
                 onChange={(e) =>
                   handleFieldChange(cardID, "english", e.target.value)
                 }
                 label="English"
               ></TextField>
+              <Button
+                onClick={() => {
+                  handleTranslate(cardID, "english");
+                }}
+              >
+                Translate
+              </Button>
               <TextField
-                key={cardID}
+                key={`s{cardID}`}
                 value={cards[`card${cardID}`] && cards[`card${cardID}`].spanish}
                 label="Spanish"
               ></TextField>
