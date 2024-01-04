@@ -20,6 +20,7 @@ export default function RegisterPage(props) {
       await updateProfile(auth.currentUser, {
         displayName: name,
       });
+      await writeUserData(auth.currentUser.uid);
       setEmail("");
       setPassword("");
       setName("");
@@ -28,6 +29,12 @@ export default function RegisterPage(props) {
       setErrorCode(error.code);
       setErrorMessage(error.message);
     }
+  };
+
+  const writeUserData = async () => {
+    await set(ref(database, "userInfo/" + auth.currentUser.uid), {
+      userID: auth.currentUser.uid,
+    });
   };
 
   return (
