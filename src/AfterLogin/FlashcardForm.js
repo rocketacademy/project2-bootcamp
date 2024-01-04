@@ -54,3 +54,20 @@ export default function FlashcardForm(props) {
     </div>
   );
 }
+// const translate = () => {
+//   const englishWord = englishValue;
+//   const response = axios.get(
+//     `https://www.dictionaryapi.com/api/v3/references/spanish/json/${englishWord}?key=b62458ec-20b6-4fc4-a681-0e682a4ea74e`
+//   );
+//   if (response.status === 200) {
+//     const apiData = response.data;
+
+//     if (apiData && apiData.length > 0) {
+//       // Extract the first translation
+//       const word = apiData[0].shortdef[0].split(",")[0];
+//       const capitalizedWord = word.charAt(0).toUpperCase() + word.slice(1);
+//       console.log(capitalizedWord);
+//       setSpanishValue(capitalizedWord);
+//     }
+//   }
+// };
