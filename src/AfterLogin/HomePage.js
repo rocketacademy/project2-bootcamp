@@ -1,8 +1,9 @@
 import { ref, get } from "firebase/database";
 import { database } from "../firebase";
-import { Card } from "@mui/material";
+import { Card, Button, Menu, MenuItem } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
+import "./Study.css";
 
 export default function HomePage() {
   const [user, setUser] = useOutletContext();
@@ -39,6 +40,15 @@ export default function HomePage() {
     navigate(`/study/${deckID}`);
   };
 
+  const [anchorEl, setAnchorEl] = useState(null);
+  const handleMenu = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
   //component show the decks option
   const deckList = Array.isArray(userDeckIDs) ? (
     userDeckIDs.map((deckID) => {
@@ -48,9 +58,22 @@ export default function HomePage() {
         <Card
           key={deckName}
           style={{ marginBottom: "10px" }}
-          onClick={() => handleClick(deckID)}
+          className="homepage-deck"
         >
-          <h4>{deckName}</h4>
+          <div className="options">
+            <Button onClick={handleMenu}>:</Button>
+          </div>
+
+          <Menu
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={handleMenuClose}
+          >
+            <MenuItem onClick={handleMenuClose}>Edit</MenuItem>
+            <MenuItem onClick={handleMenuClose}>Delete</MenuItem>
+            <MenuItem onClick={handleMenuClose}>Copy</MenuItem>
+          </Menu>
+          <h4 onClick={() => handleClick(deckID)}>{deckName}</h4>
           <p>{cardsNum} cards</p>
         </Card>
       );

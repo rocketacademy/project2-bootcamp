@@ -1,7 +1,8 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { ref, get } from "firebase/database";
-import { database } from "../firebase";
+import { storage, database } from "../firebase";
+import { ref as storageRef, getDownloadURL } from "firebase/storage";
 
 import { Card, Button } from "@mui/material";
 import LinearProgress from "@mui/material/LinearProgress";
@@ -66,7 +67,20 @@ export default function StudyPage() {
     navigate(`/`);
   };
 
-  //need to make sure the data is fetched before performing these.
+  const STORAGE_KEY = "audio/";
+  const playAudio = async () => {
+    //make sure file name doesn't have whitespace, if have replace with _
+    const fileName = currentCard.spanish.replace(/\s+/g, "_");
+    try {
+      const audioRef = storageRef(storage, `${STORAGE_KEY}/${fileName}.mp3`);
+      const audioUrl = await getDownloadURL(audioRef);
+      const audio = new Audio(audioUrl);
+      audio.play();
+    } catch (error) {
+      console.log("Error");
+    }
+  };
+
   const currentCard =
     decks.deckCards && cards[`card${decks.deckCards[currentIndex]}`];
 
@@ -121,7 +135,7 @@ export default function StudyPage() {
               <>
                 <div className="study-card-header">
                   <p>Spanish</p>
-                  <Button>Audio</Button>
+                  <Button onClick={playAudio}>Audio</Button>
                 </div>
                 <div className="study-word" onClick={handleClick}>
                   <h1>{currentCard.spanish}</h1>

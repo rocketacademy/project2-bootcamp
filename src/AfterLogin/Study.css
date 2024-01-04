@@ -56,3 +56,16 @@
   align-items: center;
   justify-content: center;
 }
+
+.options {
+  display: flex;
+  justify-content: right;
+}
+
+.homepage-deck {
+  width: 30vw;
+  height: 30vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
