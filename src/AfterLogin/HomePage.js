@@ -55,7 +55,11 @@ export default function HomePage() {
       const deckName = userDecks[`deck${deckID}`].deckName;
       const cardsNum = userDecks[`deck${deckID}`].deckCards.length;
       return (
-        <Card key={deckName} style={{ marginBottom: "10px" }}>
+        <Card
+          key={deckName}
+          style={{ marginBottom: "10px" }}
+          className="homepage-deck"
+        >
           <div className="options">
             <Button onClick={handleMenu}>:</Button>
           </div>

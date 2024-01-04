@@ -69,7 +69,7 @@ export default function StudyPage() {
 
   const STORAGE_KEY = "audio/";
   const playAudio = async () => {
-    //make sure file name doesn't have whitespace
+    //make sure file name doesn't have whitespace, if have replace with _
     const fileName = currentCard.spanish.replace(/\s+/g, "_");
     try {
       const audioRef = storageRef(storage, `${STORAGE_KEY}/${fileName}.mp3`);
@@ -78,18 +78,9 @@ export default function StudyPage() {
       audio.play();
     } catch (error) {
       console.log("Error");
-      // const apiResponse = await fetch(
-      //   `https://www.dictionaryapi.com/api/v3/references/spanish/json/${currentCard.english}?key=b62458ec-20b6-4fc4-a681-0e682a4ea74e`
-      // );
-      // if (apiResponse.ok) {
-      //   const apiData = await apiResponse.json();
-      //   console.log(apiData[0].hwi.prs[0].sound.audio);
-      // https://media.merriam-webster.com/audio/prons/es/me/mp3/p/pajama02.mp3
-      // }
     }
   };
 
-  //need to make sure the data is fetched before performing these.
   const currentCard =
     decks.deckCards && cards[`card${decks.deckCards[currentIndex]}`];
 

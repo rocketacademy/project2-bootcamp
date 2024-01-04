@@ -60,5 +60,12 @@
 .options {
   display: flex;
   justify-content: right;
-  margin-right: auto;
+}
+
+.homepage-deck {
+  width: 30vw;
+  height: 30vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
