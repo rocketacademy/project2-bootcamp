@@ -8,12 +8,14 @@ import "bootstrap/dist/css/bootstrap.css";
 
 // need to add logic to Register with firebase auth
 //After register into the auth, return to "/"
-export default function RegisterPage(props) {
+export default function RegisterPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorCode, setErrorCode] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
   const navi = useNavigate();
+
   const register = async () => {
     try {
       await createUserWithEmailAndPassword(auth, email, password, name);
@@ -84,7 +86,7 @@ export default function RegisterPage(props) {
       </button>
 
       <div className="errorMessage">
-        {errorCode ? <h4>Oops! Something went wrong! </h4> : null}
+        {errorCode ? <h4>{errorMessage}</h4> : null}
         <h6>{errorCode}</h6>
       </div>
     </div>
