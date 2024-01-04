@@ -9,6 +9,7 @@ export default function HomePage() {
   const [user, setUser] = useOutletContext();
   const [userDeckIDs, setUserDeckIDs] = useState();
   const [userDecks, setUserDecks] = useState([]);
+  const [selectedDeckIDs, setSelectedDeckIDs] = useState();
 
   useEffect(() => {
     const takeDecksInfo = async () => {
@@ -40,9 +41,14 @@ export default function HomePage() {
     navigate(`/study/${deckID}`);
   };
 
+  const handleEdit = (deckID) => {
+    navigate(`/editDeck/${deckID}`);
+  };
+
   const [anchorEl, setAnchorEl] = useState(null);
-  const handleMenu = (event) => {
+  const handleMenu = (event, deckID) => {
     setAnchorEl(event.currentTarget);
+    setSelectedDeckIDs(deckID);
   };
 
   const handleMenuClose = () => {
@@ -61,7 +67,7 @@ export default function HomePage() {
           className="homepage-deck"
         >
           <div className="options">
-            <Button onClick={handleMenu}>:</Button>
+            <Button onClick={(event) => handleMenu(event, deckID)}>:</Button>
           </div>
 
           <Menu
@@ -69,12 +75,16 @@ export default function HomePage() {
             open={Boolean(anchorEl)}
             onClose={handleMenuClose}
           >
-            <MenuItem onClick={handleMenuClose}>Edit</MenuItem>
-            <MenuItem onClick={handleMenuClose}>Delete</MenuItem>
-            <MenuItem onClick={handleMenuClose}>Copy</MenuItem>
+            <MenuItem onClick={() => handleEdit(selectedDeckIDs)}>
+              Edit
+            </MenuItem>
+            <MenuItem>Delete</MenuItem>
+            <MenuItem>Copy</MenuItem>
           </Menu>
-          <h4 onClick={() => handleClick(deckID)}>{deckName}</h4>
-          <p>{cardsNum} cards</p>
+          <div onClick={() => handleClick(deckID)}>
+            <h4>{deckName}</h4>
+            <p>{cardsNum} cards</p>
+          </div>
         </Card>
       );
     })

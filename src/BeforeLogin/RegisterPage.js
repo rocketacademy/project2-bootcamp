@@ -20,18 +20,19 @@ export default function RegisterPage(props) {
       await updateProfile(auth.currentUser, {
         displayName: name,
       });
-      writeUserData(auth.currentUser.uid);
+      await writeUserData(auth.currentUser.uid);
       setEmail("");
       setPassword("");
       setName("");
       navi("/");
     } catch (error) {
       setErrorCode(error.code);
+      setErrorMessage(error.message);
     }
   };
 
-  const writeUserData = () => {
-    set(ref(database, "userInfo/" + auth.currentUser.uid), {
+  const writeUserData = async () => {
+    await set(ref(database, "userInfo/" + auth.currentUser.uid), {
       userID: auth.currentUser.uid,
     });
   };
