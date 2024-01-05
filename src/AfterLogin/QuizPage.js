@@ -8,12 +8,14 @@ import "./QuizComponent/QuizPage.css";
 export default function QuizPage() {
   const [user] = useOutletContext();
   const [decks, setDecks] = useState([]);
-  const [quizPage, setQuizPage] = useState(0);
-  //0 is the first page
-  //1 is the quiz page
+  const [quizPage, setQuizPage] = useState(false);
+  //false is the first page
+  //true is the quiz page
   return (
     <div className="App">
-      {!quizPage && (
+      {quizPage ? (
+        <McQuiz user={user} decks={decks} />
+      ) : (
         <QuizFirstPage
           user={user}
           decks={decks}
@@ -21,7 +23,6 @@ export default function QuizPage() {
           setQuizPage={setQuizPage}
         />
       )}
-      {quizPage === 1 && <McQuiz user={user} decks={decks} />}
     </div>
   );
 }

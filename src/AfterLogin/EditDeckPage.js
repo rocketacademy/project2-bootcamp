@@ -64,15 +64,11 @@ export default function EditdeckPage() {
 
   const handleTranslate = async (cardID) => {
     const newValue = cards[`card${cardID}`].english;
-    const response = await axios.get(
-      `https://www.dictionaryapi.com/api/v3/references/spanish/json/${newValue}?key=b62458ec-20b6-4fc4-a681-0e682a4ea74e`
-    );
-    ///API doesn't work when I use process.env
-    // ${process.env.REACT_APP_SPANISH_KEY}
-
-    if (response.status === 200) {
+    try {
+      const response = await axios.get(
+        `https://www.dictionaryapi.com/api/v3/references/spanish/json/${newValue}?key=${process.env.REACT_APP_SPANISH_KEY}`
+      );
       const apiData = response.data;
-
       if (apiData && apiData.length > 0) {
         // Extract the first translation
         const word = apiData[0].shortdef[0].split(",")[0];
@@ -83,6 +79,8 @@ export default function EditdeckPage() {
         updatedCards[`card${cardID}`].english = newValue;
         setCards(updatedCards);
       }
+    } catch (error) {
+      console.log(error);
     }
   };
 
