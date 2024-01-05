@@ -51,21 +51,24 @@ export default function EditdeckPage() {
   };
 
   const handleTranslate = async (cardID) => {
-    const englishWord = cards[`card${cardID}`].english;
+    const newValue = cards[`card${cardID}`].english;
     const response = await axios.get(
-      `https://www.dictionaryapi.com/api/v3/references/spanish/json/${englishWord}?key=process.env.REACT_APP_SPANISH_KEY`
+      `https://www.dictionaryapi.com/api/v3/references/spanish/json/${newValue}?key=b62458ec-20b6-4fc4-a681-0e682a4ea74e`
     );
+    console.log(response);
 
     if (response.status === 200) {
       const apiData = response.data;
 
       if (apiData && apiData.length > 0) {
         // Extract the first translation
+        console.log(apiData);
         const word = apiData[0].shortdef[0].split(",")[0];
         const capitalizedWord = word.charAt(0).toUpperCase() + word.slice(1);
 
         const updatedCards = { ...cards };
         updatedCards[`card${cardID}`].spanish = capitalizedWord;
+        updatedCards[`card${cardID}`].english = newValue;
         setCards(updatedCards);
       }
     }
@@ -115,11 +118,7 @@ export default function EditdeckPage() {
                   }
                   label="English"
                 ></TextField>
-                <Button
-                  onClick={() => {
-                    handleTranslate(cardID, "english");
-                  }}
-                >
+                <Button onClick={() => handleTranslate(cardID)}>
                   Translate
                 </Button>
                 <TextField
