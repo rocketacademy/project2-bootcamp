@@ -71,6 +71,23 @@ export default function EditdeckPage() {
     }
   };
 
+  const handleAdd = async () => {
+    const newCardID = Object.keys(cards).length + 1;
+    const newCard = { cardID: newCardID, english: "", spanish: "" };
+    setCards((prevCards) => ({ ...prevCards, [`card${newCardID}`]: newCard }));
+
+    const newCardIDDeck = Object.keys(decks.deckCards).length;
+    setDecks((prevDeck) => ({
+      ...prevDeck,
+      deckCards: {
+        ...prevDeck.deckCards,
+        [newCardIDDeck]: newCardID,
+      },
+    }));
+    console.log(decks.deckCards);
+    console.log(cards);
+  };
+
   return (
     <div>
       <Backdrop open={!decks.deckCards}>
@@ -82,31 +99,38 @@ export default function EditdeckPage() {
       <form>
         <h1>{deckName}</h1>
         <Button onClick={handleSave}>Save</Button>
+        <Button onClick={handleAdd}>Add</Button>
         {decks.deckCards &&
-          decks.deckCards.map((cardID) => (
-            <div className="edit-card">
-              <TextField
-                key={`en{cardID}`}
-                value={cards[`card${cardID}`] && cards[`card${cardID}`].english}
-                onChange={(e) =>
-                  handleFieldChange(cardID, "english", e.target.value)
-                }
-                label="English"
-              ></TextField>
-              <Button
-                onClick={() => {
-                  handleTranslate(cardID, "english");
-                }}
-              >
-                Translate
-              </Button>
-              <TextField
-                key={`s{cardID}`}
-                value={cards[`card${cardID}`] && cards[`card${cardID}`].spanish}
-                label="Spanish"
-              ></TextField>
-            </div>
-          ))}
+          Object.values(decks.deckCards)
+            .reverse()
+            .map((cardID) => (
+              <div className="edit-card">
+                <TextField
+                  key={`en{cardID}`}
+                  value={
+                    cards[`card${cardID}`] && cards[`card${cardID}`].english
+                  }
+                  onChange={(e) =>
+                    handleFieldChange(cardID, "english", e.target.value)
+                  }
+                  label="English"
+                ></TextField>
+                <Button
+                  onClick={() => {
+                    handleTranslate(cardID, "english");
+                  }}
+                >
+                  Translate
+                </Button>
+                <TextField
+                  key={`s{cardID}`}
+                  value={
+                    cards[`card${cardID}`] && cards[`card${cardID}`].spanish
+                  }
+                  label="Spanish"
+                ></TextField>
+              </div>
+            ))}
       </form>
     </div>
   );
