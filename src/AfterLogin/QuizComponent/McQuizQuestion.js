@@ -93,6 +93,7 @@ export default function McQuizQuestion(props) {
     navi(`/quizList/${quizNo}`);
   };
 
+  const isFinishedAllQuestion = isAnswered.every((ans) => ans.length);
   //display for each of the question page
   const questionsDisplay = props.questions.map((question, i) => {
     const choicesDisplay = question.choice.map((choice, j) => {
@@ -153,21 +154,20 @@ export default function McQuizQuestion(props) {
             <Button
               variant="contained"
               className="question-button"
-              onClick={handleNextQuestion}
-              disabled={startAnimationNext || startAnimationPrev || i === 9}
+              onClick={
+                i === 9 && isFinishedAllQuestion
+                  ? handleToResult
+                  : handleNextQuestion
+              }
+              disabled={
+                startAnimationNext ||
+                startAnimationPrev ||
+                (i === 9 && !isFinishedAllQuestion)
+              }
             >
-              →
+              {isFinishedAllQuestion && i === 9 ? "Result" : "→"}
             </Button>
           </div>
-          {isAnswered.every((ans) => ans.length) && (
-            <Button
-              variant="contained"
-              className="question-button"
-              onClick={() => handleToResult()}
-            >
-              Result
-            </Button>
-          )}
         </div>
       </div>
     );
