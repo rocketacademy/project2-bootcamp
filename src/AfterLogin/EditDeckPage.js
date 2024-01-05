@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { ref, get, update } from "firebase/database";
+import Paper from "@mui/material/Paper";
 import { storage, database } from "../firebase";
 import { Button, Card, TextField, Typography } from "@mui/material";
 import { Backdrop, CircularProgress } from "@mui/material";
@@ -75,6 +76,7 @@ export default function EditdeckPage() {
       );
 
       const apiData = response.data;
+      console.log(apiData);
       if (apiData && apiData.length > 0) {
         // Extract the first translation
         const word = apiData[0].shortdef[0].split(",")[0];
@@ -139,39 +141,55 @@ export default function EditdeckPage() {
       </Backdrop>
       <form>
         <h1>{deckName}</h1>
-        <Button onClick={handleSave}>Save</Button>
-        <Button onClick={handleAdd}>Add</Button>
+        <div className="edit-buttons">
+          <Button variant="contained" onClick={handleAdd}>
+            Add
+          </Button>
+          <Button variant="contained" onClick={handleSave}>
+            Save
+          </Button>
+        </div>
+
         {decks.deckCards &&
           Object.values(decks.deckCards)
             .reverse()
             .map((cardID) => (
               <div className="edit-card">
-                <TextField
-                  key={`en{cardID}`}
-                  value={
-                    cards[`card${cardID}`] && cards[`card${cardID}`].english
-                  }
-                  onChange={(e) =>
-                    handleFieldChange(cardID, "english", e.target.value)
-                  }
-                  label="English"
-                  disabled={Object.values(editableCard).includes(cardID)}
-                ></TextField>
-                <Button
-                  onClick={() => handleTranslate(cardID)}
-                  disabled={Object.values(editableCard).includes(cardID)}
-                >
-                  Translate
-                </Button>
-                <TextField
-                  key={`s{cardID}`}
-                  value={
-                    cards[`card${cardID}`] && cards[`card${cardID}`].spanish
-                  }
-                  label="Spanish"
-                  disabled={Object.values(editableCard).includes(cardID)}
-                ></TextField>
-                <Button onClick={() => handleDelete(cardID)}>Delete</Button>
+                <div className="edit-buttons">
+                  <Button
+                    onClick={() => handleTranslate(cardID)}
+                    disabled={Object.values(editableCard).includes(cardID)}
+                  >
+                    Translate
+                  </Button>
+                  <Button onClick={() => handleDelete(cardID)}>Delete</Button>
+                </div>
+                <div className="edit">
+                  <TextField
+                    fullWidth
+                    key={`en{cardID}`}
+                    value={
+                      cards[`card${cardID}`] && cards[`card${cardID}`].english
+                    }
+                    onChange={(e) =>
+                      handleFieldChange(cardID, "english", e.target.value)
+                    }
+                    label="English"
+                    variant="standard"
+                    disabled={Object.values(editableCard).includes(cardID)}
+                  ></TextField>
+
+                  <TextField
+                    key={`s{cardID}`}
+                    fullWidth
+                    value={
+                      cards[`card${cardID}`] && cards[`card${cardID}`].spanish
+                    }
+                    label="Spanish"
+                    variant="standard"
+                    disabled={Object.values(editableCard).includes(cardID)}
+                  ></TextField>
+                </div>
               </div>
             ))}
       </form>
