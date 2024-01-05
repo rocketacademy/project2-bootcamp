@@ -1,7 +1,7 @@
 import { useOutletContext } from "react-router-dom";
 import { useState, useEffect } from "react";
-
 import FlashcardForm from "./FlashcardForm";
+import "./AddDeckPage.css";
 //Take the user data from App.js state
 
 export default function AddDeckPage() {
@@ -26,9 +26,14 @@ export default function AddDeckPage() {
   const currDeck = deck.map((card, index) => {
     return (
       <div key={index}>
-        <div className="card mt-3">
-          <p>English: {card.english}</p>
-          <p>Spanish:{card.spanish}</p>
+        <div className="card mt-3" id="flashcard">
+          <p>
+            English: <br /> {card.english}
+          </p>
+          <p>
+            Spanish:
+            <br /> {card.spanish}
+          </p>
           <button
             type="button"
             className="btn btn-outline-dark mt-3 mb-3"
@@ -40,11 +45,12 @@ export default function AddDeckPage() {
       </div>
     );
   });
-
+  const handleSave = () => {};
   return (
     <div>
       AddDeckPage
       <div>
+        <label>Name your deck:</label>
         <input
           className="form-control mt-3 mb-4"
           type="text"
@@ -53,10 +59,15 @@ export default function AddDeckPage() {
           value={deckName}
           onChange={(e) => setDeckName(e.target.value)}
         ></input>
+
         <FlashcardForm addCard={addCard} />
         <div>{currDeck}</div>
         <div>
-          <button type="button" className="btn btn-outline-dark mt-3 mb-3">
+          <button
+            type="button"
+            className="btn btn-outline-dark mt-3 mb-3"
+            onClick={handleSave}
+          >
             Save
           </button>
         </div>
