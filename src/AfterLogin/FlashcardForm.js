@@ -1,23 +1,51 @@
 import { useOutletContext } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
+import "./AddDeckPage.css";
 //Take the user data from App.js state
 
 export default function FlashcardForm(props) {
   const [user, setUser] = useOutletContext();
   const [englishValue, setEnglishValue] = useState("");
   const [spanishValue, setSpanishValue] = useState("");
+  // const [translation, setTranslation] = useState("");
 
   const handleAddCard = () => {
-    props.addCard(englishValue, spanishValue);
-    setEnglishValue("");
-    setSpanishValue("");
+    if (englishValue && spanishValue) {
+      props.addCard(englishValue, spanishValue);
+      setEnglishValue("");
+      setSpanishValue("");
+    }
+  };
+
+  const translateEnglishToSpanish = async (word) => {
+    const apiKey = "b62458ec-20b6-4fc4-a681-0e682a4ea74e";
+    const apiUrl = `https://www.dictionaryapi.com/api/v3/references/spanish/json/${word}?key=${apiKey}`;
+
+    try {
+      const response = await axios.get(apiUrl);
+
+      if (Array.isArray(response.data) && response.data.length > 0) {
+        const translation = response.data[0].shortdef[0].split(",")[0];
+        console.log(response.data);
+        console.log(response.data[0].shortdef[1]);
+        setSpanishValue(translation);
+      } else {
+        throw new Error("Translation not found");
+      }
+    } catch (error) {
+      throw error;
+    }
+  };
+  const handleTranslate = () => {
+    const wordInEnglish = englishValue;
+    translateEnglishToSpanish(wordInEnglish);
   };
 
   return (
     <div>
       <div>
-        <div className="card">
+        <div className="card" id="flashcard-form">
           <form>
             <label>English:</label>
             <br />
@@ -25,10 +53,16 @@ export default function FlashcardForm(props) {
               className="form-control mt-3"
               type="text"
               name="english"
+              placeholder="English term"
               value={englishValue}
+              id="flashcard-form-input"
               onChange={(e) => setEnglishValue(e.target.value)}
             ></input>
-            <button type="button" className="btn btn-outline-dark mt-3 mb-3">
+            <button
+              type="button"
+              className="btn btn-outline-dark mt-3 mb-3"
+              onClick={handleTranslate}
+            >
               Translate into Spanish
             </button>
             <br />
@@ -38,12 +72,14 @@ export default function FlashcardForm(props) {
               className="form-control mt-3"
               type="text"
               name="spanish"
+              id="flashcard-form-input"
+              placeholder="Spanish translation"
               value={spanishValue}
               onChange={(e) => setSpanishValue(e.target.value)}
             ></input>
             <button
               type="button"
-              className="btn btn-outline-dark mt-3"
+              className="btn btn-outline-dark mt-3 mb-2"
               onClick={handleAddCard}
             >
               Add card
@@ -54,20 +90,3 @@ export default function FlashcardForm(props) {
     </div>
   );
 }
-// const translate = () => {
-//   const englishWord = englishValue;
-//   const response = axios.get(
-//     `https://www.dictionaryapi.com/api/v3/references/spanish/json/${englishWord}?key=b62458ec-20b6-4fc4-a681-0e682a4ea74e`
-//   );
-//   if (response.status === 200) {
-//     const apiData = response.data;
-
-//     if (apiData && apiData.length > 0) {
-//       // Extract the first translation
-//       const word = apiData[0].shortdef[0].split(",")[0];
-//       const capitalizedWord = word.charAt(0).toUpperCase() + word.slice(1);
-//       console.log(capitalizedWord);
-//       setSpanishValue(capitalizedWord);
-//     }
-//   }
-// };
