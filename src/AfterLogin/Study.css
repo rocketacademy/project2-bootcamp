@@ -72,9 +72,21 @@
 
 .edit-card {
   display: flex;
-  gap: 100px;
-  margin-top: 20px;
+  flex-direction: column;
+  width: 70vw;
+  height: 10vw;
+  padding: 10px;
+  justify-content: center;
 }
 
-.edit-card .MuiInputLabel-root {
+.edit-buttons {
+  width: 70vw;
+  height: 5vw;
+  text-align: right;
+}
+
+.edit {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
