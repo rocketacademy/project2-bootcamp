@@ -1,0 +1,13 @@
+.input-fields-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.input-fields {
+  display: inline-block;
+}
+
+.modal-100w {
+  min-width: 100%;
+}
