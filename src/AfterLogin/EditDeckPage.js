@@ -55,7 +55,8 @@ export default function EditdeckPage() {
     const response = await axios.get(
       `https://www.dictionaryapi.com/api/v3/references/spanish/json/${newValue}?key=b62458ec-20b6-4fc4-a681-0e682a4ea74e`
     );
-    console.log(response);
+    ///API doesn't work when I use process.env
+    // ${process.env.REACT_APP_SPANISH_KEY}
 
     if (response.status === 200) {
       const apiData = response.data;
@@ -87,8 +88,16 @@ export default function EditdeckPage() {
         [newCardIDDeck]: newCardID,
       },
     }));
-    console.log(decks.deckCards);
-    console.log(cards);
+  };
+
+  const handleDelete = async (cardID) => {
+    const newDeck = { ...decks };
+    for (const key in newDeck.deckCards) {
+      if (newDeck.deckCards[key] === cardID) {
+        delete newDeck.deckCards[key];
+      }
+    }
+    setDecks(newDeck);
   };
 
   return (
@@ -128,6 +137,7 @@ export default function EditdeckPage() {
                   }
                   label="Spanish"
                 ></TextField>
+                <Button onClick={() => handleDelete(cardID)}>Delete</Button>
               </div>
             ))}
       </form>
