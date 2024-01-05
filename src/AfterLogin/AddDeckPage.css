@@ -1,0 +1,25 @@
+#flashcard {
+  background: #ffffff;
+  min-height: 200px;
+  min-width: 400px;
+  margin: 40px auto;
+  border-radius: 10px;
+  padding: 20px;
+}
+#flashcard-form-input {
+  border: none;
+  border-bottom: 1px solid black;
+  outline: none;
+  border-radius: 0;
+  min-width: 350px;
+}
+#flashcard-form {
+  padding: 20px;
+}
+
+#delete-icon {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
