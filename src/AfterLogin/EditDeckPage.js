@@ -1,9 +1,10 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { ref, get, update } from "firebase/database";
 import { storage, database } from "../firebase";
 import { Button, Card, TextField, Typography } from "@mui/material";
 import { Backdrop, CircularProgress } from "@mui/material";
+import SaveDone from "./EditComponent/SaveDone";
 import axios from "axios";
 import "./Study.css";
 
@@ -11,6 +12,7 @@ export default function EditdeckPage() {
   const [decks, setDecks] = useState([]);
   const [cards, setCards] = useState([]);
   const { deckID } = useParams();
+  const [saveDone, setSaveDone] = useState(false);
 
   useEffect(() => {
     const takeDecksInfo = async () => {
@@ -48,13 +50,25 @@ export default function EditdeckPage() {
       const cardRef = ref(database, `cards/${cardID}`);
       await update(cardRef, cards[cardID]);
     }
+    const deckRef = ref(database, `decks/deck${deckID}`);
+    await update(deckRef, decks);
+
+    setSaveDone(true);
+  };
+
+  const navigate = useNavigate();
+  const handleCloseSaveDone = () => {
+    setSaveDone(false);
+    navigate(`/`);
   };
 
   const handleTranslate = async (cardID) => {
-    const englishWord = cards[`card${cardID}`].english;
+    const newValue = cards[`card${cardID}`].english;
     const response = await axios.get(
-      `https://www.dictionaryapi.com/api/v3/references/spanish/json/${englishWord}?key=b62458ec-20b6-4fc4-a681-0e682a4ea74e`
+      `https://www.dictionaryapi.com/api/v3/references/spanish/json/${newValue}?key=b62458ec-20b6-4fc4-a681-0e682a4ea74e`
     );
+    ///API doesn't work when I use process.env
+    // ${process.env.REACT_APP_SPANISH_KEY}
 
     if (response.status === 200) {
       const apiData = response.data;
@@ -66,9 +80,35 @@ export default function EditdeckPage() {
 
         const updatedCards = { ...cards };
         updatedCards[`card${cardID}`].spanish = capitalizedWord;
+        updatedCards[`card${cardID}`].english = newValue;
         setCards(updatedCards);
       }
     }
+  };
+
+  const handleAdd = async () => {
+    const newCardID = Object.keys(cards).length + 1;
+    const newCard = { cardID: newCardID, english: "", spanish: "" };
+    setCards((prevCards) => ({ ...prevCards, [`card${newCardID}`]: newCard }));
+
+    const newCardIDDeck = Object.keys(decks.deckCards).length;
+    setDecks((prevDeck) => ({
+      ...prevDeck,
+      deckCards: {
+        ...prevDeck.deckCards,
+        [newCardIDDeck]: newCardID,
+      },
+    }));
+  };
+
+  const handleDelete = async (cardID) => {
+    const newDeck = { ...decks };
+    for (const key in newDeck.deckCards) {
+      if (newDeck.deckCards[key] === cardID) {
+        delete newDeck.deckCards[key];
+      }
+    }
+    setDecks(newDeck);
   };
 
   return (
@@ -82,32 +122,37 @@ export default function EditdeckPage() {
       <form>
         <h1>{deckName}</h1>
         <Button onClick={handleSave}>Save</Button>
+        <Button onClick={handleAdd}>Add</Button>
         {decks.deckCards &&
-          decks.deckCards.map((cardID) => (
-            <div className="edit-card">
-              <TextField
-                key={`en{cardID}`}
-                value={cards[`card${cardID}`] && cards[`card${cardID}`].english}
-                onChange={(e) =>
-                  handleFieldChange(cardID, "english", e.target.value)
-                }
-                label="English"
-              ></TextField>
-              <Button
-                onClick={() => {
-                  handleTranslate(cardID, "english");
-                }}
-              >
-                Translate
-              </Button>
-              <TextField
-                key={`s{cardID}`}
-                value={cards[`card${cardID}`] && cards[`card${cardID}`].spanish}
-                label="Spanish"
-              ></TextField>
-            </div>
-          ))}
+          Object.values(decks.deckCards)
+            .reverse()
+            .map((cardID) => (
+              <div className="edit-card">
+                <TextField
+                  key={`en{cardID}`}
+                  value={
+                    cards[`card${cardID}`] && cards[`card${cardID}`].english
+                  }
+                  onChange={(e) =>
+                    handleFieldChange(cardID, "english", e.target.value)
+                  }
+                  label="English"
+                ></TextField>
+                <Button onClick={() => handleTranslate(cardID)}>
+                  Translate
+                </Button>
+                <TextField
+                  key={`s{cardID}`}
+                  value={
+                    cards[`card${cardID}`] && cards[`card${cardID}`].spanish
+                  }
+                  label="Spanish"
+                ></TextField>
+                <Button onClick={() => handleDelete(cardID)}>Delete</Button>
+              </div>
+            ))}
       </form>
+      {saveDone && <SaveDone open={saveDone} onClose={handleCloseSaveDone} />}
     </div>
   );
 }
