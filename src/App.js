@@ -1,23 +1,19 @@
 import React from "react";
-
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-// import logo from "./logo.png";
-import "./App.css";
-import Auth from "./pages/Auth";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 import Teacher from "./pages/Teacher";
 import { CourseForm } from "./pages/CourseForm";
+import "./App.css";
 
 const App = () => {
   return (
     <div className="App">
       <header className="App-header">
-        {/* <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p> */}
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Auth />} />
+            <Route path="/" element={<Login />} />
+            <Route path="signup" element={<Signup />} />
             <Route path="teacher" element={<Teacher />} />
             <Route path="courseform" element={<CourseForm />} />
           </Routes>
