@@ -48,6 +48,8 @@ export default function EditdeckPage() {
       const cardRef = ref(database, `cards/${cardID}`);
       await update(cardRef, cards[cardID]);
     }
+    const deckRef = ref(database, `decks/deck${deckID}`);
+    await update(deckRef, decks);
   };
 
   const handleTranslate = async (cardID) => {
