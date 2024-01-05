@@ -10,6 +10,7 @@ import "./Study.css";
 
 export default function EditdeckPage() {
   const [decks, setDecks] = useState([]);
+  const [decksConstant, setDecksConstant] = useState([]);
   const [cards, setCards] = useState([]);
   const { deckID } = useParams();
   const [saveDone, setSaveDone] = useState(false);
@@ -33,11 +34,14 @@ export default function EditdeckPage() {
       ]);
       setDecks(deckInfo.val());
       setCards(cardsInfo.val());
+      setDecksConstant(deckInfo.val());
     };
     fetchDeckAndCards();
   }, [deckID]);
 
   const deckName = decks.deckName;
+
+  const editableCard = decksConstant.deckCards;
 
   const handleFieldChange = (cardID, language, newValue) => {
     const updatedCard = { ...cards };
@@ -64,10 +68,12 @@ export default function EditdeckPage() {
 
   const handleTranslate = async (cardID) => {
     const newValue = cards[`card${cardID}`].english;
+
     try {
       const response = await axios.get(
         `https://www.dictionaryapi.com/api/v3/references/spanish/json/${newValue}?key=${process.env.REACT_APP_SPANISH_KEY}`
       );
+
       const apiData = response.data;
       if (apiData && apiData.length > 0) {
         // Extract the first translation
@@ -77,6 +83,20 @@ export default function EditdeckPage() {
         const updatedCards = { ...cards };
         updatedCards[`card${cardID}`].spanish = capitalizedWord;
         updatedCards[`card${cardID}`].english = newValue;
+
+        const audio = apiData[0].hwi.prs[0].sound.audio;
+        let subdir;
+        if (audio.startsWith("bix")) {
+          subdir = "bix";
+        } else if (audio.startsWith("gg")) {
+          subdir = "gg";
+        } else if (/[0-9_]/.test(audio.charAt(0))) {
+          subdir = "number";
+        } else {
+          subdir = audio.charAt(0).toLowerCase();
+        }
+        const audioLink = `https://media.merriam-webster.com/audio/prons/es/me/mp3/${subdir}/${audio}.mp3`;
+
         setCards(updatedCards);
       }
     } catch (error) {
@@ -135,8 +155,12 @@ export default function EditdeckPage() {
                     handleFieldChange(cardID, "english", e.target.value)
                   }
                   label="English"
+                  disabled={Object.values(editableCard).includes(cardID)}
                 ></TextField>
-                <Button onClick={() => handleTranslate(cardID)}>
+                <Button
+                  onClick={() => handleTranslate(cardID)}
+                  disabled={Object.values(editableCard).includes(cardID)}
+                >
                   Translate
                 </Button>
                 <TextField
@@ -145,6 +169,7 @@ export default function EditdeckPage() {
                     cards[`card${cardID}`] && cards[`card${cardID}`].spanish
                   }
                   label="Spanish"
+                  disabled={Object.values(editableCard).includes(cardID)}
                 ></TextField>
                 <Button onClick={() => handleDelete(cardID)}>Delete</Button>
               </div>
