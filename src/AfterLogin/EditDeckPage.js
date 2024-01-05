@@ -1,9 +1,10 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { ref, get, update } from "firebase/database";
 import { storage, database } from "../firebase";
 import { Button, Card, TextField, Typography } from "@mui/material";
 import { Backdrop, CircularProgress } from "@mui/material";
+import SaveDone from "./EditComponent/SaveDone";
 import axios from "axios";
 import "./Study.css";
 
@@ -11,6 +12,7 @@ export default function EditdeckPage() {
   const [decks, setDecks] = useState([]);
   const [cards, setCards] = useState([]);
   const { deckID } = useParams();
+  const [saveDone, setSaveDone] = useState(false);
 
   useEffect(() => {
     const takeDecksInfo = async () => {
@@ -50,6 +52,14 @@ export default function EditdeckPage() {
     }
     const deckRef = ref(database, `decks/deck${deckID}`);
     await update(deckRef, decks);
+
+    setSaveDone(true);
+  };
+
+  const navigate = useNavigate();
+  const handleCloseSaveDone = () => {
+    setSaveDone(false);
+    navigate(`/`);
   };
 
   const handleTranslate = async (cardID) => {
@@ -65,7 +75,6 @@ export default function EditdeckPage() {
 
       if (apiData && apiData.length > 0) {
         // Extract the first translation
-        console.log(apiData);
         const word = apiData[0].shortdef[0].split(",")[0];
         const capitalizedWord = word.charAt(0).toUpperCase() + word.slice(1);
 
@@ -143,6 +152,7 @@ export default function EditdeckPage() {
               </div>
             ))}
       </form>
+      {saveDone && <SaveDone open={saveDone} onClose={handleCloseSaveDone} />}
     </div>
   );
 }
