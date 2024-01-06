@@ -46,8 +46,6 @@ export default function StudyPage() {
     fetchDeckAndCards();
   }, [deckID]);
 
-  console.log(cards);
-
   const handleNextCard = () => {
     console.log(currentIndex);
     if (currentIndex < decks.deckCards.length - 1) {

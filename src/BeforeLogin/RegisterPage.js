@@ -12,7 +12,6 @@ export default function RegisterPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [errorCode, setErrorCode] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const navi = useNavigate();
 
@@ -28,8 +27,7 @@ export default function RegisterPage() {
       setName("");
       navi("/");
     } catch (error) {
-      setErrorCode(error.code);
-      setErrorMessage(error.message);
+      setErrorMessage(error.message.slice(10));
     }
   };
 
@@ -72,7 +70,7 @@ export default function RegisterPage() {
         <label className="form-label">
           Password:
           <input
-            type="password"
+            type="text"
             className="form-control"
             name="password"
             placeholder="********"
@@ -84,11 +82,11 @@ export default function RegisterPage() {
       <button type="button" className="btn btn-dark mb-4" onClick={register}>
         Register
       </button>
-
-      <div className="errorMessage">
-        {errorCode ? <h4>{errorMessage}</h4> : null}
-        <h6>{errorCode}</h6>
-      </div>
+      {errorMessage.length ? (
+        <div className="errorMessage">
+          <h4>{errorMessage}</h4>
+        </div>
+      ) : null}
     </div>
   );
 }
