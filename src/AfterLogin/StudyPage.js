@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { ref, get } from "firebase/database";
+import { ref, get, set } from "firebase/database";
 import { storage, database } from "../firebase";
 import { ref as storageRef, getDownloadURL } from "firebase/storage";
 
@@ -47,10 +47,8 @@ export default function StudyPage() {
   }, [deckID]);
 
   const handleNextCard = () => {
-    console.log(currentIndex);
     if (currentIndex < decks.deckCards.length - 1) {
       setCurrentIndex(currentIndex + 1);
-      console.log(currentIndex);
       setDisplayEnglish(true);
     } else {
       setStudyDone(true);
@@ -74,7 +72,20 @@ export default function StudyPage() {
     navigate(`/`);
   };
 
+  const handleShuffle = () => {
+    setCards((prev) => {
+      for (let i = 0; i < prev.length; i++) {
+        let temp = cards[i];
+        let randomIndex = Math.floor(Math.random() * prev.length);
+        cards[i] = cards[randomIndex];
+        cards[randomIndex] = temp;
+      }
+      return [...prev];
+    });
+  };
+
   const STORAGE_KEY = "audio/";
+
   const playAudio = async () => {
     //make sure file name doesn't have whitespace, if have replace with _
     const fileName = currentCard.spanish.replace(/\s+/g, "_").toLowerCase();
@@ -103,7 +114,6 @@ export default function StudyPage() {
       />
     );
   };
-
   const deckName = decks.deckName;
 
   return (
@@ -119,7 +129,7 @@ export default function StudyPage() {
           <div className="study-header">
             <p>{deckName}</p>
             <div className="shuffle-quiz">
-              <Button>Shuffle</Button>
+              <Button onClick={handleShuffle}>Shuffle</Button>
             </div>
           </div>
           <p className="current-index">
