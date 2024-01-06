@@ -20,15 +20,13 @@ export default function FlashcardForm(props) {
 
   const translateEnglishToSpanish = async (word) => {
     const apiKey = "b62458ec-20b6-4fc4-a681-0e682a4ea74e";
-    const apiUrl = `https://www.dictionaryapi.com/api/v3/references/spanish/json/${word}?key=${apiKey}`;
+    const apiUrl = `https://www.dictionaryapi.com/api/v3/references/spanish/json/${word}?key=${process.env.REACT_APP_SPANISH_API_KEY}`;
 
     try {
       const response = await axios.get(apiUrl);
 
       if (Array.isArray(response.data) && response.data.length > 0) {
         const translation = response.data[0].shortdef[0].split(",")[0];
-        console.log(response.data);
-        console.log(response.data[0].shortdef[1]);
         setSpanishValue(translation);
       } else {
         throw new Error("Translation not found");
