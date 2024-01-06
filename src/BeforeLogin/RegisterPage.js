@@ -1,9 +1,10 @@
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { auth } from "../firebase";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { useState } from "react";
 import { ref, set } from "firebase/database";
 import { database } from "../firebase";
+import DisabledByDefaultOutlinedIcon from "@mui/icons-material/DisabledByDefaultOutlined";
 import "bootstrap/dist/css/bootstrap.css";
 
 // need to add logic to Register with firebase auth
@@ -39,6 +40,9 @@ export default function RegisterPage() {
 
   return (
     <div className="App">
+      <Link to="/" className="homepage-button">
+        <DisabledByDefaultOutlinedIcon />
+      </Link>
       <h2 className="mb-5">Hi, nice to meet you!</h2>
       <div className="mb-3">
         <label className="form-label">
