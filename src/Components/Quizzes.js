@@ -157,7 +157,6 @@ export default function Quiz({ user }) {
               >
                 Question {quizData[currentQuestion].index + 1}:{" "}
                 {quizData[currentQuestion].question}
-                {/* {quizData[currentQuestion].question} */}
               </Typography>
 
               {/* Image goes here */}

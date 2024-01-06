@@ -91,7 +91,7 @@ const RenderMap = ({ sendMessage, landmarks }) => {
         }
         setSelectedPlace(res.data.results[0]);
         sendMessage(
-          `You are a world class Historian with expert knowledge on Singapore's every landmark and building. What is the name of this location with the following address:${res}. Share with me its history, and what developments occurred in the last 20 years in Singapore. Word limit is 100 words.`
+          `You are a world class Historian with expert knowledge on Singapore's every landmark and building. What is the name of this location with the following address:${res.data.results[0].formatted_address}. Share with me its history, and what developments occurred in the last 20 years in Singapore. Word limit is 100 words.`
         );
       });
   }, []);
