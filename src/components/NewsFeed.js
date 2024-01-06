@@ -3,6 +3,7 @@ import React from "react";
 import Card from "react-bootstrap/Card";
 import "./NewsFeed.css";
 import { database } from "../firebase";
+import Navbar from "./Navbar";
 
 // Save Firebase folder names as constants to avoid bugs due to misspelling
 const POSTS_FOLDER_NAME = "posts";
@@ -32,8 +33,13 @@ class NewsFeed extends React.Component {
   render() {
     // Convert posts in state to post JSX elements to render
     let postCards = this.state.posts.map((post) => (
-      <Card bg="dark" key={post.key} className="Card">
-        <Card.Img variant="top" src={post.val.imageLink} className="Card-Img" />
+      <Card bg="dark" key={post.key} className="Card text-white">
+        <Navbar />
+        <Card.Img
+          variant="top"
+          src={post.val.imageLink}
+          className="Card-Img py-5"
+        />
         <Card.Text>{post.val.authorEmail}</Card.Text>
         <Card.Text>{post.val.text}</Card.Text>
       </Card>
