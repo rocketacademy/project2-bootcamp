@@ -103,7 +103,11 @@ export default function NaviBar(props) {
         <Link to="/quiz">
           <QuizIcon />
         </Link>
-        <Avatar onClick={handleOpenMenu} src={profilePicUrl} />
+        <Avatar
+          onClick={handleOpenMenu}
+          src={profilePicUrl}
+          className="profile-pic"
+        />
       </div>
     </div>
   );
