@@ -1,9 +1,10 @@
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { auth } from "../firebase";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { useState } from "react";
 import { ref, set } from "firebase/database";
 import { database } from "../firebase";
+import DisabledByDefaultOutlinedIcon from "@mui/icons-material/DisabledByDefaultOutlined";
 import "bootstrap/dist/css/bootstrap.css";
 
 // need to add logic to Register with firebase auth
@@ -12,7 +13,6 @@ export default function RegisterPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [errorCode, setErrorCode] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const navi = useNavigate();
 
@@ -28,8 +28,7 @@ export default function RegisterPage() {
       setName("");
       navi("/");
     } catch (error) {
-      setErrorCode(error.code);
-      setErrorMessage(error.message);
+      setErrorMessage(error.message.slice(10));
     }
   };
 
@@ -41,6 +40,9 @@ export default function RegisterPage() {
 
   return (
     <div className="App">
+      <Link to="/" className="homepage-button">
+        <DisabledByDefaultOutlinedIcon />
+      </Link>
       <h2 className="mb-5">Hi, nice to meet you!</h2>
       <div className="mb-3">
         <label className="form-label">
@@ -72,7 +74,7 @@ export default function RegisterPage() {
         <label className="form-label">
           Password:
           <input
-            type="password"
+            type="text"
             className="form-control"
             name="password"
             placeholder="********"
@@ -84,11 +86,11 @@ export default function RegisterPage() {
       <button type="button" className="btn btn-dark mb-4" onClick={register}>
         Register
       </button>
-
-      <div className="errorMessage">
-        {errorCode ? <h4>{errorMessage}</h4> : null}
-        <h6>{errorCode}</h6>
-      </div>
+      {errorMessage.length ? (
+        <div className="errorMessage">
+          <h4>{errorMessage}</h4>
+        </div>
+      ) : null}
     </div>
   );
 }

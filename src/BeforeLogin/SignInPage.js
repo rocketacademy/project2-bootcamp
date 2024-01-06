@@ -1,15 +1,16 @@
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.css";
 import { auth } from "../firebase";
 import { signInWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { useState } from "react";
+import DisabledByDefaultOutlinedIcon from "@mui/icons-material/DisabledByDefaultOutlined";
+
 // need to add logic to Sign in with firebase auth
 //After login into the auth, return to "/"
 export default function SignInPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [errorCode, setErrorCode] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const navi = useNavigate();
   const logIn = async () => {
@@ -24,13 +25,15 @@ export default function SignInPage() {
         navi("/");
       })
       .catch((error) => {
-        setErrorCode(error.code);
-        setErrorMessage(error.message);
+        setErrorMessage(error.message.slice(10));
       });
   };
 
   return (
     <div className="App">
+      <Link to="/" className="homepage-button">
+        <DisabledByDefaultOutlinedIcon />
+      </Link>
       <h2 className="mb-5">Welcome back! </h2>
       <div className="mb-3">
         <label className="form-label">
@@ -61,11 +64,11 @@ export default function SignInPage() {
       <button type="button" className="btn btn-dark mb-4" onClick={logIn}>
         Log in
       </button>
-
-      <div className="errorMessage">
-        {errorCode ? <h4>{errorMessage}</h4> : null}
-        <h6>{errorCode}</h6>
-      </div>
+      {errorMessage.length ? (
+        <div className="errorMessage">
+          <h4>{errorMessage}</h4>
+        </div>
+      ) : null}
     </div>
   );
 }
