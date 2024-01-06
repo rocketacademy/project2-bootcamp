@@ -5,6 +5,7 @@ import "./App.css";
 import AuthFormTesting from "./Components/AuthFormTesting";
 import { auth } from "./firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
+import CertificateGenerator from "./Services/CreateCertificate";
 
 // MUI
 import { TextField, Box, Typography } from "@mui/material";
@@ -309,6 +310,10 @@ const App = () => {
                 }}
               />
             </GoogleMap>*/}
+            <CertificateGenerator
+              name="Charles Lee"
+              course="Singapore Landmarks"
+            />
           </StyledGridItem>
         </StyledContainer>
       )}
