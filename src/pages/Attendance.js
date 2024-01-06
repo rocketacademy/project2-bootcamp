@@ -64,6 +64,10 @@ const QuizData = ({ sheetName }) => {
         `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${sheetName}`,
         { headers: { Authorization: `Bearer ${newToken}` } }
       );
+      //throws "app" error for response errors for catch block
+      if (response.status === 400) {
+        throw new Error("Error Message");
+      }
       setResponses(response.data.values);
     } catch (error) {
       console.error("Sheet data fetching error:", error);
