@@ -1,14 +1,35 @@
 import { useOutletContext } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import FlashcardForm from "./FlashcardForm";
 import "./AddDeckPage.css";
-import { ref, set, remove } from "firebase/database";
+import { ref, set, get } from "firebase/database";
 import { database } from "../firebase";
 
 export default function AddDeckPage() {
   const [user, setUser] = useOutletContext();
   const [deckName, setDeckName] = useState("");
   const [deck, setDeck] = useState([]);
+  const [deckIDs, setDeckIDs] = useState([]);
+  const deckId = Date.now();
+
+  useEffect(() => {
+    const fetchDeckIDs = async () => {
+      const userInfoRef = ref(database, `userInfo/${user.uid}`);
+
+      try {
+        const snapshot = await get(userInfoRef);
+        const userInfo = snapshot.val();
+        if (userInfo && userInfo.decks) {
+          const fetchedDeckIDs = userInfo.decks;
+          setDeckIDs(fetchedDeckIDs);
+        }
+      } catch (error) {
+        console.error("Error fetching deck IDs:", error);
+      }
+    };
+
+    fetchDeckIDs();
+  }, []);
   const addCard = (englishValue, spanishValue) => {
     const newCardId = Date.now();
     const newCard = {
@@ -24,12 +45,6 @@ export default function AddDeckPage() {
     const deckCopy = [...deck];
     const newDeck = deckCopy.filter((card) => card.cardID !== cardID);
     setDeck(newDeck);
-    // try {
-    //   await remove(ref(database, "cards/" + cardID));
-    //   console.log("Card deleted from the database successfully!");
-    // } catch (error) {
-    //   console.error("Error deleting card from the database:", error);
-    // }
   };
   const currDeck = deck.map((card, index) => {
     return (
@@ -56,10 +71,11 @@ export default function AddDeckPage() {
 
   const addDeckToDatabase = async () => {
     const cardIDs = deck.map((card) => card.cardID);
-    const newDeckId = Date.now();
+    // const newDeckId = Date.now();
+
     try {
-      await set(ref(database, "decks/deck" + newDeckId), {
-        deckID: newDeckId,
+      await set(ref(database, "decks/deck" + deckId), {
+        deckID: deckId,
         deckName: deckName,
         deckCards: cardIDs,
       });
@@ -77,29 +93,38 @@ export default function AddDeckPage() {
     }
   };
 
-  const handleSave = async () => {
-    // await addDeckToDatabase(deck);
-    console.log(deck);
-    const newDeckId = await addDeckToDatabase();
-    if (newDeckId) {
-      const userInfo = {
-        userID: user.uid,
-        decks: [newDeckId],
-      };
-      console.log("loop");
+  const updateUserInfo = async () => {
+    //this code is still buggy, it does not update deckIDs properly
+    console.log(deckIDs);
+    const updatedDeckIDs = Array.isArray(deckIDs)
+      ? deckIDs.filter((id) => id !== undefined)
+      : [];
 
-      try {
-        await set(ref(database, "userInfo/" + user.uid), userInfo);
-        console.log("UserInfo added to the database successfully!");
-      } catch (error) {
-        console.error("Error updating userInfo in the database:", error);
-      }
+    console.log(updatedDeckIDs);
+
+    const userInfo = {
+      userID: user.uid,
+      decks: [...updatedDeckIDs, deckId],
+    };
+
+    try {
+      await set(ref(database, `userInfo/${user.uid}`), userInfo);
+      console.log("UserInfo added to the database successfully!");
+    } catch (error) {
+      console.error("Error updating userInfo in the database:", error);
     }
+  };
+
+  const handleSave = async () => {
+    await addDeckToDatabase(deck);
+
     let card = {};
     for (let i = 0; i < deck.length; i++) {
       card = deck[i];
       await addCardsToDatabase(card.cardID, card);
     }
+
+    await updateUserInfo();
     setDeckName("");
   };
   return (
