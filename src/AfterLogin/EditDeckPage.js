@@ -76,6 +76,7 @@ export default function EditdeckPage() {
       );
 
       const apiData = response.data;
+
       console.log(apiData);
       if (apiData && apiData.length > 0) {
         // Extract the first translation
