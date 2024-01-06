@@ -30,8 +30,8 @@ export default function RegisterPage(props) {
     }
   };
 
-  const writeUserData = () => {
-    set(ref(database, "userInfo/" + auth.currentUser.uid), {
+  const writeUserData = async () => {
+    await set(ref(database, "userInfo/" + auth.currentUser.uid), {
       userID: auth.currentUser.uid,
     });
   };
