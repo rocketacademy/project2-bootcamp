@@ -33,6 +33,10 @@ const HistoryDropdown = (props) => {
       <Dropdown.Item onClick={() => props.filterTradesInput("platform")}>
         Platform
       </Dropdown.Item>
+      <Dropdown.Divider />
+      <Dropdown.Item onClick={() => props.setFilter("none")}>
+        Reset all
+      </Dropdown.Item>
     </DropdownButton>
   );
 };

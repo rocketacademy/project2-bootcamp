@@ -3,14 +3,15 @@ import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 
 const FilterInputModal = (props) => {
+  const [filterField, setFilterField] = useState("");
+  const handleChange = (e) => {
+    setFilterField(e.target.value);
+  };
+
   const typeDisplay = {
     stockCode: "stock code",
     stockName: "stock name",
     platform: "platform",
-  };
-  const [filterField, setFilterField] = useState("");
-  const handleChange = (e) => {
-    setFilterField(e.target.value);
   };
 
   const closeHandler = () => {
