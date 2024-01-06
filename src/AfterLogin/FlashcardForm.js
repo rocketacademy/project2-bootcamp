@@ -19,7 +19,6 @@ export default function FlashcardForm(props) {
   };
 
   const translateEnglishToSpanish = async (word) => {
-    const apiKey = "b62458ec-20b6-4fc4-a681-0e682a4ea74e";
     const apiUrl = `https://www.dictionaryapi.com/api/v3/references/spanish/json/${word}?key=${process.env.REACT_APP_SPANISH_API_KEY}`;
 
     try {
