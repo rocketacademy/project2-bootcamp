@@ -29,6 +29,8 @@ const History = () => {
   const [filterCat, setFilterCat] = useState("none");
   const [showModal, setShowModal] = useState(false);
   const [tradesArr, setTradesArr] = useState([]);
+  const [tradelines, setTradelines] = useState(<div></div>);
+  const [masterTradesArr, setMasterTradesArr] = useState([]);
   const [isDark, setIsDark] = useState(false);
 
   useEffect(() => {
@@ -53,22 +55,37 @@ const History = () => {
       // Add the subsequent child to local component state, initialising a new array to trigger re-render
       loadedTrades = [...loadedTrades, { key: data.key, val: data.val() }];
       setTradesArr(loadedTrades);
+      setMasterTradesArr(loadedTrades);
     });
     return () => {
       unsubscribe();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
-  useEffect(() => setTradesArr(sortTrades(tradesArr, sort)), [tradesArr, sort]);
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => filterTrades(filter), [filter]);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
-    filterTrades(filter);
-  }, [filter]);
+    setTradesArr(sortTrades(tradesArr, sort));
+    setTradelines(
+      tradesArr.map((obj) => (
+        <TradeLineItem
+          key={obj.key}
+          stockName={obj.val.stockName}
+          stockCode={obj.val.stockCode}
+          tradeTime={obj.val.date}
+          tradePrice={obj.val.price + obj.val.currency}
+          platform={obj.val.platform}
+        />
+      ))
+    );
+  }, [tradesArr, sort]);
 
   const sortTrades = (arr, sortMethod) => {
     const sortedArr = arr.sort(
       (objA, objB) =>
-        (sortMethod === "timeA" ? 1 : -1) * (objB.val.date - objA.val.date)
+        (sortMethod === "timeA" ? -1 : 1) * (objB.val.date - objA.val.date)
     );
     return sortedArr;
   };
@@ -83,23 +100,14 @@ const History = () => {
     let trades = {};
     const tradesRef = ref(database, `${user}/${TRADES_KEY}`);
     if (filter === "none") {
-      get(tradesRef).then((snapshot) => {
-        trades = snapshot.val();
-        for (let key in trades) {
-          loadedTrades.push({ key: key, val: trades[key] });
-        }
-        setTradesArr(loadedTrades);
-      });
+      setTradesArr(masterTradesArr);
     } else {
-      get(tradesRef).then((snapshot) => {
-        trades = snapshot.val();
-        for (let key in trades) {
-          if (trades[key][filterCat] === filter) {
-            loadedTrades.push({ key: key, val: trades[key] });
-          }
+      for (let i = 0; i < masterTradesArr.length; i++) {
+        if (masterTradesArr[i].val[filterCat] === filter) {
+          loadedTrades.push(masterTradesArr[i]);
         }
-        setTradesArr(loadedTrades);
-      });
+      }
+      setTradesArr(loadedTrades);
     }
   };
 
@@ -112,17 +120,6 @@ const History = () => {
     </div>
   );
 
-  const tradeLines = tradesArr.map((obj) => (
-    <TradeLineItem
-      key={obj.key}
-      stockName={obj.val.stockName}
-      stockCode={obj.val.stockCode}
-      tradeTime={obj.val.date}
-      tradePrice={obj.val.price + obj.val.currency}
-      platform={obj.val.platform}
-    />
-  ));
-
   return (
     <div>
       <Navbar />
@@ -133,7 +130,6 @@ const History = () => {
           close={handleClose}
           setFilter={setFilter}
         />
-        {/* Input here */}
         <div>
           <div className="trades-header">
             <h1>Your Trades</h1>
@@ -155,7 +151,7 @@ const History = () => {
               <p className="trade-info mb-0">Price</p>
               <p className="trade-info mb-0">Platform</p>
             </div>
-            {tradesArr.length === 0 ? noDisplayMessage : tradeLines}
+            {tradesArr.length === 0 ? noDisplayMessage : tradelines}
             {/* to-do, sort objects by date adn display from database */}
           </div>
         </div>
