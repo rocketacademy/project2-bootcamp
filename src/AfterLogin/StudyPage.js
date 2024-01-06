@@ -24,26 +24,35 @@ export default function StudyPage() {
       return await get(decksRef);
     };
 
-    //will improve to just fetch selected cards instead of all cards.
-    const takeCardsInfo = async () => {
-      const cardsRef = ref(database, `cards`);
+    const takeCardsInfo = async (cardNumber) => {
+      const cardsRef = ref(database, `cards/card${cardNumber}`);
       return await get(cardsRef);
     };
 
     const fetchDeckAndCards = async () => {
-      const [deckInfo, cardsInfo] = await Promise.all([
-        takeDecksInfo(),
-        takeCardsInfo(),
-      ]);
-      setDecks(deckInfo.val());
-      setCards(cardsInfo.val());
+      const deckInfo = await takeDecksInfo();
+      const deckInfoData = deckInfo.val();
+
+      if (deckInfoData) {
+        const cardNumber = Object.values(deckInfoData.deckCards);
+        const cardPromises = cardNumber.map((cardID) => takeCardsInfo(cardID));
+        const cardInfo = await Promise.all(cardPromises);
+        const cardInfoData = cardInfo.map((number) => number.val());
+
+        setDecks(deckInfoData);
+        setCards(cardInfoData);
+      }
     };
     fetchDeckAndCards();
   }, [deckID]);
 
+  console.log(cards);
+
   const handleNextCard = () => {
+    console.log(currentIndex);
     if (currentIndex < decks.deckCards.length - 1) {
       setCurrentIndex(currentIndex + 1);
+      console.log(currentIndex);
       setDisplayEnglish(true);
     } else {
       setStudyDone(true);
@@ -81,8 +90,7 @@ export default function StudyPage() {
     }
   };
 
-  const currentCard =
-    decks.deckCards && cards[`card${decks.deckCards[currentIndex]}`];
+  const currentCard = decks.deckCards && cards[currentIndex];
 
   const totalCards = decks.deckCards ? decks.deckCards.length : 0;
 
