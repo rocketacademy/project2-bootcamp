@@ -16,9 +16,6 @@ import { auth } from "../firebase.js";
 // CSS
 import "./History.css";
 
-// dummy data
-import dummyDatabase from "./historyDummyData";
-
 const TRADES_KEY = "trades";
 
 const History = () => {
@@ -65,7 +62,6 @@ const History = () => {
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => filterTrades(filter), [filter]);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     setTradesArr(sortTrades(tradesArr, sort));
     setTradelines(
