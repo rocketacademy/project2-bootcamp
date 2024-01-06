@@ -1,27 +1,45 @@
 import { useOutletContext } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import FlashcardForm from "./FlashcardForm";
 import "./AddDeckPage.css";
-//Take the user data from App.js state
+import { ref, set, remove } from "firebase/database";
+import { database } from "../firebase";
 
 export default function AddDeckPage() {
   const [user, setUser] = useOutletContext();
   const [deckName, setDeckName] = useState("");
   const [deck, setDeck] = useState([]);
   const addCard = (englishValue, spanishValue) => {
-    let newCard = {
-      id: Date.now(),
+    const newCardId = Date.now();
+    const newCard = {
+      cardID: newCardId,
       english: englishValue,
       spanish: spanishValue,
     };
     const newDeck = [...deck, newCard];
     setDeck(newDeck);
+    addCardsToDatabase(newCardId, newCard);
   };
 
-  const deleteCard = (id) => {
+  const addCardsToDatabase = async (cardId, card) => {
+    try {
+      await set(ref(database, "cards/" + cardId), card);
+      console.log("Card added to the database successfully!");
+    } catch (error) {
+      console.error("Error adding card to the database:", error);
+    }
+  };
+
+  const deleteCard = async (cardID) => {
     const deckCopy = [...deck];
-    const newDeck = deckCopy.filter((card) => card.id !== id);
+    const newDeck = deckCopy.filter((card) => card.cardID !== cardID);
     setDeck(newDeck);
+    try {
+      await remove(ref(database, "cards/" + cardID));
+      console.log("Card deleted from the database successfully!");
+    } catch (error) {
+      console.error("Error deleting card from the database:", error);
+    }
   };
   const currDeck = deck.map((card, index) => {
     return (
@@ -37,7 +55,7 @@ export default function AddDeckPage() {
           <button
             type="button"
             className="btn btn-outline-dark mt-3 mb-3"
-            onClick={() => deleteCard(card.id)}
+            onClick={() => deleteCard(card.cardID)}
           >
             Delete
           </button>
@@ -45,10 +63,42 @@ export default function AddDeckPage() {
       </div>
     );
   });
-  const handleSave = () => {};
+
+  const addDeckToDatabase = async () => {
+    const cardIDs = deck.map((card) => card.cardID);
+    const newDeckId = Date.now();
+    try {
+      await set(ref(database, "decks/" + newDeckId), {
+        deckID: newDeckId,
+        deckName: deckName,
+        deckCards: cardIDs,
+      });
+      console.log("Deck added to the database successfully!");
+    } catch (error) {
+      console.error("Error adding deck to the database:", error);
+    }
+  };
+
+  const handleSave = async () => {
+    addDeckToDatabase(deck);
+    const newDeckId = await addDeckToDatabase();
+    if (newDeckId) {
+      const userInfo = {
+        userID: user.uid,
+        decks: [newDeckId],
+      };
+
+      try {
+        await set(ref(database, "userInfo/" + user.uid), userInfo);
+        console.log("UserInfo added to the database successfully!");
+      } catch (error) {
+        console.error("Error updating userInfo in the database:", error);
+      }
+    }
+    setDeckName("");
+  };
   return (
     <div>
-      AddDeckPage
       <div>
         <label>Name your deck:</label>
         <input
