@@ -100,31 +100,44 @@ const QuizData = ({ sheetName }) => {
           <button className="btn" onClick={() => fetchSheetData(accessToken)}>
             Refresh sheet data
           </button>
-          <table className="table">
-            <thead>
-              <tr>
-                {/* Only include the first three columns */}
-                {responses[0].slice(0, 3).map((header, index) => (
-                  <th key={index}>{header}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {responses.slice(1).map((row, rowIndex) => (
-                <tr key={rowIndex}>
-                  {/* Only include the first three cells of each row */}
-                  {row.slice(0, 3).map((cell, cellIndex) => (
-                    <td key={cellIndex}>{cell}</td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <QuizTable responses={responses} />
         </>
       )}
     </div>
   );
 };
+
+const QuizTable = ({ responses }) => {
+  return (
+    <table className="table">
+      <thead>
+        <tr>
+          {responses[0]
+            .filter((header) =>
+              ["Timestamp", "Email Address", "Score"].includes(header)
+            )
+            .map((header, index) => (
+              <th key={index}>{header}</th>
+            ))}
+        </tr>
+      </thead>
+      <tbody>
+        {responses.slice(1).map((row, rowIndex) => {
+          const [timestamp, emailAddress, score] = row;
+          return (
+            <tr key={rowIndex}>
+              <td key={0}>{timestamp}</td>
+              <td key={1}>{emailAddress}</td>
+              <td key={2}>{score}</td>
+            </tr>
+          );
+        })}
+      </tbody>
+    </table>
+  );
+};
+
+export default QuizTable;
 
 export const Attendance = () => {
   const [sheetName, setSheetName] = useState("");
