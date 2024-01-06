@@ -98,9 +98,7 @@ export default function AddDeckPage() {
     let card = {};
     for (let i = 0; i < deck.length; i++) {
       card = deck[i];
-      console.log(card);
       await addCardsToDatabase(card.cardID, card);
-      console.log("hello");
     }
     setDeckName("");
   };
