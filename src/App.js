@@ -7,7 +7,7 @@ import AuthFormTesting from "./Components/AuthFormTesting";
 import { auth } from "./firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import PersistentDrawerLeft from "./Components/Drawer";
-import { BrowserRouter as Router, Link, Routes, Route } from "react-router-dom";
+//import { BrowserRouter as Router, Link, Routes, Route } from "react-router-dom";
 import Quiz from "./Components/Quizzes";
 import { AppLinks } from "./AppMain";
 
