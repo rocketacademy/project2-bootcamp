@@ -85,7 +85,7 @@ const AppMain = () => {
               marginRight: "500px",
             }}
           >
-            <IconButton
+            {/* <IconButton
               variant="outlined"
               onClick={(e) => {
                 setIsLoggedIn(false);
@@ -96,7 +96,7 @@ const AppMain = () => {
               sx={{ marginLeft: "20px" }}
             >
               <ExitToAppIcon style={{ fontSize: "2.25rem" }} />
-            </IconButton>
+            </IconButton> */}
           </div>
         </div>
       )}

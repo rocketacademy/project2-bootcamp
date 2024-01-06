@@ -18,6 +18,7 @@ import Grid from "@mui/material/Grid";
 import { styled } from "@mui/system";
 // import { Typography } from "@mui/material/styles/createTypography";
 import MenuItem from "@mui/material/MenuItem";
+import TemporaryDrawer from "./Components/TemporaryDrawer";
 // import { mapToStyles } from "@popperjs/core/lib/modifiers/computeStyles";
 // import { assertExpressionStatement } from "@babel/types";
 
@@ -139,6 +140,16 @@ const App = () => {
     });
   }, []);
 
+  // onAuthStateChanged function to be passed down into the App child component
+  const handleAuthStateChanged = () => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setIsLoggedIn(true);
+        setUser(user);
+      }
+    });
+  };
+
   //Function to call OpenAI API
   const sendMessage = async (targetMessage) => {
     try {
@@ -169,17 +180,35 @@ const App = () => {
   console.log(aiResponse);
   console.log(user);
 
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    signOut(auth);
+    setUser({});
+  };
+
   return (
     <Box>
       <Box>
         {isLoggedIn ? (
-          <PersistentDrawerLeft
-            aiResponse={aiResponse}
-            clearAIResponse={clearAIResponse}
-            // onDrawerOpen: the function to set drawerRef state is passed as argument to onDrawerOpen
-            onDrawerOpen={(func) => setDrawerRef(func)}
-            sendMessage={sendMessage}
-          />
+          <Box>
+            {/* <PersistentDrawerLeft
+              aiResponse={aiResponse}
+              clearAIResponse={clearAIResponse}
+              // onDrawerOpen: the function to set drawerRef state is passed as argument to onDrawerOpen
+              onDrawerOpen={(func) => setDrawerRef(func)}
+              sendMessage={sendMessage}
+            /> */}
+
+            <TemporaryDrawer
+              aiResponse={aiResponse}
+              clearAIResponse={clearAIResponse}
+              onDrawerOpen={(func) => setDrawerRef(func)}
+              sendMessage={sendMessage}
+              handleAuthStateChanged={handleAuthStateChanged}
+              isLoggedIn={isLoggedIn}
+              handleLogout={handleLogout}
+            />
+          </Box>
         ) : (
           <AuthFormTesting />
         )}

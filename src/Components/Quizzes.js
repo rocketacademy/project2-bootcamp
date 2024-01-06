@@ -16,6 +16,7 @@ export default function Quiz({ user }) {
   const quizData = [
     {
       question: "Where is the Merlion located?",
+      index: 0,
       options: ["Clarke Quay", "Marina Bay", "Ang Mo Kio"],
       image:
         "https://www.straitstimes.com/multimedia/graphics/2021/08/singapore-merlion-real-anatomy/assets/images/intro-proposed/1.jpg?v=62dce0b6",
@@ -23,6 +24,7 @@ export default function Quiz({ user }) {
     },
     {
       question: "When was the Merlion built?",
+      index: 1,
       options: [1972, 1968, 1980, 1955],
       image:
         "https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Singapore_-_Merlion_0003.jpg/285px-Singapore_-_Merlion_0003.jpg",
@@ -30,6 +32,7 @@ export default function Quiz({ user }) {
     },
     {
       question: "Where is the Infinity Pool located",
+      index: 2,
       options: ["Marina Bay", "Clarke Quay", "Bishan"],
       image:
         "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/SkyPark_Infinity_Pool_%28view_from_deckchair%29.jpg/1200px-SkyPark_Infinity_Pool_%28view_from_deckchair%29.jpg",
@@ -136,9 +139,15 @@ export default function Quiz({ user }) {
       >
         <Box>
           {currentQuestion < quizData.length - 1 ? (
-            <Box component="form" noValidate sx={{ mt: 1 }}>
+            <Box
+              key={quizData[currentQuestion].index}
+              component="form"
+              noValidate
+              sx={{ mt: 1 }}
+            >
               <Typography
                 variant="h4"
+                // key={quizData[currentQuestion].index}
                 sx={{
                   marginLeft: "16px", // Adjust the gap between index and option
                   // fontSize: "1.2rem", // Change font size
@@ -146,7 +155,9 @@ export default function Quiz({ user }) {
                   color: "blue", // Change the color
                 }}
               >
+                Question {quizData[currentQuestion].index + 1}:{" "}
                 {quizData[currentQuestion].question}
+                {/* {quizData[currentQuestion].question} */}
               </Typography>
 
               {/* Image goes here */}
@@ -167,8 +178,10 @@ export default function Quiz({ user }) {
               >
                 {quizData[currentQuestion].options.map((option, index) => (
                   <Box
+                    key={index}
                     sx={{
                       display: "flex",
+
                       alignItems: "center",
                       width: "100%",
                       marginRight: "8px",
@@ -186,7 +199,6 @@ export default function Quiz({ user }) {
                       {index + 1}
                     </Typography>
                     <Button
-                      key={index}
                       variant="contained"
                       onClick={() => handleAnswerClick(option)}
                       disabled={userAnswer !== null}
