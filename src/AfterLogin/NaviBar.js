@@ -14,7 +14,7 @@ import {
   MenuItem,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import { ref as DBref, get, set } from "firebase/database";
+import { ref as DBref, get, set, update } from "firebase/database";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 
 export default function NaviBar(props) {
