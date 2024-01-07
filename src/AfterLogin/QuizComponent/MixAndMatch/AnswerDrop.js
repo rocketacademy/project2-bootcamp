@@ -9,7 +9,7 @@ export default function AnswerDrop(props) {
   const [, drop] = useDrop(
     () => ({
       accept: allAccept,
-      drop: (item) => moveAnswer(item, props.i),
+      drop: (item) => moveAnswer(item),
       collect: (monitor) => ({
         isOver: Boolean(monitor.isOver()),
       }),
@@ -17,9 +17,17 @@ export default function AnswerDrop(props) {
     [props.i]
   );
 
-  const moveAnswer = (item, i) => {
-    console.log(item, i);
+  const moveAnswer = (item) => {
+    props.setAnswer((prev) => {
+      const updated = [...prev];
+      updated[props.i] = item.value;
+      return updated;
+    });
   };
 
-  return <Card ref={drop} className="mix-and-match-question-card"></Card>;
+  return (
+    <Card ref={drop} className="mix-and-match-question-card">
+      {props.answer}
+    </Card>
+  );
 }
