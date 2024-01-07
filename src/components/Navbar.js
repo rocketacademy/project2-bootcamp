@@ -39,7 +39,7 @@ const Navbar = ({ toggleDarkMode, darkMode }) => {
             <Link className="nav-link" to="/insights">
               Insights
             </Link>
-            <Link className="nav-link" to="/history">
+            <Link className="nav-link" to="/settings">
               Settings
             </Link>
           </Nav>
