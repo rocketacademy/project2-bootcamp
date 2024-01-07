@@ -1,4 +1,4 @@
-import { useOutletContext } from "react-router-dom";
+import { useOutletContext, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import FlashcardForm from "./FlashcardForm";
 import "./AddDeckPage.css";
@@ -10,8 +10,8 @@ export default function AddDeckPage() {
   const [deckName, setDeckName] = useState("");
   const [deck, setDeck] = useState([]);
   const [deckIDs, setDeckIDs] = useState([]);
-  const deckId = Date.now();
-
+  const [deckId, setDeckId] = useState(Date.now());
+  const navi = useNavigate();
   useEffect(() => {
     const fetchDeckIDs = async () => {
       const userInfoRef = ref(database, `userInfo/${user.uid}`);
@@ -29,7 +29,8 @@ export default function AddDeckPage() {
     };
 
     fetchDeckIDs();
-  }, []);
+  }, [user.uid]);
+
   const addCard = (englishValue, spanishValue) => {
     const newCardId = Date.now();
     const newCard = {
@@ -71,7 +72,6 @@ export default function AddDeckPage() {
 
   const addDeckToDatabase = async () => {
     const cardIDs = deck.map((card) => card.cardID);
-    // const newDeckId = Date.now();
 
     try {
       await set(ref(database, "decks/deck" + deckId), {
@@ -94,17 +94,9 @@ export default function AddDeckPage() {
   };
 
   const updateUserInfo = async () => {
-    //this code is still buggy, it does not update deckIDs properly
-    console.log(deckIDs);
-    const updatedDeckIDs = Array.isArray(deckIDs)
-      ? deckIDs.filter((id) => id !== undefined)
-      : [];
-
-    console.log(updatedDeckIDs);
-
     const userInfo = {
       userID: user.uid,
-      decks: [...updatedDeckIDs, deckId],
+      decks: [...deckIDs, deckId],
     };
 
     try {
@@ -126,6 +118,8 @@ export default function AddDeckPage() {
 
     await updateUserInfo();
     setDeckName("");
+    setDeckId(null);
+    navi("/");
   };
   return (
     <div>
