@@ -1,4 +1,4 @@
-import { Card } from "@mui/material";
+import { Button, Card } from "@mui/material";
 import MixAndMatchQuizHeader from "./MixAndMatchQuizHeader";
 import AnswerDrag from "./AnswerDrag";
 import AnswerDrop from "./AnswerDrop";
@@ -43,6 +43,12 @@ export default function MixAndMatchQuizQuestion(props) {
       <MixAndMatchQuizHeader />
       <div className="mix-and-match-question">{questionDisplay}</div>
       <div className="mix-and-match-answer">{answerDisplay}</div>
+      <Button
+        variant="contained"
+        onClick={() => setAnswer(new Array(10).fill(""))}
+      >
+        Reset
+      </Button>
     </div>
   );
 }
