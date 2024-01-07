@@ -2,7 +2,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { ref, get, update } from "firebase/database";
 import { database } from "../firebase";
-import { Button, TextField } from "@mui/material";
+import { Card, Button, TextField } from "@mui/material";
 import { Backdrop, CircularProgress } from "@mui/material";
 import SaveDone from "./EditComponent/SaveDone";
 import axios from "axios";
@@ -50,14 +50,32 @@ export default function EditdeckPage() {
   };
 
   const handleSave = async () => {
-    for (const cardID of Object.keys(cards)) {
-      const cardRef = ref(database, `cards/${cardID}`);
-      await update(cardRef, cards[cardID]);
-    }
-    const deckRef = ref(database, `decks/deck${deckID}`);
-    await update(deckRef, decks);
+    //if any card is null, show error cannot save
+    let canSave = true;
 
-    setSaveDone(true);
+    for (const cardID of Object.keys(cards)) {
+      const currentCard = cards[cardID];
+
+      if (currentCard.english === "" || currentCard.spanish === "") {
+        console.error(`Incomplete data for card with ID ${cardID}`);
+        canSave = false;
+      }
+    }
+
+    if (canSave) {
+      // All cards have valid data, proceed with saving
+      for (const cardID of Object.keys(cards)) {
+        const currentCard = cards[cardID];
+        const cardRef = ref(database, `cards/${cardID}`);
+        await update(cardRef, currentCard);
+      }
+
+      const deckRef = ref(database, `decks/deck${deckID}`);
+      await update(deckRef, decks);
+      setSaveDone(true);
+    } else {
+      setSaveDone(false);
+    }
   };
 
   const navigate = useNavigate();
@@ -85,18 +103,18 @@ export default function EditdeckPage() {
         updatedCards[`card${cardID}`].spanish = capitalizedWord;
         updatedCards[`card${cardID}`].english = newValue;
 
-        const audio = apiData[0].hwi.prs[0].sound.audio;
-        let subdir;
-        if (audio.startsWith("bix")) {
-          subdir = "bix";
-        } else if (audio.startsWith("gg")) {
-          subdir = "gg";
-        } else if (/[0-9_]/.test(audio.charAt(0))) {
-          subdir = "number";
-        } else {
-          subdir = audio.charAt(0).toLowerCase();
-        }
-        const audioLink = `https://media.merriam-webster.com/audio/prons/es/me/mp3/${subdir}/${audio}.mp3`;
+        // const audio = apiData[0].hwi.prs[0].sound.audio;
+        // let subdir;
+        // if (audio.startsWith("bix")) {
+        //   subdir = "bix";
+        // } else if (audio.startsWith("gg")) {
+        //   subdir = "gg";
+        // } else if (/[0-9_]/.test(audio.charAt(0))) {
+        //   subdir = "number";
+        // } else {
+        //   subdir = audio.charAt(0).toLowerCase();
+        // }
+        // const audioLink = `https://media.merriam-webster.com/audio/prons/es/me/mp3/${subdir}/${audio}.mp3`;
 
         setCards(updatedCards);
       }
@@ -106,11 +124,12 @@ export default function EditdeckPage() {
   };
 
   const handleAdd = async () => {
-    const newCardID = Object.keys(cards).length + 1;
+    const newCardID = Date.now();
     const newCard = { cardID: newCardID, english: "", spanish: "" };
     setCards((prevCards) => ({ ...prevCards, [`card${newCardID}`]: newCard }));
-
-    const newCardIDDeck = Object.keys(decks.deckCards).length;
+    const maxCardID = Math.max(...Object.values(decks.deckCards));
+    const newCardIDDeck = maxCardID + 1;
+    console.log(newCardIDDeck);
     setDecks((prevDeck) => ({
       ...prevDeck,
       deckCards: {
@@ -153,7 +172,7 @@ export default function EditdeckPage() {
           Object.values(decks.deckCards)
             .reverse()
             .map((cardID) => (
-              <div className="edit-card">
+              <Card className="edit-card">
                 <div className="edit-buttons">
                   <Button
                     onClick={() => handleTranslate(cardID)}
@@ -184,12 +203,15 @@ export default function EditdeckPage() {
                     value={
                       cards[`card${cardID}`] && cards[`card${cardID}`].spanish
                     }
+                    onChange={(e) =>
+                      handleFieldChange(cardID, "spanish", e.target.value)
+                    }
                     label="Spanish"
                     variant="standard"
                     disabled={Object.values(editableCard).includes(cardID)}
                   ></TextField>
                 </div>
-              </div>
+              </Card>
             ))}
       </form>
       {saveDone && <SaveDone open={saveDone} onClose={handleCloseSaveDone} />}

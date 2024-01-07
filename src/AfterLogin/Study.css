@@ -73,16 +73,17 @@
 .edit-card {
   display: flex;
   flex-direction: column;
-  width: 70vw;
-  height: 10vw;
+  width: 50vw;
+  height: 15vw;
   padding: 10px;
   justify-content: center;
+  margin: 20px;
 }
 
 .edit-buttons {
-  width: 70vw;
-  height: 5vw;
-  text-align: right;
+  display: flex;
+  justify-content: right;
+  padding: 10px;
 }
 
 .edit {

@@ -59,7 +59,8 @@ export default function HomePage() {
   const deckList = Array.isArray(userDeckIDs) ? (
     userDeckIDs.map((deckID) => {
       const deckName = userDecks[`deck${deckID}`].deckName;
-      const cardsNum = userDecks[`deck${deckID}`].deckCards.length;
+      const cardsNum = Object.keys(userDecks[`deck${deckID}`].deckCards).length;
+
       return (
         <Card
           key={deckName}
