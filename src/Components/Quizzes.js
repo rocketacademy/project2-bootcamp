@@ -11,6 +11,7 @@ import { AppLinks } from "../AppMain";
 
 // MUI
 import { Button, Grid, Typography, Box } from "@mui/material";
+import generateCertificate from "../Services/CreateCertificate";
 
 export default function Quiz({ user }) {
   const quizData = [
@@ -46,6 +47,9 @@ export default function Quiz({ user }) {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [userAnswer, setUserAnswer] = useState(null);
   const [score, setScore] = useState(0);
+  const userName = "Charles Lee";
+  const course = "Singapore Landmarks Quiz";
+  const scoreText = `For scoring ${score} out of 3 for the ${course}`;
 
   const userId = user.uid;
 
@@ -222,6 +226,12 @@ export default function Quiz({ user }) {
                 onClick={() => deleteUsersCollection()}
               >
                 Delete score from Cloud Firestore
+              </Button>
+              <Button
+                variant="contained"
+                onClick={() => generateCertificate(userName, course, scoreText)}
+              >
+                Generate Certificate
               </Button>
             </Box>
           )}

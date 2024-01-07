@@ -1,10 +1,13 @@
 import React from "react";
 import jsPDF from "jspdf";
 import img from "../assets/certificate-background.png";
+import { Landscape, Portrait } from "@mui/icons-material";
 
-const generateCertificate = (name, course) => {
+const generateCertificate = (name, course, scoreText) => {
   // Create a new jsPDF instance
-  const doc = new jsPDF();
+  const doc = new jsPDF({
+    orientation: Portrait,
+  });
 
   // Add background image
   doc.addImage(
@@ -23,20 +26,11 @@ const generateCertificate = (name, course) => {
 
   // Add course name
   doc.setFontSize(20);
-  doc.text(course, 105, 195, { align: "center" }); // 105 and 195: horizontal and vertical positions of the text
+  doc.text(course, 105, 195, { align: "center" });
+  doc.text(scoreText, 95, 175, { align: "center" }); // 105 and 195: horizontal and vertical positions of the text
 
   // Save the PDF
   doc.save(`${name}-${course}.pdf`);
 };
 
-function CertificateGenerator(props) {
-  return (
-    <div>
-      <button onClick={() => generateCertificate(props.name, props.course)}>
-        Generate Certificate
-      </button>
-    </div>
-  );
-}
-
-export default CertificateGenerator;
+export default generateCertificate;

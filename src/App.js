@@ -111,66 +111,11 @@ const politicalLandmarks = {
   AsianCivilisationsMuseum: { lat: 1.2875, lng: 103.8519 },
   NationalMuseumofSingapore: { lat: 1.2966, lng: 103.8485 },
 };
-// const landmarks = [
-//   {
-//     value: "Historical Landmarks",
-//     label: "Historical Landmarks",
-//   },
-//   {
-//     value: "Nature Parks",
-//     label: "Nature Parks",
-//   },
-//   {
-//     value: "Political Landmarks",
-//     label: "Political Landmarks",
-//   },
-// ];
-
-const historicalLandmarks = {
-  Merlion: { lat: 1.2868, lng: 103.8545 },
-  MarinaBaySands: { lat: 1.2836, lng: 103.8585 },
-  GardensByTheBay: { lat: 1.2816, lng: 103.8636 },
-  SentosaIsland: { lat: 1.2494, lng: 103.8303 },
-  UniversalStudios: { lat: 1.254, lng: 103.8238 },
-  OrchardRoad: { lat: 1.3048, lng: 103.8318 },
-  RafflesHotel: { lat: 1.2946, lng: 103.8534 },
-  Chinatown: { lat: 1.2839, lng: 103.8436 },
-  LittleIndia: { lat: 1.3064, lng: 103.8495 },
-  ClarkeQuay: { lat: 1.2905, lng: 103.8466 },
-};
-
-const natureParks = {
-  BukitTimahNatureReserve: { lat: 1.3547, lng: 103.7764 },
-  MacRitchieReservoir: { lat: 1.344, lng: 103.8206 },
-  SungeiBulohWetlandReserve: { lat: 1.4467, lng: 103.7306 },
-  LabradorNatureReserve: { lat: 1.2672, lng: 103.8021 },
-  PulauUbin: { lat: 1.412, lng: 103.9572 },
-  ConeyIslandPark: { lat: 1.3986, lng: 103.921 },
-  PasirRisPark: { lat: 1.3752, lng: 103.9544 },
-  EastCoastPark: { lat: 1.304, lng: 103.922 },
-  KentRidgePark: { lat: 1.2897, lng: 103.7847 },
-  FortCanningPark: { lat: 1.2921, lng: 103.8469 },
-};
-
-const politicalLandmarks = {
-  ParliamentHouse: { lat: 1.2895, lng: 103.851 },
-  Istana: { lat: 1.2967, lng: 103.8486 },
-  SupremeCourt: { lat: 1.2896, lng: 103.8504 },
-  CityHall: { lat: 1.293, lng: 103.8537 },
-  NationalGallerySingapore: { lat: 1.2903, lng: 103.8519 },
-  CivilianWarMemorial: { lat: 1.2934, lng: 103.8524 },
-  OldParliamentHouse: { lat: 1.2899, lng: 103.8507 },
-  VictoriaTheatreConcertHall: { lat: 1.2888, lng: 103.8514 },
-  AsianCivilisationsMuseum: { lat: 1.2875, lng: 103.8519 },
-  NationalMuseumofSingapore: { lat: 1.2966, lng: 103.8485 },
-};
 
 const App = () => {
   const [userMessage, setUserMessage] = useState("");
   const [aiResponse, setAiResponse] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [selectedLandmarks, setSelectedLandmarks] =
-    useState(historicalLandmarks);
   const [selectedLandmarks, setSelectedLandmarks] =
     useState(historicalLandmarks);
 
@@ -310,7 +255,6 @@ const App = () => {
                 sx={{ width: "150px", height: "50px" }}
               >
                 Nature Parks
-                Nature Parks
               </Button>
             </StyledGridPills>
             <StyledGridPills item>
@@ -334,7 +278,6 @@ const App = () => {
                 }}
                 sx={{ width: "150px", height: "50px" }}
               >
-                Political Landmarks
                 Political Landmarks
               </Button>
             </StyledGridPills>
@@ -394,7 +337,6 @@ const App = () => {
             >
               Clear
             </Button> */}
-            </Button>
             <Box
               sx={{
                 "& .MuiTextField-root": { m: 1, width: "25ch" },
@@ -426,10 +368,7 @@ const App = () => {
             }}
           >
             <RenderMap
-             
               sendMessage={sendMessage}
-              landmarks={selectedLandmarks}
-           
               landmarks={selectedLandmarks}
             />
             {/*<GoogleMap
