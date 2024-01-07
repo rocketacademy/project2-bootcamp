@@ -2,25 +2,26 @@ import { Card } from "@mui/material";
 import MixAndMatchQuizHeader from "./MixAndMatchQuizHeader";
 import AnswerDrag from "./AnswerDrag";
 import { useDrop } from "react-dnd";
+import { useState } from "react";
+import AnswerDrop from "./AnswerDrop";
 
 export default function MixAndMatchQuizQuestion(props) {
   const ItemTypes = {
     WORD: "word",
   };
-  const [, drop] = useDrop(() => ({
-    accept: ItemTypes.WORD,
-  }));
-  const questionDisplay = props.questions.map((question) => {
+
+  const questionDisplay = props.questions.map((question, i) => {
     return (
       <div
         className="mix-and-match-question-pair"
         key={`english${question.cardID}`}
       >
         <Card className="mix-and-match-question-card">{question.english}</Card>
-        <Card ref={drop} className="mix-and-match-question-card"></Card>
+        <AnswerDrop ItemTypes={ItemTypes} i={i} />
       </div>
     );
   });
+
   const answerDisplay = props.questions.map((question) => {
     return (
       <AnswerDrag
