@@ -15,7 +15,6 @@ export default function QuizPage() {
   const [quizPage, setQuizPage] = useState(false);
   //false is the first page
   //true is the quiz page
-  console.log(decks);
   let modeDisplay;
   switch (quizMode) {
     case "MC":
@@ -46,8 +45,7 @@ export default function QuizPage() {
     default:
       modeDisplay = <h1>Somethings went wrong!</h1>;
   }
-
-  const modeSelectionDiv = (
+  const modeSelectionDiv = quizPage ? null : (
     <div className="dialog-button-div">
       <Button variant="contained" onClick={() => setQuizMode("MC")}>
         MC Quiz
