@@ -27,9 +27,16 @@ const center = {
 };
 
 const RenderMap = ({ sendMessage, landmarks }) => {
+const RenderMap = ({ sendMessage, landmarks }) => {
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
     libraries,
+  });
+  const [markerLoaded, setMarkerLoaded] = useState(false);
+  const [selectedLocation, setSelectedLocation] = useState();
+  const [selectedPlace, setSelectedPlace] = useState({
+    lat: 1.3513,
+    lng: 103.81404,
   });
   const [markerLoaded, setMarkerLoaded] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState();
@@ -68,7 +75,13 @@ const RenderMap = ({ sendMessage, landmarks }) => {
   const onMapClick = useCallback((event) => {
     const lat = event.latLng.lat();
     const lng = event.latLng.lng();
+    const lat = event.latLng.lat();
+    const lng = event.latLng.lng();
     setSelectedLocation({
+      lat: event.latLng.lat(),
+      lng: event.latLng.lng(),
+    });
+    onMarkerClick({
       lat: event.latLng.lat(),
       lng: event.latLng.lng(),
     });
@@ -90,7 +103,22 @@ const RenderMap = ({ sendMessage, landmarks }) => {
           console.log("No results found");
         }
         setSelectedPlace(res.data.results[0]);
+        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`
+      )
+      .then((res) => {
+        if (res.data.results && res.data.results[0]) {
+          console.log(res.data.results[0].formatted_address);
+          writeCoordinatesData(lat, lng);
+          console.log("Coordinates written to Firebase");
+          //readCoordinatesData();
+        } else {
+          console.log("No results found");
+        }
+        setSelectedPlace(res.data.results[0]);
         sendMessage(
+          `You are a world class Historian with expert knowledge on Singapore's every landmark and building. What is the name of this location with the following address:${res}. Share with me its history, and what developments occurred in the last 20 years in Singapore. Word limit is 100 words.`
+        );
+      });
           `You are a world class Historian with expert knowledge on Singapore's every landmark and building. Share with me the history, in the last 20 years in Singapore of the following place, named ${res.data.results[0].formatted_address}. Word limit is 200 words, in 3 paragraphs with relevant line breaks.`
         );
       });
@@ -109,6 +137,24 @@ const RenderMap = ({ sendMessage, landmarks }) => {
       onLoad={onMapLoad}
     >
       {selectedLocation && <Marker position={selectedLocation} />}
+      {Object.entries(landmarks).map(([name, position]) => (
+        <Marker
+          key={name}
+          position={position}
+          onClick={onMapClick}
+          //icon={icon}
+          //scaledSize="10%"
+        />
+      ))}
+      <Marker position={selectedLocation} onLoad={() => setMarkerLoaded(true)}>
+        {markerLoaded && (
+          <InfoWindow>
+            <div>
+              <h2>{selectedPlace.formatted_address}</h2>
+            </div>
+          </InfoWindow>
+        )}
+      </Marker>
       {Object.entries(landmarks).map(([name, position]) => (
         <Marker
           key={name}
