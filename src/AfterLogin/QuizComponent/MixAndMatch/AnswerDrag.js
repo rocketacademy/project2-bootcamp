@@ -13,7 +13,7 @@ export default function AnswerDrag(props) {
   const isUsed = props.answer.some((word) => {
     return props.word === word;
   });
-  console.log(isUsed);
+
   return (
     !isUsed && (
       <Card

@@ -37,7 +37,6 @@ export default function QuizReport() {
     : quizInfo.answer.map(({ deckName, english, spanish }, i) => {
         return (
           <TableRow key={english}>
-            <TableCell>{deckName}</TableCell>
             <TableCell>{english}</TableCell>
             <TableCell>{spanish}</TableCell>
             <TableCell
@@ -54,9 +53,6 @@ export default function QuizReport() {
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell>
-              <h3>Deck</h3>
-            </TableCell>
             <TableCell>
               <h3>English</h3>
             </TableCell>
