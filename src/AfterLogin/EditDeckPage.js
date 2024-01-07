@@ -110,9 +110,10 @@ export default function EditdeckPage() {
     const newCardID = Date.now();
     const newCard = { cardID: newCardID, english: "", spanish: "" };
     setCards((prevCards) => ({ ...prevCards, [`card${newCardID}`]: newCard }));
-    const maxCardID = Math.max(...Object.values(decks.deckCards));
+
+    const maxCardID = Math.max(...Object.keys(decks.deckCards));
     const newCardIDDeck = maxCardID + 1;
-    console.log(newCardIDDeck);
+
     setDecks((prevDeck) => ({
       ...prevDeck,
       deckCards: {
