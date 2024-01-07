@@ -10,13 +10,19 @@ export default function AnswerDrag(props) {
     }),
   }));
 
+  const isUsed = props.answer.some((word) => {
+    return props.word === word;
+  });
+  console.log(isUsed);
   return (
-    <Card
-      ref={drag}
-      className="mix-and-match-question-card"
-      style={{ opacity: isDragging ? 0.5 : 1 }}
-    >
-      {props.word}
-    </Card>
+    !isUsed && (
+      <Card
+        ref={drag}
+        className="mix-and-match-question-card"
+        style={{ opacity: isDragging ? 0.5 : 1 }}
+      >
+        {props.word}
+      </Card>
+    )
   );
 }

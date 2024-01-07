@@ -33,6 +33,7 @@ export default function MixAndMatchQuizQuestion(props) {
         word={question.spanish}
         ItemTypes={ItemTypes}
         i={i}
+        answer={answer}
         key={`spanish${question.cardID}`}
       />
     );
