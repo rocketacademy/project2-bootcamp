@@ -1,9 +1,11 @@
 import { get, ref } from "firebase/database";
 import { useEffect, useState } from "react";
 import { database } from "../../../firebase";
+import { Backdrop, CircularProgress } from "@mui/material";
+import MixAndMatchQuizQuestion from "./MixAndMatchQuizQuestion";
 
 export default function MixAndMatchQuiz(props) {
-  const [question, setQuestions] = useState([]);
+  const [questions, setQuestions] = useState([]);
 
   useEffect(() => {
     //flatten the decks of array first,
@@ -23,10 +25,13 @@ export default function MixAndMatchQuiz(props) {
       questionIDs.push(questionID);
       cardIDs.splice(randomIDindex, 1);
     }
+
     const makeCardPromise = async (cardID) => {
       const cardRef = ref(database, `cards/card${cardID}`);
       return await get(cardRef);
     };
+
+    //get cards from the database
     const takeQuestionInfo = async (questionIDs) => {
       const promises = [];
       for (let i = 0; i < 10; i++) {
@@ -39,5 +44,18 @@ export default function MixAndMatchQuiz(props) {
     takeQuestionInfo(questionIDs);
   }, [props.decks]);
 
-  return <h1>Somethings</h1>;
+  //show backdrop if question haven't been generated
+  return (
+    <div className="page">
+      <Backdrop open={!questions.length}>
+        <h3>Generating question</h3>
+        <h1>
+          <CircularProgress color="inherit" />
+        </h1>
+      </Backdrop>
+      {questions.length !== 0 && (
+        <MixAndMatchQuizQuestion user={props.user} questions={questions} />
+      )}
+    </div>
+  );
 }
