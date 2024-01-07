@@ -1,5 +1,5 @@
 import { ref, get } from "firebase/database";
-import { database } from "../../firebase";
+import { database } from "../../../firebase";
 import DisabledByDefaultOutlinedIcon from "@mui/icons-material/DisabledByDefaultOutlined";
 import {
   FormGroup,
@@ -63,9 +63,22 @@ export default function QuizFirstPageMC(props) {
     userDeckIDs.map((deckID) => {
       const deckName = userDecks[`deck${deckID}`].deckName;
       const cardsNum = userDecks[`deck${deckID}`].deckCards.length;
+      let isDeckChecked = false;
+      for (const deck of props.decks) {
+        if (deck.deckID === deckID) {
+          isDeckChecked = true;
+          break;
+        }
+      }
       return (
         <FormControlLabel
-          control={<Checkbox value={deckID} onChange={handleChange} />}
+          control={
+            <Checkbox
+              value={deckID}
+              onChange={handleChange}
+              checked={isDeckChecked}
+            />
+          }
           label={`${deckName} (Cards: ${cardsNum})`}
           key={deckName}
         />

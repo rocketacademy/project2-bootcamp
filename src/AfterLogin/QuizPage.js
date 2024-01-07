@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { useOutletContext } from "react-router-dom";
 //Take the user data from App.js state
-import QuizFirstPageMC from "./QuizComponent/QuizFirstPageMC";
-import McQuiz from "./QuizComponent/McQuiz";
+import QuizFirstPageMC from "./QuizComponent/MC/QuizFirstPageMC";
+import McQuiz from "./QuizComponent/MC/McQuiz";
 import "./QuizComponent/QuizPage.css";
-import QuizFirstPageMixAndMatch from "./QuizComponent/QuizFirstPageMixAndMatch";
-import MixAndMatchQuiz from "./QuizComponent/MixAndMatchQuiz";
+import QuizFirstPageMixAndMatch from "./QuizComponent/MixAndMatch/QuizFirstPageMixAndMatch";
+import MixAndMatchQuiz from "./QuizComponent/MixAndMatch/MixAndMatchQuiz";
 import { Button } from "@mui/material";
 
 export default function QuizPage() {
@@ -15,7 +15,7 @@ export default function QuizPage() {
   const [quizPage, setQuizPage] = useState(false);
   //false is the first page
   //true is the quiz page
-
+  console.log(decks);
   let modeDisplay;
   switch (quizMode) {
     case "MC":
