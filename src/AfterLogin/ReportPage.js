@@ -9,7 +9,7 @@ import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
 //Take the user data from App.js state
 
 export default function ReportPage() {
-  const [user, setUser] = useOutletContext();
+  const [user] = useOutletContext();
   const [userInfo, setUserInfo] = useState(null);
   const [userWords, setUserWords] = useState(0);
 
@@ -38,12 +38,6 @@ export default function ReportPage() {
     };
     getUserAndDeckInfo();
   }, [user.uid]);
-
-  //cal the score of Each Quiz in order to user to cal the average score after each quiz
-  const scoreOfEachQuiz =
-    userInfo && userInfo.quizReport
-      ? Object.values(userInfo.quizReport).map(({ score }) => score)
-      : [];
 
   //Data of each average score after each quiz
   let accumulateScore = 0;

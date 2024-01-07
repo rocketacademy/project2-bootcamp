@@ -1,9 +1,8 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { ref, get, update } from "firebase/database";
-import Paper from "@mui/material/Paper";
-import { storage, database } from "../firebase";
-import { Button, Card, TextField, Typography } from "@mui/material";
+import { database } from "../firebase";
+import { Button, TextField } from "@mui/material";
 import { Backdrop, CircularProgress } from "@mui/material";
 import SaveDone from "./EditComponent/SaveDone";
 import axios from "axios";
@@ -77,7 +76,6 @@ export default function EditdeckPage() {
 
       const apiData = response.data;
 
-      console.log(apiData);
       if (apiData && apiData.length > 0) {
         // Extract the first translation
         const word = apiData[0].shortdef[0].split(",")[0];

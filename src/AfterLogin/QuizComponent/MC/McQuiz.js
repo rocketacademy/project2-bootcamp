@@ -1,7 +1,7 @@
 import { Backdrop, CircularProgress } from "@mui/material";
 import { get, ref } from "firebase/database";
 import { useEffect, useState } from "react";
-import { database } from "../../firebase";
+import { database } from "../../../firebase";
 import McQuizQuestion from "./McQuizQuestion";
 
 //show the  mc question and mc header, and contain the question generation logic

@@ -1,5 +1,5 @@
 import { ref, get } from "firebase/database";
-import { database } from "../../firebase";
+import { database } from "../../../firebase";
 import DisabledByDefaultOutlinedIcon from "@mui/icons-material/DisabledByDefaultOutlined";
 import {
   FormGroup,
@@ -14,7 +14,7 @@ import { Link } from "react-router-dom";
 //Take the user data from App.js state
 
 //Component let user choose which decks to include in the quiz
-export default function QuizFirstPage(props) {
+export default function QuizFirstPageMC(props) {
   const [userDeckIDs, setUserDeckIDs] = useState(`loading`);
   const [userDecks, setUserDecks] = useState([]);
 
@@ -40,7 +40,7 @@ export default function QuizFirstPage(props) {
       setUserDecks(newDecks.val());
     };
     takeAllInfo();
-  }, []);
+  }, [props.user.uid]);
 
   //handle change for user to choose/unchoose decks
   const handleChange = (e) => {
@@ -63,9 +63,22 @@ export default function QuizFirstPage(props) {
     userDeckIDs.map((deckID) => {
       const deckName = userDecks[`deck${deckID}`].deckName;
       const cardsNum = userDecks[`deck${deckID}`].deckCards.length;
+      let isDeckChecked = false;
+      for (const deck of props.decks) {
+        if (deck.deckID === deckID) {
+          isDeckChecked = true;
+          break;
+        }
+      }
       return (
         <FormControlLabel
-          control={<Checkbox value={deckID} onChange={handleChange} />}
+          control={
+            <Checkbox
+              value={deckID}
+              onChange={handleChange}
+              checked={isDeckChecked}
+            />
+          }
           label={`${deckName} (Cards: ${cardsNum})`}
           key={deckName}
         />

@@ -2,7 +2,7 @@ import { Button, Card, CardContent } from "@mui/material";
 import { useState } from "react";
 import McQuizHeader from "./McQuizHeader";
 import { useNavigate } from "react-router-dom";
-import { database } from "../../firebase";
+import { database } from "../../../firebase";
 import { ref, get, set } from "firebase/database";
 
 //mc question content component

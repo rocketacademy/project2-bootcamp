@@ -35,6 +35,10 @@ a {
   justify-content: space-between;
 }
 
+.profile-pic:hover {
+  cursor: pointer;
+}
+
 .navi-icon-div {
   padding-right: 10px;
   width: 30vw;

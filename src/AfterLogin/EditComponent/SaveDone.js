@@ -1,4 +1,4 @@
-import { Button, Dialog, DialogContent, LinearProgress } from "@mui/material";
+import { Button, Dialog, DialogContent } from "@mui/material";
 import "../../AfterLogin/Study.css";
 
 export default function SaveDone({ open, onClose }) {
