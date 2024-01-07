@@ -6,7 +6,7 @@ import { database } from "../../firebase";
 import { DataGrid } from "@mui/x-data-grid";
 
 export default function QuizReportList() {
-  const [user, setUser] = useOutletContext();
+  const [user] = useOutletContext();
   const [quizList, setQuizList] = useState(null);
   const navi = useNavigate();
 
@@ -18,7 +18,7 @@ export default function QuizReportList() {
       setQuizList(newQuizList.val());
     };
     getQuizReportList();
-  }, []);
+  }, [user.uid]);
 
   //data for the DataGrid header use in display
   const columnData = [

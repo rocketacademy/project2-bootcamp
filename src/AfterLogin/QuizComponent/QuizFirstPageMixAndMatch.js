@@ -40,7 +40,7 @@ export default function QuizFirstPageMixAndMatch(props) {
       setUserDecks(newDecks.val());
     };
     takeAllInfo();
-  }, []);
+  }, [props.user.uid]);
 
   //handle change for user to choose/unchoose decks
   const handleChange = (e) => {
@@ -81,10 +81,9 @@ export default function QuizFirstPageMixAndMatch(props) {
       <CircularProgress color="inherit" />
     </div>
   );
+
   let questionAvailable = 0;
-  props.decks.forEach(
-    (deck) => (questionAvailable += deck.deckCards.length - 3)
-  );
+  props.decks.forEach((deck) => (questionAvailable += deck.deckCards.length));
   //must have enough cards to start the quiz
   const isEnoughCards = questionAvailable >= 10;
 
@@ -94,10 +93,10 @@ export default function QuizFirstPageMixAndMatch(props) {
         <Link to="/" className="homepage-button">
           <DisabledByDefaultOutlinedIcon />
         </Link>
-        <h3>Multiple Choice Quiz</h3>
+        <h3>Mix and Match Quiz</h3>
         <h4>
-          Hit the 'start' button to begin this quiz. You'll have 4 answer
-          options and your task is to select the correct option.
+          Hit the 'start' button to begin this quiz. You'll need to match all 10
+          answer options with correct one.
         </h4>
         <h3>Please select decks include in the quiz.</h3>
         <FormGroup>

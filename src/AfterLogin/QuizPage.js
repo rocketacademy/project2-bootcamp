@@ -6,6 +6,7 @@ import McQuiz from "./QuizComponent/McQuiz";
 import "./QuizComponent/QuizPage.css";
 import QuizFirstPageMixAndMatch from "./QuizComponent/QuizFirstPageMixAndMatch";
 import MixAndMatchQuiz from "./QuizComponent/MixAndMatchQuiz";
+import { Button } from "@mui/material";
 
 export default function QuizPage() {
   const [user] = useOutletContext();
@@ -42,10 +43,15 @@ export default function QuizPage() {
         />
       );
       break;
-
     default:
       modeDisplay = <h1>Somethings went wrong!</h1>;
   }
 
-  return <div className="App">{modeDisplay}</div>;
+  return (
+    <div className="App">
+      <Button onClick={() => setQuizMode("MC")}>MC Quiz</Button>
+      <Button onClick={() => setQuizMode("MixAndMatch")}>Mix&Match Quiz</Button>
+      {modeDisplay}
+    </div>
+  );
 }

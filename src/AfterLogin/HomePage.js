@@ -6,7 +6,7 @@ import { useNavigate, useOutletContext } from "react-router-dom";
 import "./Study.css";
 
 export default function HomePage() {
-  const [user, setUser] = useOutletContext();
+  const [user] = useOutletContext();
   const [userDeckIDs, setUserDeckIDs] = useState();
   const [userDecks, setUserDecks] = useState([]);
   const [selectedDeckIDs, setSelectedDeckIDs] = useState();
@@ -33,7 +33,7 @@ export default function HomePage() {
       setUserDecks(newDecks.val());
     };
     takeAllInfo();
-  }, []);
+  }, [user.uid]);
 
   const navigate = useNavigate();
 

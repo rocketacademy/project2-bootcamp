@@ -40,7 +40,7 @@ export default function QuizFirstPageMC(props) {
       setUserDecks(newDecks.val());
     };
     takeAllInfo();
-  }, []);
+  }, [props.user.uid]);
 
   //handle change for user to choose/unchoose decks
   const handleChange = (e) => {
