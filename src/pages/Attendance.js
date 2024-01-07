@@ -83,26 +83,31 @@ const QuizData = ({ sheetName }) => {
   console.log(responses);
 
   return (
-    <div className="prose">
+    <div className="pb-8 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
       {!accessToken && (
-        <button className="btn" onClick={handleLoginClick}>
+        <button className="btn sm:col-span-6" onClick={handleLoginClick}>
           Sign in with Google
         </button>
       )}
       {accessToken && (
-        <button className="btn" onClick={handleLogout}>
+        <button className="btn sm:col-span-3" onClick={handleLogout}>
           Logout
         </button>
       )}
-      {responses.length > 0 && (
-        <>
-          <h1>{sheetName}</h1>
-          <button className="btn" onClick={() => fetchSheetData(accessToken)}>
-            Refresh sheet data
-          </button>
-          <QuizTable responses={responses} />
-        </>
-      )}
+      <button
+        className="btn sm:col-span-3"
+        onClick={() => fetchSheetData(accessToken)}
+      >
+        Refresh sheet data
+      </button>
+      <div className="sm:col-span-6">
+        {responses.length > 0 && (
+          <>
+            <h1 className="text-center">{sheetName}</h1>
+            <QuizTable responses={responses} />
+          </>
+        )}
+      </div>
     </div>
   );
 };
@@ -137,8 +142,6 @@ const QuizTable = ({ responses }) => {
   );
 };
 
-export default QuizTable;
-
 export const Attendance = () => {
   const [sheetName, setSheetName] = useState("");
 
@@ -148,12 +151,17 @@ export const Attendance = () => {
 
   return (
     <>
-      <TextboxWithLabels
-        label={"Sheet Name"}
-        value={sheetName}
-        onChange={handleSheetName}
-      />
-      <QuizData sheetName={sheetName} />
+      <div className="prose flex flex-col p-6">
+        <div>
+          <TextboxWithLabels
+            label={"Sheet Name"}
+            value={sheetName}
+            onChange={handleSheetName}
+          />
+        </div>
+
+        <QuizData sheetName={sheetName} />
+      </div>
     </>
   );
 };
