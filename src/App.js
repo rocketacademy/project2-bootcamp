@@ -5,6 +5,9 @@ import { Outlet } from "react-router-dom";
 import NaviBar from "./AfterLogin/NaviBar";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./firebase";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
+
 export default function App() {
   const [user, setUser] = useState(null);
   const navi = useNavigate();
@@ -36,5 +39,9 @@ export default function App() {
     </div>
   );
 
-  return user ? userDisplay : nonUserDisplay;
+  return user ? (
+    <DndProvider backend={HTML5Backend}>{userDisplay}</DndProvider>
+  ) : (
+    nonUserDisplay
+  );
 }

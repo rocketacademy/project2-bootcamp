@@ -13,6 +13,8 @@ import EditdeckPage from "./AfterLogin/EditDeckPage";
 import AddDeckPage from "./AfterLogin/AddDeckPage";
 import QuizReportList from "./AfterLogin/ReportComponent/QuizReportList";
 import QuizReport from "./AfterLogin/ReportComponent/QuizReport";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(

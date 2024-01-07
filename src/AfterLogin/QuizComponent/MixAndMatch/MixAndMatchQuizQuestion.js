@@ -1,8 +1,8 @@
 import { Card } from "@mui/material";
 import MixAndMatchQuizHeader from "./MixAndMatchQuizHeader";
+import AnswerDrag from "./AnswerDrag";
 
 export default function MixAndMatchQuizQuestion(props) {
-  console.log(props.questions);
   const questionDisplay = props.questions.map((question) => {
     return (
       <div
@@ -16,12 +16,7 @@ export default function MixAndMatchQuizQuestion(props) {
   });
   const answerDisplay = props.questions.map((question) => {
     return (
-      <Card
-        className="mix-and-match-question-card"
-        key={`spanish${question.cardID}`}
-      >
-        {question.spanish}
-      </Card>
+      <AnswerDrag word={question.spanish} key={`spanish${question.cardID}`} />
     );
   });
   return (
