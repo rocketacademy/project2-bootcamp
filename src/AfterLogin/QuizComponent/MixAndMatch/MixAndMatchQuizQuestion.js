@@ -6,9 +6,10 @@ import { useState } from "react";
 import AnswerDrop from "./AnswerDrop";
 
 export default function MixAndMatchQuizQuestion(props) {
-  const ItemTypes = {
-    WORD: "word",
-  };
+  const ItemTypes = {};
+  for (let i = 0; i < 10; i++) {
+    ItemTypes[`WORD${i}`] = `word${i}`;
+  }
 
   const questionDisplay = props.questions.map((question, i) => {
     return (
@@ -22,11 +23,12 @@ export default function MixAndMatchQuizQuestion(props) {
     );
   });
 
-  const answerDisplay = props.questions.map((question) => {
+  const answerDisplay = props.questions.map((question, i) => {
     return (
       <AnswerDrag
         word={question.spanish}
         ItemTypes={ItemTypes}
+        i={i}
         key={`spanish${question.cardID}`}
       />
     );

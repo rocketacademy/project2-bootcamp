@@ -3,7 +3,8 @@ import { useDrag } from "react-dnd";
 
 export default function AnswerDrag(props) {
   const [{ isDragging }, drag] = useDrag(() => ({
-    type: props.ItemTypes.WORD,
+    type: `word${props.i}`,
+    item: { value: props.word },
     collect: (monitor) => ({
       isDragging: Boolean(monitor.isDragging()),
     }),
