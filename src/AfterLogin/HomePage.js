@@ -1,4 +1,4 @@
-import { ref, get } from "firebase/database";
+import { ref, get, update } from "firebase/database";
 import { database } from "../firebase";
 import { Card, Button, Menu, MenuItem } from "@mui/material";
 import { useEffect, useState } from "react";
@@ -45,6 +45,8 @@ export default function HomePage() {
     navigate(`/editDeck/${deckID}`);
   };
 
+  const handleDelete = async (deckID) => {};
+
   const [anchorEl, setAnchorEl] = useState(null);
   const handleMenu = (event, deckID) => {
     setAnchorEl(event.currentTarget);
@@ -80,7 +82,6 @@ export default function HomePage() {
               Edit
             </MenuItem>
             <MenuItem>Delete</MenuItem>
-            <MenuItem>Copy</MenuItem>
           </Menu>
           <div onClick={() => handleClick(deckID)}>
             <h4>{deckName}</h4>
