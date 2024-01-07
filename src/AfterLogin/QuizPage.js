@@ -47,10 +47,20 @@ export default function QuizPage() {
       modeDisplay = <h1>Somethings went wrong!</h1>;
   }
 
+  const modeSelectionDiv = (
+    <div className="dialog-button-div">
+      <Button variant="contained" onClick={() => setQuizMode("MC")}>
+        MC Quiz
+      </Button>
+      <Button variant="contained" onClick={() => setQuizMode("MixAndMatch")}>
+        Mix&Match Quiz
+      </Button>
+    </div>
+  );
+
   return (
     <div className="App">
-      <Button onClick={() => setQuizMode("MC")}>MC Quiz</Button>
-      <Button onClick={() => setQuizMode("MixAndMatch")}>Mix&Match Quiz</Button>
+      {modeSelectionDiv}
       {modeDisplay}
     </div>
   );
