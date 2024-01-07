@@ -4,13 +4,13 @@ import {
   useLoadScript,
   Marker,
   InfoWindow,
+  LoadScript,
 } from "@react-google-maps/api";
 import axios from "axios";
-import singaporeflag from "../../Data/singaporeflag.png";
+//import singaporeflag from "../../Data/singaporeflag.png";
 import { realTimeDatabase } from "../../firebase";
 import { set, ref, onValue } from "firebase/database";
 
-const libraries = ["places"];
 // const icon = singaporeflag;
 // const iconSize = {
 //   width: "10px",
@@ -27,6 +27,7 @@ const center = {
 };
 
 const RenderMap = ({ sendMessage, landmarks }) => {
+  const [libraries] = useState(["places"]);
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
     libraries,
@@ -91,7 +92,8 @@ const RenderMap = ({ sendMessage, landmarks }) => {
         }
         setSelectedPlace(res.data.results[0]);
         sendMessage(
-          `You are a world class Historian with expert knowledge on Singapore's every landmark and building. What is the name of this location with the following address:${res.data.results[0].formatted_address}. Share with me its history, and what developments occurred in the last 20 years in Singapore. Word limit is 100 words.`
+          `You are a world class historian, who is as established as Associate Professor Joey Long, or Dr Masuda Hajimu, with expert knowledge on Singapore's every landmark and building, as well as its relevant historical developments. 
+          What is the name of this landmark with the following address:${res.data.results[0].formatted_address}. In 3 different paragraphs, separated by \n\n, share related historical events, and what developments occurred in the last 20 years in Singapore. Word limit is 200 words.`
         );
       });
   }, []);
@@ -100,6 +102,10 @@ const RenderMap = ({ sendMessage, landmarks }) => {
   if (!isLoaded) return "Loading Maps";
 
   return (
+    // <LoadScript
+    //   googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
+    //   libraries={libraries}
+    // >
     <GoogleMap
       mapContainerStyle={mapContainerStyle}
       mapId="6da2495ffc989dca"
@@ -146,6 +152,7 @@ const RenderMap = ({ sendMessage, landmarks }) => {
         )}
       </Marker>
     </GoogleMap>
+    // {/* </LoadScript> */}
   );
 };
 

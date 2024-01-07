@@ -42,6 +42,9 @@ const AppLinks = () => (
     <Link to="/map" style={linkStyle}>
       Charles Map
     </Link>
+    <Link to="/onboarding" style={linkStyle}>
+      Onboarding
+    </Link>
   </>
 );
 
