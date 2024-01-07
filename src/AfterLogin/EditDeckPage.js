@@ -50,32 +50,15 @@ export default function EditdeckPage() {
   };
 
   const handleSave = async () => {
-    //if any card is null, show error cannot save
-    let canSave = true;
-
     for (const cardID of Object.keys(cards)) {
       const currentCard = cards[cardID];
-
-      if (currentCard.english === "" || currentCard.spanish === "") {
-        console.error(`Incomplete data for card with ID ${cardID}`);
-        canSave = false;
-      }
+      const cardRef = ref(database, `cards/${cardID}`);
+      await update(cardRef, currentCard);
     }
 
-    if (canSave) {
-      // All cards have valid data, proceed with saving
-      for (const cardID of Object.keys(cards)) {
-        const currentCard = cards[cardID];
-        const cardRef = ref(database, `cards/${cardID}`);
-        await update(cardRef, currentCard);
-      }
-
-      const deckRef = ref(database, `decks/deck${deckID}`);
-      await update(deckRef, decks);
-      setSaveDone(true);
-    } else {
-      setSaveDone(false);
-    }
+    const deckRef = ref(database, `decks/deck${deckID}`);
+    await update(deckRef, decks);
+    setSaveDone(true);
   };
 
   const navigate = useNavigate();
@@ -196,6 +179,7 @@ export default function EditdeckPage() {
                     variant="standard"
                     disabled={Object.values(editableCard).includes(cardID)}
                   ></TextField>
+                  <br />
 
                   <TextField
                     key={`s{cardID}`}
