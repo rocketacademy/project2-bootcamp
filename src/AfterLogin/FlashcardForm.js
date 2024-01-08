@@ -23,15 +23,10 @@ export default function FlashcardForm(props) {
 
     try {
       const response = await axios.get(apiUrl);
-
-      if (Array.isArray(response.data) && response.data.length > 0) {
-        const translation = response.data[0].shortdef[0].split(",")[0];
-        setSpanishValue(translation);
-      } else {
-        throw new Error("Translation not found");
-      }
+      const translation = response.data[0].shortdef[0].split(",")[0];
+      setSpanishValue(translation);
     } catch (error) {
-      throw error;
+      console.log(error);
     }
   };
   const handleTranslate = () => {
