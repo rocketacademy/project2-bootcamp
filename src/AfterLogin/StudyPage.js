@@ -85,18 +85,13 @@ export default function StudyPage() {
     });
   };
 
-  const STORAGE_KEY = "audio/";
-
   const playAudio = async () => {
-    //make sure file name doesn't have whitespace, if have replace with _
-    const fileName = currentCard.spanish.replace(/\s+/g, "_").toLowerCase();
     try {
-      const audioRef = storageRef(storage, `${STORAGE_KEY}/${fileName}.mp3`);
-      const audioUrl = await getDownloadURL(audioRef);
+      const audioUrl = currentCard.URL;
       const audio = new Audio(audioUrl);
       audio.play();
     } catch (error) {
-      console.log("Error");
+      console.error("Audio play not working");
     }
   };
 

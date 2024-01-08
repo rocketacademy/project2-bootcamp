@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { ref, get, update } from "firebase/database";
+import { ref, get, update, set } from "firebase/database";
 import { database, storage } from "../firebase";
 import { Card, Button, TextField } from "@mui/material";
 import { Backdrop, CircularProgress } from "@mui/material";
@@ -8,7 +8,11 @@ import SaveDone from "./EditComponent/SaveDone";
 import axios from "axios";
 import "./Study.css";
 import OpenAI from "openai";
-import { ref as storageRef, uploadBytes } from "firebase/storage";
+import {
+  getDownloadURL,
+  ref as storageRef,
+  uploadBytes,
+} from "firebase/storage";
 
 export default function EditdeckPage() {
   const [decks, setDecks] = useState([]);
@@ -142,7 +146,15 @@ export default function EditdeckPage() {
       });
       const arrayBuffer = await mp3.arrayBuffer();
       const blob = new Blob([arrayBuffer], { type: "audio/mpeg" });
+
       await uploadBytes(fileRef, blob);
+      const downloadUrl = await getDownloadURL(fileRef);
+
+      const updatedCard = { ...cards[`card${cardID}`], URL: downloadUrl };
+      setCards((prevCards) => ({
+        ...prevCards,
+        [`card${cardID}`]: updatedCard,
+      }));
     } catch (error) {
       console.error("Error text-to-speech-API");
     }

@@ -19,7 +19,7 @@ export default function FlashcardForm(props) {
   };
 
   const translateEnglishToSpanish = async (word) => {
-    const apiUrl = `https://www.dictionaryapi.com/api/v3/references/spanish/json/${word}?key=${process.env.REACT_APP_SPANISH_API_KEY}`;
+    const apiUrl = `https://www.dictionaryapi.com/api/v3/references/spanish/json/${word}?key=${process.env.REACT_APP_SPANISH_KEY}`;
 
     try {
       const response = await axios.get(apiUrl);
