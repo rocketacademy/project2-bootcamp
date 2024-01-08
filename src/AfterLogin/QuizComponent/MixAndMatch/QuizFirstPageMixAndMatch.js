@@ -122,6 +122,9 @@ export default function QuizFirstPageMixAndMatch(props) {
         >
           Start
         </Button>
+        {!isEnoughCards && (
+          <h6>You need to have enough cards to start the quiz.</h6>
+        )}
       </Card>
     </div>
   );
