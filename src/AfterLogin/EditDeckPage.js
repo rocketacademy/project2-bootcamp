@@ -12,6 +12,7 @@ export default function EditDeckPage() {
   const [user] = useOutletContext();
   const [deck, setDecks] = useState({});
   const [deckConstant, setDeckConstant] = useState({});
+  const [cardsConstant, setCardsConstant] = useState([]);
   const [cards, setCards] = useState([]);
   const [saveDone, setSaveDone] = useState(false);
   const navigate = useNavigate();
@@ -34,18 +35,21 @@ export default function EditDeckPage() {
         .val()
         .deckCards.map(async (cardId) => await takeCardsInfo(cardId));
       const cardsInfoSS = await Promise.all(cardsPromise);
-      setDecks(deckInfo.val());
-      setDeckConstant(deckInfo.val());
+      const newDeck = deckInfo.val();
+      setDecks(newDeck);
+      setDeckConstant({ ...newDeck });
       const cardsInfo = cardsInfoSS.map((card) => card.val());
       setCards(cardsInfo);
+      setCardsConstant([...cardsInfo]);
     };
     fetchDeckAndCards();
   }, [deckID]);
 
   const handleFieldChange = (cardID, language, newValue) => {
     const cardIndex = cards.findIndex((card) => card.cardID === cardID);
+    const newCard = { ...cards[cardIndex], [language]: newValue };
     const newCards = [...cards];
-    newCards[cardIndex][language] = newValue;
+    newCards[cardIndex] = newCard;
     setCards(newCards);
   };
 
@@ -56,10 +60,10 @@ export default function EditDeckPage() {
       }
     }
     const updateCards = [];
-    cards.forEach((card) => {
-      const cardsConstant = deckConstant.deckCards;
+    cards.forEach((card, i) => {
+      const cardIDsConstant = deckConstant.deckCards;
       //Check for new card ID
-      if (!cardsConstant.includes(card.cardID)) {
+      if (!cardIDsConstant.includes(card.cardID)) {
         updateCards.push(card);
       } else {
         //Check for same ID but different English/Spanish
@@ -70,6 +74,8 @@ export default function EditDeckPage() {
           cardsConstant[cardConstantIndex].english !== card.english ||
           cardsConstant[cardConstantIndex].spanish !== card.spanish
         ) {
+          card.cardID = Date.now();
+          card.cardID += i;
           updateCards.push(card);
         }
       }
@@ -95,7 +101,7 @@ export default function EditDeckPage() {
     };
 
     const newDeckID = Date.now();
-    await Promise([
+    await Promise.all([
       ...cardsPromises,
       await putNewDeck(newDeckID),
       await updateUserInfo(newDeckID),
@@ -107,8 +113,7 @@ export default function EditDeckPage() {
     setSaveDone(false);
     navigate(`/`);
   };
-  console.log(cards);
-  //Working on it
+
   const handleTranslate = async (cardID) => {
     const newValueIndex = cards.findIndex((card) => card.cardID === cardID);
     const newValue = cards[newValueIndex].english;
