@@ -1,6 +1,6 @@
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useOutletContext } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { ref, get, update } from "firebase/database";
+import { ref, get, set } from "firebase/database";
 import { database } from "../firebase";
 import { Card, Button, TextField } from "@mui/material";
 import { Backdrop, CircularProgress } from "@mui/material";
@@ -8,99 +8,141 @@ import SaveDone from "./EditComponent/SaveDone";
 import axios from "axios";
 import "./Study.css";
 
-export default function EditdeckPage() {
-  const [decks, setDecks] = useState([]);
-  const [decksConstant, setDecksConstant] = useState([]);
+export default function EditDeckPage() {
+  const [user] = useOutletContext();
+  const [deck, setDecks] = useState({});
+  const [deckConstant, setDeckConstant] = useState({});
+  const [cardsConstant, setCardsConstant] = useState([]);
   const [cards, setCards] = useState([]);
-  const { deckID } = useParams();
   const [saveDone, setSaveDone] = useState(false);
+  const navigate = useNavigate();
+  const { deckID } = useParams();
 
   useEffect(() => {
-    const takeDecksInfo = async () => {
+    const takeDeckInfo = async () => {
       const decksRef = ref(database, `decks/deck${deckID}`);
       return await get(decksRef);
     };
 
-    //will improve to just fetch selected cards instead of all cards.
-    const takeCardsInfo = async () => {
-      const cardsRef = ref(database, `cards`);
+    const takeCardsInfo = async (cardId) => {
+      const cardsRef = ref(database, `cards/card${cardId}`);
       return await get(cardsRef);
     };
 
     const fetchDeckAndCards = async () => {
-      const [deckInfo, cardsInfo] = await Promise.all([
-        takeDecksInfo(),
-        takeCardsInfo(),
-      ]);
-      setDecks(deckInfo.val());
-      setCards(cardsInfo.val());
-      setDecksConstant(deckInfo.val());
+      const deckInfo = await takeDeckInfo();
+      const cardsPromise = deckInfo
+        .val()
+        .deckCards.map(async (cardId) => await takeCardsInfo(cardId));
+      const cardsInfoSS = await Promise.all(cardsPromise);
+      const newDeck = deckInfo.val();
+      setDecks(newDeck);
+      setDeckConstant({ ...newDeck });
+      const cardsInfo = cardsInfoSS.map((card) => card.val());
+      setCards(cardsInfo);
+      setCardsConstant([...cardsInfo]);
     };
     fetchDeckAndCards();
   }, [deckID]);
 
-  const deckName = decks.deckName;
-
-  const editableCard = decksConstant.deckCards;
-
   const handleFieldChange = (cardID, language, newValue) => {
-    const updatedCard = { ...cards };
-    updatedCard[`card${cardID}`][language] = newValue;
-    setCards(updatedCard);
+    const cardIndex = cards.findIndex((card) => card.cardID === cardID);
+    const newCard = { ...cards[cardIndex], [language]: newValue };
+    const newCards = [...cards];
+    newCards[cardIndex] = newCard;
+    setCards(newCards);
   };
 
   const handleSave = async () => {
-    for (const cardID of Object.keys(cards)) {
-      const currentCard = cards[cardID];
-      const cardRef = ref(database, `cards/${cardID}`);
-      await update(cardRef, currentCard);
+    for (const card of cards) {
+      if (card.english === "" || card.spanish === "") {
+        return console.log("Need to need error here");
+      }
     }
+    const updateCards = [];
+    cards.forEach((card, i) => {
+      const cardIDsConstant = deckConstant.deckCards;
+      //Check for new card ID
+      if (!cardIDsConstant.includes(card.cardID)) {
+        updateCards.push(card);
+      } else {
+        //Check for same ID but different English/Spanish
+        const cardConstantIndex = cardsConstant.findIndex(
+          (cardConstant) => cardConstant.cardID === card.cardID
+        );
+        if (
+          cardsConstant[cardConstantIndex].english !== card.english ||
+          cardsConstant[cardConstantIndex].spanish !== card.spanish
+        ) {
+          card.cardID = Date.now();
+          card.cardID += i;
+          updateCards.push(card);
+        }
+      }
+    });
+    const putNewCard = async (card) => {
+      const newCardRef = ref(database, `cards/card${card.cardID}`);
+      await set(newCardRef, card);
+    };
+    const cardsPromises = updateCards.map(
+      async (card) => await putNewCard(card)
+    );
+    const putNewDeck = async (deckID) => {
+      const newDeck = { ...deck, deckID: deckID };
+      const deckRef = ref(database, `decks/deck${deckID}`);
+      await set(deckRef, newDeck);
+    };
+    const updateUserInfo = async (deckID) => {
+      const userDeckRef = ref(database, `userInfo/${user.uid}/decks`);
+      const originalDecks = await get(userDeckRef);
+      const originalDecksIDs = !originalDecks.val() ? [] : originalDecks.val();
+      const newDeckInfo = [...originalDecksIDs, deckID];
+      await set(userDeckRef, newDeckInfo);
+    };
 
-    const deckRef = ref(database, `decks/deck${deckID}`);
-    await update(deckRef, decks);
+    const newDeckID = Date.now();
+    await Promise.all([
+      ...cardsPromises,
+      await putNewDeck(newDeckID),
+      await updateUserInfo(newDeckID),
+    ]);
     setSaveDone(true);
   };
 
-  const navigate = useNavigate();
   const handleCloseSaveDone = () => {
     setSaveDone(false);
     navigate(`/`);
   };
 
   const handleTranslate = async (cardID) => {
-    const newValue = cards[`card${cardID}`].english;
-
+    const newValueIndex = cards.findIndex((card) => card.cardID === cardID);
+    const newValue = cards[newValueIndex].english;
+    console.log(newValue);
     try {
       const response = await axios.get(
         `https://www.dictionaryapi.com/api/v3/references/spanish/json/${newValue}?key=${process.env.REACT_APP_SPANISH_KEY}`
       );
 
       const apiData = response.data;
-
-      if (apiData && apiData.length > 0) {
-        // Extract the first translation
-        const word = apiData[0].shortdef[0].split(",")[0];
-        const capitalizedWord = word.charAt(0).toUpperCase() + word.slice(1);
-
-        const updatedCards = { ...cards };
-        updatedCards[`card${cardID}`].spanish = capitalizedWord;
-        updatedCards[`card${cardID}`].english = newValue;
-
-        // const audio = apiData[0].hwi.prs[0].sound.audio;
-        // let subdir;
-        // if (audio.startsWith("bix")) {
-        //   subdir = "bix";
-        // } else if (audio.startsWith("gg")) {
-        //   subdir = "gg";
-        // } else if (/[0-9_]/.test(audio.charAt(0))) {
-        //   subdir = "number";
-        // } else {
-        //   subdir = audio.charAt(0).toLowerCase();
-        // }
-        // const audioLink = `https://media.merriam-webster.com/audio/prons/es/me/mp3/${subdir}/${audio}.mp3`;
-
-        setCards(updatedCards);
-      }
+      console.log(apiData);
+      // Extract the first translation
+      const word = apiData[0].shortdef[0].split(",")[0];
+      const capitalizedWord = word.charAt(0).toUpperCase() + word.slice(1);
+      const updatedCards = [...cards];
+      updatedCards[newValueIndex].spanish = capitalizedWord;
+      // const audio = apiData[0].hwi.prs[0].sound.audio;
+      // let subdir;
+      // if (audio.startsWith("bix")) {
+      //   subdir = "bix";
+      // } else if (audio.startsWith("gg")) {
+      //   subdir = "gg";
+      // } else if (/[0-9_]/.test(audio.charAt(0))) {
+      //   subdir = "number";
+      // } else {
+      //   subdir = audio.charAt(0).toLowerCase();
+      // }
+      // const audioLink = `https://media.merriam-webster.com/audio/prons/es/me/mp3/${subdir}/${audio}.mp3`;
+      setCards(updatedCards);
     } catch (error) {
       console.log(error);
     }
@@ -109,96 +151,86 @@ export default function EditdeckPage() {
   const handleAdd = async () => {
     const newCardID = Date.now();
     const newCard = { cardID: newCardID, english: "", spanish: "" };
-    setCards((prevCards) => ({ ...prevCards, [`card${newCardID}`]: newCard }));
-
-    const maxCardID = Math.max(...Object.keys(decks.deckCards));
-    const newCardIDDeck = maxCardID + 1;
-
-    setDecks((prevDeck) => ({
-      ...prevDeck,
-      deckCards: {
-        ...prevDeck.deckCards,
-        [newCardIDDeck]: newCardID,
-      },
-    }));
+    setCards((prevCards) => {
+      const newCards = [...prevCards];
+      newCards.unshift(newCard);
+      return newCards;
+    });
+    setDecks((prevDeck) => {
+      const newDeckCards = [...prevDeck.deckCards, newCardID];
+      const newDeck = { ...prevDeck, deckCards: newDeckCards };
+      return newDeck;
+    });
   };
 
   const handleDelete = async (cardID) => {
-    const newDeck = { ...decks };
+    const newDeck = { ...deck };
     for (const key in newDeck.deckCards) {
       if (newDeck.deckCards[key] === cardID) {
         delete newDeck.deckCards[key];
       }
     }
+    const newCards = cards.filter((card) => card.cardID !== cardID);
+    setCards(newCards);
     setDecks(newDeck);
   };
 
+  const cardsDisplay =
+    cards.length &&
+    cards.map((card) => (
+      <Card className="edit-card" key={card.cardID}>
+        <div className="edit-buttons">
+          <Button onClick={() => handleTranslate(card.cardID)}>
+            Translate
+          </Button>
+          <Button onClick={() => handleDelete(card.cardID)}>Delete</Button>
+        </div>
+        <div className="edit">
+          <TextField
+            fullWidth
+            value={card.english}
+            onChange={(e) =>
+              handleFieldChange(card.cardID, "english", e.target.value)
+            }
+            label="English"
+            variant="standard"
+          ></TextField>
+          <br />
+
+          <TextField
+            fullWidth
+            value={card.spanish}
+            onChange={(e) =>
+              handleFieldChange(card.cardID, "spanish", e.target.value)
+            }
+            label="Spanish"
+            variant="standard"
+          ></TextField>
+        </div>
+      </Card>
+    ));
   return (
     <div>
-      <Backdrop open={!decks.deckCards}>
-        <h3>Generating deck</h3>
+      <Backdrop open={!cards.length}>
+        <h3>Getting deck and cards</h3>
         <h1>
           <CircularProgress color="inherit" />
         </h1>
       </Backdrop>
-      <form>
-        <h1>{deckName}</h1>
-        <div className="edit-buttons">
-          <Button variant="contained" onClick={handleAdd}>
-            Add
-          </Button>
-          <Button variant="contained" onClick={handleSave}>
-            Save
-          </Button>
+      {!!cards.length && (
+        <div>
+          <h1>{deck.deckName}</h1>
+          <div className="edit-buttons">
+            <Button variant="contained" onClick={handleAdd}>
+              Add
+            </Button>
+            <Button variant="contained" onClick={handleSave}>
+              Save
+            </Button>
+          </div>
+          {cardsDisplay}
         </div>
-
-        {decks.deckCards &&
-          Object.values(decks.deckCards)
-            .reverse()
-            .map((cardID) => (
-              <Card className="edit-card">
-                <div className="edit-buttons">
-                  <Button
-                    onClick={() => handleTranslate(cardID)}
-                    disabled={Object.values(editableCard).includes(cardID)}
-                  >
-                    Translate
-                  </Button>
-                  <Button onClick={() => handleDelete(cardID)}>Delete</Button>
-                </div>
-                <div className="edit">
-                  <TextField
-                    fullWidth
-                    key={`en{cardID}`}
-                    value={
-                      cards[`card${cardID}`] && cards[`card${cardID}`].english
-                    }
-                    onChange={(e) =>
-                      handleFieldChange(cardID, "english", e.target.value)
-                    }
-                    label="English"
-                    variant="standard"
-                    disabled={Object.values(editableCard).includes(cardID)}
-                  ></TextField>
-                  <br />
-
-                  <TextField
-                    key={`s{cardID}`}
-                    fullWidth
-                    value={
-                      cards[`card${cardID}`] && cards[`card${cardID}`].spanish
-                    }
-                    onChange={(e) =>
-                      handleFieldChange(cardID, "spanish", e.target.value)
-                    }
-                    label="Spanish"
-                    variant="standard"
-                    disabled={Object.values(editableCard).includes(cardID)}
-                  ></TextField>
-                </div>
-              </Card>
-            ))}
-      </form>
+      )}
       {saveDone && <SaveDone open={saveDone} onClose={handleCloseSaveDone} />}
     </div>
   );
