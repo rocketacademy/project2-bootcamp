@@ -1,12 +1,14 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { ref, get, update } from "firebase/database";
-import { database } from "../firebase";
+import { database, storage } from "../firebase";
 import { Card, Button, TextField } from "@mui/material";
 import { Backdrop, CircularProgress } from "@mui/material";
 import SaveDone from "./EditComponent/SaveDone";
 import axios from "axios";
 import "./Study.css";
+import OpenAI from "openai";
+import { ref as storageRef, uploadBytes } from "firebase/storage";
 
 export default function EditdeckPage() {
   const [decks, setDecks] = useState([]);
@@ -86,19 +88,6 @@ export default function EditdeckPage() {
         updatedCards[`card${cardID}`].spanish = capitalizedWord;
         updatedCards[`card${cardID}`].english = newValue;
 
-        // const audio = apiData[0].hwi.prs[0].sound.audio;
-        // let subdir;
-        // if (audio.startsWith("bix")) {
-        //   subdir = "bix";
-        // } else if (audio.startsWith("gg")) {
-        //   subdir = "gg";
-        // } else if (/[0-9_]/.test(audio.charAt(0))) {
-        //   subdir = "number";
-        // } else {
-        //   subdir = audio.charAt(0).toLowerCase();
-        // }
-        // const audioLink = `https://media.merriam-webster.com/audio/prons/es/me/mp3/${subdir}/${audio}.mp3`;
-
         setCards(updatedCards);
       }
     } catch (error) {
@@ -133,6 +122,32 @@ export default function EditdeckPage() {
     setDecks(newDeck);
   };
 
+  const openai = new OpenAI({
+    apiKey: process.env.REACT_APP_OPENAI_KEY,
+    dangerouslyAllowBrowser: true,
+  });
+
+  //generate the audio and save to firebase.
+  const handleTextToSpeech = async (cardID) => {
+    const filePath = `audio/${Date.now()}`;
+    const fileRef = storageRef(storage, filePath);
+
+    const spanishWord = cards[`card${cardID}`].spanish;
+
+    try {
+      const mp3 = await openai.audio.speech.create({
+        model: "tts-1",
+        voice: "alloy",
+        input: `${spanishWord}`,
+      });
+      const arrayBuffer = await mp3.arrayBuffer();
+      const blob = new Blob([arrayBuffer], { type: "audio/mpeg" });
+      await uploadBytes(fileRef, blob);
+    } catch (error) {
+      console.error("Error text-to-speech-API");
+    }
+  };
+
   return (
     <div>
       <Backdrop open={!decks.deckCards}>
@@ -163,6 +178,12 @@ export default function EditdeckPage() {
                     disabled={Object.values(editableCard).includes(cardID)}
                   >
                     Translate
+                  </Button>
+                  <Button
+                    variant="contained"
+                    onClick={() => handleTextToSpeech(cardID)}
+                  >
+                    Generate Audio
                   </Button>
                   <Button onClick={() => handleDelete(cardID)}>Delete</Button>
                 </div>
