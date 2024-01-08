@@ -6,6 +6,7 @@ import Teacher from "./pages/Teacher";
 import { CourseForm } from "./pages/CourseForm";
 import { Attendance } from "./pages/Attendance";
 import { AttendanceGForm } from "./pages/AttendanceGForm";
+import { AttendancePublic } from "./pages/AttendancePublic";
 
 const App = () => {
   return (
@@ -16,7 +17,7 @@ const App = () => {
           <Route path="teacher" element={<Teacher />} />
           <Route path="courseform" element={<CourseForm />} />
           <Route path="attendance" element={<Attendance />} />
-          <Route path="attendanceform" element={<AttendanceGForm />} />
+          <Route path="attendanceform" element={<AttendancePublic />} />
         </Routes>
       </BrowserRouter>
     </div>
