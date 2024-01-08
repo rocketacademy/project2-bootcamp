@@ -80,7 +80,7 @@ export default function QuizFirstPageMixAndMatch(props) {
             />
           }
           label={`${deckName} (Cards: ${cardsNum})`}
-          key={deckName}
+          key={deckID}
         />
       );
     })
