@@ -25,16 +25,21 @@ export default function ReportPage() {
         const getDeckInfo = async () => {
           const deckRef = ref(database, `decks/deck${deck}`);
           const deckInfo = await get(deckRef);
-          return deckInfo.val().deckCards.length;
+          return deckInfo.val().deckCards;
         };
         return getDeckInfo();
       });
 
       //get all cards number from each deck
       const promises = Promise.all(decksPromise);
-      const wordsOfDecks = await promises;
-      const totalWords = wordsOfDecks.reduce((a, b) => a + b, 0);
-      setUserWords(totalWords);
+      const cardIDsInDecks = await promises;
+      const words = new Set();
+      for (const deck of cardIDsInDecks) {
+        for (const cardID of deck) {
+          words.add(cardID);
+        }
+      }
+      setUserWords(words.size);
     };
     getUserAndDeckInfo();
   }, [user.uid]);
