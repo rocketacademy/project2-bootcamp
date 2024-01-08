@@ -47,7 +47,7 @@ export default function StudyPage() {
   }, [deckID]);
 
   const handleNextCard = () => {
-    if (currentIndex < decks.deckCards.length - 1) {
+    if (currentIndex < Object.keys(decks.deckCards).length - 1) {
       setCurrentIndex(currentIndex + 1);
       setDisplayEnglish(true);
     } else {
@@ -65,6 +65,7 @@ export default function StudyPage() {
   const handleClick = () => {
     setDisplayEnglish((prevDisplayEnglish) => !prevDisplayEnglish);
   };
+
   const navigate = useNavigate();
 
   const handleCloseStudyDone = () => {
@@ -101,7 +102,7 @@ export default function StudyPage() {
 
   const currentCard = decks.deckCards && cards[currentIndex];
 
-  const totalCards = decks.deckCards ? decks.deckCards.length : 0;
+  const totalCards = decks.deckCards ? Object.keys(decks.deckCards).length : 0;
 
   const progressBar = ({ current, total }) => {
     const progress = (current / total) * 100;
@@ -114,6 +115,7 @@ export default function StudyPage() {
       />
     );
   };
+
   const deckName = decks.deckName;
 
   return (
@@ -124,7 +126,7 @@ export default function StudyPage() {
           <CircularProgress color="inherit" />
         </h1>
       </Backdrop>
-      {decks.deckCards && decks.deckCards.length > 0 && (
+      {decks.deckCards && Object.keys(decks.deckCards).length > 0 && (
         <>
           <div className="study-header">
             <p>{deckName}</p>
