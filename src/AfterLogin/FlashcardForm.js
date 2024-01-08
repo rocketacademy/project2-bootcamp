@@ -1,11 +1,9 @@
-import { useOutletContext } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
 import "./AddDeckPage.css";
 //Take the user data from App.js state
 
 export default function FlashcardForm(props) {
-  const [user, setUser] = useOutletContext();
   const [englishValue, setEnglishValue] = useState("");
   const [spanishValue, setSpanishValue] = useState("");
   // const [translation, setTranslation] = useState("");

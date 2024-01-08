@@ -6,12 +6,13 @@ export default function AnswerDrop(props) {
   for (let i = 0; i < 10; i++) {
     allAccept.push(`word${i}`);
   }
-  const [, drop] = useDrop(
+  const [{ canDrop, isOver }, drop] = useDrop(
     () => ({
       accept: allAccept,
       drop: (item) => moveAnswer(item),
       collect: (monitor) => ({
         isOver: Boolean(monitor.isOver()),
+        canDrop: Boolean(monitor.canDrop()),
       }),
     }),
     [props.i]
@@ -26,7 +27,11 @@ export default function AnswerDrop(props) {
   };
 
   return (
-    <Card ref={drop} className="mix-and-match-question-card">
+    <Card
+      ref={drop}
+      className="mix-and-match-question-card"
+      style={{ background: canDrop && isOver ? "rgb(141, 141, 255)" : null }}
+    >
       {props.answer}
     </Card>
   );
