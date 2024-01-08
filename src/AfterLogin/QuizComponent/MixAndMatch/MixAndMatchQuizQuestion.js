@@ -22,7 +22,7 @@ export default function MixAndMatchQuizQuestion(props) {
     //comparing props.question with answer to check.
     let score = 0;
     const correctAnswer = props.questions.map((card, i) => {
-      if (card.spanish === answer[i]) score++;
+      if (card.spanish === answer[i]) score += 10;
       return { english: card.english, spanish: card.spanish };
     });
 

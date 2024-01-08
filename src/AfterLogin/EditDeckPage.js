@@ -88,7 +88,8 @@ export default function EditDeckPage() {
       async (card) => await putNewCard(card)
     );
     const putNewDeck = async (deckID) => {
-      const newDeck = { ...deck, deckID: deckID };
+      const newCardIDs = cards.map((card) => card.cardID);
+      const newDeck = { ...deck, deckID: deckID, deckCards: newCardIDs };
       const deckRef = ref(database, `decks/deck${deckID}`);
       await set(deckRef, newDeck);
     };
