@@ -4,13 +4,12 @@ import RenderMap from "../src/Services/Maps/RenderMap";
 import { useState, useEffect } from "react";
 import "./App.css";
 import AuthFormTesting from "./Components/AuthFormTesting";
+import SignIn from "./Components/AuthFormDiffVersion";
 import { auth } from "./firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
-import AppBackground from "./AppBackground";
-import SignIn from "./Components/AuthFormDiffVersion";
-
+import PersistentDrawerLeft from "./Components/Drawer";
 import { BrowserRouter as Router, Link, Routes, Route } from "react-router-dom";
-
+import Quiz from "./Components/Quizzes";
 import { AppLinks } from "./AppMain";
 
 // MUI
@@ -112,7 +111,7 @@ const politicalLandmarks = {
   NationalMuseumofSingapore: { lat: 1.2966, lng: 103.8485 },
 };
 
-const App = () => {
+const AppBackground = () => {
   const [userMessage, setUserMessage] = useState("");
   const [aiResponse, setAiResponse] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -122,10 +121,6 @@ const App = () => {
   const [user, setUser] = useState({});
 
   const [drawerRef, setDrawerRef] = useState(null);
-
-  useEffect(()=>{
-
-  })
 
   // Handling the drawer opening
   useEffect(() => {
@@ -145,7 +140,6 @@ const App = () => {
       }
     });
   }, []);
-
 
   // onAuthStateChanged function to be passed down into the App child component
   const handleAuthStateChanged = () => {
@@ -194,7 +188,7 @@ const App = () => {
   };
 
   return (
-    <Box>
+    <Box className='App'>
       <Box>
         {isLoggedIn ? (
           <Box>
@@ -217,10 +211,10 @@ const App = () => {
             />
           </Box>
         ) : (
-          <AppBackground /> // Change to AuthFormTesting for original page
+          null
         )}
 
-        {isLoggedIn && (
+       
           <StyledContainer>
             <StyledGridItem item>
               <h2>Welcome back {user.email}</h2>
@@ -290,44 +284,12 @@ const App = () => {
               </Button>
             </StyledGridPills>
           </StyledContainer>
-        )}
+        
       </Box>
 
-      {isLoggedIn && (
+      
         <StyledContainer>
           <StyledGridItem item sx={{ margin: "20px" }}>
-            {/* <TextField
-              type="text"
-              value={userMessage}
-              onChange={(e) => setUserMessage(e.target.value)}
-            />
-            <Button
-              variant="contained"
-              onClick={sendMessage}
-              sx={{ mt: "20px", mb: "20px" }}
-            >
-              Send Message
-            </Button>
-
-            <Box className="ai-response">
-              <Typography
-                variant="h4"
-                sx={{
-                  fontFamily: "Comic Sans MS",
-                  color: "primary.main",
-                }}
-              >
-                AI Response:
-              </Typography>
-              <p>{aiResponse}</p>
-            </Box>
-            <Button
-              variant="contained"
-              onClick={clearAIResponse}
-              sx={{ mt: "20px", mb: "20px" }}
-            >
-              Clear
-            </Button> */}
           </StyledGridItem>
           <StyledGridItem
             item
@@ -364,19 +326,19 @@ const App = () => {
               </GoogleMap>*/}
           </StyledGridItem>
         </StyledContainer>
-      )}
+      
       {/* 
       <Box style={{ display: isLoggedIn ? "none" : "block" }}>
         {!isLoggedIn && <AuthFormTesting />}
       </Box> */}
 
-      {!isLoggedIn && (
+      {/* {!isLoggedIn && (
         <Box className='overlay'>
           <SignIn />
         </Box>
-      )}
+      )} */}
     </Box>
   );
 };
 
-export default App;
+export default AppBackground;

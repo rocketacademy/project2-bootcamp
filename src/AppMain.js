@@ -12,9 +12,7 @@ import AppTest from "./AppTest";
 import App from "./App";
 import QuizAI from "./Components/QuizzesAI";
 
-import { Typography, Button } from "@mui/material";
-import ExitToAppIcon from "@mui/icons-material/ExitToApp";
-import IconButton from "@mui/material/IconButton";
+
 
 const libraries = ["places"];
 
@@ -117,6 +115,7 @@ const AppMain = () => {
           <>
             <Route path="/quizzes" element={<AuthFormTesting />} />
             <Route path="/" element={<AuthFormTesting />} />
+            <Route path="/map" element={<App />} />
           </>
         )}
       </Routes>

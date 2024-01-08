@@ -11,7 +11,7 @@ import { AppLinks } from "../AppMain";
 import OpenAI from "openai";
 
 // MUI
-import { Button, Grid, Typography, Box } from "@mui/material";
+import { Button, Grid, Typography, Box, CircularProgress } from "@mui/material";
 
 const parseOpenAIResponse = (responseString) => {
   const lines = responseString.split('\n')
@@ -46,37 +46,47 @@ export default function QuizAI({ user }) {
   const [indexOfQuestion, setIndexOfQuestion] = useState(0)
   const [answer, setAnswer] = useState('')
   const [score, setScore] = useState(0)
+  const [counter, setCounter] = useState(0)
+  const [selectedAnswerCorrectness, setSelectedAnswerCorrectness] = useState(null)
+  const [answerSelected, setAnswerSelected] = useState(false)
 
-  // const quizData = [
-  //   'Marina Bay Sands',
-  //   'Singapore Flyer',
-  //   'Singapore Chinatown'
-  // ]
+
+
+  const [loading, setLoading] = useState(false)
 
   const quizData = [
     {
       question: 'Marina Bay Sands',
-      index: 0
+      index: 0,
     },
     {
       question: 'Singapore Flyer',
-      index: 1
+      index: 1,
     },
     {
       question: 'Chinatown Singapore',
-      index: 2
+      index: 2,
     },
     {
       question: 'dummy question',
-      index: 3
+      index: 3,
+      counter: 0
     }
   ]
 
 
   const getQuizFromOpenAI = async (argument) =>{
+    setLoading(true)
+
+    if(answerSelected === true){
+      setAnswerSelected(false)
+    }
+
+ 
+
     const landmark = argument.question
     try {
-      const prompt = `Generate a multiple choice question about ${landmark} where the options are labelled in capital letters, A), B), C), D). Don't leave any empty lines between the question and options. Put just the answer letter at the bottom as Answer: answer letter`
+      const prompt = `Generate a multiple choice question about ${landmark} where the options are labelled in capital letters, A), B), C), D). Don't leave any empty lines between the question and options. Put just the answer letter at the bottom as Answer: answer letter and don't put Question at the beginning`
 
       const response = await fetch("http://localhost:3002/send-message", {
         method: "POST",
@@ -100,20 +110,32 @@ export default function QuizAI({ user }) {
 
       setIndexOfQuestion(argument.index)
 
+      setLoading(false)
+
     } catch(err){
+      setLoading(false)
       console.error(`Error sending message due to: ${err}`)
     }
   }
 
   const handleAnswerClick = async (selectedAnswer)=>{
-    if(selectedAnswer === answer){
+    if(selectedAnswer === answer && counter === 0){
+      // Increase counter by 1 so that user cannot click the same answer more than twice to increase score
       setScore(score + 1)
+      setCounter(counter + 1)
+      setSelectedAnswerCorrectness(true)
+    } else {
+      setSelectedAnswerCorrectness(false)
     }
+    setAnswerSelected(true)
   }
 
   const moveToNextQuestion = ()=>{
     setQuestion('')
     setOptions([])
+    setCounter(0)
+    setSelectedAnswerCorrectness(null)
+    setAnswerSelected(false)
 
     getQuizFromOpenAI(quizData[indexOfQuestion + 1])
   }
@@ -134,31 +156,41 @@ export default function QuizAI({ user }) {
         <AppLinks />
       </Box>
       <Button onClick={()=> getQuizFromOpenAI(quizData[0])}>Start Quiz!</Button>
-      <Box sx={{ display: "flex", flexDirection: 'column' ,justifyContent: "center", alignItems: "center", minHeight: "50vh" }}>
+
+       {question ? <Typography variant="h4" sx={{width: '900px', marginBottom: '20px', marginTop: '25px' ,display: 'flex', alignItems: 'center', justifyContent: 'center'}}>Question: {question}</Typography> : null}
+
+      {loading ?
+        <Box sx={{ display: "flex", flexDirection: 'column' ,justifyContent: "center", alignItems: "center", minHeight: "50vh" }}>
+          <CircularProgress />
+        </Box>
+      :<Box sx={{ display: "flex", flexDirection: 'column' ,justifyContent: "center", alignItems: "center", minHeight: "50vh" }}>
         <Box>
-          <Typography variant="h4" sx={{width: '900px', marginBottom: '20px'}}>Question: {question}</Typography>
+          {/* <Typography variant="h4" sx={{width: '900px', marginBottom: '20px'}}>Question: {question}</Typography> */}
         </Box>
         <Box>
           {options ? options.map((option, index)=>{
             const {letter, choice} = option
-            
+            const isCorrect = answer === letter && selectedAnswerCorrectness === true
+            const isWrong = answer !== letter && selectedAnswerCorrectness === false
+
             return (
               <Box key={index} sx={{marginBottom: '20px'}}>
                 <Grid container spacing={2} alignItems='center'>
                   <Grid item>
-                    <Typography variant="h4">{letter}</Typography>
+                    <Typography variant="h4" sx={{color: isCorrect ? 'green' : isWrong ? 'red' : 'inherit'}}>{letter}</Typography>
                   </Grid>
                   <Grid item>
-                    <Button onClick={()=> handleAnswerClick(letter)}>{choice}</Button>
+                    <Button onClick={()=> handleAnswerClick(letter)} disabled={answerSelected}>{choice}</Button>
                   </Grid>
                 </Grid>
               </Box>
             )
           }) : null}
-          {indexOfQuestion < quizData.length -2  ? <Button onClick={moveToNextQuestion}>Move to next Question</Button> : <Button onClick={resetQuiz}>Reset</Button>}
-          <Typography variant="h5">Your score: {score}</Typography>
         </Box>
-      </Box>    
+      </Box>}
+      {question && (indexOfQuestion < quizData.length -2) ?  <Button onClick={moveToNextQuestion}>Move to next question</Button> : null}
+      {indexOfQuestion >= quizData.length -2 ? <Button onClick={resetQuiz}>Reset</Button> : null}
+      <Typography variant="h5">Your score: {score}</Typography>
     </Box>
   );
 }
