@@ -27,11 +27,23 @@ const generateCourseID = () => {
   return courseID;
 };
 
+const extractGid = (link) => {
+  const parts = link.split("#gid=");
+
+  if (parts.length > 1) {
+    return parts[1]; // Extract the GID after #gid=
+  } else {
+    throw new Error("Invalid Google Sheets link format");
+  }
+};
+
 export const CourseForm = () => {
   const [quizLink, setQuizLink] = useState("");
   const [courseTitle, setCourseTitle] = useState("");
   const [courseDescription, setCourseDescription] = useState("");
   const [courseID, setCourseID] = useState("");
+  const [gid, setGid] = useState("");
+  const [gidValue, setGidValue] = useState("");
   const DB_COURSE_KEY = "courses";
   const coursesRef = ref(db, DB_COURSE_KEY);
 
@@ -50,16 +62,25 @@ export const CourseForm = () => {
       courseTitle: courseTitle,
       courseDescription: courseDescription,
       quizLink: quizLink,
+      gid: gid,
       courseID: courseID,
     });
     setCourseTitle("");
     setCourseDescription("");
     setQuizLink("");
+    setGid("");
     getCourseID(); //regenerate courseID after clicking submit
   };
 
   const handleQuizLink = (e) => {
     setQuizLink(e.target.value);
+  };
+
+  const handleGidLink = (e) => {
+    setGidValue(e.target.value);
+    const extractedGid = extractGid(e.target.value);
+    console.log(`GID: ${extractedGid}`);
+    setGid(extractedGid);
   };
 
   const handleCourseTitle = (e) => {
@@ -115,6 +136,14 @@ export const CourseForm = () => {
               inlineLabel={"Paste the SHAREABLE Google Form link here!"}
               onChange={handleQuizLink}
               value={quizLink}
+            />
+          </div>
+          {/* GID link */}
+          <div className="sm:col-span-6">
+            <TextboxWithoutLabels
+              inlineLabel={"Paste the Google Sheets link here!"}
+              onChange={handleGidLink}
+              value={gidValue}
             />
           </div>
 
