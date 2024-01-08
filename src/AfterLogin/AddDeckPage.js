@@ -51,7 +51,6 @@ export default function AddDeckPage() {
 
   const updateUserInfo = async (deckId) => {
     const userDeckRef = ref(database, `userInfo/${user.uid}/decks`);
-    console.log(deckId);
     try {
       const originalDecks = await get(userDeckRef);
       const originalDecksIDs = !originalDecks.val() ? [] : originalDecks.val();
