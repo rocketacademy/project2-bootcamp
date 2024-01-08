@@ -86,12 +86,12 @@ const QuizData = ({ sheetName }) => {
     <div className="pb-8 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
       {!accessToken && (
         <button className="btn sm:col-span-6" onClick={handleLoginClick}>
-          Sign in with Google
+          Sign In to Google to view
         </button>
       )}
       {accessToken && (
         <button className="btn sm:col-span-3" onClick={handleLogout}>
-          Logout
+          Sign Out
         </button>
       )}
       <button
@@ -152,7 +152,8 @@ export const Attendance = () => {
   return (
     <>
       <div className="prose flex flex-col p-6">
-        <div>
+        <h1 className="text-center">Attendance</h1>
+        <div className="mb-5">
           <TextboxWithLabels
             label={"Sheet Name"}
             value={sheetName}
