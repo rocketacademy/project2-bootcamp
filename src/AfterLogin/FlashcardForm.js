@@ -1,11 +1,9 @@
-import { useOutletContext } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
 import "./AddDeckPage.css";
 //Take the user data from App.js state
 
 export default function FlashcardForm(props) {
-  const [user, setUser] = useOutletContext();
   const [englishValue, setEnglishValue] = useState("");
   const [spanishValue, setSpanishValue] = useState("");
   // const [translation, setTranslation] = useState("");
@@ -19,19 +17,14 @@ export default function FlashcardForm(props) {
   };
 
   const translateEnglishToSpanish = async (word) => {
-    const apiUrl = `https://www.dictionaryapi.com/api/v3/references/spanish/json/${word}?key=${process.env.REACT_APP_SPANISH_API_KEY}`;
+    const apiUrl = `https://www.dictionaryapi.com/api/v3/references/spanish/json/${word}?key=${process.env.REACT_APP_SPANISH_KEY}`;
 
     try {
       const response = await axios.get(apiUrl);
-
-      if (Array.isArray(response.data) && response.data.length > 0) {
-        const translation = response.data[0].shortdef[0].split(",")[0];
-        setSpanishValue(translation);
-      } else {
-        throw new Error("Translation not found");
-      }
+      const translation = response.data[0].shortdef[0].split(",")[0];
+      setSpanishValue(translation);
     } catch (error) {
-      throw error;
+      console.log(error);
     }
   };
   const handleTranslate = () => {

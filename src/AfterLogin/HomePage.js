@@ -65,7 +65,7 @@ export default function HomePage() {
 
       return (
         <Card
-          key={deckName}
+          key={deckID}
           style={{ marginBottom: "10px" }}
           className="homepage-deck"
         >

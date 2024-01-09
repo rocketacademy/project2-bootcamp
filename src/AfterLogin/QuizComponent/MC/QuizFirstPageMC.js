@@ -80,7 +80,7 @@ export default function QuizFirstPageMC(props) {
             />
           }
           label={`${deckName} (Cards: ${cardsNum})`}
-          key={deckName}
+          key={deckID}
         />
       );
     })
@@ -113,6 +113,7 @@ export default function QuizFirstPageMC(props) {
           options and your task is to select the correct option.
         </h4>
         <h3>Please select decks include in the quiz.</h3>
+
         <FormGroup>
           {userDeckIDs === "loading" ? loadingPhase : selection}
         </FormGroup>
@@ -123,6 +124,9 @@ export default function QuizFirstPageMC(props) {
         >
           Start
         </Button>
+        {!isEnoughCards && (
+          <h6>You need to have enough cards to start the quiz.</h6>
+        )}
       </Card>
     </div>
   );

@@ -80,7 +80,7 @@ export default function QuizFirstPageMixAndMatch(props) {
             />
           }
           label={`${deckName} (Cards: ${cardsNum})`}
-          key={deckName}
+          key={deckID}
         />
       );
     })
@@ -122,6 +122,9 @@ export default function QuizFirstPageMixAndMatch(props) {
         >
           Start
         </Button>
+        {!isEnoughCards && (
+          <h6>You need to have enough cards to start the quiz.</h6>
+        )}
       </Card>
     </div>
   );
