@@ -4,6 +4,7 @@ import { AssignCourseCard } from "../components/Card";
 import { push, ref, set } from "firebase/database";
 import { db } from "../firebase";
 import { useState, useEffect } from "react";
+import { AlertError, AlertSuccess } from "../components/Alerts";
 
 const generateRandomAlphanumeric = (length) => {
   const characters =
@@ -46,6 +47,8 @@ export const CourseForm = () => {
   const [gidValue, setGidValue] = useState("");
   const DB_COURSE_KEY = "courses";
   const coursesRef = ref(db, DB_COURSE_KEY);
+  const [showSuccessAlert, setShowSuccessAlert] = useState(false);
+  const [showErrorAlert, setShowErrorAlert] = useState(false);
 
   useEffect(() => {
     getCourseID();
@@ -55,21 +58,40 @@ export const CourseForm = () => {
     setCourseID(generateCourseID());
   };
 
-  const writeData = () => {
-    const newCoursesRef = push(coursesRef);
-    set(newCoursesRef, {
-      createdDate: new Date().toLocaleString(),
-      courseTitle: courseTitle,
-      courseDescription: courseDescription,
-      quizLink: quizLink,
-      gid: gid,
-      courseID: courseID,
-    });
-    setCourseTitle("");
-    setCourseDescription("");
-    setQuizLink("");
-    setGid("");
-    getCourseID(); //regenerate courseID after clicking submit
+  const writeData = async () => {
+    try {
+      const newCoursesRef = push(coursesRef);
+      await set(newCoursesRef, {
+        createdDate: new Date().toLocaleString(),
+        courseTitle: courseTitle,
+        courseDescription: courseDescription,
+        quizLink: quizLink,
+        gid: gid,
+        courseID: courseID,
+      });
+      window.scrollTo(0, 0); //scroll to the top after submission
+      setShowSuccessAlert(true);
+
+      // Reset success alert after 3 seconds
+      setTimeout(() => {
+        setShowSuccessAlert(false);
+      }, 5000);
+
+      setCourseTitle("");
+      setCourseDescription("");
+      setQuizLink("");
+      setGid("");
+      setGidValue("");
+      getCourseID(); //regenerate courseID after clicking submit
+    } catch (error) {
+      console.error("Error writing data to Firebase:", error);
+      setShowErrorAlert(true);
+
+      // Reset error alert after 3 seconds
+      setTimeout(() => {
+        setShowErrorAlert(false);
+      }, 5000);
+    }
   };
 
   const handleQuizLink = (e) => {
@@ -94,6 +116,17 @@ export const CourseForm = () => {
   return (
     <>
       <div className="prose flex flex-col p-6">
+        {/* alerts */}
+        <div className="mb-5">
+          {showSuccessAlert && (
+            <AlertSuccess alertText={"Submitted successfully."} />
+          )}
+
+          {showErrorAlert && (
+            <AlertError alertText={"Submission failed. Please try again."} />
+          )}
+        </div>
+
         <h1 className="text-center">Create A Course</h1>
 
         {/* course form */}
