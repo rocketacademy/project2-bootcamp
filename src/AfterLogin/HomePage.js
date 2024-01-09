@@ -1,4 +1,4 @@
-import { ref, get, update } from "firebase/database";
+import { ref, get } from "firebase/database";
 import { database } from "../firebase";
 import { Card, Button, Menu, MenuItem } from "@mui/material";
 import { useEffect, useState } from "react";
@@ -96,7 +96,7 @@ export default function HomePage() {
 
   return (
     <div>
-      <div>Hi, {user.displayName ? user.displayName : "user"}.</div>
+      <div>Hi, {user.displayName ? user.displayName : "student"}.</div>
       <p>Your current deck:</p>
       {deckList}
     </div>

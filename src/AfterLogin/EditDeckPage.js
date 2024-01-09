@@ -98,6 +98,11 @@ export default function EditDeckPage() {
       const originalDecks = await get(userDeckRef);
       const originalDecksIDs = !originalDecks.val() ? [] : originalDecks.val();
       const newDeckInfo = [...originalDecksIDs, deckID];
+      //need to delete the old deck
+      const oldDeckIndex = newDeckInfo.findIndex(
+        (deckID) => deckID === deckConstant.deckID
+      );
+      newDeckInfo.splice(oldDeckIndex, 1);
       await set(userDeckRef, newDeckInfo);
     };
 
