@@ -4,15 +4,13 @@ import RenderMap from "../src/Services/Maps/RenderMap";
 import { useState, useEffect } from "react";
 import "./App.css";
 import AuthFormTesting from "./Components/AuthFormTesting";
+import SignIn from "./Components/AuthFormDiffVersion";
 import { auth } from "./firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
-import AppBackground from "./AppBackground";
-import SignIn from "./Components/AuthFormDiffVersion";
-
+import PersistentDrawerLeft from "./Components/Drawer";
 import { BrowserRouter as Router, Link, Routes, Route } from "react-router-dom";
-
+import Quiz from "./Components/Quizzes";
 import { AppLinks } from "./AppMain";
-import CertificateGenerator from "./Services/CreateCertificate";
 
 // MUI
 import { TextField, Box, Typography } from "@mui/material";
@@ -57,7 +55,6 @@ const linkStyle = {
   fontSize: "30px",
 };
 
-// Commented out because we will remove this feature + it is confusing React from parsing the landmarks props to RenderMap.js
 // Commented out because we will remove this feature + it is confusing React from parsing the landmarks props to RenderMap.js
 // SelectTextFields MUI
 // const landmarks = [
@@ -114,7 +111,7 @@ const politicalLandmarks = {
   NationalMuseumofSingapore: { lat: 1.2966, lng: 103.8485 },
 };
 
-const App = () => {
+const AppBackground = () => {
   const [userMessage, setUserMessage] = useState("");
   const [aiResponse, setAiResponse] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -124,10 +121,6 @@ const App = () => {
   const [user, setUser] = useState({});
 
   const [drawerRef, setDrawerRef] = useState(null);
-
-  useEffect(()=>{
-
-  })
 
   // Handling the drawer opening
   useEffect(() => {
@@ -147,7 +140,6 @@ const App = () => {
       }
     });
   }, []);
-
 
   // onAuthStateChanged function to be passed down into the App child component
   const handleAuthStateChanged = () => {
@@ -196,7 +188,7 @@ const App = () => {
   };
 
   return (
-    <Box>
+    <Box className='App'>
       <Box>
         {isLoggedIn ? (
           <Box>
@@ -219,10 +211,10 @@ const App = () => {
             />
           </Box>
         ) : (
-          <AppBackground /> // Change to AuthFormTesting for original page
+          null
         )}
 
-        {isLoggedIn && (
+       
           <StyledContainer>
             <StyledGridItem item>
               <h2>Welcome back {user.email}</h2>
@@ -251,13 +243,6 @@ const App = () => {
                     landmarks={natureParks}
                   />;
                   // sendMessage(message);
-                  // const message = "Singapore Flyer in 1 sentence";
-                  setSelectedLandmarks(natureParks);
-                  <RenderMap
-                    sendMessage={sendMessage}
-                    landmarks={natureParks}
-                  />;
-                  // sendMessage(message);
                 }}
                 sx={{ width: "150px", height: "50px" }}
               >
@@ -268,13 +253,6 @@ const App = () => {
               <Button
                 variant="outlined"
                 onClick={() => {
-                  // const message = "Sentosa Island in 1 sentence";
-                  setSelectedLandmarks(politicalLandmarks);
-                  <RenderMap
-                    sendMessage={sendMessage}
-                    landmarks={politicalLandmarks}
-                  />;
-                  // sendMessage(message);
                   // const message = "Sentosa Island in 1 sentence";
                   setSelectedLandmarks(politicalLandmarks);
                   <RenderMap
@@ -306,64 +284,12 @@ const App = () => {
               </Button>
             </StyledGridPills>
           </StyledContainer>
-        )}
+        
       </Box>
 
-      {isLoggedIn && (
+      
         <StyledContainer>
           <StyledGridItem item sx={{ margin: "20px" }}>
-            {/* <TextField
-              type="text"
-              value={userMessage}
-              onChange={(e) => setUserMessage(e.target.value)}
-            />
-            <Button
-              variant="contained"
-              onClick={sendMessage}
-              sx={{ mt: "20px", mb: "20px" }}
-            >
-              Send Message
-            </Button>
-
-            <Box className="ai-response">
-              <Typography
-                variant="h4"
-                sx={{
-                  fontFamily: "Comic Sans MS",
-                  color: "primary.main",
-                }}
-              >
-                AI Response:
-              </Typography>
-              <p>{aiResponse}</p>
-            </Box>
-            <Button
-              variant="contained"
-              onClick={clearAIResponse}
-              sx={{ mt: "20px", mb: "20px" }}
-            >
-              Clear
-            </Button> */}
-            <Box
-              sx={{
-                "& .MuiTextField-root": { m: 1, width: "25ch" },
-              }}
-            >
-              {/* <TextField
-                select
-                label="Select"
-                value={selectedLandmarks}
-                onChange={(e) => setSelectedLandmarks(e.target.value)}
-                helperText="Please select landmark"
-                sx={{ display: "block" }}
-              >
-                {landmarks.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
-                    {option.label}
-                  </MenuItem>
-                ))}
-              </TextField> */}
-            </Box>
           </StyledGridItem>
           <StyledGridItem
             item
@@ -398,25 +324,21 @@ const App = () => {
                   }}
                 />
               </GoogleMap>*/}
-            <CertificateGenerator
-              name="Charles Lee"
-              course="Singapore Landmarks"
-            />
           </StyledGridItem>
         </StyledContainer>
-      )}
+      
       {/* 
       <Box style={{ display: isLoggedIn ? "none" : "block" }}>
         {!isLoggedIn && <AuthFormTesting />}
       </Box> */}
 
-      {!isLoggedIn && (
+      {/* {!isLoggedIn && (
         <Box className='overlay'>
           <SignIn />
         </Box>
-      )}
+      )} */}
     </Box>
   );
 };
 
-export default App;
+export default AppBackground;

@@ -10,10 +10,9 @@ import { BrowserRouter as Router, Link, Routes, Route } from "react-router-dom";
 import Quiz from "./Components/Quizzes";
 import AppTest from "./AppTest";
 import App from "./App";
+import QuizAI from "./Components/QuizzesAI";
 
-import { Typography, Button } from "@mui/material";
-import ExitToAppIcon from "@mui/icons-material/ExitToApp";
-import IconButton from "@mui/material/IconButton";
+
 
 const libraries = ["places"];
 
@@ -41,6 +40,9 @@ const AppLinks = () => (
     </Link>
     <Link to="/map" style={linkStyle}>
       Charles Map
+    </Link>
+    <Link to='/quizzesAI' style={linkStyle}>
+    Quizzes AI
     </Link>
   </>
 );
@@ -106,11 +108,14 @@ const AppMain = () => {
             <Route path="/quizzes" element={<Quiz user={user} />} />
             <Route path="/" element={<AppTest />} />
             <Route path="/map" element={<App />} />
+            <Route path="/quizzesAI" element={<QuizAI user={user}/>} />
+
           </>
         ) : (
           <>
             <Route path="/quizzes" element={<AuthFormTesting />} />
             <Route path="/" element={<AuthFormTesting />} />
+            <Route path="/map" element={<App />} />
           </>
         )}
       </Routes>
