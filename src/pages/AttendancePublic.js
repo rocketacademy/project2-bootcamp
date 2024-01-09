@@ -1,14 +1,15 @@
-import React, { useState } from "react";
-import { TextboxWithLabels } from "../components/Textbox";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { ref, onChildAdded } from "firebase/database";
+import { db } from "../firebase";
 
-const QuizData = ({ sheetName }) => {
+const QuizData = ({ gid, courseName }) => {
   const [responses, setResponses] = useState([]);
 
   const spreadsheetId = "16HTIiiOq82Tm1tLHRQcr_8YJnO81QxZOOBOfR4hU3zc"; // Replace with your Sheet ID
 
   const fetchData = async () => {
-    const publicSheetUrl = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/export?format=csv&gid=${sheetName}`;
+    const publicSheetUrl = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/export?format=csv&gid=${gid}`;
     console.log(publicSheetUrl);
 
     try {
@@ -27,19 +28,26 @@ const QuizData = ({ sheetName }) => {
     }
   };
 
+  useEffect(() => {
+    fetchData();
+  }, [gid]);
+
   return (
-    <div className="pb-8 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
-      <button className="btn sm:col-span-3" onClick={fetchData}>
-        Refresh sheet data
-      </button>
-      <div className="sm:col-span-6">
-        {responses.length > 0 && (
-          <>
-            <h1 className="text-center">{sheetName}</h1>
+    <div className="mt-8 pb-8 grid grid-cols-1 sm:grid-cols-6">
+      {responses.length > 0 && (
+        <>
+          <h1 className="text-center sm:col-span-6">{courseName}</h1>
+          <button
+            className="mb-6 btn btn-ghost sm:col-start-3 col-span-2 "
+            onClick={fetchData}
+          >
+            REFRESH
+          </button>
+          <div className="sm:col-span-6">
             <QuizTable responses={responses} />
-          </>
-        )}
-      </div>
+          </div>
+        </>
+      )}
     </div>
   );
 };
@@ -75,25 +83,56 @@ const QuizTable = ({ responses }) => {
 };
 
 export const AttendancePublic = () => {
-  const [sheetName, setSheetName] = useState("");
+  const DB_COURSE_KEY = "courses";
+  const coursesRef = ref(db, DB_COURSE_KEY);
+  const [courseGidMap, setCourseGidMap] = useState(new Map());
+  const [courseName, setCourseName] = useState("Select Course");
+  const [gid, setGid] = useState("");
+  const [courseOptions, setCourseOptions] = useState([]);
 
-  const handleSheetName = (e) => {
-    setSheetName(e.target.value);
+  useEffect(() => {
+    onChildAdded(coursesRef, (data) => {
+      const { courseTitle, gid } = data.val();
+      courseGidMap.set(courseTitle, gid);
+      setCourseGidMap((prevMap) => prevMap.set(courseTitle, gid));
+      const courseTitles = Array.from(courseGidMap.keys());
+      setCourseOptions(
+        courseTitles.map((title) => (
+          <option key={title} value={title}>
+            {title}
+          </option>
+        ))
+      );
+    });
+  }, []);
+
+  const handleCourseName = (e) => {
+    setCourseName(e.target.value);
   };
+
+  useEffect(() => {
+    const getGid = courseGidMap.get(courseName);
+    setGid(getGid);
+  }, [courseName]);
 
   return (
     <>
       <div className="prose flex flex-col p-6">
         <h1 className="text-center">Attendance</h1>
-        <div className="mb-5">
-          <TextboxWithLabels
-            label={"Sheet GID"}
-            value={sheetName}
-            onChange={handleSheetName}
-          />
+        <div className="mb-5 form-control w-full">
+          <div className="label">
+            <span className="label-text">Course Name</span>
+          </div>
+          <select
+            className="select select-bordered"
+            value={courseName}
+            onChange={handleCourseName}
+          >
+            <option disabled>Select Course</option>
+            {courseOptions}
+          </select>
         </div>
-
-        <QuizData sheetName={sheetName} />
+        <QuizData gid={gid} courseName={courseName} />
       </div>
     </>
   );
