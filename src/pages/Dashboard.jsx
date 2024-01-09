@@ -11,11 +11,15 @@ const Dashboard = () => {
       <Searchbar />
       <Accountsummary />
       <Performance />
+      <h3>
+
+      Educational Material
+      </h3>
       {/* <img src={logo} className="App-logo" alt="logo" /> */}
       {/* <p>
             Edit <code>src/App.js</code> and save to reload.
           </p> */}
-      <Educationalmaterial />
+      {/* <Educationalmaterial /> */}
     </>
   );
 };

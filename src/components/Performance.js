@@ -7,6 +7,10 @@ import LineGraph from "./LineGraph";
 import Dropdown from "react-bootstrap/Dropdown";
 import triangle from "../assets/triangle.png";
 import DropdownButton from "react-bootstrap/DropdownButton";
+import News from "./News";
+import React, { useState } from "react";
+import StockList from "./StockList";;
+
 const Performance = () => {
   // Sample data for the pie chart
   // const piechartdata = [
@@ -15,6 +19,8 @@ const Performance = () => {
   //   ['Eat', 2],
   //   ['Sleep', 7],
   // ];
+  const [companyname, setCompanyName] = useState("apple");
+
   return (
     // <div className="container">
     //   <div className="row">
@@ -22,29 +28,31 @@ const Performance = () => {
     <div className="container ">
       <div className="row">
         <div className="col gx-5">
-          <div className="d-flex justify-content-between">
+          <div
+           className="d-flex "
+          >
             <div className="fw-bold">Perfomance over the past 6 months </div>{" "}
-            <Dropdown>
-              <Dropdown.Toggle variant="secondary" id="dropdown-basic">
-                <img src={triangle} alt="" width={30} />
-              </Dropdown.Toggle>
-
-              <Dropdown.Menu>
-                <Dropdown.Item href="#/action-1">Apple Inc</Dropdown.Item>
-                <Dropdown.Item href="#/action-2">Stanchart</Dropdown.Item>
-              </Dropdown.Menu>
-            </Dropdown>
+            <select onChange={(e) => setCompanyName(e.target.value)}>
+              <option value="apple">Apple Inc</option>
+              <option value="stanchart">Stanchart</option>
+              <option value="sumsung">Sumsung</option>
+              <option value="vivo">Vivo</option>{" "}
+              <option value="realme">Realme</option>
+            </select>
           </div>
           <div className="fw-bold">Pie chart of portfolio</div>
-          <LineGraph />
+          {/* <LineGraph /> */}
+          <LineGraph companyname={companyname} />
 
           <div>
             <div className="d-flex justify-content-between">
               <PieChat />
-              <Grid />
+              {/* <Grid /> */}
+              <StockList />
             </div>
           </div>
         </div>
+        <News />
       </div>
     </div>
   );

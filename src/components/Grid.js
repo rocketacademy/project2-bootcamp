@@ -1,6 +1,6 @@
 import Table from "react-bootstrap/Table";
 
-function Grid() {
+const Grid=()=> {
   return (
     <div className="Table">
       <Table responsive>
