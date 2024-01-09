@@ -37,9 +37,9 @@ const QuizData = ({ gid, courseName }) => {
   }, [gid]);
 
   return (
-    <div className="mt-8 pb-8 grid grid-cols-1 sm:grid-cols-6">
+    <div className="mt-8 pb-8 grid grid-cols-1 justify-items-center sm:grid-cols-6">
       {isLoading ? (
-        <span className="loading loading-dots loading-lg sm:col-start-4"></span>
+        <span className="loading loading-dots loading-lg  sm:col-span-6"></span>
       ) : (
         responses.length > 0 && (
           <>
@@ -50,9 +50,7 @@ const QuizData = ({ gid, courseName }) => {
             >
               REFRESH
             </button>
-            <div className="sm:col-span-6">
-              <QuizTable responses={responses} />
-            </div>
+            <QuizTable responses={responses} />
           </>
         )
       )}
@@ -62,7 +60,7 @@ const QuizData = ({ gid, courseName }) => {
 
 const QuizTable = ({ responses }) => {
   return (
-    <table className="table">
+    <table className="table sm:col-span-6">
       <thead>
         <tr>
           {responses[0]

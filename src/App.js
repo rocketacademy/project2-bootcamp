@@ -4,8 +4,6 @@ import "./App.css";
 import Auth from "./pages/Auth";
 import Teacher from "./pages/Teacher";
 import { CourseForm } from "./pages/CourseForm";
-import { Attendance } from "./pages/Attendance";
-import { AttendanceGForm } from "./pages/AttendanceGForm";
 import { AttendancePublic } from "./pages/AttendancePublic";
 
 const App = () => {
@@ -16,8 +14,7 @@ const App = () => {
           <Route path="/" element={<Auth />} />
           <Route path="teacher" element={<Teacher />} />
           <Route path="courseform" element={<CourseForm />} />
-          <Route path="attendance" element={<Attendance />} />
-          <Route path="attendanceform" element={<AttendancePublic />} />
+          <Route path="attendance" element={<AttendancePublic />} />
         </Routes>
       </BrowserRouter>
     </div>
