@@ -1,4 +1,4 @@
-import { ref, get } from "firebase/database";
+import { ref, get, set } from "firebase/database";
 import { database } from "../firebase";
 import { Card, Button, Menu, MenuItem } from "@mui/material";
 import { useEffect, useState } from "react";
@@ -10,7 +10,8 @@ export default function HomePage() {
   const [userDeckIDs, setUserDeckIDs] = useState();
   const [userDecks, setUserDecks] = useState([]);
   const [selectedDeckIDs, setSelectedDeckIDs] = useState();
-
+  const [anchorEl, setAnchorEl] = useState(null);
+  const navigate = useNavigate();
   useEffect(() => {
     const takeDecksInfo = async () => {
       //Taking the decks Info
@@ -35,8 +36,6 @@ export default function HomePage() {
     takeAllInfo();
   }, [user.uid]);
 
-  const navigate = useNavigate();
-
   const handleClick = (deckID) => {
     navigate(`/study/${deckID}`);
   };
@@ -45,9 +44,21 @@ export default function HomePage() {
     navigate(`/editDeck/${deckID}`);
   };
 
-  const handleDelete = async (deckID) => {};
+  const handleDelete = async (deckID) => {
+    const userDeckIDsRef = ref(database, `userInfo/${user.uid}/decks/`);
+    const deleteDeckIndex = userDeckIDs.findIndex(
+      (userDeckID) => userDeckID === deckID
+    );
+    const newUserDeckIDs = userDeckIDs.toSpliced(deleteDeckIndex, 1);
+    try {
+      await set(userDeckIDsRef, newUserDeckIDs);
+      setUserDeckIDs(newUserDeckIDs);
+      setAnchorEl(null);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-  const [anchorEl, setAnchorEl] = useState(null);
   const handleMenu = (event, deckID) => {
     setAnchorEl(event.currentTarget);
     setSelectedDeckIDs(deckID);
@@ -81,7 +92,7 @@ export default function HomePage() {
             <MenuItem onClick={() => handleEdit(selectedDeckIDs)}>
               Edit
             </MenuItem>
-            <MenuItem>Delete</MenuItem>
+            <MenuItem onClick={() => handleDelete(deckID)}>Delete</MenuItem>
           </Menu>
           <div onClick={() => handleClick(deckID)}>
             <h4>{deckName}</h4>
