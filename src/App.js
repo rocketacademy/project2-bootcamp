@@ -12,6 +12,7 @@ import SignIn from "./Components/AuthFormDiffVersion";
 import { BrowserRouter as Router, Link, Routes, Route } from "react-router-dom";
 
 import { AppLinks } from "./AppMain";
+import CertificateGenerator from "./Services/CreateCertificate";
 
 // MUI
 import { TextField, Box, Typography } from "@mui/material";
@@ -56,6 +57,7 @@ const linkStyle = {
   fontSize: "30px",
 };
 
+// Commented out because we will remove this feature + it is confusing React from parsing the landmarks props to RenderMap.js
 // Commented out because we will remove this feature + it is confusing React from parsing the landmarks props to RenderMap.js
 // SelectTextFields MUI
 // const landmarks = [
@@ -249,6 +251,13 @@ const App = () => {
                     landmarks={natureParks}
                   />;
                   // sendMessage(message);
+                  // const message = "Singapore Flyer in 1 sentence";
+                  setSelectedLandmarks(natureParks);
+                  <RenderMap
+                    sendMessage={sendMessage}
+                    landmarks={natureParks}
+                  />;
+                  // sendMessage(message);
                 }}
                 sx={{ width: "150px", height: "50px" }}
               >
@@ -259,6 +268,13 @@ const App = () => {
               <Button
                 variant="outlined"
                 onClick={() => {
+                  // const message = "Sentosa Island in 1 sentence";
+                  setSelectedLandmarks(politicalLandmarks);
+                  <RenderMap
+                    sendMessage={sendMessage}
+                    landmarks={politicalLandmarks}
+                  />;
+                  // sendMessage(message);
                   // const message = "Sentosa Island in 1 sentence";
                   setSelectedLandmarks(politicalLandmarks);
                   <RenderMap
@@ -328,6 +344,26 @@ const App = () => {
             >
               Clear
             </Button> */}
+            <Box
+              sx={{
+                "& .MuiTextField-root": { m: 1, width: "25ch" },
+              }}
+            >
+              {/* <TextField
+                select
+                label="Select"
+                value={selectedLandmarks}
+                onChange={(e) => setSelectedLandmarks(e.target.value)}
+                helperText="Please select landmark"
+                sx={{ display: "block" }}
+              >
+                {landmarks.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </TextField> */}
+            </Box>
           </StyledGridItem>
           <StyledGridItem
             item
@@ -362,6 +398,10 @@ const App = () => {
                   }}
                 />
               </GoogleMap>*/}
+            <CertificateGenerator
+              name="Charles Lee"
+              course="Singapore Landmarks"
+            />
           </StyledGridItem>
         </StyledContainer>
       )}

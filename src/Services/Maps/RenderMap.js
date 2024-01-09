@@ -127,6 +127,24 @@ const RenderMap = ({ sendMessage, landmarks }) => {
           </InfoWindow>
         )}
       </Marker>
+      {Object.entries(landmarks).map(([name, position]) => (
+        <Marker
+          key={name}
+          position={position}
+          onClick={onMapClick}
+          //icon={icon}
+          //scaledSize="10%"
+        />
+      ))}
+      <Marker position={selectedLocation} onLoad={() => setMarkerLoaded(true)}>
+        {markerLoaded && (
+          <InfoWindow>
+            <div>
+              <h2>{selectedPlace.formatted_address}</h2>
+            </div>
+          </InfoWindow>
+        )}
+      </Marker>
     </GoogleMap>
   );
 };
