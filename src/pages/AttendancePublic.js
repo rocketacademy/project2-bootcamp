@@ -5,10 +5,12 @@ import { db } from "../firebase";
 
 const QuizData = ({ gid, courseName }) => {
   const [responses, setResponses] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const spreadsheetId = "16HTIiiOq82Tm1tLHRQcr_8YJnO81QxZOOBOfR4hU3zc"; // Replace with your Sheet ID
 
   const fetchData = async () => {
+    setIsLoading(true);
     const publicSheetUrl = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/export?format=csv&gid=${gid}`;
     console.log(publicSheetUrl);
 
@@ -25,6 +27,8 @@ const QuizData = ({ gid, courseName }) => {
       setResponses(parsedData);
     } catch (error) {
       console.error("Error fetching sheet data:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -34,19 +38,23 @@ const QuizData = ({ gid, courseName }) => {
 
   return (
     <div className="mt-8 pb-8 grid grid-cols-1 sm:grid-cols-6">
-      {responses.length > 0 && (
-        <>
-          <h1 className="text-center sm:col-span-6">{courseName}</h1>
-          <button
-            className="mb-6 btn btn-ghost sm:col-start-3 col-span-2 "
-            onClick={fetchData}
-          >
-            REFRESH
-          </button>
-          <div className="sm:col-span-6">
-            <QuizTable responses={responses} />
-          </div>
-        </>
+      {isLoading ? (
+        <span className="loading loading-dots loading-lg sm:col-start-4"></span>
+      ) : (
+        responses.length > 0 && (
+          <>
+            <h1 className="text-center sm:col-span-6">{courseName}</h1>
+            <button
+              className="mb-6 btn btn-ghost sm:col-start-3 col-span-2 "
+              onClick={fetchData}
+            >
+              REFRESH
+            </button>
+            <div className="sm:col-span-6">
+              <QuizTable responses={responses} />
+            </div>
+          </>
+        )
       )}
     </div>
   );
