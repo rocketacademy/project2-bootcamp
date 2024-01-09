@@ -58,7 +58,6 @@ const linkStyle = {
 };
 
 // Commented out because we will remove this feature + it is confusing React from parsing the landmarks props to RenderMap.js
-// Commented out because we will remove this feature + it is confusing React from parsing the landmarks props to RenderMap.js
 // SelectTextFields MUI
 // const landmarks = [
 //   {
@@ -244,20 +243,11 @@ const App = () => {
               <Button
                 variant="outlined"
                 onClick={() => {
-                  // const message = "Singapore Flyer in 1 sentence";
                   setSelectedLandmarks(natureParks);
                   <RenderMap
                     sendMessage={sendMessage}
                     landmarks={natureParks}
                   />;
-                  // sendMessage(message);
-                  // const message = "Singapore Flyer in 1 sentence";
-                  setSelectedLandmarks(natureParks);
-                  <RenderMap
-                    sendMessage={sendMessage}
-                    landmarks={natureParks}
-                  />;
-                  // sendMessage(message);
                 }}
                 sx={{ width: "150px", height: "50px" }}
               >
@@ -268,20 +258,11 @@ const App = () => {
               <Button
                 variant="outlined"
                 onClick={() => {
-                  // const message = "Sentosa Island in 1 sentence";
                   setSelectedLandmarks(politicalLandmarks);
                   <RenderMap
                     sendMessage={sendMessage}
                     landmarks={politicalLandmarks}
                   />;
-                  // sendMessage(message);
-                  // const message = "Sentosa Island in 1 sentence";
-                  setSelectedLandmarks(politicalLandmarks);
-                  <RenderMap
-                    sendMessage={sendMessage}
-                    landmarks={politicalLandmarks}
-                  />;
-                  // sendMessage(message);
                 }}
                 sx={{ width: "150px", height: "50px" }}
               >
@@ -292,13 +273,11 @@ const App = () => {
               <Button
                 variant="outlined"
                 onClick={() => {
-                  // const message = "Chinatown Singapore in 1 sentence";
                   setSelectedLandmarks(historicalLandmarks);
                   <RenderMap
                     sendMessage={sendMessage}
                     landmarks={historicalLandmarks}
                   />;
-                  // sendMessage(message);
                 }}
                 sx={{ width: "150px", height: "50px" }}
               >
@@ -348,22 +327,7 @@ const App = () => {
               sx={{
                 "& .MuiTextField-root": { m: 1, width: "25ch" },
               }}
-            >
-              {/* <TextField
-                select
-                label="Select"
-                value={selectedLandmarks}
-                onChange={(e) => setSelectedLandmarks(e.target.value)}
-                helperText="Please select landmark"
-                sx={{ display: "block" }}
-              >
-                {landmarks.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
-                    {option.label}
-                  </MenuItem>
-                ))}
-              </TextField> */}
-            </Box>
+            ></Box>
           </StyledGridItem>
           <StyledGridItem
             item
@@ -377,30 +341,6 @@ const App = () => {
             <RenderMap
               sendMessage={sendMessage}
               landmarks={selectedLandmarks}
-            />
-            {/*<GoogleMap
-                mapContainerStyle={mapContainerStyle}
-                mapId="6da2495ffc989dca"
-                zoom={12}
-                center={center}
-              >
-                <Marker position={center} />
-                <Marker
-                  position={{ lat: 1.40058, lng: 103.90899 }}
-                  onClick={() => {
-                    const lat = 1.40058;
-                    const lng = 103.90899;
-                    console.log("Marker clicked!");
-                    console.log(lat);
-                    console.log(lng);
-                    const message = `What is the name of this location with the following address: 100 Punggol Central, Singapore 828839. Share with me its history, and what developments occured in the last 20 years in Singapore. Word limit is 30 words.`;
-                    sendMessage(message);
-                  }}
-                />
-              </GoogleMap>*/}
-            <CertificateGenerator
-              name="Charles Lee"
-              course="Singapore Landmarks"
             />
           </StyledGridItem>
         </StyledContainer>

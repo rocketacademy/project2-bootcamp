@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { BrowserRouter as Router, Link, Routes, Route } from "react-router-dom";
+
 import { auth } from "../firebase";
 import {
   signInWithEmailAndPassword,
@@ -17,12 +19,20 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 export default function AuthForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState();
 
   const signUp = async () => {
-    const user = await createUserWithEmailAndPassword(auth, email, password);
-    console.log(user);
-    setEmail("");
-    setPassword("");
+    try {
+      const user = await createUserWithEmailAndPassword(auth, email, password);
+      console.log(user);
+      setEmail("");
+      setPassword("");
+    } catch (error) {
+      setError(
+        "This email is either already in use, or it is an invalid email"
+      );
+      console.error("Error signing up:", error.message);
+    }
   };
 
   const signIn = async () => {
@@ -115,6 +125,7 @@ export default function AuthForm() {
               Sign Up
             </Button>
           </Grid>
+          {error && <p>{error}</p>}
         </Box>
       </Grid>
     </Grid>
