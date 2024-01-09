@@ -2,12 +2,13 @@ import { useOutletContext } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
 import "./AddDeckPage.css";
+import { Autocomplete, TextField } from "@mui/material";
 //Take the user data from App.js state
 
 export default function FlashcardForm(props) {
   const [user, setUser] = useOutletContext();
   const [englishValue, setEnglishValue] = useState("");
-  const [spanishValue, setSpanishValue] = useState("");
+  const [spanishValue, setSpanishValue] = useState([]);
   // const [translation, setTranslation] = useState("");
 
   const handleAddCard = () => {
@@ -25,7 +26,18 @@ export default function FlashcardForm(props) {
       const response = await axios.get(apiUrl);
 
       if (Array.isArray(response.data) && response.data.length > 0) {
-        const translation = response.data[0].shortdef[0].split(",")[0];
+        const translation = [response.data[0].shortdef[0]];
+        console.log(response.data);
+
+        if (response.data[1]) {
+          translation.push(response.data[1].shortdef[0]);
+        }
+        if (response.data[2]) {
+          translation.push(response.data[2].shortdef[0]);
+        }
+
+        console.log(translation);
+
         setSpanishValue(translation);
       } else {
         throw new Error("Translation not found");
@@ -65,7 +77,7 @@ export default function FlashcardForm(props) {
             <br />
             <label>Spanish:</label>
             <br />
-            <input
+            {/* <input
               className="form-control mt-3"
               type="text"
               name="spanish"
@@ -73,7 +85,20 @@ export default function FlashcardForm(props) {
               placeholder="Spanish translation"
               value={spanishValue}
               onChange={(e) => setSpanishValue(e.target.value)}
-            ></input>
+            ></input> */}
+            <Autocomplete
+              // value={value}
+              // onChange={(event, newValue) => {
+              //   setSpanishValue(newValue);
+              // }}
+              options={spanishValue}
+              disablePortal
+              id="combo-box-demo"
+              sx={{ width: 350 }}
+              renderInput={(params) => (
+                <TextField {...params} label="Spanish translation" />
+              )}
+            />
             <button
               type="button"
               className="btn btn-outline-dark mt-3 mb-2"
