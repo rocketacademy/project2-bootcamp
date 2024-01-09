@@ -25,14 +25,14 @@ export default function FlashcardForm(props) {
     try {
       const response = await axios.get(apiUrl);
 
-      if (Array.isArray(response.data) && response.data.length > 0) {
+      if (response.data && response.data.length) {
         const translation = [response.data[0].shortdef[0]];
         console.log(response.data);
 
-        if (response.data[1]) {
+        if (response.data[1] && response.data[1].shortdef.length) {
           translation.push(response.data[1].shortdef[0]);
         }
-        if (response.data[2]) {
+        if (response.data[2] && response.data[2].shortdef.length) {
           translation.push(response.data[2].shortdef[0]);
         }
 
@@ -50,7 +50,6 @@ export default function FlashcardForm(props) {
     const wordInEnglish = englishValue;
     translateEnglishToSpanish(wordInEnglish);
   };
-
   return (
     <div>
       <div>
@@ -87,10 +86,6 @@ export default function FlashcardForm(props) {
               onChange={(e) => setSpanishValue(e.target.value)}
             ></input> */}
             <Autocomplete
-              // value={value}
-              // onChange={(event, newValue) => {
-              //   setSpanishValue(newValue);
-              // }}
               options={spanishValue}
               disablePortal
               id="combo-box-demo"
