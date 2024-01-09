@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { ref, get, set } from "firebase/database";
+import { ref, get } from "firebase/database";
 import { storage, database } from "../firebase";
 import { ref as storageRef, getDownloadURL } from "firebase/storage";
 
