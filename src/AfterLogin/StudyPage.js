@@ -88,6 +88,7 @@ export default function StudyPage() {
   const playAudio = async () => {
     try {
       const audioUrl = currentCard.URL;
+      console.log(currentCard);
       const audio = new Audio(audioUrl);
       audio.play();
     } catch (error) {
