@@ -1,50 +1,93 @@
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useOutletContext } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { ref, get } from "firebase/database";
 import { storage, database } from "../firebase";
 import { ref as storageRef, getDownloadURL } from "firebase/storage";
-
 import { Card, Button } from "@mui/material";
 import LinearProgress from "@mui/material/LinearProgress";
 import { Backdrop, CircularProgress } from "@mui/material";
 import StudyDone from "./StudyComponent/StudyDone";
 import "./Study.css";
+import ErrorPage from "../ErrorPage";
 
 export default function StudyPage() {
+  const [user] = useOutletContext();
   const [decks, setDecks] = useState([]);
   const [cards, setCards] = useState([]);
-  const { deckID } = useParams();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [displayEnglish, setDisplayEnglish] = useState(true);
   const [studyDone, setStudyDone] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [goHome, setGoHome] = useState(false);
+  const navigate = useNavigate();
+  const { deckID } = useParams();
+
+  const handleErrorMessage = () => {
+    setErrorMessage("");
+    if (goHome) {
+      navigate("/");
+    }
+  };
 
   useEffect(() => {
+    const checkUserDeckID = async () => {
+      try {
+        const userDeckIDsSS = await get(
+          ref(database, `userInfo/${user.uid}/decks`)
+        );
+        const userDeckIDs = userDeckIDsSS.val();
+        if (!userDeckIDs.length || !userDeckIDs.includes(Number(deckID))) {
+          throw new Error("You don't have this deck!");
+        }
+      } catch (error) {
+        setGoHome(true);
+        setErrorMessage(error.message);
+      }
+    };
+    checkUserDeckID();
     const takeDecksInfo = async () => {
-      const decksRef = ref(database, `decks/deck${deckID}`);
-      return await get(decksRef);
+      try {
+        const decksRef = ref(database, `decks/deck${deckID}`);
+        return await get(decksRef);
+      } catch (error) {
+        setGoHome(true);
+        setErrorMessage(error.message);
+      }
     };
 
     const takeCardsInfo = async (cardNumber) => {
-      const cardsRef = ref(database, `cards/card${cardNumber}`);
-      return await get(cardsRef);
+      try {
+        const cardsRef = ref(database, `cards/card${cardNumber}`);
+        return await get(cardsRef);
+      } catch (error) {
+        setGoHome(true);
+        setErrorMessage(error.message);
+      }
     };
 
     const fetchDeckAndCards = async () => {
-      const deckInfo = await takeDecksInfo();
-      const deckInfoData = deckInfo.val();
+      try {
+        const deckInfo = await takeDecksInfo();
+        const deckInfoData = deckInfo.val();
 
-      if (deckInfoData) {
-        const cardNumber = Object.values(deckInfoData.deckCards);
-        const cardPromises = cardNumber.map((cardID) => takeCardsInfo(cardID));
-        const cardInfo = await Promise.all(cardPromises);
-        const cardInfoData = cardInfo.map((number) => number.val());
+        if (deckInfoData) {
+          const cardNumber = Object.values(deckInfoData.deckCards);
+          const cardPromises = cardNumber.map((cardID) =>
+            takeCardsInfo(cardID)
+          );
+          const cardInfo = await Promise.all(cardPromises);
+          const cardInfoData = cardInfo.map((number) => number.val());
 
-        setDecks(deckInfoData);
-        setCards(cardInfoData);
+          setDecks(deckInfoData);
+          setCards(cardInfoData);
+        }
+      } catch (error) {
+        setGoHome(true);
+        setErrorMessage(error.message);
       }
     };
     fetchDeckAndCards();
-  }, [deckID]);
+  }, [deckID, user.uid]);
 
   const handleNextCard = () => {
     if (currentIndex < Object.keys(decks.deckCards).length - 1) {
@@ -65,8 +108,6 @@ export default function StudyPage() {
   const handleClick = () => {
     setDisplayEnglish((prevDisplayEnglish) => !prevDisplayEnglish);
   };
-
-  const navigate = useNavigate();
 
   const handleCloseStudyDone = () => {
     setStudyDone(false);
@@ -96,7 +137,7 @@ export default function StudyPage() {
       const audio = new Audio(audioUrl);
       audio.play();
     } catch (error) {
-      console.log("Error");
+      setErrorMessage(error.message);
     }
   };
 
@@ -120,6 +161,10 @@ export default function StudyPage() {
 
   return (
     <div>
+      <ErrorPage
+        errorMessage={errorMessage}
+        handleErrorMessage={handleErrorMessage}
+      />
       <Backdrop open={!decks.deckCards}>
         <h3>Generating deck</h3>
         <h1>
