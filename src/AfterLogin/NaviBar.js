@@ -16,6 +16,7 @@ import {
 import { useEffect, useState } from "react";
 import { ref as DBref, get, set } from "firebase/database";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import ErrorPage from "../ErrorPage";
 
 export default function NaviBar(props) {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -23,6 +24,7 @@ export default function NaviBar(props) {
   const [profilePicUrl, setProfilePicUrl] = useState("");
   const [name, setName] = useState("");
   const [file, setFile] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     const takePic = async () => {
@@ -34,7 +36,7 @@ export default function NaviBar(props) {
         const urlDB = await get(userPicRef);
         setProfilePicUrl(urlDB.val());
       } catch (error) {
-        console.log(error);
+        setErrorMessage(error.message);
       }
     };
 
@@ -52,12 +54,16 @@ export default function NaviBar(props) {
   };
 
   const handleChangeName = async () => {
-    await updateProfile(auth.currentUser, {
-      displayName: name,
-    });
-    props.setUser({ ...auth.currentUser });
-    setName("");
-    setOpenDialog("");
+    try {
+      await updateProfile(auth.currentUser, {
+        displayName: name,
+      });
+      props.setUser({ ...auth.currentUser });
+      setName("");
+      setOpenDialog("");
+    } catch (error) {
+      setErrorMessage(error.message);
+    }
   };
 
   const handleUploadPhoto = async () => {
@@ -71,11 +77,15 @@ export default function NaviBar(props) {
       setFile("");
       setOpenDialog("");
     } catch (error) {
-      console.log(error);
+      setErrorMessage(error.message);
     }
   };
   return (
     <div className="navi-bar">
+      <ErrorPage
+        errorMessage={errorMessage}
+        handleErrorMessage={() => setErrorMessage("")}
+      />
       <Dialog open={openDialog === "pic"} onClose={() => setOpenDialog(false)}>
         <DialogTitle>Please upload your profile pics </DialogTitle>
         <Input

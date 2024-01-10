@@ -4,6 +4,7 @@ import { Card, Button, Menu, MenuItem } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import "./Study.css";
+import ErrorPage from "../ErrorPage";
 
 export default function HomePage() {
   const [user] = useOutletContext();
@@ -11,27 +12,41 @@ export default function HomePage() {
   const [userDecks, setUserDecks] = useState([]);
   const [selectedDeckIDs, setSelectedDeckIDs] = useState();
   const [anchorEl, setAnchorEl] = useState(null);
+  const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
+
   useEffect(() => {
     const takeDecksInfo = async () => {
       //Taking the decks Info
       const decksRef = ref(database, `decks`);
-      return await get(decksRef);
+      try {
+        return await get(decksRef);
+      } catch (error) {
+        setErrorMessage(error.message);
+      }
     };
 
     const takeDeckIDsInfo = async () => {
       //Taking the user Decks
-      const userDecksRef = ref(database, `userInfo/${user.uid}/decks`);
-      return await get(userDecksRef);
+      try {
+        const userDecksRef = ref(database, `userInfo/${user.uid}/decks`);
+        return await get(userDecksRef);
+      } catch (error) {
+        setErrorMessage(error.message);
+      }
     };
 
     const takeAllInfo = async () => {
-      const [newDecksIDs, newDecks] = await Promise.all([
-        takeDeckIDsInfo(),
-        takeDecksInfo(),
-      ]);
-      setUserDeckIDs(newDecksIDs.val());
-      setUserDecks(newDecks.val());
+      try {
+        const [newDecksIDs, newDecks] = await Promise.all([
+          takeDeckIDsInfo(),
+          takeDecksInfo(),
+        ]);
+        setUserDeckIDs(newDecksIDs.val());
+        setUserDecks(newDecks.val());
+      } catch (error) {
+        setErrorMessage(error.message);
+      }
     };
     takeAllInfo();
   }, [user.uid]);
@@ -55,7 +70,7 @@ export default function HomePage() {
       setUserDeckIDs(newUserDeckIDs);
       setAnchorEl(null);
     } catch (error) {
-      console.log(error);
+      setErrorMessage(error.message);
     }
   };
 
@@ -107,6 +122,10 @@ export default function HomePage() {
 
   return (
     <div>
+      <ErrorPage
+        errorMessage={errorMessage}
+        handleErrorMessage={() => setErrorMessage("")}
+      />
       <div>Hi, {user.displayName ? user.displayName : "student"}.</div>
       <p>Your current deck:</p>
       {deckList}

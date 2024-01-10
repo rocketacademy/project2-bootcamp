@@ -4,6 +4,7 @@ import McQuizHeader from "./McQuizHeader";
 import { useNavigate } from "react-router-dom";
 import { database } from "../../../firebase";
 import { ref, get, set } from "firebase/database";
+import ErrorPage from "../../../ErrorPage";
 
 //mc question content component
 export default function McQuizQuestion(props) {
@@ -12,7 +13,13 @@ export default function McQuizQuestion(props) {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [startAnimationNext, setAnimationNext] = useState(false);
   const [startAnimationPrev, setAnimationPrev] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const navi = useNavigate();
+
+  const handleErrorMessage = () => {
+    setErrorMessage("");
+    navi("/");
+  };
 
   //animataion frames for wipe right/left
   const animateNext = `@keyframes next-question{
@@ -70,32 +77,37 @@ export default function McQuizQuestion(props) {
       database,
       `userInfo/${props.user.uid}/quizReport`
     );
-    const userQuizReport = await get(userQuizReportRef);
-    const score = isCorrect.reduce((a, b) => a + b, 0) * 10;
-    const answer = props.questions.map(({ english, answer, deckName }) => {
-      return { english: english, spanish: answer, deckName: deckName };
-    });
-    const quizNo =
-      userQuizReport.val() === null
-        ? 1
-        : Object.values(userQuizReport.val()).length + 1;
-    const newQuizReportRef = ref(
-      database,
-      `userInfo/${props.user.uid}/quizReport/quiz${quizNo}`
-    );
-    await set(newQuizReportRef, {
-      quizID: quizNo,
-      score: score,
-      choice: isAnswered,
-      answer: answer,
-      date: new Date().toLocaleDateString(),
-    });
-    navi(`/quizList/${quizNo}`);
+    try {
+      const userQuizReport = await get(userQuizReportRef);
+      const score = isCorrect.reduce((a, b) => a + b, 0) * 10;
+      const answer = props.questions.map(({ english, answer, deckName }) => {
+        return { english: english, spanish: answer, deckName: deckName };
+      });
+      const quizNo =
+        userQuizReport.val() === null
+          ? 1
+          : Object.values(userQuizReport.val()).length + 1;
+      const newQuizReportRef = ref(
+        database,
+        `userInfo/${props.user.uid}/quizReport/quiz${quizNo}`
+      );
+      await set(newQuizReportRef, {
+        quizID: quizNo,
+        score: score,
+        choice: isAnswered,
+        answer: answer,
+        date: new Date().toLocaleDateString(),
+      });
+      navi(`/quizList/${quizNo}`);
+    } catch (error) {
+      setErrorMessage(error.message);
+    }
   };
 
   const isFinishedAllQuestion = isAnswered.every((ans) => ans.length);
   //display for each of the question page
   const questionsDisplay = props.questions.map((question, i) => {
+    //display for each choices for each question
     const choicesDisplay = question.choice.map((choice, j) => {
       const isCorrectAnswer = choice === question.answer;
       const isQuestionAnswered = Boolean(isAnswered[i].length);
@@ -175,13 +187,17 @@ export default function McQuizQuestion(props) {
 
   return (
     <div className="page">
+      <ErrorPage
+        errorMessage={errorMessage}
+        handleErrorMessage={handleErrorMessage}
+      />
       <McQuizHeader
         currentQuestion={currentQuestion}
         questions={props.questions}
       />
       <div className="quiz-question">
         <style>{animateNext}</style> {/*put the animate style into use*/}
-        <style>{animatePrev}</style>
+        <style>{animatePrev}</style> {/*put the animate style into use*/}
         {questionsDisplay}
       </div>
     </div>

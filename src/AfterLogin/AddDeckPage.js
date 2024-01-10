@@ -4,12 +4,14 @@ import FlashcardForm from "./FlashcardForm";
 import "./AddDeckPage.css";
 import { ref, set, get } from "firebase/database";
 import { database } from "../firebase";
+import ErrorPage from "../ErrorPage";
 
 export default function AddDeckPage() {
   const [user] = useOutletContext();
   const [deckName, setDeckName] = useState("");
   const [deck, setDeck] = useState([]);
   const navi = useNavigate();
+  const [errorMessage, setErrorMessage] = useState("");
 
   const addCard = (englishValue, spanishValue) => {
     const newCardId = Date.now();
@@ -37,7 +39,7 @@ export default function AddDeckPage() {
         deckCards: cardIDs,
       });
     } catch (error) {
-      console.error("Error adding deck to the database:", error);
+      setErrorMessage(error.message);
     }
   };
 
@@ -45,7 +47,7 @@ export default function AddDeckPage() {
     try {
       await set(ref(database, "cards/card" + cardId), card);
     } catch (error) {
-      console.error("Error adding card to the database:", error);
+      setErrorMessage(error.message);
     }
   };
 
@@ -57,26 +59,33 @@ export default function AddDeckPage() {
       const newDeckInfo = [...originalDecksIDs, deckId];
       await set(userDeckRef, newDeckInfo);
     } catch (error) {
-      console.error("Error updating userInfo in the database:", error);
+      setErrorMessage(error.message);
     }
   };
 
   const handleSave = async () => {
-    if (!deckName || !deck.length) {
-      return console.log("Need to add component to show error");
+    try {
+      if (!deckName) {
+        throw new Error("You need to name your deck.");
+      }
+      if (!deck.length) {
+        throw new Error("You need to add card to your new deck.");
+      }
+      const deckId = Date.now();
+      const cardsPromise = deck.map(
+        async (card) => await addCardsToDatabase(card.cardID, card)
+      );
+      const promises = [
+        ...cardsPromise,
+        addDeckToDatabase(deckId),
+        updateUserInfo(deckId),
+      ];
+      await Promise.all(promises);
+      setDeckName("");
+      navi("/");
+    } catch (error) {
+      setErrorMessage(error.message);
     }
-    const deckId = Date.now();
-    const cardsPromise = deck.map(
-      async (card) => await addCardsToDatabase(card.cardID, card)
-    );
-    const promises = [
-      ...cardsPromise,
-      addDeckToDatabase(deckId),
-      updateUserInfo(deckId),
-    ];
-    await Promise.all(promises);
-    setDeckName("");
-    navi("/");
   };
 
   const currDeck = deck.map((card, index) => {
@@ -105,6 +114,10 @@ export default function AddDeckPage() {
   return (
     <div>
       <div>
+        <ErrorPage
+          errorMessage={errorMessage}
+          handleErrorMessage={() => setErrorMessage("")}
+        />
         <label>Name your deck:</label>
         <input
           className="form-control mt-3 mb-4"
