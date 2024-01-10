@@ -1,8 +1,12 @@
 import { Link, useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.css";
 import { auth } from "../firebase";
-import { signInWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { useState } from "react";
+import {
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  updateProfile,
+} from "firebase/auth";
+import { useEffect, useState } from "react";
 import DisabledByDefaultOutlinedIcon from "@mui/icons-material/DisabledByDefaultOutlined";
 import ErrorPage from "../ErrorPage";
 
@@ -14,6 +18,15 @@ export default function SignInPage() {
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const navi = useNavigate();
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        navi("/");
+      }
+    });
+  });
+
   const logIn = async () => {
     await signInWithEmailAndPassword(auth, email, password)
       .then(() => {

@@ -1,6 +1,6 @@
 import { useParams, useNavigate, useOutletContext } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { ref, get, set } from "firebase/database";
+import { ref, get } from "firebase/database";
 import { storage, database } from "../firebase";
 import { ref as storageRef, getDownloadURL } from "firebase/storage";
 import { Card, Button } from "@mui/material";
@@ -88,7 +88,7 @@ export default function StudyPage() {
       }
     };
     fetchDeckAndCards();
-  }, [deckID]);
+  }, [deckID, user.uid]);
 
   const handleNextCard = () => {
     if (currentIndex < Object.keys(decks.deckCards).length - 1) {
