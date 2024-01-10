@@ -40,7 +40,7 @@ export default function FlashcardForm(props) {
         translation.push(firstWord);
         console.log(response.data[1]);
 
-        const addMoreTranslationOptions = (data) => {
+        const addTranslationOptions = (data) => {
           if (data && data.shortdef.length) {
             let word = data.shortdef[0];
             word = removeColon(word);
@@ -52,8 +52,8 @@ export default function FlashcardForm(props) {
         const data1 = response.data[1];
         const data2 = response.data[2];
 
-        addMoreTranslationOptions(data1);
-        addMoreTranslationOptions(data2);
+        addTranslationOptions(data1);
+        addTranslationOptions(data2);
 
         // if (response.data[1] && response.data[1].shortdef.length) {
         //   let secondWord = response.data[1].shortdef[0];
