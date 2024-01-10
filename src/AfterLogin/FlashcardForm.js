@@ -27,26 +27,26 @@ export default function FlashcardForm(props) {
     try {
       const response = await axios.get(apiUrl);
 
+      const removeColon = (word) => {
+        if (word.includes(":")) word = word.split(":")[1];
+        return word;
+      };
+
       if (response.data && response.data.length) {
         let firstWord = response.data[0].shortdef[0];
-        if (firstWord.includes(":")) {
-          firstWord = firstWord.split(":")[1];
-        }
+        firstWord = removeColon(firstWord);
         translation.push(firstWord);
         console.log(response.data);
 
         if (response.data[1] && response.data[1].shortdef.length) {
           let secondWord = response.data[1].shortdef[0];
-          if (secondWord.includes(":")) {
-            secondWord = secondWord.split(":")[1];
-          }
+          secondWord = removeColon(secondWord);
           translation.push(secondWord);
         }
         if (response.data[2] && response.data[2].shortdef.length) {
           let thirdWord = response.data[2].shortdef[0];
-          if (thirdWord.includes(":")) {
-            thirdWord = thirdWord.split(":")[1];
-          }
+
+          thirdWord = removeColon(thirdWord);
           translation.push(thirdWord);
         }
 
