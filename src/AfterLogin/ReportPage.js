@@ -24,14 +24,16 @@ export default function ReportPage() {
         const decks = newUserInfo.val().decks;
 
         //get promise for deck
-        const decksPromise = decks.map((deck) => {
-          const getDeckInfo = async () => {
-            const deckRef = ref(database, `decks/deck${deck}`);
-            const deckInfo = await get(deckRef);
-            return deckInfo.val().deckCards;
-          };
-          return getDeckInfo();
-        });
+        const decksPromise = decks
+          ? decks.map((deck) => {
+              const getDeckInfo = async () => {
+                const deckRef = ref(database, `decks/deck${deck}`);
+                const deckInfo = await get(deckRef);
+                return deckInfo.val().deckCards;
+              };
+              return getDeckInfo();
+            })
+          : [];
 
         //get all cards number from each deck
         const promises = Promise.all(decksPromise);
@@ -44,7 +46,7 @@ export default function ReportPage() {
         }
         setUserWords(words.size);
       } catch (error) {
-        setErrorMessage(error.message);
+        console.log(error);
       }
     };
     getUserAndDeckInfo();
