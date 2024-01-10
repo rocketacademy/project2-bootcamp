@@ -10,7 +10,6 @@ export default function FlashcardForm(props) {
   const [englishValue, setEnglishValue] = useState("");
   const [spanishValue, setSpanishValue] = useState([]);
   const [options, setOptions] = useState([]);
-
   const handleAddCard = () => {
     if (englishValue && spanishValue) {
       props.addCard(englishValue, spanishValue);
