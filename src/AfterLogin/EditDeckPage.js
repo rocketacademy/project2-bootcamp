@@ -54,11 +54,23 @@ export default function EditDeckPage() {
   };
 
   const handleSave = async () => {
-    for (const card of cards) {
-      if (card.english === "" || card.spanish === "") {
+    let isDeckSame = true;
+    for (let i = 0; i < cards.length; i++) {
+      if (cards[i].english === "" || cards[i].spanish === "") {
         return console.log("Need to need error here");
       }
+      if (
+        cards[i].english !== cardsConstant[i].english ||
+        cards[i].spanish !== cardsConstant[i].spanish
+      ) {
+        isDeckSame = false;
+      }
     }
+    if (isDeckSame) {
+      setSaveDone(true);
+      return;
+    }
+    console.log("Don't");
     const updateCards = [];
     cards.forEach((card, i) => {
       const cardIDsConstant = deckConstant.deckCards;
