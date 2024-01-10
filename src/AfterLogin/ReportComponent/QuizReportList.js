@@ -60,6 +60,9 @@ export default function QuizReportList() {
         columns={columnData}
         onRowClick={(e) => navi(`${e.id}`)}
         className="quiz-list"
+        initialState={{
+          sorting: { sortModel: [{ field: "id", sort: "asc" }] },
+        }}
       />
       <h6>Click on the row to view detailed report</h6>
       <Button onClick={() => navi("/report")}>Back</Button>
