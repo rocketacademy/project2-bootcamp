@@ -8,6 +8,7 @@ import SaveDone from "./EditComponent/SaveDone";
 import axios from "axios";
 import "./Study.css";
 import ErrorPage from "../ErrorPage";
+import TextToSpeech from "./TextToSpeech";
 
 export default function EditDeckPage() {
   const [user] = useOutletContext();
@@ -192,18 +193,6 @@ export default function EditDeckPage() {
       const capitalizedWord = word.charAt(0).toUpperCase() + word.slice(1);
       const updatedCards = [...cards];
       updatedCards[newValueIndex].spanish = capitalizedWord;
-      // const audio = apiData[0].hwi.prs[0].sound.audio;
-      // let subdir;
-      // if (audio.startsWith("bix")) {
-      //   subdir = "bix";
-      // } else if (audio.startsWith("gg")) {
-      //   subdir = "gg";
-      // } else if (/[0-9_]/.test(audio.charAt(0))) {
-      //   subdir = "number";
-      // } else {
-      //   subdir = audio.charAt(0).toLowerCase();
-      // }
-      // const audioLink = `https://media.merriam-webster.com/audio/prons/es/me/mp3/${subdir}/${audio}.mp3`;
       setCards(updatedCards);
     } catch (error) {
       setErrorMessage("No translation found.");
@@ -237,6 +226,18 @@ export default function EditDeckPage() {
     setDecks(newDeck);
   };
 
+  const handleAudioURLChange = async (cardID, audioURL) => {
+    const newValueIndex = cards.findIndex((card) => card.cardID === cardID);
+    const newCards = [...cards];
+    newCards[newValueIndex] = {
+      ...newCards[newValueIndex],
+      URL: audioURL,
+    };
+    setCards(newCards);
+  };
+
+  console.log(cards);
+
   const cardsDisplay =
     cards.length &&
     cards.map((card) => (
@@ -248,26 +249,37 @@ export default function EditDeckPage() {
           <Button onClick={() => handleDelete(card.cardID)}>Delete</Button>
         </div>
         <div className="edit">
-          <TextField
-            fullWidth
-            value={card.english}
-            onChange={(e) =>
-              handleFieldChange(card.cardID, "english", e.target.value)
-            }
-            label="English"
-            variant="standard"
-          ></TextField>
+          <div className="field">
+            <TextField
+              fullWidth
+              value={card.english}
+              onChange={(e) =>
+                handleFieldChange(card.cardID, "english", e.target.value)
+              }
+              label="English"
+              variant="standard"
+            ></TextField>
+          </div>
           <br />
-
-          <TextField
-            fullWidth
-            value={card.spanish}
-            onChange={(e) =>
-              handleFieldChange(card.cardID, "spanish", e.target.value)
-            }
-            label="Spanish"
-            variant="standard"
-          ></TextField>
+          <div className="field-audio">
+            <div className="field">
+              <TextField
+                fullWidth
+                value={card.spanish}
+                onChange={(e) =>
+                  handleFieldChange(card.cardID, "spanish", e.target.value)
+                }
+                label="Spanish"
+                variant="standard"
+              ></TextField>
+            </div>
+            <TextToSpeech
+              card={card.spanish}
+              onAudioURLChange={(audioURL) =>
+                handleAudioURLChange(card.cardID, audioURL)
+              }
+            />
+          </div>
         </div>
       </Card>
     ));
