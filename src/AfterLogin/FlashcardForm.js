@@ -22,18 +22,32 @@ export default function FlashcardForm(props) {
   const translateEnglishToSpanish = async (word) => {
     const apiUrl = `https://www.dictionaryapi.com/api/v3/references/spanish/json/${word}?key=${process.env.REACT_APP_SPANISH_KEY}`;
 
+    const translation = [];
+
     try {
       const response = await axios.get(apiUrl);
 
       if (response.data && response.data.length) {
-        const translation = [response.data[0].shortdef[0]];
+        let firstWord = response.data[0].shortdef[0];
+        if (firstWord.includes(":")) {
+          firstWord = firstWord.split(":")[1];
+        }
+        translation.push(firstWord);
         console.log(response.data);
 
         if (response.data[1] && response.data[1].shortdef.length) {
-          translation.push(response.data[1].shortdef[0]);
+          let secondWord = response.data[1].shortdef[0];
+          if (secondWord.includes(":")) {
+            secondWord = secondWord.split(":")[1];
+          }
+          translation.push(secondWord);
         }
         if (response.data[2] && response.data[2].shortdef.length) {
-          translation.push(response.data[2].shortdef[0]);
+          let thirdWord = response.data[2].shortdef[0];
+          if (thirdWord.includes(":")) {
+            thirdWord = thirdWord.split(":")[1];
+          }
+          translation.push(thirdWord);
         }
 
         console.log(translation);
@@ -76,15 +90,7 @@ export default function FlashcardForm(props) {
             <br />
             <label>Spanish:</label>
             <br />
-            {/* <input
-              className="form-control mt-3"
-              type="text"
-              name="spanish"
-              id="flashcard-form-input"
-              placeholder="Spanish translation"
-              value={spanishValue}
-              onChange={(e) => setSpanishValue(e.target.value)}
-            ></input> */}
+
             <Autocomplete
               options={spanishValue}
               disablePortal
