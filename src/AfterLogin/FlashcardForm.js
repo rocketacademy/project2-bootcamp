@@ -9,6 +9,7 @@ export default function FlashcardForm(props) {
   const [user, setUser] = useOutletContext();
   const [englishValue, setEnglishValue] = useState("");
   const [spanishValue, setSpanishValue] = useState([]);
+  const [options, setOptions] = useState([]);
   // const [translation, setTranslation] = useState("");
 
   const handleAddCard = () => {
@@ -28,7 +29,7 @@ export default function FlashcardForm(props) {
       const response = await axios.get(apiUrl);
 
       const removeColon = (word) => {
-        if (word.includes(":")) word = word.split(":")[1];
+        if (word && word.includes(":")) word = word.split(":")[1];
         return word;
       };
 
@@ -36,23 +37,36 @@ export default function FlashcardForm(props) {
         let firstWord = response.data[0].shortdef[0];
         firstWord = removeColon(firstWord);
         translation.push(firstWord);
-        console.log(response.data);
+        console.log(response.data[1]);
 
-        if (response.data[1] && response.data[1].shortdef.length) {
-          let secondWord = response.data[1].shortdef[0];
-          secondWord = removeColon(secondWord);
-          translation.push(secondWord);
-        }
-        if (response.data[2] && response.data[2].shortdef.length) {
-          let thirdWord = response.data[2].shortdef[0];
+        const addMoreTranslationOptions = (data) => {
+          if (data && data.shortdef.length) {
+            let word = data.shortdef[0];
+            word = removeColon(word);
+            translation.push(word);
+            return translation;
+          }
+        };
+        const data1 = response.data[1];
+        const data2 = response.data[2];
 
-          thirdWord = removeColon(thirdWord);
-          translation.push(thirdWord);
-        }
+        addMoreTranslationOptions(data1);
+        addMoreTranslationOptions(data2);
+
+        // if (response.data[1] && response.data[1].shortdef.length) {
+        //   let secondWord = response.data[1].shortdef[0];
+        //   secondWord = removeColon(secondWord);
+        //   translation.push(secondWord);
+        // }
+        // if (response.data[2] && response.data[2].shortdef.length) {
+        //   let thirdWord = response.data[2].shortdef[0];
+        //   thirdWord = removeColon(thirdWord);
+        //   translation.push(thirdWord);
+        // }
 
         console.log(translation);
 
-        setSpanishValue(translation);
+        setOptions(translation);
       } else {
         throw new Error("Translation not found");
       }
@@ -63,6 +77,10 @@ export default function FlashcardForm(props) {
   const handleTranslate = () => {
     const wordInEnglish = englishValue;
     translateEnglishToSpanish(wordInEnglish);
+  };
+
+  const handleAutocompleteChange = (event, value) => {
+    setSpanishValue(value);
   };
   return (
     <div>
@@ -92,12 +110,18 @@ export default function FlashcardForm(props) {
             <br />
 
             <Autocomplete
-              options={spanishValue}
+              options={options}
               disablePortal
               id="combo-box-demo"
               sx={{ width: 350 }}
+              getOptionLabel={(option) => option}
+              onChange={handleAutocompleteChange}
               renderInput={(params) => (
-                <TextField {...params} label="Spanish translation" />
+                <TextField
+                  {...params}
+                  label="Spanish translation"
+                  value={spanishValue}
+                />
               )}
             />
             <button
