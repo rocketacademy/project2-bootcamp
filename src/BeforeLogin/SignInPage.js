@@ -4,6 +4,7 @@ import { auth } from "../firebase";
 import { signInWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { useState } from "react";
 import DisabledByDefaultOutlinedIcon from "@mui/icons-material/DisabledByDefaultOutlined";
+import ErrorPage from "../ErrorPage";
 
 // need to add logic to Sign in with firebase auth
 //After login into the auth, return to "/"
@@ -31,6 +32,10 @@ export default function SignInPage() {
 
   return (
     <div className="App">
+      <ErrorPage
+        errorMessage={errorMessage}
+        handleErrorMessage={() => setErrorMessage("")}
+      />
       <Link to="/" className="homepage-button">
         <DisabledByDefaultOutlinedIcon />
       </Link>
@@ -64,11 +69,6 @@ export default function SignInPage() {
       <button type="button" className="btn btn-dark mb-4" onClick={logIn}>
         Log in
       </button>
-      {errorMessage.length ? (
-        <div className="errorMessage">
-          <h4>{errorMessage}</h4>
-        </div>
-      ) : null}
     </div>
   );
 }
