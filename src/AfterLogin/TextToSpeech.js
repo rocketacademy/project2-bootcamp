@@ -4,10 +4,14 @@ import {
   ref as storageRef,
   uploadBytes,
 } from "firebase/storage";
+import { useState } from "react";
 import OpenAI from "openai";
 import { Button } from "@mui/material";
+import { Backdrop, CircularProgress } from "@mui/material";
+import LoadingButton from "@mui/lab/LoadingButton";
 
 export default function TextToSpeech(props) {
+  const [loading, setLoading] = useState(false);
   const openai = new OpenAI({
     apiKey: process.env.REACT_APP_OPENAI_KEY,
     dangerouslyAllowBrowser: true,
@@ -19,6 +23,7 @@ export default function TextToSpeech(props) {
     const fileRef = storageRef(storage, filePath);
 
     try {
+      setLoading(true);
       const mp3 = await openai.audio.speech.create({
         model: "tts-1",
         voice: "alloy",
@@ -31,6 +36,7 @@ export default function TextToSpeech(props) {
       const downloadURL = await getDownloadURL(fileRef);
       console.log(downloadURL);
       const spanishAudio = new Audio(downloadURL);
+      setLoading(false);
       spanishAudio.play();
 
       props.onAudioURLChange(downloadURL);
@@ -38,5 +44,11 @@ export default function TextToSpeech(props) {
       console.error("Error text-to-speech", error);
     }
   };
-  return <Button onClick={() => handleTextToSpeech()}>🔊</Button>;
+  return (
+    <div>
+      <LoadingButton onClick={() => handleTextToSpeech()} loading={loading}>
+        🔊
+      </LoadingButton>
+    </div>
+  );
 }
