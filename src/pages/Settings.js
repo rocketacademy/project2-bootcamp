@@ -21,6 +21,8 @@ const Settings = () => {
     "https://cdn.corporatefinanceinstitute.com/assets/money-2.jpeg"
   );
 
+  const emailToggle = false;
+
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(() => {
       if (auth.currentUser === null) {
@@ -62,6 +64,7 @@ const Settings = () => {
         close={() => handleClose(setShowInputModal)}
         field={userUpdateField}
         handleSuccessfulUpdate={handleSuccessfulUpdate}
+        emailToggle={emailToggle}
       />
       <SettingsSuccessModal
         show={showSuccessModal}
@@ -79,12 +82,14 @@ const Settings = () => {
         >
           Name: {userDisplayName}
         </div>
-        <div
-          className="mb-10p bottom-border"
-          onClick={() => updateUserProfile("email")}
-        >
-          Email: {userEmail}
-        </div>
+        {emailToggle && (
+          <div
+            className="mb-10p bottom-border"
+            onClick={() => updateUserProfile("email")}
+          >
+            Email: {userEmail}
+          </div>
+        )}
         <div className="mb-10p bottom-border">Change Password</div>
         <div className="mb-10p bottom-border" onClick={() => signOut(auth)}>
           Logout

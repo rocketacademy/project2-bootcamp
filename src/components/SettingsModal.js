@@ -8,7 +8,6 @@ import { updateProfile, updateEmail } from "firebase/auth";
 
 const SettingsModal = (props) => {
   const [infoField, setInfoField] = useState("");
-  const [showSuccessMsg, setShowSuccessMsg] = useState(false);
   const handleChange = (e) => {
     setInfoField(e.target.value);
   };
@@ -20,7 +19,7 @@ const SettingsModal = (props) => {
 
   const updateUserProfile = () => {
     // make one for updateEmail
-    if (props.field === "email") {
+    if (props.field === "email" && props.emaolToggle === true) {
       updateEmail(auth.currentUser, infoField).then(() =>
         props.handleSuccessfulUpdate()
       );

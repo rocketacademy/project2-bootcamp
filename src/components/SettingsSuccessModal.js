@@ -11,7 +11,7 @@ const SettingsSuccessModal = (props) => {
     <Modal show={props.show} onHide={props.close}>
       <Modal.Header closeButton>
         <Modal.Title>
-          successfully changed {typeDisplay[props.field]}
+          Successfully changed {typeDisplay[props.field]}
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>you can continue browsing</Modal.Body>
