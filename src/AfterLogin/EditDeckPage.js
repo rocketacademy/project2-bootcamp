@@ -132,7 +132,7 @@ export default function EditDeckPage() {
       );
 
       const apiData = response.data;
-      console.log(apiData);
+
       // Extract the first translation
       const word = apiData[0].shortdef[0].split(",")[0];
       const capitalizedWord = word.charAt(0).toUpperCase() + word.slice(1);
@@ -219,7 +219,7 @@ export default function EditDeckPage() {
               ></TextField>
             </div>
             <TextToSpeech
-              card={card}
+              card={card.spanish}
               onAudioURLChange={(audioURL) =>
                 handleAudioURLChange(card.cardID, audioURL)
               }
