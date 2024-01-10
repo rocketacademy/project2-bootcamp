@@ -90,3 +90,12 @@
   flex-direction: column;
   justify-content: center;
 }
+
+.field {
+  display: flex;
+  width: 40vw;
+}
+
+.field-audio {
+  display: flex;
+}
