@@ -7,6 +7,7 @@ import { Backdrop, CircularProgress } from "@mui/material";
 import SaveDone from "./EditComponent/SaveDone";
 import axios from "axios";
 import "./Study.css";
+import ErrorPage from "../ErrorPage";
 
 export default function EditDeckPage() {
   const [user] = useOutletContext();
@@ -15,35 +16,74 @@ export default function EditDeckPage() {
   const [cardsConstant, setCardsConstant] = useState([]);
   const [cards, setCards] = useState([]);
   const [saveDone, setSaveDone] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [goHome, setGoHome] = useState(false);
   const navigate = useNavigate();
   const { deckID } = useParams();
 
+  const handleErrorMessage = () => {
+    setErrorMessage("");
+    if (goHome) {
+      navigate("/");
+    }
+  };
   useEffect(() => {
+    const checkUserDeckID = async () => {
+      try {
+        const userDeckIDsSS = await get(
+          ref(database, `userInfo/${user.uid}/decks`)
+        );
+        const userDeckIDs = userDeckIDsSS.val();
+
+        if (!userDeckIDs.length || !userDeckIDs.includes(Number(deckID))) {
+          throw new Error("You don't have this deck!");
+        }
+      } catch (error) {
+        setGoHome(true);
+        setErrorMessage(error.message);
+      }
+    };
+    checkUserDeckID();
     const takeDeckInfo = async () => {
       const decksRef = ref(database, `decks/deck${deckID}`);
-      return await get(decksRef);
+      try {
+        return await get(decksRef);
+      } catch (error) {
+        setGoHome(true);
+        setErrorMessage(error.message);
+      }
     };
 
     const takeCardsInfo = async (cardId) => {
       const cardsRef = ref(database, `cards/card${cardId}`);
-      return await get(cardsRef);
+      try {
+        return await get(cardsRef);
+      } catch (error) {
+        setGoHome(true);
+        setErrorMessage(error.message);
+      }
     };
 
     const fetchDeckAndCards = async () => {
-      const deckInfo = await takeDeckInfo();
-      const cardsPromise = deckInfo
-        .val()
-        .deckCards.map(async (cardId) => await takeCardsInfo(cardId));
-      const cardsInfoSS = await Promise.all(cardsPromise);
-      const newDeck = deckInfo.val();
-      setDecks(newDeck);
-      setDeckConstant({ ...newDeck });
-      const cardsInfo = cardsInfoSS.map((card) => card.val());
-      setCards(cardsInfo);
-      setCardsConstant([...cardsInfo]);
+      try {
+        const deckInfo = await takeDeckInfo();
+        const cardsPromise = deckInfo
+          .val()
+          .deckCards.map(async (cardId) => await takeCardsInfo(cardId));
+        const cardsInfoSS = await Promise.all(cardsPromise);
+        const newDeck = deckInfo.val();
+        setDecks(newDeck);
+        setDeckConstant({ ...newDeck });
+        const cardsInfo = cardsInfoSS.map((card) => card.val());
+        setCards(cardsInfo);
+        setCardsConstant([...cardsInfo]);
+      } catch (error) {
+        setGoHome(true);
+        setErrorMessage(error.message);
+      }
     };
     fetchDeckAndCards();
-  }, [deckID]);
+  }, [deckID, user.uid]);
 
   const handleFieldChange = (cardID, language, newValue) => {
     const cardIndex = cards.findIndex((card) => card.cardID === cardID);
@@ -54,77 +94,82 @@ export default function EditDeckPage() {
   };
 
   const handleSave = async () => {
-    let isDeckSame = true;
-    for (let i = 0; i < cards.length; i++) {
-      if (cards[i].english === "" || cards[i].spanish === "") {
-        return console.log("Need to need error here");
-      }
-      if (
-        cards[i].english !== cardsConstant[i].english ||
-        cards[i].spanish !== cardsConstant[i].spanish
-      ) {
-        isDeckSame = false;
-      }
-    }
-    if (isDeckSame) {
-      setSaveDone(true);
-      return;
-    }
-    console.log("Don't");
-    const updateCards = [];
-    cards.forEach((card, i) => {
-      const cardIDsConstant = deckConstant.deckCards;
-      //Check for new card ID
-      if (!cardIDsConstant.includes(card.cardID)) {
-        updateCards.push(card);
-      } else {
-        //Check for same ID but different English/Spanish
-        const cardConstantIndex = cardsConstant.findIndex(
-          (cardConstant) => cardConstant.cardID === card.cardID
-        );
+    try {
+      let isDeckSame = true;
+      for (let i = 0; i < cards.length; i++) {
+        if (cards[i].english === "" || cards[i].spanish === "") {
+          throw new Error("You cannot save empty card");
+        }
         if (
-          cardsConstant[cardConstantIndex].english !== card.english ||
-          cardsConstant[cardConstantIndex].spanish !== card.spanish
+          cards[i].english !== cardsConstant[i].english ||
+          cards[i].spanish !== cardsConstant[i].spanish
         ) {
-          card.cardID = Date.now();
-          card.cardID += i;
-          updateCards.push(card);
+          isDeckSame = false;
         }
       }
-    });
-    const putNewCard = async (card) => {
-      const newCardRef = ref(database, `cards/card${card.cardID}`);
-      await set(newCardRef, card);
-    };
-    const cardsPromises = updateCards.map(
-      async (card) => await putNewCard(card)
-    );
-    const putNewDeck = async (deckID) => {
-      const newCardIDs = cards.map((card) => card.cardID);
-      const newDeck = { ...deck, deckID: deckID, deckCards: newCardIDs };
-      const deckRef = ref(database, `decks/deck${deckID}`);
-      await set(deckRef, newDeck);
-    };
-    const updateUserInfo = async (deckID) => {
-      const userDeckRef = ref(database, `userInfo/${user.uid}/decks`);
-      const originalDecks = await get(userDeckRef);
-      const originalDecksIDs = !originalDecks.val() ? [] : originalDecks.val();
-      const newDeckInfo = [...originalDecksIDs, deckID];
-      //need to delete the old deck
-      const oldDeckIndex = newDeckInfo.findIndex(
-        (deckID) => deckID === deckConstant.deckID
+      if (isDeckSame) {
+        setSaveDone(true);
+        return;
+      }
+      const updateCards = [];
+      cards.forEach((card, i) => {
+        const cardIDsConstant = deckConstant.deckCards;
+        //Check for new card ID
+        if (!cardIDsConstant.includes(card.cardID)) {
+          updateCards.push(card);
+        } else {
+          //Check for same ID but different English/Spanish
+          const cardConstantIndex = cardsConstant.findIndex(
+            (cardConstant) => cardConstant.cardID === card.cardID
+          );
+          if (
+            cardsConstant[cardConstantIndex].english !== card.english ||
+            cardsConstant[cardConstantIndex].spanish !== card.spanish
+          ) {
+            card.cardID = Date.now();
+            card.cardID += i;
+            updateCards.push(card);
+          }
+        }
+      });
+      const putNewCard = async (card) => {
+        const newCardRef = ref(database, `cards/card${card.cardID}`);
+        await set(newCardRef, card);
+      };
+      const cardsPromises = updateCards.map(
+        async (card) => await putNewCard(card)
       );
-      newDeckInfo.splice(oldDeckIndex, 1);
-      await set(userDeckRef, newDeckInfo);
-    };
+      const putNewDeck = async (deckID) => {
+        const newCardIDs = cards.map((card) => card.cardID);
+        const newDeck = { ...deck, deckID: deckID, deckCards: newCardIDs };
+        const deckRef = ref(database, `decks/deck${deckID}`);
+        await set(deckRef, newDeck);
+      };
+      const updateUserInfo = async (deckID) => {
+        const userDeckRef = ref(database, `userInfo/${user.uid}/decks`);
+        const originalDecks = await get(userDeckRef);
+        const originalDecksIDs = !originalDecks.val()
+          ? []
+          : originalDecks.val();
+        const newDeckInfo = [...originalDecksIDs, deckID];
+        //need to delete the old deck
+        const oldDeckIndex = newDeckInfo.findIndex(
+          (deckID) => deckID === deckConstant.deckID
+        );
+        newDeckInfo.splice(oldDeckIndex, 1);
+        await set(userDeckRef, newDeckInfo);
+      };
 
-    const newDeckID = Date.now();
-    await Promise.all([
-      ...cardsPromises,
-      await putNewDeck(newDeckID),
-      await updateUserInfo(newDeckID),
-    ]);
-    setSaveDone(true);
+      const newDeckID = Date.now();
+      await Promise.all([
+        ...cardsPromises,
+        await putNewDeck(newDeckID),
+        await updateUserInfo(newDeckID),
+      ]);
+      setSaveDone(true);
+    } catch (error) {
+      setErrorMessage(error.message);
+    }
   };
 
   const handleCloseSaveDone = () => {
@@ -135,7 +180,6 @@ export default function EditDeckPage() {
   const handleTranslate = async (cardID) => {
     const newValueIndex = cards.findIndex((card) => card.cardID === cardID);
     const newValue = cards[newValueIndex].english;
-    console.log(newValue);
     try {
       const response = await axios.get(
         `https://www.dictionaryapi.com/api/v3/references/spanish/json/${newValue}?key=${process.env.REACT_APP_SPANISH_KEY}`
@@ -162,7 +206,7 @@ export default function EditDeckPage() {
       // const audioLink = `https://media.merriam-webster.com/audio/prons/es/me/mp3/${subdir}/${audio}.mp3`;
       setCards(updatedCards);
     } catch (error) {
-      console.log(error);
+      setErrorMessage("No translation found.");
     }
   };
 
@@ -229,6 +273,10 @@ export default function EditDeckPage() {
     ));
   return (
     <div>
+      <ErrorPage
+        errorMessage={errorMessage}
+        handleErrorMessage={handleErrorMessage}
+      />
       <Backdrop open={!cards.length}>
         <h3>Getting deck and cards</h3>
         <h1>

@@ -36,7 +36,6 @@ export default function StudyPage() {
           ref(database, `userInfo/${user.uid}/decks`)
         );
         const userDeckIDs = userDeckIDsSS.val();
-        console.log(userDeckIDs);
         if (!userDeckIDs.length || !userDeckIDs.includes(Number(deckID))) {
           throw new Error("You don't have this deck!");
         }
