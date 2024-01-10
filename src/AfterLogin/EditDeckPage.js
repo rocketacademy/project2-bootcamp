@@ -7,12 +7,7 @@ import { Backdrop, CircularProgress } from "@mui/material";
 import SaveDone from "./EditComponent/SaveDone";
 import axios from "axios";
 import "./Study.css";
-import OpenAI from "openai";
-import {
-  getDownloadURL,
-  ref as storageRef,
-  uploadBytes,
-} from "firebase/storage";
+import TextToSpeech from "./TextToSpeech";
 
 export default function EditDeckPage() {
   const [user] = useOutletContext();
@@ -143,18 +138,6 @@ export default function EditDeckPage() {
       const capitalizedWord = word.charAt(0).toUpperCase() + word.slice(1);
       const updatedCards = [...cards];
       updatedCards[newValueIndex].spanish = capitalizedWord;
-      // const audio = apiData[0].hwi.prs[0].sound.audio;
-      // let subdir;
-      // if (audio.startsWith("bix")) {
-      //   subdir = "bix";
-      // } else if (audio.startsWith("gg")) {
-      //   subdir = "gg";
-      // } else if (/[0-9_]/.test(audio.charAt(0))) {
-      //   subdir = "number";
-      // } else {
-      //   subdir = audio.charAt(0).toLowerCase();
-      // }
-      // const audioLink = `https://media.merriam-webster.com/audio/prons/es/me/mp3/${subdir}/${audio}.mp3`;
       setCards(updatedCards);
     } catch (error) {
       console.log(error);
@@ -188,44 +171,17 @@ export default function EditDeckPage() {
     setDecks(newDeck);
   };
 
-  const openai = new OpenAI({
-    apiKey: process.env.REACT_APP_OPENAI_KEY,
-    dangerouslyAllowBrowser: true,
-  });
-
-  const handleTextToSpeech = async (cardID) => {
+  const handleAudioURLChange = async (cardID, audioURL) => {
     const newValueIndex = cards.findIndex((card) => card.cardID === cardID);
-    const spanishWord = cards[newValueIndex].spanish;
-    console.log(spanishWord);
-
-    const filePath = `audio/${Date.now()}`;
-    const fileRef = storageRef(storage, filePath);
-
-    try {
-      const mp3 = await openai.audio.speech.create({
-        model: "tts-1",
-        voice: "alloy",
-        input: `${spanishWord}`,
-      });
-      const arrayBuffer = await mp3.arrayBuffer();
-      const blob = new Blob([arrayBuffer], { type: "audio/mpeg" });
-
-      await uploadBytes(fileRef, blob);
-      const downloadUrl = await getDownloadURL(fileRef);
-      const audio = new Audio(downloadUrl);
-      console.log(downloadUrl);
-      audio.play();
-
-      const newCards = [...cards];
-      newCards[newValueIndex] = {
-        ...newCards[newValueIndex],
-        URL: downloadUrl,
-      };
-      setCards(newCards);
-    } catch (error) {
-      console.error("Error text-to-speech-API");
-    }
+    const newCards = [...cards];
+    newCards[newValueIndex] = {
+      ...newCards[newValueIndex],
+      URL: audioURL,
+    };
+    setCards(newCards);
   };
+
+  console.log(cards);
 
   const cardsDisplay =
     cards.length &&
@@ -258,7 +214,13 @@ export default function EditDeckPage() {
               label="Spanish"
               variant="standard"
             ></TextField>
-            <Button onClick={() => handleTextToSpeech(card.cardID)}>🔊</Button>
+            {/* <Button onClick={() => handleTextToSpeech(card.cardID)}>🔊</Button> */}
+            <TextToSpeech
+              card={card}
+              onAudioURLChange={(audioURL) =>
+                handleAudioURLChange(card.cardID, audioURL)
+              }
+            />
           </div>
         </div>
       </Card>
