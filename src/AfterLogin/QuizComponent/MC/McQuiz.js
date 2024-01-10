@@ -3,10 +3,19 @@ import { get, ref } from "firebase/database";
 import { useEffect, useState } from "react";
 import { database } from "../../../firebase";
 import McQuizQuestion from "./McQuizQuestion";
+import { useNavigate } from "react-router-dom";
+import ErrorPage from "../../../ErrorPage";
 
 //show the  mc question and mc header, and contain the question generation logic
 export default function McQuiz(props) {
   const [questions, setQuestions] = useState([]);
+  const [errorMessage, setErrorMessage] = useState("");
+  const navi = useNavigate();
+
+  const handleErrorMessage = () => {
+    setErrorMessage("");
+    navi("/");
+  };
 
   //only generate once when this component is rendered.
   useEffect(() => {
@@ -61,47 +70,58 @@ export default function McQuiz(props) {
       //Take the correct Card and false cards info
       const takeQuestionInfo = async (correctCardID, falseCardIDs) => {
         const correctCardRef = ref(database, `cards/card${correctCardID}`);
-        const card = await get(correctCardRef);
-        const questionInfo = {
-          english: card.val().english,
-          answer: card.val().spanish,
-          choice: [card.val().spanish],
-        };
-        for (const falseCardID of falseCardIDs) {
-          const falseCardRef = ref(database, `cards/card${falseCardID}`);
-          const falseCard = await get(falseCardRef);
-          //randomlize the choice order(length+1 for insert it into last index)
-          const random = Math.floor(
-            Math.random() * (questionInfo.choice.length + 1)
-          );
-          questionInfo.choice.splice(random, 0, falseCard.val().spanish);
+        try {
+          const card = await get(correctCardRef);
+          const questionInfo = {
+            english: card.val().english,
+            answer: card.val().spanish,
+            choice: [card.val().spanish],
+          };
+          for (const falseCardID of falseCardIDs) {
+            const falseCardRef = ref(database, `cards/card${falseCardID}`);
+            const falseCard = await get(falseCardRef);
+            //randomlize the choice order(length+1 for insert it into last index)
+            const random = Math.floor(
+              Math.random() * (questionInfo.choice.length + 1)
+            );
+            questionInfo.choice.splice(random, 0, falseCard.val().spanish);
+          }
+          return questionInfo;
+        } catch (error) {
+          setErrorMessage(error.message);
         }
-        return questionInfo;
       };
 
       //make promises to await all
-      const promises = [];
-      for (let i = 0; i < 10; i++) {
-        const promise = {
-          ...(await takeQuestionInfo(
-            questionID[i].correct,
-            questionID[i].false
-          )),
-          deckName: questionID[i].deckName,
-        };
-        promises.push(promise);
+      try {
+        const promises = [];
+        for (let i = 0; i < 10; i++) {
+          const promise = {
+            ...(await takeQuestionInfo(
+              questionID[i].correct,
+              questionID[i].false
+            )),
+            deckName: questionID[i].deckName,
+          };
+          promises.push(promise);
+        }
+
+        const newQuestion = await Promise.all(promises);
+        setQuestions(newQuestion);
+      } catch (error) {
+        setErrorMessage(error.message);
       }
-
-      const newQuestion = await Promise.all(promises);
-      setQuestions(newQuestion);
     };
-
     genQuestion(props.decks);
   }, [props.decks]);
 
   //show backdrop if question haven't been generated
   return (
     <div className="page">
+      <ErrorPage
+        errorMessage={errorMessage}
+        handleErrorMessage={handleErrorMessage}
+      />
       <Backdrop open={!questions.length}>
         <h3>Generating question</h3>
         <h1>

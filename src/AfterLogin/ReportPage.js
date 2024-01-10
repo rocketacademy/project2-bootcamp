@@ -46,7 +46,7 @@ export default function ReportPage() {
         }
         setUserWords(words.size);
       } catch (error) {
-        console.log(error);
+        setErrorMessage(error.message);
       }
     };
     getUserAndDeckInfo();

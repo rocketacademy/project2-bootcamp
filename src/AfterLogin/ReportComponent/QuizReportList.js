@@ -4,18 +4,31 @@ import { useEffect, useState } from "react";
 import { useOutletContext, useNavigate } from "react-router-dom";
 import { database } from "../../firebase";
 import { DataGrid } from "@mui/x-data-grid";
+import ErrorPage from "../../ErrorPage";
 
 export default function QuizReportList() {
   const [user] = useOutletContext();
   const [quizList, setQuizList] = useState(null);
   const navi = useNavigate();
+  const [errorMessage, setErrorMessage] = useState("");
 
+  const handleErrorMessage = () => {
+    setErrorMessage("");
+    navi("/report");
+  };
   //get the quiz report List
   useEffect(() => {
     const getQuizReportList = async () => {
-      const newQuizListRef = ref(database, `userInfo/${user.uid}/quizReport`);
-      const newQuizList = await get(newQuizListRef);
-      setQuizList(newQuizList.val());
+      try {
+        const newQuizListRef = ref(database, `userInfo/${user.uid}/quizReport`);
+        const newQuizList = await get(newQuizListRef);
+        if (!newQuizList.val()) {
+          throw new Error("You have no Quiz taken.");
+        }
+        setQuizList(newQuizList.val());
+      } catch (error) {
+        setErrorMessage(error.message);
+      }
     };
     getQuizReportList();
   }, [user.uid]);
@@ -60,5 +73,13 @@ export default function QuizReportList() {
     </Backdrop>
   );
 
-  return display;
+  return (
+    <div>
+      <ErrorPage
+        errorMessage={errorMessage}
+        handleErrorMessage={handleErrorMessage}
+      />
+      {display}
+    </div>
+  );
 }
