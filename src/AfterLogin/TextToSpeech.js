@@ -6,8 +6,6 @@ import {
 } from "firebase/storage";
 import { useState } from "react";
 import OpenAI from "openai";
-import { Button } from "@mui/material";
-import { Backdrop, CircularProgress } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 
 export default function TextToSpeech(props) {

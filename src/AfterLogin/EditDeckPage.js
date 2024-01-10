@@ -194,27 +194,30 @@ export default function EditDeckPage() {
           <Button onClick={() => handleDelete(card.cardID)}>Delete</Button>
         </div>
         <div className="edit">
-          <TextField
-            fullWidth
-            value={card.english}
-            onChange={(e) =>
-              handleFieldChange(card.cardID, "english", e.target.value)
-            }
-            label="English"
-            variant="standard"
-          ></TextField>
-          <br />
-          <div>
+          <div className="field">
             <TextField
               fullWidth
-              value={card.spanish}
+              value={card.english}
               onChange={(e) =>
-                handleFieldChange(card.cardID, "spanish", e.target.value)
+                handleFieldChange(card.cardID, "english", e.target.value)
               }
-              label="Spanish"
+              label="English"
               variant="standard"
             ></TextField>
-            {/* <Button onClick={() => handleTextToSpeech(card.cardID)}>🔊</Button> */}
+          </div>
+          <br />
+          <div className="field-audio">
+            <div className="field">
+              <TextField
+                fullWidth
+                value={card.spanish}
+                onChange={(e) =>
+                  handleFieldChange(card.cardID, "spanish", e.target.value)
+                }
+                label="Spanish"
+                variant="standard"
+              ></TextField>
+            </div>
             <TextToSpeech
               card={card}
               onAudioURLChange={(audioURL) =>
