@@ -36,6 +36,7 @@ export default function FlashcardForm(props) {
       if (response.data && response.data.length) {
         let firstWord = response.data[0].shortdef[0];
         firstWord = removeColon(firstWord);
+        firstWord = response.data[0].fl.concat(": ", firstWord);
         translation.push(firstWord);
         console.log(response.data[1]);
 
@@ -43,6 +44,7 @@ export default function FlashcardForm(props) {
           if (data && data.shortdef.length) {
             let word = data.shortdef[0];
             word = removeColon(word);
+            word = data.fl.concat(": ", word);
             translation.push(word);
             return translation;
           }
