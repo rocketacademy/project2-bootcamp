@@ -10,13 +10,13 @@ export default function FlashcardForm(props) {
   const [englishValue, setEnglishValue] = useState("");
   const [spanishValue, setSpanishValue] = useState([]);
   const [options, setOptions] = useState([]);
-  // const [translation, setTranslation] = useState("");
 
   const handleAddCard = () => {
     if (englishValue && spanishValue) {
       props.addCard(englishValue, spanishValue);
       setEnglishValue("");
       setSpanishValue("");
+      setOptions([]);
     }
   };
 
@@ -54,17 +54,6 @@ export default function FlashcardForm(props) {
 
         addTranslationOptions(data1);
         addTranslationOptions(data2);
-
-        // if (response.data[1] && response.data[1].shortdef.length) {
-        //   let secondWord = response.data[1].shortdef[0];
-        //   secondWord = removeColon(secondWord);
-        //   translation.push(secondWord);
-        // }
-        // if (response.data[2] && response.data[2].shortdef.length) {
-        //   let thirdWord = response.data[2].shortdef[0];
-        //   thirdWord = removeColon(thirdWord);
-        //   translation.push(thirdWord);
-        // }
 
         console.log(translation);
 
