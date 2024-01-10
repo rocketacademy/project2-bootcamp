@@ -1,14 +1,14 @@
 import { useParams, useNavigate, useOutletContext } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { ref, get, set, update } from "firebase/database";
+import { ref, get, set } from "firebase/database";
 import { database } from "../firebase";
 import { Card, Button, TextField } from "@mui/material";
 import { Backdrop, CircularProgress } from "@mui/material";
 import SaveDone from "./EditComponent/SaveDone";
 import axios from "axios";
 import "./Study.css";
-import TextToSpeech from "./TextToSpeech";
 import ErrorPage from "../ErrorPage";
+import TextToSpeech from "./TextToSpeech";
 
 export default function EditDeckPage() {
   const [user] = useOutletContext();
@@ -83,13 +83,8 @@ export default function EditDeckPage() {
         setErrorMessage(error.message);
       }
     };
-
     fetchDeckAndCards();
-  }, [deckID]);
-
-  const deckName = decks.deckName;
-
-  const editableCard = decksConstant.deckCards;
+  }, [deckID, user.uid]);
 
   const handleFieldChange = (cardID, language, newValue) => {
     const cardIndex = cards.findIndex((card) => card.cardID === cardID);
@@ -192,7 +187,7 @@ export default function EditDeckPage() {
       );
 
       const apiData = response.data;
-
+      console.log(apiData);
       // Extract the first translation
       const word = apiData[0].shortdef[0].split(",")[0];
       const capitalizedWord = word.charAt(0).toUpperCase() + word.slice(1);
@@ -242,52 +237,6 @@ export default function EditDeckPage() {
   };
 
   console.log(cards);
-
-  const cardsDisplay =
-    cards.length &&
-    cards.map((card) => (
-      <Card className="edit-card" key={card.cardID}>
-        <div className="edit-buttons">
-          <Button onClick={() => handleTranslate(card.cardID)}>
-            Translate
-          </Button>
-          <Button onClick={() => handleDelete(card.cardID)}>Delete</Button>
-        </div>
-        <div className="edit">
-          <div className="field">
-            <TextField
-              fullWidth
-              value={card.english}
-              onChange={(e) =>
-                handleFieldChange(card.cardID, "english", e.target.value)
-              }
-              label="English"
-              variant="standard"
-            ></TextField>
-          </div>
-          <br />
-          <div className="field-audio">
-            <div className="field">
-              <TextField
-                fullWidth
-                value={card.spanish}
-                onChange={(e) =>
-                  handleFieldChange(card.cardID, "spanish", e.target.value)
-                }
-                label="Spanish"
-                variant="standard"
-              ></TextField>
-            </div>
-            <TextToSpeech
-              card={card.spanish}
-              onAudioURLChange={(audioURL) =>
-                handleAudioURLChange(card.cardID, audioURL)
-              }
-            />
-          </div>
-        </div>
-      </Card>
-    ));
 
   const cardsDisplay =
     cards.length &&
