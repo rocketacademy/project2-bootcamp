@@ -1,27 +1,25 @@
 // Use this file in index.js as the root only as backup!
 import React from "react";
-import RenderMap from "../src/Services/Maps/RenderMap";
+import RenderMap from "../Services/Maps/RenderMap";
 import { useState, useEffect } from "react";
-import "./App.css";
-import AuthFormTesting from "./Components/AuthFormTesting";
-import SignIn from "./Components/AuthFormDiffVersion";
-import { auth } from "./firebase";
+// import "./App.css";
+import "../App.css"
+import AuthFormTesting from "./AuthFormTesting";
+import SignIn from "./AuthFormDiffVersion";
+import { auth } from "../firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
-import PersistentDrawerLeft from "./Components/Drawer";
-import { BrowserRouter as Router, Link, Routes, Route } from "react-router-dom";
-import Quiz from "./Components/Quizzes";
-import { AppLinks } from "./AppMain";
+
+
+import { AppLinks } from "../AppMain";
 
 // MUI
-import { TextField, Box, Typography } from "@mui/material";
+import {  Box } from "@mui/material";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import { styled } from "@mui/system";
-// import { Typography } from "@mui/material/styles/createTypography";
-import MenuItem from "@mui/material/MenuItem";
-import TemporaryDrawer from "./Components/TemporaryDrawer";
-// import { mapToStyles } from "@popperjs/core/lib/modifiers/computeStyles";
-// import { assertExpressionStatement } from "@babel/types";
+
+import TemporaryDrawer from "./TemporaryDrawer";
+
 
 // Styling MUI function
 const StyledContainer = styled("div")({
@@ -55,22 +53,6 @@ const linkStyle = {
   fontSize: "30px",
 };
 
-// Commented out because we will remove this feature + it is confusing React from parsing the landmarks props to RenderMap.js
-// SelectTextFields MUI
-// const landmarks = [
-//   {
-//     value: "Historical Landmarks",
-//     label: "Historical Landmarks",
-//   },
-//   {
-//     value: "Nature Parks",
-//     label: "Nature Parks",
-//   },
-//   {
-//     value: "Political Landmarks",
-//     label: "Political Landmarks",
-//   },
-// ];
 
 const historicalLandmarks = {
   Merlion: { lat: 1.2868, lng: 103.8545 },
@@ -192,13 +174,6 @@ const AppBackground = () => {
       <Box>
         {isLoggedIn ? (
           <Box>
-            {/* <PersistentDrawerLeft
-              aiResponse={aiResponse}
-              clearAIResponse={clearAIResponse}
-              // onDrawerOpen: the function to set drawerRef state is passed as argument to onDrawerOpen
-              onDrawerOpen={(func) => setDrawerRef(func)}
-              sendMessage={sendMessage}
-            /> */}
 
             <TemporaryDrawer
               aiResponse={aiResponse}
@@ -304,39 +279,11 @@ const AppBackground = () => {
               sendMessage={sendMessage}
               landmarks={selectedLandmarks}
             />
-            {/*<GoogleMap
-                mapContainerStyle={mapContainerStyle}
-                mapId="6da2495ffc989dca"
-                zoom={12}
-                center={center}
-              >
-                <Marker position={center} />
-                <Marker
-                  position={{ lat: 1.40058, lng: 103.90899 }}
-                  onClick={() => {
-                    const lat = 1.40058;
-                    const lng = 103.90899;
-                    console.log("Marker clicked!");
-                    console.log(lat);
-                    console.log(lng);
-                    const message = `What is the name of this location with the following address: 100 Punggol Central, Singapore 828839. Share with me its history, and what developments occured in the last 20 years in Singapore. Word limit is 30 words.`;
-                    sendMessage(message);
-                  }}
-                />
-              </GoogleMap>*/}
+            
           </StyledGridItem>
         </StyledContainer>
       
-      {/* 
-      <Box style={{ display: isLoggedIn ? "none" : "block" }}>
-        {!isLoggedIn && <AuthFormTesting />}
-      </Box> */}
-
-      {/* {!isLoggedIn && (
-        <Box className='overlay'>
-          <SignIn />
-        </Box>
-      )} */}
+  
     </Box>
   );
 };

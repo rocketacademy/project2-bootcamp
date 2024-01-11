@@ -8,9 +8,12 @@ import { onAuthStateChanged, signOut } from "firebase/auth";
 
 import { BrowserRouter as Router, Link, Routes, Route } from "react-router-dom";
 import Quiz from "./Components/Quizzes";
-import AppTest from "./AppTest";
+
 import App from "./App";
 import QuizAI from "./Components/QuizzesAI";
+
+import BackgroundAppTesting from "./BackgroundAppTesting";
+
 
 const libraries = ["places"];
 
@@ -36,9 +39,6 @@ const AppLinks = () => (
     <Link to="/quizzes" style={linkStyle}>
       Quizzes
     </Link>
-    <Link to="/map" style={linkStyle}>
-      Charles Map
-    </Link>
     <Link to="/quizzesAI" style={linkStyle}>
       Quizzes AI
     </Link>
@@ -47,6 +47,10 @@ const AppLinks = () => (
     </Link>
   </>
 );
+
+// Testing grounds
+
+
 
 const AppMain = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -107,15 +111,16 @@ const AppMain = () => {
         {isLoggedIn ? (
           <>
             <Route path="/quizzes" element={<Quiz user={user} />} />
-            <Route path="/" element={<AppTest />} />
+            <Route path="/" element={<App />} />
             <Route path="/map" element={<App />} />
             <Route path="/quizzesAI" element={<QuizAI user={user} />} />
           </>
         ) : (
           <>
             <Route path="/quizzes" element={<AuthFormTesting />} />
-            <Route path="/" element={<AuthFormTesting />} />
+            <Route path="/" element={<App />} />
             <Route path="/map" element={<App />} />
+            <Route path='/sign-in' element={<BackgroundAppTesting />}/>
           </>
         )}
       </Routes>

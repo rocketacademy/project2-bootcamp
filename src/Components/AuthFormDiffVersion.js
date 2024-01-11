@@ -19,18 +19,25 @@ import {
   createUserWithEmailAndPassword,
 } from "firebase/auth";
 
-
 const defaultTheme = createTheme();
 
 export default function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+
+
   const signUp = async () => {
-    const user = await createUserWithEmailAndPassword(auth, email, password);
+    try {
+      const user = await createUserWithEmailAndPassword(auth, email, password);
     console.log(user);
     setEmail("");
     setPassword("");
+
+
+    } catch(error){
+      console.error('Error signing up', error)
+    }
   };
 
   const signIn = async () => {

@@ -113,7 +113,7 @@ const politicalLandmarks = {
   NationalMuseumofSingapore: { lat: 1.2966, lng: 103.8485 },
 };
 
-const App = () => {
+const BackgroundAppTesting = () => {
   const [userMessage, setUserMessage] = useState("");
   const [aiResponse, setAiResponse] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -351,4 +351,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default BackgroundAppTesting;
