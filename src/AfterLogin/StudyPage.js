@@ -15,6 +15,7 @@ export default function StudyPage() {
   const [decks, setDecks] = useState([]);
   const [cards, setCards] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [length, setLength] = useState(0);
   const [displayEnglish, setDisplayEnglish] = useState(true);
   const [studyDone, setStudyDone] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -80,6 +81,7 @@ export default function StudyPage() {
 
           setDecks(deckInfoData);
           setCards(cardInfoData);
+          setLength(cardInfoData.length);
         }
       } catch (error) {
         setGoHome(true);
@@ -89,19 +91,14 @@ export default function StudyPage() {
     fetchDeckAndCards();
   }, [deckID, user.uid]);
 
+  console.log(length);
+
   const handleNextCard = () => {
-    if (currentIndex < Object.keys(decks.deckCards).length - 1) {
+    if (currentIndex < length - 1) {
       setCurrentIndex(currentIndex + 1);
       setDisplayEnglish(true);
     } else {
       setStudyDone(true);
-    }
-  };
-
-  const handlePrevCard = () => {
-    if (currentIndex > 0) {
-      setCurrentIndex(currentIndex - 1);
-      setDisplayEnglish(true);
     }
   };
 
@@ -126,6 +123,20 @@ export default function StudyPage() {
     });
   };
 
+  const handleRepeat = () => {
+    setCards((prevCards) => {
+      const repeatedCards = { ...prevCards[currentIndex] };
+      return [...prevCards, repeatedCards];
+    });
+    setLength((prevLength) => prevLength + 1);
+    if (currentIndex < length - 1) {
+      setCurrentIndex(currentIndex + 1);
+      setDisplayEnglish(true);
+    } else {
+      setStudyDone(true);
+    }
+  };
+
   const playAudio = async () => {
     try {
       const audioUrl = currentCard.URL;
@@ -139,7 +150,48 @@ export default function StudyPage() {
 
   const currentCard = decks.deckCards && cards[currentIndex];
 
-  const totalCards = decks.deckCards ? Object.keys(decks.deckCards).length : 0;
+  const totalCards = decks.deckCards ? length : 0;
+
+  const cardEnglish = (
+    <>
+      {currentCard && (
+        <Card className="english">
+          <div className="study-card-header">
+            <p>English</p>
+          </div>
+          <div className="study-word" onClick={handleClick}>
+            <h1>{currentCard.english}</h1>
+          </div>
+          <p className="hint">Hint: Tap to flip to the other side</p>
+        </Card>
+      )}
+    </>
+  );
+
+  const cardSpanish = (
+    <>
+      {currentCard && (
+        <>
+          <Card className="spanish">
+            <div className="study-card-header">
+              <p>Spanish</p>
+              <Button onClick={playAudio}>Audio</Button>
+            </div>
+            <div className="study-word" onClick={handleClick}>
+              <h1>{currentCard.spanish}</h1>
+            </div>
+            <p className="hint">Hint: Tap to flip to the other side</p>
+          </Card>
+          <div className="prev-next">
+            <Button onClick={handleRepeat}>👎Again</Button>
+            <Button onClick={handleNextCard}>
+              {currentIndex === totalCards - 1 ? "Done" : "👍Good"}
+            </Button>
+          </div>
+        </>
+      )}
+    </>
+  );
 
   const progressBar = ({ current, total }) => {
     const progress = (current / total) * 100;
@@ -175,46 +227,18 @@ export default function StudyPage() {
               <Button onClick={handleShuffle}>Shuffle</Button>
             </div>
           </div>
+
           <p className="current-index">
             {currentIndex + 1}/{totalCards}
           </p>
           {progressBar({ current: currentIndex + 1, total: totalCards })}
-          <Card className="study-card">
-            {displayEnglish ? (
-              <>
-                <div className="study-card-header">
-                  <p>English</p>
-                </div>
-                <div className="study-word" onClick={handleClick}>
-                  <h1>{currentCard.english}</h1>
-                </div>
-                <p className="hint">Hint: Tap to flip to the other side</p>
-              </>
-            ) : (
-              <>
-                <div className="study-card-header">
-                  <p>Spanish</p>
-                  <Button onClick={playAudio}>Audio</Button>
-                </div>
-                <div className="study-word" onClick={handleClick}>
-                  <h1>{currentCard.spanish}</h1>
-                </div>
-                <p className="hint">Hint: Tap to flip to the other side</p>
-              </>
-            )}
-          </Card>
-          <div className="prev-next">
-            <Button onClick={handlePrevCard} disabled={currentIndex <= 0}>
-              Prev
-            </Button>
-            <Button onClick={handleNextCard}>
-              {currentIndex === totalCards - 1 ? "Done" : "Next"}
-            </Button>
+
+          <div className="study-card">
+            {displayEnglish ? cardEnglish : cardSpanish}
           </div>
         </>
       )}
 
-      {/* showing dialog after reviewing done */}
       {studyDone && (
         <StudyDone open={studyDone} onClose={handleCloseStudyDone} />
       )}

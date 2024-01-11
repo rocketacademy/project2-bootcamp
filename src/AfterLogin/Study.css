@@ -13,13 +13,11 @@
   width: 75vw;
   height: 50vh;
   text-align: left;
-  margin-bottom: 10px;
-  padding: 10px;
 }
 
 .study-word {
   width: 100%;
-  height: 75%;
+  height: 30vh;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -31,6 +29,11 @@
   align-items: center;
   height: 10%;
   font-size: 1rem;
+  margin: 10px;
+}
+
+.spanish {
+  background-color: #dde2fc !important;
 }
 
 .hint {
