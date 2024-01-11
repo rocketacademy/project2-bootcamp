@@ -4,13 +4,14 @@ import FlashcardForm from "./FlashcardForm";
 import "./AddDeckPage.css";
 import { ref, set, get } from "firebase/database";
 import { database } from "../firebase";
+import ErrorPage from "../ErrorPage";
 
 export default function AddDeckPage() {
-  const [user, setUser] = useOutletContext();
+  const [user] = useOutletContext();
   const [deckName, setDeckName] = useState("");
   const [deck, setDeck] = useState([]);
-  const [deckId, setDeckId] = useState(Date.now());
   const navi = useNavigate();
+  const [errorMessage, setErrorMessage] = useState("");
 
   const addCard = (englishValue, spanishValue) => {
     const newCardId = Date.now();
@@ -28,6 +29,65 @@ export default function AddDeckPage() {
     const newDeck = deckCopy.filter((card) => card.cardID !== cardID);
     setDeck(newDeck);
   };
+
+  const addDeckToDatabase = async (deckId) => {
+    const cardIDs = deck.map((card) => card.cardID);
+    try {
+      await set(ref(database, "decks/deck" + deckId), {
+        deckID: deckId,
+        deckName: deckName,
+        deckCards: cardIDs,
+      });
+    } catch (error) {
+      setErrorMessage(error.message);
+    }
+  };
+
+  const addCardsToDatabase = async (cardId, card) => {
+    try {
+      await set(ref(database, "cards/card" + cardId), card);
+    } catch (error) {
+      setErrorMessage(error.message);
+    }
+  };
+
+  const updateUserInfo = async (deckId) => {
+    const userDeckRef = ref(database, `userInfo/${user.uid}/decks`);
+    try {
+      const originalDecks = await get(userDeckRef);
+      const originalDecksIDs = !originalDecks.val() ? [] : originalDecks.val();
+      const newDeckInfo = [...originalDecksIDs, deckId];
+      await set(userDeckRef, newDeckInfo);
+    } catch (error) {
+      setErrorMessage(error.message);
+    }
+  };
+
+  const handleSave = async () => {
+    try {
+      if (!deckName) {
+        throw new Error("You need to name your deck.");
+      }
+      if (!deck.length) {
+        throw new Error("You need to add card to your new deck.");
+      }
+      const deckId = Date.now();
+      const cardsPromise = deck.map(
+        async (card) => await addCardsToDatabase(card.cardID, card)
+      );
+      const promises = [
+        ...cardsPromise,
+        addDeckToDatabase(deckId),
+        updateUserInfo(deckId),
+      ];
+      await Promise.all(promises);
+      setDeckName("");
+      navi("/");
+    } catch (error) {
+      setErrorMessage(error.message);
+    }
+  };
+
   const currDeck = deck.map((card, index) => {
     return (
       <div key={index}>
@@ -51,89 +111,13 @@ export default function AddDeckPage() {
     );
   });
 
-  const addDeckToDatabase = async () => {
-    const cardIDs = deck.map((card) => card.cardID);
-
-    try {
-      await set(ref(database, "decks/deck" + deckId), {
-        deckID: deckId,
-        deckName: deckName,
-        deckCards: cardIDs,
-      });
-      console.log("Deck added to the database successfully!");
-    } catch (error) {
-      console.error("Error adding deck to the database:", error);
-    }
-  };
-
-  const addCardsToDatabase = async (cardId, card) => {
-    try {
-      await set(ref(database, "cards/card" + cardId), card);
-      console.log("Card added to the database successfully!");
-    } catch (error) {
-      console.error("Error adding card to the database:", error);
-    }
-  };
-
-  const updateUserInfo = async () => {
-    const userDeckRef = ref(database, `userInfo/${user.uid}/decks`);
-    try {
-      const originalDecks = await get(userDeckRef);
-      console.log(originalDecks.val());
-      const originalDecksIDs = originalDecks.val();
-
-      if (originalDecksIDs) {
-        try {
-          const newDeckInfo = [...originalDecksIDs, deckId];
-          await set(userDeckRef, newDeckInfo);
-          console.log("UserInfo added to the database successfully!");
-        } catch (error) {
-          console.error("Error updating userInfo in the database:", error);
-        }
-      } else {
-        try {
-          await set(userDeckRef, [deckId]);
-          console.log("UserInfo added to the database successfully!");
-        } catch (error) {
-          console.error("Error updating userInfo in the database:", error);
-        }
-      }
-    } catch (error) {
-      console.error("Error retrieving originalDecks from the database:", error);
-    }
-  };
-
-  const handleSave = async () => {
-    let card = {};
-    for (let i = 0; i < deck.length; i++) {
-      card = deck[i];
-      try {
-        await addCardsToDatabase(card.cardID, card);
-        console.log("cards added successfully");
-      } catch (error) {
-        console.error("Error adding cards to database");
-      }
-    }
-    try {
-      await addDeckToDatabase(deck);
-      console.log("Deck added to database successfuly");
-    } catch (error) {
-      console.error("Error adding deck to database");
-    }
-
-    try {
-      await updateUserInfo();
-      console.log("UserInfo updated successfuly");
-    } catch (error) {
-      console.error("Error updating userInfo in database");
-    }
-    setDeckName("");
-    setDeckId(null);
-    navi("/");
-  };
   return (
     <div>
       <div>
+        <ErrorPage
+          errorMessage={errorMessage}
+          handleErrorMessage={() => setErrorMessage("")}
+        />
         <label>Name your deck:</label>
         <input
           className="form-control mt-3 mb-4"
@@ -143,7 +127,6 @@ export default function AddDeckPage() {
           value={deckName}
           onChange={(e) => setDeckName(e.target.value)}
         ></input>
-
         <FlashcardForm addCard={addCard} />
         <div>{currDeck}</div>
         <div>

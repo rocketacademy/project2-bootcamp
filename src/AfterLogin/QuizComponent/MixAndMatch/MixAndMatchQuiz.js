@@ -3,9 +3,18 @@ import { useEffect, useState } from "react";
 import { database } from "../../../firebase";
 import { Backdrop, CircularProgress } from "@mui/material";
 import MixAndMatchQuizQuestion from "./MixAndMatchQuizQuestion";
+import { useNavigate } from "react-router-dom";
+import ErrorPage from "../../../ErrorPage";
 
 export default function MixAndMatchQuiz(props) {
   const [questions, setQuestions] = useState([]);
+  const [errorMessage, setErrorMessage] = useState("");
+  const navi = useNavigate();
+
+  const handleErrorMessage = () => {
+    setErrorMessage("");
+    navi("/");
+  };
 
   useEffect(() => {
     //flatten the decks of array first,
@@ -28,18 +37,26 @@ export default function MixAndMatchQuiz(props) {
 
     const makeCardPromise = async (cardID) => {
       const cardRef = ref(database, `cards/card${cardID}`);
-      return await get(cardRef);
+      try {
+        return await get(cardRef);
+      } catch (error) {
+        setErrorMessage(error.message);
+      }
     };
 
     //get cards from the database
     const takeQuestionInfo = async (questionIDs) => {
-      const promises = [];
-      for (let i = 0; i < 10; i++) {
-        const card = await makeCardPromise(questionIDs[i]);
-        promises.push(card.val());
+      try {
+        const promises = [];
+        for (let i = 0; i < 10; i++) {
+          const card = await makeCardPromise(questionIDs[i]);
+          promises.push(card.val());
+        }
+        const questionInfo = await Promise.all(promises);
+        setQuestions(questionInfo);
+      } catch (error) {
+        setErrorMessage(error.message);
       }
-      const questionInfo = await Promise.all(promises);
-      setQuestions(questionInfo);
     };
     takeQuestionInfo(questionIDs);
   }, [props.decks]);
@@ -47,6 +64,10 @@ export default function MixAndMatchQuiz(props) {
   //show backdrop if question haven't been generated
   return (
     <div className="page">
+      <ErrorPage
+        errorMessage={errorMessage}
+        handleErrorMessage={handleErrorMessage}
+      />
       <Backdrop open={!questions.length}>
         <h3>Generating question</h3>
         <h1>

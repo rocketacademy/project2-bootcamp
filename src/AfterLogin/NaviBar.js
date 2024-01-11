@@ -2,7 +2,7 @@ import LeaderboardIcon from "@mui/icons-material/Leaderboard";
 import PostAddIcon from "@mui/icons-material/PostAdd";
 import { Link } from "react-router-dom";
 import QuizIcon from "@mui/icons-material/Quiz";
-import { signOut } from "firebase/auth";
+import { signOut, updateProfile } from "firebase/auth";
 import { auth, database, storage } from "../firebase";
 import {
   Avatar,
@@ -16,12 +16,15 @@ import {
 import { useEffect, useState } from "react";
 import { ref as DBref, get, set } from "firebase/database";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import ErrorPage from "../ErrorPage";
 
 export default function NaviBar(props) {
   const [anchorEl, setAnchorEl] = useState(null);
-  const [openDialog, setOpenDialog] = useState(false);
+  const [openDialog, setOpenDialog] = useState("");
   const [profilePicUrl, setProfilePicUrl] = useState("");
+  const [name, setName] = useState("");
   const [file, setFile] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     const takePic = async () => {
@@ -33,7 +36,7 @@ export default function NaviBar(props) {
         const urlDB = await get(userPicRef);
         setProfilePicUrl(urlDB.val());
       } catch (error) {
-        console.log(error);
+        setErrorMessage(error.message);
       }
     };
 
@@ -50,6 +53,19 @@ export default function NaviBar(props) {
     setAnchorEl(e.currentTarget);
   };
 
+  const handleChangeName = async () => {
+    try {
+      await updateProfile(auth.currentUser, {
+        displayName: name,
+      });
+      props.setUser({ ...auth.currentUser });
+      setName("");
+      setOpenDialog("");
+    } catch (error) {
+      setErrorMessage(error.message);
+    }
+  };
+
   const handleUploadPhoto = async () => {
     const photoRef = ref(storage, `profilePics/${props.user.uid}.jpg`);
     try {
@@ -59,14 +75,18 @@ export default function NaviBar(props) {
       await set(userRef, url);
       setProfilePicUrl(url);
       setFile("");
-      setOpenDialog(false);
+      setOpenDialog("");
     } catch (error) {
-      console.log(error);
+      setErrorMessage(error.message);
     }
   };
   return (
     <div className="navi-bar">
-      <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
+      <ErrorPage
+        errorMessage={errorMessage}
+        handleErrorMessage={() => setErrorMessage("")}
+      />
+      <Dialog open={openDialog === "pic"} onClose={() => setOpenDialog(false)}>
         <DialogTitle>Please upload your profile pics </DialogTitle>
         <Input
           type="file"
@@ -78,13 +98,28 @@ export default function NaviBar(props) {
         </Button>
       </Dialog>
 
+      <Dialog open={openDialog === "name"} onClose={() => setOpenDialog(false)}>
+        <DialogTitle>Please enter your new user name</DialogTitle>
+        <Input
+          placeholder="Your Name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+        <Button variant="contained" onClick={handleChangeName}>
+          Confirm
+        </Button>
+      </Dialog>
+
       <Menu
         anchorEl={anchorEl}
         id="profile-pic"
         open={Boolean(anchorEl)}
         onClose={() => setAnchorEl(null)}
       >
-        <MenuItem onClick={() => setOpenDialog(true)}>
+        <MenuItem onClick={() => setOpenDialog("name")}>
+          Change User Name
+        </MenuItem>
+        <MenuItem onClick={() => setOpenDialog("pic")}>
           Add/Change Photo
         </MenuItem>
         <MenuItem onClick={handleSighOut}>Logout</MenuItem>

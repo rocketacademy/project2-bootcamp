@@ -6,35 +6,48 @@ import { get, ref } from "firebase/database";
 import Divider from "@mui/material/Divider";
 import "./ReportPage.css";
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
+import ErrorPage from "../ErrorPage";
 //Take the user data from App.js state
 
 export default function ReportPage() {
   const [user] = useOutletContext();
   const [userInfo, setUserInfo] = useState(null);
   const [userWords, setUserWords] = useState(0);
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     const getUserAndDeckInfo = async () => {
       const userInfoRef = ref(database, `userInfo/${user.uid}`);
-      const newUserInfo = await get(userInfoRef);
-      setUserInfo(newUserInfo.val());
-      const decks = newUserInfo.val().decks;
+      try {
+        const newUserInfo = await get(userInfoRef);
+        setUserInfo(newUserInfo.val());
+        const decks = newUserInfo.val().decks;
 
-      //get promise for deck
-      const decksPromise = decks.map((deck) => {
-        const getDeckInfo = async () => {
-          const deckRef = ref(database, `decks/deck${deck}`);
-          const deckInfo = await get(deckRef);
-          return deckInfo.val().deckCards.length;
-        };
-        return getDeckInfo();
-      });
+        //get promise for deck
+        const decksPromise = decks
+          ? decks.map((deck) => {
+              const getDeckInfo = async () => {
+                const deckRef = ref(database, `decks/deck${deck}`);
+                const deckInfo = await get(deckRef);
+                return deckInfo.val().deckCards;
+              };
+              return getDeckInfo();
+            })
+          : [];
 
-      //get all cards number from each deck
-      const promises = Promise.all(decksPromise);
-      const wordsOfDecks = await promises;
-      const totalWords = wordsOfDecks.reduce((a, b) => a + b, 0);
-      setUserWords(totalWords);
+        //get all cards number from each deck
+        const promises = Promise.all(decksPromise);
+        const cardIDsInDecks = await promises;
+        const words = new Set();
+        for (const deck of cardIDsInDecks) {
+          for (const cardID of deck) {
+            words.add(cardID);
+          }
+        }
+        setUserWords(words.size);
+      } catch (error) {
+        setErrorMessage(error.message);
+      }
     };
     getUserAndDeckInfo();
   }, [user.uid]);
@@ -54,6 +67,30 @@ export default function ReportPage() {
     chartData.length &&
     Math.round(chartData[chartData.length - 1].averageScore);
 
+  const chart = (
+    <LineChart width={350} height={300} data={chartData}>
+      <CartesianGrid strokeDasharray="3 3" />
+      <XAxis
+        dataKey="quiz"
+        label={{
+          value: "Quiz",
+          position: "insideLeft",
+          offset: -60,
+        }}
+      />
+      <YAxis
+        type="number"
+        domain={[0, 100]}
+        label={{
+          value: "Average Score",
+          angle: -90,
+          position: "insideBottomLeft",
+          offset: 12,
+        }}
+      />
+      <Line type="monotone" dataKey="averageScore" />
+    </LineChart>
+  );
   //When Loading file from the databse, will show a backdrop
   const display =
     userInfo === null ? (
@@ -85,32 +122,18 @@ export default function ReportPage() {
               "You need to take quiz first"
             )}
           </div>
-
-          <LineChart width={350} height={300} data={chartData}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis
-              dataKey="quiz"
-              label={{
-                value: "Quiz",
-                position: "insideLeft",
-                offset: -60,
-              }}
-            />
-            <YAxis
-              type="number"
-              domain={[0, 100]}
-              label={{
-                value: "Average Score",
-                angle: -90,
-                position: "insideBottomLeft",
-                offset: 12,
-              }}
-            />
-            <Line type="monotone" dataKey="averageScore" />
-          </LineChart>
+          {chart}
         </div>
       </div>
     );
 
-  return display;
+  return (
+    <div>
+      <ErrorPage
+        errorMessage={errorMessage}
+        handleErrorMessage={() => setErrorMessage("")}
+      />
+      {display}
+    </div>
+  );
 }
