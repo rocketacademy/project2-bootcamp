@@ -123,9 +123,9 @@ export const AttendancePublic = () => {
 
   return (
     <>
-      <div className="prose flex flex-col p-6">
-        <h1 className="text-center">Attendance</h1>
-        <div className="mb-5 form-control w-full">
+      <div className="prose grid grid-cols-1 p-6 max-w-full sm:grid-cols-6">
+        <h1 className="text-center sm:col-span-6">Attendance</h1>
+        <div className="mb-5 form-control sm:col-start-3 col-span-2 ">
           <div className="label">
             <span className="label-text">Course Name</span>
           </div>
@@ -138,7 +138,9 @@ export const AttendancePublic = () => {
             {courseOptions}
           </select>
         </div>
-        <QuizData gid={gid} courseName={courseName} />
+        <div className="sm:col-span-6">
+          <QuizData gid={gid} courseName={courseName} />
+        </div>
       </div>
     </>
   );

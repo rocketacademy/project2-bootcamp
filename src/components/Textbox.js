@@ -26,3 +26,20 @@ export const TextboxWithoutLabels = ({ inlineLabel, value, onChange }) => {
     />
   );
 };
+
+export const DateInputWithLabels = ({ label, value, onChange }) => {
+  return (
+    <label className="form-control w-full">
+      <div className="label">
+        <span className="label-text">{label}</span>
+      </div>
+      <input
+        type="date"
+        className="input input-bordered w-full"
+        value={value}
+        onChange={onChange}
+        pattern="\d{4}-\d{2}-\d{2}"
+      />
+    </label>
+  );
+};
