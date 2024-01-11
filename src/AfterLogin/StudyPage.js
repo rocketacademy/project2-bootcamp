@@ -1,18 +1,16 @@
 import { useParams, useNavigate, useOutletContext } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { ref, get } from "firebase/database";
-import { storage, database } from "../firebase";
-import { ref as storageRef, getDownloadURL } from "firebase/storage";
 import { Card, Button } from "@mui/material";
 import LinearProgress from "@mui/material/LinearProgress";
 import { Backdrop, CircularProgress } from "@mui/material";
 import StudyDone from "./StudyComponent/StudyDone";
 import "./Study.css";
 import ErrorPage from "../ErrorPage";
+import fetchAndCheck from "./FunctionCompent";
 
 export default function StudyPage() {
   const [user] = useOutletContext();
-  const [decks, setDecks] = useState([]);
+  const [deck, setDeck] = useState([]);
   const [cards, setCards] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [displayEnglish, setDisplayEnglish] = useState(true);
@@ -30,67 +28,25 @@ export default function StudyPage() {
   };
 
   useEffect(() => {
-    const checkUserDeckID = async () => {
+    const getIn = async () => {
       try {
-        const userDeckIDsSS = await get(
-          ref(database, `userInfo/${user.uid}/decks`)
-        );
-        const userDeckIDs = userDeckIDsSS.val();
-        if (!userDeckIDs.length || !userDeckIDs.includes(Number(deckID))) {
-          throw new Error("You don't have this deck!");
-        }
-      } catch (error) {
-        setGoHome(true);
-        setErrorMessage(error.message);
-      }
-    };
-    checkUserDeckID();
-    const takeDecksInfo = async () => {
-      try {
-        const decksRef = ref(database, `decks/deck${deckID}`);
-        return await get(decksRef);
-      } catch (error) {
-        setGoHome(true);
-        setErrorMessage(error.message);
-      }
-    };
-
-    const takeCardsInfo = async (cardNumber) => {
-      try {
-        const cardsRef = ref(database, `cards/card${cardNumber}`);
-        return await get(cardsRef);
-      } catch (error) {
-        setGoHome(true);
-        setErrorMessage(error.message);
-      }
-    };
-
-    const fetchDeckAndCards = async () => {
-      try {
-        const deckInfo = await takeDecksInfo();
-        const deckInfoData = deckInfo.val();
-
-        if (deckInfoData) {
-          const cardNumber = Object.values(deckInfoData.deckCards);
-          const cardPromises = cardNumber.map((cardID) =>
-            takeCardsInfo(cardID)
+        const fetchingData = new fetchAndCheck();
+        const { deckInfoData, cardInfoData } =
+          await fetchingData.fetchDeckAndCards(
+            user.uid,
+            deckID,
+            setErrorMessage,
+            setGoHome
           );
-          const cardInfo = await Promise.all(cardPromises);
-          const cardInfoData = cardInfo.map((number) => number.val());
-
-          setDecks(deckInfoData);
-          setCards(cardInfoData);
-        }
-      } catch (error) {
-        setGoHome(true);
-        setErrorMessage(error.message);
-      }
+        setDeck(deckInfoData);
+        setCards(cardInfoData);
+      } catch (error) {}
     };
-    fetchDeckAndCards();
+    getIn();
   }, [deckID, user.uid]);
 
   const handleNextCard = () => {
-    if (currentIndex < Object.keys(decks.deckCards).length - 1) {
+    if (currentIndex < Object.keys(deck.deckCards).length - 1) {
       setCurrentIndex(currentIndex + 1);
       setDisplayEnglish(true);
     } else {
@@ -137,9 +93,9 @@ export default function StudyPage() {
     }
   };
 
-  const currentCard = decks.deckCards && cards[currentIndex];
+  const currentCard = deck.deckCards && cards[currentIndex];
 
-  const totalCards = decks.deckCards ? Object.keys(decks.deckCards).length : 0;
+  const totalCards = deck.deckCards ? Object.keys(deck.deckCards).length : 0;
 
   const progressBar = ({ current, total }) => {
     const progress = (current / total) * 100;
@@ -152,25 +108,22 @@ export default function StudyPage() {
       />
     );
   };
-
-  const deckName = decks.deckName;
-
   return (
     <div>
       <ErrorPage
         errorMessage={errorMessage}
         handleErrorMessage={handleErrorMessage}
       />
-      <Backdrop open={!decks.deckCards}>
+      <Backdrop open={!deck.deckCards}>
         <h3>Generating deck</h3>
         <h1>
           <CircularProgress color="inherit" />
         </h1>
       </Backdrop>
-      {decks.deckCards && Object.keys(decks.deckCards).length > 0 && (
+      {deck.deckCards && Object.keys(deck.deckCards).length > 0 && (
         <>
           <div className="study-header">
-            <p>{deckName}</p>
+            <p>{deck.deckName}</p>
             <div className="shuffle-quiz">
               <Button onClick={handleShuffle}>Shuffle</Button>
             </div>

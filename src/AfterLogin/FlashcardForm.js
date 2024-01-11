@@ -24,10 +24,9 @@ export default function FlashcardForm(props) {
   const translateEnglishToSpanish = async (word) => {
     const apiUrl = `https://www.dictionaryapi.com/api/v3/references/spanish/json/${word}?key=${process.env.REACT_APP_SPANISH_KEY}`;
 
-try {
-    const translation = [];
+    try {
+      const translation = [];
 
-    
       const response = await axios.get(apiUrl);
 
       const removeColon = (word) => {
@@ -60,7 +59,7 @@ try {
         console.log(translation);
 
         setOptions(translation);
-      }else throw new Error("No translation found.")
+      } else throw new Error("No translation found.");
     } catch (error) {
       setErrorMessage(error.message);
     }
