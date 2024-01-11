@@ -2,13 +2,13 @@ import { useParams, useNavigate, useOutletContext } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { ref, get } from "firebase/database";
 import { storage, database } from "../firebase";
-import { ref as storageRef, getDownloadURL } from "firebase/storage";
 import { Card, Button } from "@mui/material";
 import LinearProgress from "@mui/material/LinearProgress";
 import { Backdrop, CircularProgress } from "@mui/material";
 import StudyDone from "./StudyComponent/StudyDone";
 import "./Study.css";
 import ErrorPage from "../ErrorPage";
+import VolumeUpIcon from "@mui/icons-material/VolumeUp";
 
 export default function StudyPage() {
   const [user] = useOutletContext();
@@ -78,9 +78,10 @@ export default function StudyPage() {
           );
           const cardInfo = await Promise.all(cardPromises);
           const cardInfoData = cardInfo.map((number) => number.val());
+          const shuffledCards = handleShuffle(cardInfoData);
 
           setDecks(deckInfoData);
-          setCards(cardInfoData);
+          setCards(shuffledCards);
           setLength(cardInfoData.length);
         }
       } catch (error) {
@@ -91,7 +92,17 @@ export default function StudyPage() {
     fetchDeckAndCards();
   }, [deckID, user.uid]);
 
-  console.log(length);
+  const handleShuffle = (cards) => {
+    for (let i = 0; i < cards.length; i++) {
+      let temp = cards[i];
+      let randomIndex = Math.floor(Math.random() * cards.length);
+      cards[i] = cards[randomIndex];
+      cards[randomIndex] = temp;
+    }
+    return cards;
+  };
+
+  console.log(cards);
 
   const handleNextCard = () => {
     if (currentIndex < length - 1) {
@@ -109,18 +120,6 @@ export default function StudyPage() {
   const handleCloseStudyDone = () => {
     setStudyDone(false);
     navigate(`/`);
-  };
-
-  const handleShuffle = () => {
-    setCards((prev) => {
-      for (let i = 0; i < prev.length; i++) {
-        let temp = cards[i];
-        let randomIndex = Math.floor(Math.random() * prev.length);
-        cards[i] = cards[randomIndex];
-        cards[randomIndex] = temp;
-      }
-      return [...prev];
-    });
   };
 
   const handleRepeat = () => {
@@ -175,7 +174,11 @@ export default function StudyPage() {
           <Card className="spanish">
             <div className="study-card-header">
               <p>Spanish</p>
-              <Button onClick={playAudio}>Audio</Button>
+              <VolumeUpIcon
+                onClick={playAudio}
+                fontSize="large"
+                color="primary"
+              />
             </div>
             <div className="study-word" onClick={handleClick}>
               <h1>{currentCard.spanish}</h1>
@@ -223,9 +226,6 @@ export default function StudyPage() {
         <>
           <div className="study-header">
             <p>{deckName}</p>
-            <div className="shuffle-quiz">
-              <Button onClick={handleShuffle}>Shuffle</Button>
-            </div>
           </div>
 
           <p className="current-index">
