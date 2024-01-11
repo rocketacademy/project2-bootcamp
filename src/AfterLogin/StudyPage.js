@@ -102,8 +102,6 @@ export default function StudyPage() {
     return cards;
   };
 
-  console.log(cards);
-
   const handleNextCard = () => {
     if (currentIndex < length - 1) {
       setCurrentIndex(currentIndex + 1);
@@ -122,13 +120,15 @@ export default function StudyPage() {
     navigate(`/`);
   };
 
+  console.log(currentIndex);
+
   const handleRepeat = () => {
     setCards((prevCards) => {
       const repeatedCards = { ...prevCards[currentIndex] };
       return [...prevCards, repeatedCards];
     });
     setLength((prevLength) => prevLength + 1);
-    if (currentIndex < length - 1) {
+    if (currentIndex <= length) {
       setCurrentIndex(currentIndex + 1);
       setDisplayEnglish(true);
     } else {
