@@ -170,8 +170,8 @@ export default class DBhandler {
         async (cardID) => await this.getCardsInfo(cardID, false)
       );
       //comparing cards order following deck.deckCardsID
-      const comparingCards = await Promise.all(cardsPromises);
-
+      const comparingCardsRes = await Promise.all(cardsPromises);
+      const comparingCards = comparingCardsRes.filter((card) => !!card);
       for (let i = 0; i < cards.length; i++) {
         const card = cards[i];
         //Checking for newCard
@@ -192,17 +192,25 @@ export default class DBhandler {
           newCards.push({ ...card, cardID: newCardID });
           deck.deckCards[i] = newCardID;
         }
+        //Need to deduce the comparing Card
+        comparingCards.splice(comparingCardIndex, 1);
       }
-      console.log(newCards);
-      //No new cards means the deck is the same as before
-      if (!newCards.length) {
+      if (!newCards.length && !comparingCards.length) {
+        //having comparingCards length means user have delete cards
+        //No new cards means the deck is the same as before
         return;
       }
       for (const card of newCards) {
         await this.postNewCard(card);
       }
       const newDeckID = Date.now();
-      await this.postNewDeck({ ...deck, deckID: newDeckID });
+      //need to filter out empty array
+      const newDeckCards = deck.deckCards.filter((cardID) => !!cardID);
+      await this.postNewDeck({
+        ...deck,
+        deckCards: newDeckCards,
+        deckID: newDeckID,
+      });
       const res = await get(userDeckRef);
       const userDeckIDs = res.val() ? res.val() : [];
       const deckIndex = userDeckIDs.findIndex(
