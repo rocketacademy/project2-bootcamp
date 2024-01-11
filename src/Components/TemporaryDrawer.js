@@ -30,6 +30,7 @@ export default function TemporaryDrawer({
   handleAuthStateChanged,
   handleLogout,
   isLoggedIn,
+  loading
 }) {
   const [state, setState] = React.useState({
     top: false,
@@ -177,6 +178,7 @@ export default function TemporaryDrawer({
       </Box>
     </Box>
   );
+
 
   return (
     <div>

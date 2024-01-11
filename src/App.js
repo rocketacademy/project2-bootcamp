@@ -9,19 +9,20 @@ import { onAuthStateChanged, signOut } from "firebase/auth";
 import AppBackground from "./Components/BackgroundApp";
 import SignIn from "./Components/AuthFormDiffVersion";
 
-import { BrowserRouter as Router, Link, Routes, Route } from "react-router-dom";
+import SvgIcon from '@mui/material/SvgIcon';
 
 import { AppLinks } from "./AppMain";
 import CertificateGenerator from "./Services/CreateCertificate";
 
 // MUI
-import { TextField, Box, Typography } from "@mui/material";
+import { TextField, Box, Typography, CircularProgress, LinearProgress } from "@mui/material";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import { styled } from "@mui/system";
 // import { Typography } from "@mui/material/styles/createTypography";
 import MenuItem from "@mui/material/MenuItem";
 import TemporaryDrawer from "./Components/TemporaryDrawer";
+import FetchingDataAnimation from "./Components/FetchingDataAnimation";
 // import { mapToStyles } from "@popperjs/core/lib/modifiers/computeStyles";
 // import { assertExpressionStatement } from "@babel/types";
 
@@ -124,9 +125,7 @@ const App = () => {
 
   const [drawerRef, setDrawerRef] = useState(null);
 
-  useEffect(()=>{
-
-  })
+  const [loading, setLoading] = useState(false)
 
   // Handling the drawer opening
   useEffect(() => {
@@ -160,6 +159,8 @@ const App = () => {
 
   //Function to call OpenAI API
   const sendMessage = async (targetMessage) => {
+    setLoading(true)
+
     try {
       const messageToSend = userMessage === "" ? targetMessage : userMessage;
 
@@ -175,7 +176,10 @@ const App = () => {
       setAiResponse(data.message);
       setUserMessage("");
       console.log(data.message);
+
+      setLoading(false)
     } catch (error) {
+      setLoading(true)
       console.error("Error sending message:", error);
       // Handle error state here if needed
     }
@@ -196,6 +200,26 @@ const App = () => {
 
   return (
     <Box>
+    {loading ? 
+      <Box>
+        <AppBackground />
+        <FetchingDataAnimation />
+        {/* <Box
+        className='overlay'
+        sx={{
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        minHeight: "50vh",
+        }}
+        >
+          <Typography variant="h2">Fetching data from OpenAI</Typography>
+          <CircularProgress />
+        </Box> */}
+      </Box>
+       : 
+    <Box>
       <Box>
         {isLoggedIn ? (
           <Box>
@@ -207,6 +231,7 @@ const App = () => {
               handleAuthStateChanged={handleAuthStateChanged}
               isLoggedIn={isLoggedIn}
               handleLogout={handleLogout}
+              loading={loading}
             />
           </Box>
         ) : (
@@ -347,6 +372,7 @@ const App = () => {
           <SignIn />
         </Box>
       )}
+    </Box>}
     </Box>
   );
 };

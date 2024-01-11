@@ -11,7 +11,7 @@ import { AppLinks } from "../AppMain";
 import OpenAI from "openai";
 
 // MUI
-import { Button, Grid, Typography, Box, CircularProgress } from "@mui/material";
+import { Button, Grid, Typography, Box, CircularProgress, Paper } from "@mui/material";
 
 const parseOpenAIResponse = (responseString) => {
   const lines = responseString.split('\n')
@@ -159,35 +159,71 @@ export default function QuizAI({ user }) {
 
        {question ? <Typography variant="h4" sx={{width: '900px', marginBottom: '20px', marginTop: '25px' ,display: 'flex', alignItems: 'center', justifyContent: 'center'}}>Question: {question}</Typography> : null}
 
-      {loading ?
-        <Box sx={{ display: "flex", flexDirection: 'column' ,justifyContent: "center", alignItems: "center", minHeight: "50vh" }}>
-          <CircularProgress />
-        </Box>
-      :<Box sx={{ display: "flex", flexDirection: 'column' ,justifyContent: "center", alignItems: "center", minHeight: "50vh" }}>
-        <Box>
-          {/* <Typography variant="h4" sx={{width: '900px', marginBottom: '20px'}}>Question: {question}</Typography> */}
-        </Box>
-        <Box>
-          {options ? options.map((option, index)=>{
-            const {letter, choice} = option
-            const isCorrect = answer === letter && selectedAnswerCorrectness === true
-            const isWrong = answer !== letter && selectedAnswerCorrectness === false
-
-            return (
-              <Box key={index} sx={{marginBottom: '20px'}}>
-                <Grid container spacing={2} alignItems='center'>
-                  <Grid item>
-                    <Typography variant="h4" sx={{color: isCorrect ? 'green' : isWrong ? 'red' : 'inherit'}}>{letter}</Typography>
+      {loading ? (
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        minHeight: "50vh",
+      }}
+    >
+      <CircularProgress />
+    </Box>
+  ) : (
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        minHeight: "50vh",
+      }}
+    >
+      <Box>
+        {options ? (
+          <Grid container spacing={2} justifyContent="center">
+            {/* Wrap options in a separate Grid container */}
+            <Grid container item xs={12} md={6} lg={4} spacing={2} justifyContent="center">
+              {options.map((option, index) => {
+                const { letter, choice } = option;
+                const isCorrect =
+                  answer === letter && selectedAnswerCorrectness === true;
+                const isWrong =
+                  answer !== letter && selectedAnswerCorrectness === false;
+                return (
+                  <Grid item key={index} xs={6}>
+                    <Paper  elevation={3} sx={{ padding: "10px", textAlign: "center", width: '250px', height: '100px' }}>
+                        <Grid item xs={3}>
+                          <Typography
+                            variant="h4"
+                            sx={{
+                              color: isCorrect ? "green" : isWrong ? "red" : "inherit",
+                            }}
+                          >
+                            {letter}
+                          </Typography>
+                        </Grid>
+                        <Grid item xs={9}>
+                          <Button
+                            onClick={() => handleAnswerClick(letter)}
+                            disabled={answerSelected}
+                            fullWidth
+                          >
+                            {choice}
+                          </Button>
+                        </Grid>
+                    </Paper>
                   </Grid>
-                  <Grid item>
-                    <Button onClick={()=> handleAnswerClick(letter)} disabled={answerSelected}>{choice}</Button>
-                  </Grid>
-                </Grid>
-              </Box>
-            )
-          }) : null}
-        </Box>
-      </Box>}
+                );
+              })}
+            </Grid>
+          </Grid>
+        ) : null}
+      </Box>
+    </Box>
+  )}
       {question && (indexOfQuestion < quizData.length -2) ?  <Button onClick={moveToNextQuestion}>Move to next question</Button> : null}
       {indexOfQuestion >= quizData.length -2 ? <Button onClick={resetQuiz}>Reset</Button> : null}
       <Typography variant="h5">Your score: {score}</Typography>
