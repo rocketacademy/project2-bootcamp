@@ -3,8 +3,8 @@ import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 
 // Firebase
-import { auth } from "../firebase.js";
-import { updateProfile, updateEmail } from "firebase/auth";
+import { auth } from "../../firebase.js";
+import { updateProfile, updateEmail, updatePassword } from "firebase/auth";
 
 const SettingsModal = (props) => {
   const [infoField, setInfoField] = useState("");
@@ -23,6 +23,10 @@ const SettingsModal = (props) => {
       updateEmail(auth.currentUser, infoField).then(() =>
         props.handleSuccessfulUpdate()
       );
+    } else if (props.field === "password") {
+      updatePassword(auth.currentUser, infoField).then(() =>
+        props.handleSuccessfulUpdate()
+      );
     } else {
       updateProfile(auth.currentUser, { [props.field]: infoField }).then(() =>
         props.handleSuccessfulUpdate()
@@ -36,6 +40,7 @@ const SettingsModal = (props) => {
   const typeDisplay = {
     displayName: "display name",
     email: "email",
+    password: "password",
   };
 
   return (
