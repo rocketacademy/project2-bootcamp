@@ -177,7 +177,7 @@ export default function StudyPage() {
               <VolumeUpIcon
                 onClick={playAudio}
                 fontSize="large"
-                color="primary"
+                color="action"
               />
             </div>
             <div className="study-word" onClick={handleClick}>
@@ -186,8 +186,10 @@ export default function StudyPage() {
             <p className="hint">Hint: Tap to flip to the other side</p>
           </Card>
           <div className="prev-next">
-            <Button onClick={handleRepeat}>👎Again</Button>
-            <Button onClick={handleNextCard}>
+            <Button size="large" onClick={handleRepeat}>
+              👎Again
+            </Button>
+            <Button size="large" onClick={handleNextCard}>
               {currentIndex === totalCards - 1 ? "Done" : "👍Good"}
             </Button>
           </div>
