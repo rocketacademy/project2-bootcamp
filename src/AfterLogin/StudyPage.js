@@ -1,12 +1,12 @@
 import { useParams, useNavigate, useOutletContext } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Card, Button } from "@mui/material";
 import LinearProgress from "@mui/material/LinearProgress";
 import { Backdrop, CircularProgress } from "@mui/material";
 import StudyDone from "./StudyComponent/StudyDone";
 import "./Study.css";
 import ErrorPage from "../ErrorPage";
-import DBhandler from "./DBhandler";
+import DBhandler from "./Controller/DBhandler";
 
 export default function StudyPage() {
   const [user] = useOutletContext();
@@ -19,7 +19,10 @@ export default function StudyPage() {
   const [goHome, setGoHome] = useState(false);
   const navigate = useNavigate();
   const { deckID } = useParams();
-  const dbHandler = new DBhandler(user.uid, setErrorMessage, setGoHome);
+  const dbHandler = useMemo(
+    () => new DBhandler(user.uid, setErrorMessage, setGoHome),
+    [user.uid, setErrorMessage, setGoHome]
+  );
 
   const handleErrorMessage = () => {
     setErrorMessage("");
@@ -31,14 +34,17 @@ export default function StudyPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { deckInfoData, cardInfoData } =
-          await dbHandler.fetchDeckAndCards(deckID, true);
-        setDeck(deckInfoData);
-        setCards(cardInfoData);
+        await dbHandler.checkUserDeckID(deckID, true);
+        const { deckInfo, cardsInfo } = await dbHandler.getDeckAndCards(
+          deckID,
+          true
+        );
+        setDeck(deckInfo);
+        setCards(cardsInfo);
       } catch (error) {}
     };
     fetchData();
-  });
+  }, [deckID, dbHandler]);
 
   const handleNextCard = () => {
     if (currentIndex < Object.keys(deck.deckCards).length - 1) {

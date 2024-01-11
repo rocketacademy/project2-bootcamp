@@ -1,7 +1,5 @@
 import { useParams, useNavigate, useOutletContext } from "react-router-dom";
-import { useState, useEffect } from "react";
-import { ref, get, set } from "firebase/database";
-import { database } from "../firebase";
+import { useState, useEffect, useMemo } from "react";
 import { Card, Button, TextField } from "@mui/material";
 import { Backdrop, CircularProgress } from "@mui/material";
 import SaveDone from "./EditComponent/SaveDone";
@@ -9,18 +7,21 @@ import axios from "axios";
 import "./Study.css";
 import ErrorPage from "../ErrorPage";
 import TextToSpeech from "./TextToSpeech";
+import DBhandler from "./Controller/DBhandler";
 
 export default function EditDeckPage() {
   const [user] = useOutletContext();
   const [deck, setDecks] = useState({});
-  const [deckConstant, setDeckConstant] = useState({});
-  const [cardsConstant, setCardsConstant] = useState([]);
   const [cards, setCards] = useState([]);
   const [saveDone, setSaveDone] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [goHome, setGoHome] = useState(false);
   const navigate = useNavigate();
   const { deckID } = useParams();
+  const dbHandler = useMemo(
+    () => new DBhandler(user.uid, setErrorMessage, setGoHome),
+    [user.uid, setErrorMessage, setGoHome]
+  );
 
   const handleErrorMessage = () => {
     setErrorMessage("");
@@ -28,63 +29,23 @@ export default function EditDeckPage() {
       navigate("/");
     }
   };
+
   useEffect(() => {
-    const checkUserDeckID = async () => {
+    const getDecksInfo = async () => {
       try {
-        const userDeckIDsSS = await get(
-          ref(database, `userInfo/${user.uid}/decks`)
+        await dbHandler.checkUserDeckID(deckID, true);
+        const { deckInfo, cardsInfo } = await dbHandler.getDeckAndCards(
+          deckID,
+          true
         );
-        const userDeckIDs = userDeckIDsSS.val();
-
-        if (!userDeckIDs.length || !userDeckIDs.includes(Number(deckID))) {
-          throw new Error("You don't have this deck!");
-        }
-      } catch (error) {
-        setGoHome(true);
-        setErrorMessage(error.message);
-      }
-    };
-    checkUserDeckID();
-    const takeDeckInfo = async () => {
-      const decksRef = ref(database, `decks/deck${deckID}`);
-      try {
-        return await get(decksRef);
-      } catch (error) {
-        setGoHome(true);
-        setErrorMessage(error.message);
-      }
-    };
-
-    const takeCardsInfo = async (cardId) => {
-      const cardsRef = ref(database, `cards/card${cardId}`);
-      try {
-        return await get(cardsRef);
-      } catch (error) {
-        setGoHome(true);
-        setErrorMessage(error.message);
-      }
-    };
-
-    const fetchDeckAndCards = async () => {
-      try {
-        const deckInfo = await takeDeckInfo();
-        const cardsPromise = deckInfo
-          .val()
-          .deckCards.map(async (cardId) => await takeCardsInfo(cardId));
-        const cardsInfoSS = await Promise.all(cardsPromise);
-        const newDeck = deckInfo.val();
-        setDecks(newDeck);
-        setDeckConstant({ ...newDeck });
-        const cardsInfo = cardsInfoSS.map((card) => card.val());
+        setDecks(deckInfo);
         setCards(cardsInfo);
-        setCardsConstant([...cardsInfo]);
       } catch (error) {
-        setGoHome(true);
         setErrorMessage(error.message);
       }
     };
-    fetchDeckAndCards();
-  }, [deckID, user.uid]);
+    getDecksInfo();
+  }, [deckID, dbHandler]);
 
   const handleFieldChange = (cardID, language, newValue) => {
     const cardIndex = cards.findIndex((card) => card.cardID === cardID);
@@ -96,77 +57,12 @@ export default function EditDeckPage() {
 
   const handleSave = async () => {
     try {
-      let isDeckSame = true;
       for (let i = 0; i < cards.length; i++) {
         if (cards[i].english === "" || cards[i].spanish === "") {
           throw new Error("You cannot save empty card");
         }
-        if (
-          cards[i].english !== cardsConstant[i].english ||
-          cards[i].spanish !== cardsConstant[i].spanish
-        ) {
-          isDeckSame = false;
-        }
       }
-      if (isDeckSame) {
-        setSaveDone(true);
-        return;
-      }
-      const updateCards = [];
-      cards.forEach((card, i) => {
-        const cardIDsConstant = deckConstant.deckCards;
-        //Check for new card ID
-        if (!cardIDsConstant.includes(card.cardID)) {
-          updateCards.push(card);
-        } else {
-          //Check for same ID but different English/Spanish
-          const cardConstantIndex = cardsConstant.findIndex(
-            (cardConstant) => cardConstant.cardID === card.cardID
-          );
-          if (
-            cardsConstant[cardConstantIndex].english !== card.english ||
-            cardsConstant[cardConstantIndex].spanish !== card.spanish
-          ) {
-            card.cardID = Date.now();
-            card.cardID += i;
-            updateCards.push(card);
-          }
-        }
-      });
-      const putNewCard = async (card) => {
-        const newCardRef = ref(database, `cards/card${card.cardID}`);
-        await set(newCardRef, card);
-      };
-      const cardsPromises = updateCards.map(
-        async (card) => await putNewCard(card)
-      );
-      const putNewDeck = async (deckID) => {
-        const newCardIDs = cards.map((card) => card.cardID);
-        const newDeck = { ...deck, deckID: deckID, deckCards: newCardIDs };
-        const deckRef = ref(database, `decks/deck${deckID}`);
-        await set(deckRef, newDeck);
-      };
-      const updateUserInfo = async (deckID) => {
-        const userDeckRef = ref(database, `userInfo/${user.uid}/decks`);
-        const originalDecks = await get(userDeckRef);
-        const originalDecksIDs = !originalDecks.val()
-          ? []
-          : originalDecks.val();
-        const newDeckInfo = [...originalDecksIDs, deckID];
-        //need to delete the old deck
-        const oldDeckIndex = newDeckInfo.findIndex(
-          (deckID) => deckID === deckConstant.deckID
-        );
-        newDeckInfo.splice(oldDeckIndex, 1);
-        await set(userDeckRef, newDeckInfo);
-      };
-
-      const newDeckID = Date.now();
-      await Promise.all([
-        ...cardsPromises,
-        await putNewDeck(newDeckID),
-        await updateUserInfo(newDeckID),
-      ]);
+      await dbHandler.postUserDecks(deck, cards);
       setSaveDone(true);
     } catch (error) {
       setErrorMessage(error.message);
@@ -235,8 +131,6 @@ export default function EditDeckPage() {
     };
     setCards(newCards);
   };
-
-  console.log(cards);
 
   const cardsDisplay =
     cards.length &&

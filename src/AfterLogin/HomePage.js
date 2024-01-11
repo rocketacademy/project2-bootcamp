@@ -1,82 +1,54 @@
-import { ref, get, set } from "firebase/database";
-import { database } from "../firebase";
 import { Card, Button, Menu, MenuItem } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import "./Study.css";
 import ErrorPage from "../ErrorPage";
+import DBhandler from "./Controller/DBhandler";
 
 export default function HomePage() {
   const [user] = useOutletContext();
-  const [userDeckIDs, setUserDeckIDs] = useState();
   const [userDecks, setUserDecks] = useState([]);
-  const [selectedDeckIDs, setSelectedDeckIDs] = useState();
   const [anchorEl, setAnchorEl] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
+  const [selectedID, setSelectedID] = useState();
   const navigate = useNavigate();
+  const dbHandler = useMemo(
+    () => new DBhandler(user.uid, setErrorMessage),
+    [user.uid, setErrorMessage]
+  );
 
   useEffect(() => {
-    const takeDecksInfo = async () => {
-      //Taking the decks Info
-      const decksRef = ref(database, `decks`);
+    const takeDecksAndIDsInfo = async () => {
       try {
-        return await get(decksRef);
+        const { userDecks } = await dbHandler.getUserAndDecksInfo(false);
+        setUserDecks(userDecks);
       } catch (error) {
         setErrorMessage(error.message);
       }
     };
-
-    const takeDeckIDsInfo = async () => {
-      //Taking the user Decks
-      try {
-        const userDecksRef = ref(database, `userInfo/${user.uid}/decks`);
-        return await get(userDecksRef);
-      } catch (error) {
-        setErrorMessage(error.message);
-      }
-    };
-
-    const takeAllInfo = async () => {
-      try {
-        const [newDecksIDs, newDecks] = await Promise.all([
-          takeDeckIDsInfo(),
-          takeDecksInfo(),
-        ]);
-        setUserDeckIDs(newDecksIDs.val());
-        setUserDecks(newDecks.val());
-      } catch (error) {
-        setErrorMessage(error.message);
-      }
-    };
-    takeAllInfo();
-  }, [user.uid]);
+    takeDecksAndIDsInfo();
+  }, [dbHandler]);
 
   const handleClick = (deckID) => {
     navigate(`/study/${deckID}`);
   };
 
-  const handleEdit = (deckID) => {
-    navigate(`/editDeck/${deckID}`);
+  const handleEdit = () => {
+    navigate(`/editDeck/${selectedID}`);
   };
 
   const handleDelete = async (deckID) => {
-    const userDeckIDsRef = ref(database, `userInfo/${user.uid}/decks/`);
-    const deleteDeckIndex = userDeckIDs.findIndex(
-      (userDeckID) => userDeckID === deckID
-    );
-    const newUserDeckIDs = userDeckIDs.toSpliced(deleteDeckIndex, 1);
     try {
-      await set(userDeckIDsRef, newUserDeckIDs);
-      setUserDeckIDs(newUserDeckIDs);
-      setAnchorEl(null);
+      const newUserDeck = await dbHandler.deleteUserDeck(deckID);
+      setUserDecks(newUserDeck);
     } catch (error) {
       setErrorMessage(error.message);
     }
   };
 
   const handleMenu = (event, deckID) => {
+    setSelectedID(deckID);
     setAnchorEl(event.currentTarget);
-    setSelectedDeckIDs(deckID);
   };
 
   const handleMenuClose = () => {
@@ -84,11 +56,11 @@ export default function HomePage() {
   };
 
   //component show the decks option
-  const deckList = Array.isArray(userDeckIDs) ? (
-    userDeckIDs.map((deckID) => {
-      const deckName = userDecks[`deck${deckID}`].deckName;
-      const cardsNum = Object.keys(userDecks[`deck${deckID}`].deckCards).length;
-
+  const deckList = userDecks.length ? (
+    userDecks.map((deck) => {
+      const deckName = deck.deckName;
+      const cardsNum = deck.deckCards.length;
+      const deckID = deck.deckID;
       return (
         <Card
           key={deckID}
@@ -104,7 +76,7 @@ export default function HomePage() {
             open={Boolean(anchorEl)}
             onClose={handleMenuClose}
           >
-            <MenuItem onClick={() => handleEdit(selectedDeckIDs)}>
+            <MenuItem value={deckID} onClick={(e) => handleEdit(e.value)}>
               Edit
             </MenuItem>
             <MenuItem onClick={() => handleDelete(deckID)}>Delete</MenuItem>

@@ -3,7 +3,7 @@ import PostAddIcon from "@mui/icons-material/PostAdd";
 import { Link } from "react-router-dom";
 import QuizIcon from "@mui/icons-material/Quiz";
 import { signOut, updateProfile } from "firebase/auth";
-import { auth, database, storage } from "../firebase";
+import { auth, storage } from "../firebase";
 import {
   Avatar,
   Button,
@@ -13,10 +13,10 @@ import {
   Menu,
   MenuItem,
 } from "@mui/material";
-import { useEffect, useState } from "react";
-import { ref as DBref, get, set } from "firebase/database";
+import { useEffect, useMemo, useState } from "react";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import ErrorPage from "../ErrorPage";
+import DBhandler from "./Controller/DBhandler";
 
 export default function NaviBar(props) {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -25,25 +25,23 @@ export default function NaviBar(props) {
   const [name, setName] = useState("");
   const [file, setFile] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const dbHandler = useMemo(
+    () => new DBhandler(props.user.uid, setErrorMessage),
+    [props.user.uid, setErrorMessage]
+  );
 
   useEffect(() => {
-    const takePic = async () => {
-      const userPicRef = DBref(
-        database,
-        `userInfo/${props.user.uid}/profilePic`
-      );
+    const getProfilePics = async () => {
       try {
-        const urlDB = await get(userPicRef);
-        setProfilePicUrl(urlDB.val());
+        const userInfo = await dbHandler.getUserInfo(false);
+        const userPicURL = userInfo.profilePic;
+        setProfilePicUrl(userPicURL);
       } catch (error) {
         setErrorMessage(error.message);
       }
     };
-
-    if (props.user) {
-      takePic();
-    }
-  }, [props.user]);
+    getProfilePics();
+  }, [dbHandler]);
 
   const handleSighOut = () => {
     signOut(auth);
@@ -71,8 +69,7 @@ export default function NaviBar(props) {
     try {
       await uploadBytes(photoRef, file);
       const url = await getDownloadURL(photoRef);
-      const userRef = DBref(database, `userInfo/${props.user.uid}/profilePic`);
-      await set(userRef, url);
+      await dbHandler.putUserPicURL(url);
       setProfilePicUrl(url);
       setFile("");
       setOpenDialog("");
