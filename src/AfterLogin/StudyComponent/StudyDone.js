@@ -7,6 +7,7 @@ export default function StudyDone({ open, onClose }) {
       <DialogContent className="dialog">
         Well done! You have finished reviewing this deck.
         <br />
+        <br />
         <Button onClick={onClose}>Go Back to Homepage</Button>
       </DialogContent>
     </Dialog>

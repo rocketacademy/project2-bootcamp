@@ -1,6 +1,8 @@
 .study-header {
+  margin-top: 40px;
   display: flex;
   justify-content: left;
+  margin-bottom: 15px;
 }
 
 .shuffle-quiz {
@@ -10,7 +12,7 @@
 }
 
 .study-card {
-  width: 75vw;
+  width: 70vw;
   height: 50vh;
   text-align: left;
 }
@@ -33,7 +35,7 @@
 }
 
 .spanish {
-  background-color: #dde2fc !important;
+  background-color: white;
 }
 
 .hint {
@@ -44,6 +46,8 @@
 .prev-next {
   display: flex;
   justify-content: space-between;
+  gap: 20px;
+  margin-top: 20px;
 }
 
 .current-index {
@@ -53,7 +57,7 @@
 
 .dialog {
   width: 30vw;
-  height: 15vh;
+  height: 30vh;
   display: flex;
   flex-direction: column;
   align-items: center;
