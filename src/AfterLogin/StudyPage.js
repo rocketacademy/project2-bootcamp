@@ -6,7 +6,7 @@ import { Backdrop, CircularProgress } from "@mui/material";
 import StudyDone from "./StudyComponent/StudyDone";
 import "./Study.css";
 import ErrorPage from "../ErrorPage";
-import fetchAndCheck from "./FunctionCompent";
+import DBhandler from "./FunctionCompent";
 
 export default function StudyPage() {
   const [user] = useOutletContext();
@@ -19,6 +19,7 @@ export default function StudyPage() {
   const [goHome, setGoHome] = useState(false);
   const navigate = useNavigate();
   const { deckID } = useParams();
+  const dbHandler = new DBhandler(user.uid, setErrorMessage, setGoHome);
 
   const handleErrorMessage = () => {
     setErrorMessage("");
@@ -28,22 +29,16 @@ export default function StudyPage() {
   };
 
   useEffect(() => {
-    const getIn = async () => {
+    const fetchData = async () => {
       try {
-        const fetchingData = new fetchAndCheck();
         const { deckInfoData, cardInfoData } =
-          await fetchingData.fetchDeckAndCards(
-            user.uid,
-            deckID,
-            setErrorMessage,
-            setGoHome
-          );
+          await dbHandler.fetchDeckAndCards(deckID);
         setDeck(deckInfoData);
         setCards(cardInfoData);
       } catch (error) {}
     };
-    getIn();
-  }, [deckID, user.uid]);
+    fetchData();
+  });
 
   const handleNextCard = () => {
     if (currentIndex < Object.keys(deck.deckCards).length - 1) {

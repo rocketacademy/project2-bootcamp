@@ -1,10 +1,17 @@
 import { get, ref } from "firebase/database";
 import { database } from "../firebase";
 
-export default class fetchAndCheck {
-  checkUserDeckID = async (uid, deckID, setErrorMessage, setGoHome) => {
+export default class DBhandler {
+  constructor(uid, setErrorMessage, setGoHome) {
+    this.uid = uid;
+    this.setErrorMessage = setErrorMessage;
+    this.setGoHome = setGoHome;
+  }
+  checkUserDeckID = async (deckID, setErrorMessage, setGoHome) => {
     try {
-      const userDeckIDsSS = await get(ref(database, `userInfo/${uid}/decks`));
+      const userDeckIDsSS = await get(
+        ref(database, `userInfo/${this.uid}/decks`)
+      );
       const userDeckIDs = userDeckIDsSS.val();
       if (!userDeckIDs.length || !userDeckIDs.includes(Number(deckID))) {
         throw new Error("You don't have this deck!");
@@ -41,9 +48,9 @@ export default class fetchAndCheck {
     }
   };
 
-  fetchDeckAndCards = async (uid, deckID, setErrorMessage, setGoHome) => {
+  fetchDeckAndCards = async (deckID, setErrorMessage, setGoHome) => {
     try {
-      await this.checkUserDeckID(uid, deckID, setErrorMessage, setGoHome);
+      await this.checkUserDeckID(deckID, setErrorMessage, setGoHome);
       const deckInfo = await this.takeDeckInfo(
         deckID,
         setErrorMessage,
