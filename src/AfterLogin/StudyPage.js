@@ -6,7 +6,7 @@ import { Backdrop, CircularProgress } from "@mui/material";
 import StudyDone from "./StudyComponent/StudyDone";
 import "./Study.css";
 import ErrorPage from "../ErrorPage";
-import DBhandler from "./FunctionCompent";
+import DBhandler from "./DBhandler";
 
 export default function StudyPage() {
   const [user] = useOutletContext();
@@ -32,7 +32,7 @@ export default function StudyPage() {
     const fetchData = async () => {
       try {
         const { deckInfoData, cardInfoData } =
-          await dbHandler.fetchDeckAndCards(deckID);
+          await dbHandler.fetchDeckAndCards(deckID, true);
         setDeck(deckInfoData);
         setCards(cardInfoData);
       } catch (error) {}

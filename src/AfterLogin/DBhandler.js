@@ -7,7 +7,7 @@ export default class DBhandler {
     this.setErrorMessage = setErrorMessage;
     this.setGoHome = setGoHome;
   }
-  checkUserDeckID = async (deckID, setErrorMessage, setGoHome) => {
+  checkUserDeckID = async (deckID, isGoHome) => {
     try {
       const userDeckIDsSS = await get(
         ref(database, `userInfo/${this.uid}/decks`)
@@ -17,60 +17,57 @@ export default class DBhandler {
         throw new Error("You don't have this deck!");
       }
     } catch (error) {
-      if (setGoHome) {
-        setGoHome(true);
+      if (isGoHome) {
+        this.setGoHome(true);
       }
-      setErrorMessage(error.message);
+      this.setErrorMessage(error.message);
     }
   };
 
-  takeDeckInfo = async (deckID, setErrorMessage, setGoHome) => {
+  takeDeckInfo = async (deckID, isGoHome) => {
     try {
       const decksRef = ref(database, `decks/deck${deckID}`);
       return await get(decksRef);
     } catch (error) {
-      if (setGoHome) {
-        setGoHome(true);
+      if (isGoHome) {
+        this.setGoHome(true);
       }
-      setErrorMessage(error.message);
+      this.setErrorMessage(error.message);
     }
   };
 
-  takeCardsInfo = async (cardID, setErrorMessage, setGoHome) => {
+  takeCardsInfo = async (cardID, isGoHome) => {
     try {
       const cardsRef = ref(database, `cards/card${cardID}`);
       return await get(cardsRef);
     } catch (error) {
-      if (setGoHome) {
-        setGoHome(true);
+      if (isGoHome) {
+        this.setGoHome(true);
       }
-      setErrorMessage(error.message);
+      this.setErrorMessage(error.message);
     }
   };
 
-  fetchDeckAndCards = async (deckID, setErrorMessage, setGoHome) => {
+  fetchDeckAndCards = async (deckID, isGoHome) => {
     try {
-      await this.checkUserDeckID(deckID, setErrorMessage, setGoHome);
-      const deckInfo = await this.takeDeckInfo(
-        deckID,
-        setErrorMessage,
-        setGoHome
-      );
+      await this.checkUserDeckID(deckID, isGoHome);
+      const deckInfo = await this.takeDeckInfo(deckID, isGoHome);
       const deckInfoData = deckInfo.val();
 
       if (deckInfoData) {
         const cardNumber = Object.values(deckInfoData.deckCards);
         const cardPromises = cardNumber.map(
-          async (cardID) =>
-            await this.takeCardsInfo(cardID, setErrorMessage, setGoHome)
+          async (cardID) => await this.takeCardsInfo(cardID, isGoHome)
         );
         const cardInfo = await Promise.all(cardPromises);
         const cardInfoData = cardInfo.map((number) => number.val());
         return { deckInfoData, cardInfoData };
       }
     } catch (error) {
-      setGoHome(true);
-      setErrorMessage(error.message);
+      if (isGoHome) {
+        this.setGoHome(true);
+      }
+      this.setErrorMessage(error.message);
     }
   };
 }
