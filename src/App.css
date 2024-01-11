@@ -64,3 +64,16 @@ a {
 .wrong {
   background-color: #db004f;
 }
+
+.dialog {
+  min-width: max-content;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.error-dialog-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}

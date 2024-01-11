@@ -1,15 +1,17 @@
-import { useOutletContext } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
 import "./AddDeckPage.css";
 import { Autocomplete, TextField } from "@mui/material";
+import ErrorPage from "../ErrorPage";
 //Take the user data from App.js state
 
 export default function FlashcardForm(props) {
-  const [user, setUser] = useOutletContext();
   const [englishValue, setEnglishValue] = useState("");
-  const [spanishValue, setSpanishValue] = useState([]);
   const [options, setOptions] = useState([]);
+  const [spanishValue, setSpanishValue] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  // const [translation, setTranslation] = useState("");
+
   const handleAddCard = () => {
     if (englishValue && spanishValue) {
       props.addCard(englishValue, spanishValue);
@@ -22,9 +24,10 @@ export default function FlashcardForm(props) {
   const translateEnglishToSpanish = async (word) => {
     const apiUrl = `https://www.dictionaryapi.com/api/v3/references/spanish/json/${word}?key=${process.env.REACT_APP_SPANISH_KEY}`;
 
+try {
     const translation = [];
 
-    try {
+    
       const response = await axios.get(apiUrl);
 
       const removeColon = (word) => {
@@ -57,13 +60,12 @@ export default function FlashcardForm(props) {
         console.log(translation);
 
         setOptions(translation);
-      } else {
-        throw new Error("Translation not found");
-      }
+      }else throw new Error("No translation found.")
     } catch (error) {
-      throw error;
+      setErrorMessage(error.message);
     }
   };
+
   const handleTranslate = () => {
     const wordInEnglish = englishValue;
     translateEnglishToSpanish(wordInEnglish);
@@ -74,6 +76,10 @@ export default function FlashcardForm(props) {
   };
   return (
     <div>
+      <ErrorPage
+        errorMessage={errorMessage}
+        handleErrorMessage={() => setErrorMessage("")}
+      />
       <div>
         <div className="card" id="flashcard-form">
           <form>

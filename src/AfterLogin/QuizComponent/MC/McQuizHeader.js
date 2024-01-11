@@ -1,4 +1,4 @@
-import { Button, Dialog, LinearProgress } from "@mui/material";
+import { Button, Dialog, DialogContent, LinearProgress } from "@mui/material";
 import DisabledByDefaultOutlinedIcon from "@mui/icons-material/DisabledByDefaultOutlined";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -11,7 +11,7 @@ export default function McQuizHeader(props) {
   return (
     <div className="quiz-header">
       <Dialog open={dialog}>
-        <div className="dialog">
+        <DialogContent className="dialog">
           Are you sure you want to exit?
           <p>All progress will not be saved</p>
           <div className="dialog-button-div">
@@ -22,7 +22,7 @@ export default function McQuizHeader(props) {
               no
             </Button>
           </div>
-        </div>
+        </DialogContent>
       </Dialog>
       <div className="quiz-subheader">
         <h3>{props.questions[props.currentQuestion].deckName}</h3>

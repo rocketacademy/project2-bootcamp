@@ -6,14 +6,23 @@ import { useState } from "react";
 import { database } from "../../../firebase";
 import { get, ref, set } from "@firebase/database";
 import { useNavigate } from "react-router";
+import ErrorPage from "../../../ErrorPage";
 
 export default function MixAndMatchQuizQuestion(props) {
   const [answer, setAnswer] = useState(new Array(10).fill(""));
+  const [errorMessage, setErrorMessage] = useState("");
   const navi = useNavigate();
+
+  const handleErrorMessage = () => {
+    setErrorMessage("");
+    navi("/");
+  };
+
   const ItemTypes = {};
   for (let i = 0; i < 10; i++) {
     ItemTypes[`WORD${i}`] = `word${i}`;
   }
+
   const handleConfirm = async () => {
     const userQuizReportRef = ref(
       database,
@@ -22,27 +31,30 @@ export default function MixAndMatchQuizQuestion(props) {
     //comparing props.question with answer to check.
     let score = 0;
     const correctAnswer = props.questions.map((card, i) => {
-      if (card.spanish === answer[i]) score++;
+      if (card.spanish === answer[i]) score += 10;
       return { english: card.english, spanish: card.spanish };
     });
-
-    const userQuizReport = await get(userQuizReportRef);
-    const quizNo =
-      userQuizReport.val() === null
-        ? 1
-        : Object.values(userQuizReport.val()).length + 1;
-    const newQuizReportRef = ref(
-      database,
-      `userInfo/${props.user.uid}/quizReport/quiz${quizNo}`
-    );
-    await set(newQuizReportRef, {
-      quizID: quizNo,
-      score: score,
-      choice: answer,
-      answer: correctAnswer,
-      date: new Date().toLocaleDateString(),
-    });
-    navi(`/quizList/${quizNo}`);
+    try {
+      const userQuizReport = await get(userQuizReportRef);
+      const quizNo =
+        userQuizReport.val() === null
+          ? 1
+          : Object.values(userQuizReport.val()).length + 1;
+      const newQuizReportRef = ref(
+        database,
+        `userInfo/${props.user.uid}/quizReport/quiz${quizNo}`
+      );
+      await set(newQuizReportRef, {
+        quizID: quizNo,
+        score: score,
+        choice: answer,
+        answer: correctAnswer,
+        date: new Date().toLocaleDateString(),
+      });
+      navi(`/quizList/${quizNo}`);
+    } catch (error) {
+      setErrorMessage(error.message);
+    }
   };
 
   const questionDisplay = props.questions.map((question, i) => {
@@ -73,10 +85,20 @@ export default function MixAndMatchQuizQuestion(props) {
       />
     );
   });
-
+  //randomlize answer order
+  for (let i = 0; i < answerDisplay.length; i++) {
+    const randomIndex = Math.floor(Math.random() * answerDisplay.length);
+    const temp = answerDisplay[randomIndex];
+    answerDisplay[randomIndex] = answerDisplay[i];
+    answerDisplay[i] = temp;
+  }
   const isAnswerAll = !answer.includes("");
   return (
     <div className="page">
+      <ErrorPage
+        errorMessage={errorMessage}
+        handleErrorMessage={handleErrorMessage}
+      />
       <MixAndMatchQuizHeader />
       <div className="mix-and-match-question">{questionDisplay}</div>
       <div className="mix-and-match-answer">{answerDisplay}</div>

@@ -1,11 +1,16 @@
 import { Link, useNavigate } from "react-router-dom";
 import { auth } from "../firebase";
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { useState } from "react";
+import {
+  createUserWithEmailAndPassword,
+  onAuthStateChanged,
+  updateProfile,
+} from "firebase/auth";
+import { useEffect, useState } from "react";
 import { ref, set } from "firebase/database";
 import { database } from "../firebase";
 import DisabledByDefaultOutlinedIcon from "@mui/icons-material/DisabledByDefaultOutlined";
 import "bootstrap/dist/css/bootstrap.css";
+import ErrorPage from "../ErrorPage";
 
 // need to add logic to Register with firebase auth
 //After register into the auth, return to "/"
@@ -15,6 +20,14 @@ export default function RegisterPage() {
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const navi = useNavigate();
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        navi("/");
+      }
+    });
+  });
 
   const register = async () => {
     try {
@@ -33,13 +46,21 @@ export default function RegisterPage() {
   };
 
   const writeUserData = async () => {
-    await set(ref(database, "userInfo/" + auth.currentUser.uid), {
-      userID: auth.currentUser.uid,
-    });
+    try {
+      await set(ref(database, "userInfo/" + auth.currentUser.uid), {
+        userID: auth.currentUser.uid,
+      });
+    } catch (error) {
+      setErrorMessage(error.message);
+    }
   };
 
   return (
     <div className="App">
+      <ErrorPage
+        errorMessage={errorMessage}
+        handleErrorMessage={() => setErrorMessage("")}
+      />
       <Link to="/" className="homepage-button">
         <DisabledByDefaultOutlinedIcon />
       </Link>
@@ -86,11 +107,6 @@ export default function RegisterPage() {
       <button type="button" className="btn btn-dark mb-4" onClick={register}>
         Register
       </button>
-      {errorMessage.length ? (
-        <div className="errorMessage">
-          <h4>{errorMessage}</h4>
-        </div>
-      ) : null}
     </div>
   );
 }

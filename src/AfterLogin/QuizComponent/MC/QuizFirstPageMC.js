@@ -10,34 +10,53 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import ErrorPage from "../../../ErrorPage";
 //Take the user data from App.js state
 
 //Component let user choose which decks to include in the quiz
 export default function QuizFirstPageMC(props) {
   const [userDeckIDs, setUserDeckIDs] = useState(`loading`);
+  const [errorMessage, setErrorMessage] = useState("");
   const [userDecks, setUserDecks] = useState([]);
+  const navi = useNavigate();
 
+  const handleErrorMessage = () => {
+    setErrorMessage("");
+    navi("/");
+  };
   useEffect(() => {
     const takeDecksInfo = async () => {
       //Taking the decks Info
       const decksRef = ref(database, `decks`);
-      return await get(decksRef);
+      try {
+        return await get(decksRef);
+      } catch (error) {
+        setErrorMessage(error.message);
+      }
     };
 
     const takeDeckIDsInfo = async () => {
       //Taking the user Decks
       const userDecksRef = ref(database, `userInfo/${props.user.uid}/decks`);
-      return await get(userDecksRef);
+      try {
+        return await get(userDecksRef);
+      } catch (error) {
+        setErrorMessage(error.message);
+      }
     };
 
     const takeAllInfo = async () => {
-      const [newDecksIDs, newDecks] = await Promise.all([
-        takeDeckIDsInfo(),
-        takeDecksInfo(),
-      ]);
-      setUserDeckIDs(newDecksIDs.val());
-      setUserDecks(newDecks.val());
+      try {
+        const [newDecksIDs, newDecks] = await Promise.all([
+          takeDeckIDsInfo(),
+          takeDecksInfo(),
+        ]);
+        setUserDeckIDs(newDecksIDs.val());
+        setUserDecks(newDecks.val());
+      } catch (error) {
+        setErrorMessage(error.message);
+      }
     };
     takeAllInfo();
   }, [props.user.uid]);
@@ -80,7 +99,7 @@ export default function QuizFirstPageMC(props) {
             />
           }
           label={`${deckName} (Cards: ${cardsNum})`}
-          key={deckName}
+          key={deckID}
         />
       );
     })
@@ -103,6 +122,10 @@ export default function QuizFirstPageMC(props) {
 
   return (
     <div className="quiz-sub-page">
+      <ErrorPage
+        errorMessage={errorMessage}
+        handleErrorMessage={handleErrorMessage}
+      />
       <Card className="quiz-card">
         <Link to="/" className="homepage-button">
           <DisabledByDefaultOutlinedIcon />
@@ -113,6 +136,7 @@ export default function QuizFirstPageMC(props) {
           options and your task is to select the correct option.
         </h4>
         <h3>Please select decks include in the quiz.</h3>
+
         <FormGroup>
           {userDeckIDs === "loading" ? loadingPhase : selection}
         </FormGroup>
@@ -123,6 +147,9 @@ export default function QuizFirstPageMC(props) {
         >
           Start
         </Button>
+        {!isEnoughCards && (
+          <h6>You need to have enough cards to start the quiz.</h6>
+        )}
       </Card>
     </div>
   );
