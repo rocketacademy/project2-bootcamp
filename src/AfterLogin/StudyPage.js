@@ -7,12 +7,14 @@ import StudyDone from "./StudyComponent/StudyDone";
 import "./Study.css";
 import ErrorPage from "../ErrorPage";
 import DBHandler from "../Controller/DBHandler";
+import VolumeUpIcon from "@mui/icons-material/VolumeUp";
 
 export default function StudyPage() {
   const [user] = useOutletContext();
   const [deck, setDeck] = useState([]);
   const [cards, setCards] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [length, setLength] = useState(0);
   const [displayEnglish, setDisplayEnglish] = useState(true);
   const [studyDone, setStudyDone] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -47,18 +49,11 @@ export default function StudyPage() {
   }, [deckID, dbHandler]);
 
   const handleNextCard = () => {
-    if (currentIndex < Object.keys(deck.deckCards).length - 1) {
+    if (currentIndex < length - 1) {
       setCurrentIndex(currentIndex + 1);
       setDisplayEnglish(true);
     } else {
       setStudyDone(true);
-    }
-  };
-
-  const handlePrevCard = () => {
-    if (currentIndex > 0) {
-      setCurrentIndex(currentIndex - 1);
-      setDisplayEnglish(true);
     }
   };
 
@@ -71,16 +66,20 @@ export default function StudyPage() {
     navigate(`/`);
   };
 
-  const handleShuffle = () => {
-    setCards((prev) => {
-      for (let i = 0; i < prev.length; i++) {
-        let temp = cards[i];
-        let randomIndex = Math.floor(Math.random() * prev.length);
-        cards[i] = cards[randomIndex];
-        cards[randomIndex] = temp;
-      }
-      return [...prev];
+  console.log(currentIndex);
+
+  const handleRepeat = () => {
+    setCards((prevCards) => {
+      const repeatedCards = { ...prevCards[currentIndex] };
+      return [...prevCards, repeatedCards];
     });
+    setLength((prevLength) => prevLength + 1);
+    if (currentIndex <= length) {
+      setCurrentIndex(currentIndex + 1);
+      setDisplayEnglish(true);
+    } else {
+      setStudyDone(true);
+    }
   };
 
   const playAudio = async () => {
@@ -96,7 +95,64 @@ export default function StudyPage() {
 
   const currentCard = deck.deckCards && cards[currentIndex];
 
-  const totalCards = deck.deckCards ? Object.keys(deck.deckCards).length : 0;
+  const totalCards = deck.deckCards ? length : 0;
+
+  const cardEnglish = (
+    <>
+      {currentCard && (
+        <Card className="english">
+          <div className="study-card-header">
+            <p>English</p>
+          </div>
+          <div className="study-word" onClick={handleClick}>
+            <h1>{currentCard.english}</h1>
+          </div>
+          <p className="hint">Hint: Tap to flip to the other side</p>
+        </Card>
+      )}
+    </>
+  );
+
+  const cardSpanish = (
+    <>
+      {currentCard && (
+        <>
+          <Card className="spanish">
+            <div className="study-card-header">
+              <p>Spanish</p>
+              <VolumeUpIcon
+                onClick={playAudio}
+                fontSize="large"
+                color="primary"
+              />
+            </div>
+            <div className="study-word" onClick={handleClick}>
+              <h1>{currentCard.spanish}</h1>
+            </div>
+            <p className="hint">Hint: Tap to flip to the other side</p>
+          </Card>
+          <div className="prev-next">
+            <Button
+              fullWidth
+              size="large"
+              variant="outlined"
+              onClick={handleRepeat}
+            >
+              👎Again
+            </Button>
+            <Button
+              fullWidth
+              size="large"
+              variant="outlined"
+              onClick={handleNextCard}
+            >
+              {currentIndex === totalCards - 1 ? "Done" : "👍Good"}
+            </Button>
+          </div>
+        </>
+      )}
+    </>
+  );
 
   const progressBar = ({ current, total }) => {
     const progress = (current / total) * 100;
@@ -124,51 +180,20 @@ export default function StudyPage() {
       {deck.deckCards && Object.keys(deck.deckCards).length > 0 && (
         <>
           <div className="study-header">
-            <p>{deck.deckName}</p>
-            <div className="shuffle-quiz">
-              <Button onClick={handleShuffle}>Shuffle</Button>
-            </div>
+            <h2>{deck.deckName}</h2>
           </div>
+
           <p className="current-index">
             {currentIndex + 1}/{totalCards}
           </p>
           {progressBar({ current: currentIndex + 1, total: totalCards })}
-          <Card className="study-card">
-            {displayEnglish ? (
-              <>
-                <div className="study-card-header">
-                  <p>English</p>
-                </div>
-                <div className="study-word" onClick={handleClick}>
-                  <h1>{currentCard.english}</h1>
-                </div>
-                <p className="hint">Hint: Tap to flip to the other side</p>
-              </>
-            ) : (
-              <>
-                <div className="study-card-header">
-                  <p>Spanish</p>
-                  <Button onClick={playAudio}>Audio</Button>
-                </div>
-                <div className="study-word" onClick={handleClick}>
-                  <h1>{currentCard.spanish}</h1>
-                </div>
-                <p className="hint">Hint: Tap to flip to the other side</p>
-              </>
-            )}
-          </Card>
-          <div className="prev-next">
-            <Button onClick={handlePrevCard} disabled={currentIndex <= 0}>
-              Prev
-            </Button>
-            <Button onClick={handleNextCard}>
-              {currentIndex === totalCards - 1 ? "Done" : "Next"}
-            </Button>
+
+          <div className="study-card">
+            {displayEnglish ? cardEnglish : cardSpanish}
           </div>
         </>
       )}
 
-      {/* showing dialog after reviewing done */}
       {studyDone && (
         <StudyDone open={studyDone} onClose={handleCloseStudyDone} />
       )}
