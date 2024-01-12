@@ -6,6 +6,8 @@ import Teacher from "./pages/Teacher";
 import Resources from "./pages/Resources";
 import { CourseForm } from "./pages/CourseForm";
 import "./App.css";
+import { AttendancePublic } from "./pages/AttendancePublic";
+import { StudentCourses } from "./pages/StudentCourses";
 
 const App = () => {
   return (
@@ -21,6 +23,9 @@ const App = () => {
               path="teacher/resources/courseform"
               element={<CourseForm />}
             />
+            <Route path="teacher/attendance" element={<AttendancePublic />} />
+            {/* <Route path="student" element={<Student />} /> */}
+            <Route path="student/studentcourses" element={<StudentCourses />} />
           </Routes>
         </BrowserRouter>
       </header>
