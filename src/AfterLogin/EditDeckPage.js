@@ -51,20 +51,31 @@ export default function EditDeckPage() {
       const newCardID = Date.now();
       setCards([{ cardID: newCardID, english: "", spanish: "" }]);
       setDecks({ deckName: "", deckCards: [newCardID] });
+      setEditing(newCardID);
     }
   }, [deckID, dbHandler]);
 
   const handleSave = async () => {
     try {
+      if (!cards.length) {
+        throw new Error("You must have at least one card.");
+      }
       if (!deckName.length) {
-        throw new Error("You must have a deck name");
+        throw new Error("You must have a deck name.");
+      }
+      if (editing) {
+        throw new Error("You must finsih editing card first.");
       }
       for (let i = 0; i < cards.length; i++) {
         if (cards[i].english === "" || cards[i].spanish === "") {
-          throw new Error("You cannot save empty card");
+          throw new Error("You cannot save empty card.");
         }
       }
-      await dbHandler.postUserDecks(deck, deckName, cards);
+      if (deckID) {
+        await dbHandler.postUserDecks(deck, deckName, cards);
+      } else {
+        await dbHandler.putUserDecks(deckName, cards);
+      }
       setSaveDone(true);
     } catch (error) {
       setErrorMessage(error.message);
@@ -94,7 +105,8 @@ export default function EditDeckPage() {
 
   const handleDelete = async (cardID) => {
     const newCards = cards.filter((card) => card.cardID !== cardID);
-    const newDeck = { ...deck, deckCards: newCards };
+    const newCardIDs = newCards.map((card) => card.cardID);
+    const newDeck = { ...deck, deckCards: newCardIDs };
     setCards(newCards);
     setDecks(newDeck);
     if (cardID === editing) setEditing(null);

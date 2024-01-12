@@ -227,7 +227,6 @@ export default class DBhandler {
         }
         //old Card with edited card
         const comparingCard = comparingCards[comparingCardIndex];
-        console.log(card, comparingCard);
         if (
           card.english !== comparingCard.english ||
           card.spanish !== comparingCard.spanish
@@ -239,7 +238,6 @@ export default class DBhandler {
         //Need to deduce the comparing Card
         comparingCards.splice(comparingCardIndex, 1);
       }
-      console.log(newCards);
       if (
         !newCards.length &&
         !comparingCards.length &&
