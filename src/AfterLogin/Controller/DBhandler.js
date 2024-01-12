@@ -39,6 +39,39 @@ export default class DBhandler {
     }
   };
 
+  //get the user quiz list
+  getUserQuizList = async () => {
+    const quizListRef = ref(database, `userInfo/${this.uid}/quizReport`);
+    try {
+      const res = await get(quizListRef);
+      const quizList = res.val();
+      if (!quizList) {
+        throw new Error("You have no Quiz taken.");
+      }
+      return quizList;
+    } catch (error) {
+      this.setErrorMessage(error.message);
+    }
+  };
+
+  //get the user quiz report
+  getUserQuizReport = async (quizNo) => {
+    const quizRef = ref(
+      database,
+      `userInfo/${this.uid}/quizReport/quiz${quizNo}`
+    );
+    try {
+      const res = await get(quizRef);
+      const quizReport = res.val();
+      if (!quizReport) {
+        throw new Error("You don't have this quiz.");
+      }
+      return quizReport;
+    } catch (error) {
+      this.setErrorMessage(error.message);
+    }
+  };
+
   //get single deck Info
   getDeckInfo = async (deckID, isGoHome) => {
     try {

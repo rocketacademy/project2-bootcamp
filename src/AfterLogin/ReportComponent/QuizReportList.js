@@ -1,37 +1,37 @@
 import { Backdrop, Button, CircularProgress } from "@mui/material";
-import { get, ref } from "firebase/database";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useOutletContext, useNavigate } from "react-router-dom";
-import { database } from "../../firebase";
 import { DataGrid } from "@mui/x-data-grid";
 import ErrorPage from "../../ErrorPage";
+import DBhandler from "../Controller/DBhandler";
 
 export default function QuizReportList() {
   const [user] = useOutletContext();
   const [quizList, setQuizList] = useState(null);
   const navi = useNavigate();
   const [errorMessage, setErrorMessage] = useState("");
+  const dbHandler = useMemo(
+    () => new DBhandler(user.uid, setErrorMessage),
+    [user.uid, setErrorMessage]
+  );
 
   const handleErrorMessage = () => {
     setErrorMessage("");
     navi("/report");
   };
+
   //get the quiz report List
   useEffect(() => {
     const getQuizReportList = async () => {
       try {
-        const newQuizListRef = ref(database, `userInfo/${user.uid}/quizReport`);
-        const newQuizList = await get(newQuizListRef);
-        if (!newQuizList.val()) {
-          throw new Error("You have no Quiz taken.");
-        }
-        setQuizList(newQuizList.val());
+        const newQuizList = await dbHandler.getUserQuizList();
+        setQuizList(newQuizList);
       } catch (error) {
         setErrorMessage(error.message);
       }
     };
     getQuizReportList();
-  }, [user.uid]);
+  }, [dbHandler]);
 
   //data for the DataGrid header use in display
   const columnData = [
