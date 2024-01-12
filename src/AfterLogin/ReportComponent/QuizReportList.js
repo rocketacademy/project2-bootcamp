@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useOutletContext, useNavigate } from "react-router-dom";
 import { DataGrid } from "@mui/x-data-grid";
 import ErrorPage from "../../ErrorPage";
-import DBhandler from "../Controller/DBhandler";
+import DBHandler from "../../Controller/DBHandler";
 
 export default function QuizReportList() {
   const [user] = useOutletContext();
@@ -11,7 +11,7 @@ export default function QuizReportList() {
   const navi = useNavigate();
   const [errorMessage, setErrorMessage] = useState("");
   const dbHandler = useMemo(
-    () => new DBhandler(user.uid, setErrorMessage),
+    () => new DBHandler(user.uid, setErrorMessage),
     [user.uid, setErrorMessage]
   );
 

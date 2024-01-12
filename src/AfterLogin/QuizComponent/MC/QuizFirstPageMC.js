@@ -10,7 +10,7 @@ import {
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import ErrorPage from "../../../ErrorPage";
-import DBhandler from "../../Controller/DBhandler";
+import DBHandler from "../../../Controller/DBHandler";
 //Take the user data from App.js state
 
 //Component let user choose which decks to include in the quiz
@@ -19,7 +19,7 @@ export default function QuizFirstPageMC(props) {
   const [userDecks, setUserDecks] = useState(null);
   const navi = useNavigate();
   const dbHandler = useMemo(
-    () => new DBhandler(props.user.uid, setErrorMessage),
+    () => new DBHandler(props.user.uid, setErrorMessage),
     [props.user.uid, setErrorMessage]
   );
 

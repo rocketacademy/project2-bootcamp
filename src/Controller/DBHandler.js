@@ -1,7 +1,7 @@
 import { get, ref, set } from "firebase/database";
-import { database } from "../../firebase";
+import { database } from "../firebase";
 
-export default class DBhandler {
+export default class DBHandler {
   constructor(uid, setErrorMessage, setGoHome) {
     this.uid = uid;
     this.setErrorMessage = setErrorMessage;

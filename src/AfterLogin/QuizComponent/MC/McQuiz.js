@@ -3,16 +3,15 @@ import { useEffect, useMemo, useState } from "react";
 import McQuizQuestion from "./McQuizQuestion";
 import { useNavigate } from "react-router-dom";
 import ErrorPage from "../../../ErrorPage";
-import DBhandler from "../../Controller/DBhandler";
+import DBHandler from "../../../Controller/DBHandler";
 
 //show the  mc question and mc header, and contain the question generation logic
 export default function McQuiz(props) {
   const [questions, setQuestions] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
   const navi = useNavigate();
-  //no need to know the user.uid
   const dbHandler = useMemo(
-    () => new DBhandler(props.user.uid, setErrorMessage),
+    () => new DBHandler(props.user.uid, setErrorMessage),
     [props.user.uid, setErrorMessage]
   );
 

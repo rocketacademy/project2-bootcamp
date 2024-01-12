@@ -5,7 +5,7 @@ import Divider from "@mui/material/Divider";
 import "./ReportPage.css";
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
 import ErrorPage from "../ErrorPage";
-import DBhandler from "./Controller/DBhandler";
+import DBHandler from "../Controller/DBHandler";
 //Take the user data from App.js state
 
 export default function ReportPage() {
@@ -16,7 +16,7 @@ export default function ReportPage() {
   const [goHome, setGoHome] = useState(false);
   const navi = useNavigate();
   const dbHandler = useMemo(
-    () => new DBhandler(user.uid, setErrorMessage, setGoHome),
+    () => new DBHandler(user.uid, setErrorMessage, setGoHome),
     [user.uid, setErrorMessage, setGoHome]
   );
 

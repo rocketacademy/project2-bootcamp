@@ -3,7 +3,7 @@ import PostAddIcon from "@mui/icons-material/PostAdd";
 import { Link } from "react-router-dom";
 import QuizIcon from "@mui/icons-material/Quiz";
 import { signOut, updateProfile } from "firebase/auth";
-import { auth, storage } from "../firebase";
+import { auth } from "../firebase";
 import {
   Avatar,
   Button,
@@ -14,9 +14,9 @@ import {
   MenuItem,
 } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import ErrorPage from "../ErrorPage";
-import DBhandler from "./Controller/DBhandler";
+import DBHandler from "../Controller/DBHandler";
+import StorageHandler from "../Controller/StorageHandler";
 
 export default function NaviBar(props) {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -26,8 +26,12 @@ export default function NaviBar(props) {
   const [file, setFile] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const dbHandler = useMemo(
-    () => new DBhandler(props.user.uid, setErrorMessage),
+    () => new DBHandler(props.user.uid, setErrorMessage),
     [props.user.uid, setErrorMessage]
+  );
+  const stroageHandler = useMemo(
+    () => new StorageHandler(setErrorMessage),
+    [setErrorMessage]
   );
 
   useEffect(() => {
@@ -65,10 +69,8 @@ export default function NaviBar(props) {
   };
 
   const handleUploadPhoto = async () => {
-    const photoRef = ref(storage, `profilePics/${props.user.uid}.jpg`);
     try {
-      await uploadBytes(photoRef, file);
-      const url = await getDownloadURL(photoRef);
+      const url = await stroageHandler.postPhoto(props.user.uid, file);
       await dbHandler.putUserPicURL(url);
       setProfilePicUrl(url);
       setFile("");

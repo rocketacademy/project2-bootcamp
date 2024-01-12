@@ -5,14 +5,14 @@ import AnswerDrop from "./AnswerDrop";
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router";
 import ErrorPage from "../../../ErrorPage";
-import DBhandler from "../../Controller/DBhandler";
+import DBHandler from "../../../Controller/DBHandler";
 
 export default function MixAndMatchQuizQuestion(props) {
   const [answer, setAnswer] = useState(new Array(10).fill(""));
   const [errorMessage, setErrorMessage] = useState("");
   const navi = useNavigate();
   const dbHandler = useMemo(
-    () => new DBhandler(props.user.uid, setErrorMessage),
+    () => new DBHandler(props.user.uid, setErrorMessage),
     [props.user.uid, setErrorMessage]
   );
 

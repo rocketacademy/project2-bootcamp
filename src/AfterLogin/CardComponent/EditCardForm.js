@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import Translator from "../Controller/Translator";
+import Translator from "../../Controller/Translator";
 import { Autocomplete, Button, Card, TextField } from "@mui/material";
 import TextToSpeech from "../TextToSpeech";
 import ErrorPage from "../../ErrorPage";

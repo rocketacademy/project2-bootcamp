@@ -4,7 +4,7 @@ import { Button, TextField } from "@mui/material";
 import SaveDone from "./EditComponent/SaveDone";
 import "./Study.css";
 import ErrorPage from "../ErrorPage";
-import DBhandler from "./Controller/DBhandler";
+import DBHandler from "../Controller/DBHandler";
 import EditCardForm from "./CardComponent/EditCardForm";
 
 export default function EditDeckPage() {
@@ -19,7 +19,7 @@ export default function EditDeckPage() {
   const navigate = useNavigate();
   const { deckID } = useParams();
   const dbHandler = useMemo(
-    () => new DBhandler(user.uid, setErrorMessage, setGoHome),
+    () => new DBHandler(user.uid, setErrorMessage, setGoHome),
     [user.uid, setErrorMessage, setGoHome]
   );
 

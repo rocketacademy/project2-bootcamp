@@ -3,14 +3,14 @@ import { Backdrop, CircularProgress } from "@mui/material";
 import MixAndMatchQuizQuestion from "./MixAndMatchQuizQuestion";
 import { useNavigate } from "react-router-dom";
 import ErrorPage from "../../../ErrorPage";
-import DBhandler from "../../Controller/DBhandler";
+import DBHandler from "../../../Controller/DBHandler";
 
 export default function MixAndMatchQuiz(props) {
   const [questions, setQuestions] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
   const navi = useNavigate();
   const dbHandler = useMemo(
-    () => new DBhandler(props.user.uid, setErrorMessage),
+    () => new DBHandler(props.user.uid, setErrorMessage),
     [props.user.uid, setErrorMessage]
   );
 

@@ -6,7 +6,7 @@ import { Backdrop, CircularProgress } from "@mui/material";
 import StudyDone from "./StudyComponent/StudyDone";
 import "./Study.css";
 import ErrorPage from "../ErrorPage";
-import DBhandler from "./Controller/DBhandler";
+import DBHandler from "../Controller/DBHandler";
 
 export default function StudyPage() {
   const [user] = useOutletContext();
@@ -20,7 +20,7 @@ export default function StudyPage() {
   const navigate = useNavigate();
   const { deckID } = useParams();
   const dbHandler = useMemo(
-    () => new DBhandler(user.uid, setErrorMessage, setGoHome),
+    () => new DBHandler(user.uid, setErrorMessage, setGoHome),
     [user.uid, setErrorMessage, setGoHome]
   );
 

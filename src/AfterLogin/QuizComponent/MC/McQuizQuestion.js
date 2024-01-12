@@ -3,7 +3,7 @@ import { useState, useMemo } from "react";
 import McQuizHeader from "./McQuizHeader";
 import { useNavigate } from "react-router-dom";
 import ErrorPage from "../../../ErrorPage";
-import DBhandler from "../../Controller/DBhandler";
+import DBHandler from "../../../Controller/DBHandler";
 
 //mc question content component
 export default function McQuizQuestion(props) {
@@ -15,7 +15,7 @@ export default function McQuizQuestion(props) {
   const [errorMessage, setErrorMessage] = useState("");
   const navi = useNavigate();
   const dbHandler = useMemo(
-    () => new DBhandler(props.user.uid, setErrorMessage),
+    () => new DBHandler(props.user.uid, setErrorMessage),
     [props.user.uid, setErrorMessage]
   );
 

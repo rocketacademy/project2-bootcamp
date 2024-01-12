@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import "./Study.css";
 import ErrorPage from "../ErrorPage";
-import DBhandler from "./Controller/DBhandler";
+import DBHandler from "../Controller/DBHandler";
 
 export default function HomePage() {
   const [user] = useOutletContext();
@@ -13,7 +13,7 @@ export default function HomePage() {
   const [selectedID, setSelectedID] = useState();
   const navigate = useNavigate();
   const dbHandler = useMemo(
-    () => new DBhandler(user.uid, setErrorMessage),
+    () => new DBHandler(user.uid, setErrorMessage),
     [user.uid, setErrorMessage]
   );
 

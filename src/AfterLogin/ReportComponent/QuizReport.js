@@ -12,7 +12,7 @@ import {
   TableRow,
 } from "@mui/material";
 import ErrorPage from "../../ErrorPage";
-import DBhandler from "../Controller/DBhandler";
+import DBHandler from "../../Controller/DBHandler";
 
 export default function QuizReport() {
   const [user] = useOutletContext();
@@ -21,7 +21,7 @@ export default function QuizReport() {
   const navi = useNavigate();
   const [errorMessage, setErrorMessage] = useState("");
   const dbHandler = useMemo(
-    () => new DBhandler(user.uid, setErrorMessage),
+    () => new DBHandler(user.uid, setErrorMessage),
     [user.uid, setErrorMessage]
   );
 
