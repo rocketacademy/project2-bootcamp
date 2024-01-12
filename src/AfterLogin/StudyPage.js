@@ -1,13 +1,20 @@
 import { useParams, useNavigate, useOutletContext } from "react-router-dom";
 import { useState, useEffect, useMemo } from "react";
-import { Card, Button } from "@mui/material";
 import LinearProgress from "@mui/material/LinearProgress";
-import { Backdrop, CircularProgress } from "@mui/material";
+import {
+  Card,
+  Button,
+  Switch,
+  Backdrop,
+  CircularProgress,
+} from "@mui/material";
+import VolumeUpIcon from "@mui/icons-material/VolumeUp";
+import FormGroup from "@mui/material/FormGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
 import StudyDone from "./StudyComponent/StudyDone";
-import "./Study.css";
 import ErrorPage from "../ErrorPage";
 import DBHandler from "../Controller/DBHandler";
-import VolumeUpIcon from "@mui/icons-material/VolumeUp";
+import "./Study.css";
 
 export default function StudyPage() {
   const [user] = useOutletContext();
@@ -19,12 +26,15 @@ export default function StudyPage() {
   const [studyDone, setStudyDone] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [goHome, setGoHome] = useState(false);
-  const navigate = useNavigate();
+  const [autoPlay, setAutoPlay] = useState(false);
+  const [intervalID, setIntervalID] = useState(null);
   const { deckID } = useParams();
   const dbHandler = useMemo(
     () => new DBHandler(user.uid, setErrorMessage, setGoHome),
     [user.uid, setErrorMessage, setGoHome]
   );
+
+  const navigate = useNavigate();
 
   const handleErrorMessage = () => {
     setErrorMessage("");
@@ -41,8 +51,10 @@ export default function StudyPage() {
           deckID,
           true
         );
+        const shuffledCards = handleShuffle(cardsInfo);
         setDeck(deckInfo);
-        setCards(cardsInfo);
+        setCards(shuffledCards);
+        setLength(shuffledCards.length);
       } catch (error) {}
     };
     fetchData();
@@ -80,6 +92,16 @@ export default function StudyPage() {
     }
   };
 
+  const handleShuffle = (cards) => {
+    for (let i = 0; i < cards.length; i++) {
+      let temp = cards[i];
+      let randomIndex = Math.floor(Math.random() * cards.length);
+      cards[i] = cards[randomIndex];
+      cards[randomIndex] = temp;
+    }
+    return cards;
+  };
+
   const playAudio = async () => {
     try {
       const audioUrl = currentCard.URL;
@@ -91,6 +113,19 @@ export default function StudyPage() {
     }
   };
 
+  const handleChange = (event) => {
+    setAutoPlay(event.target.checked);
+    if (event.target.checked) {
+      const id = setInterval(() => {
+        setDisplayEnglish(false);
+      }, 3000);
+      setIntervalID(id);
+    } else {
+      clearInterval(intervalID);
+      setIntervalID(null);
+    }
+  };
+
   const currentCard = deck.deckCards && cards[currentIndex];
 
   const totalCards = deck.deckCards ? length : 0;
@@ -98,15 +133,28 @@ export default function StudyPage() {
   const cardEnglish = (
     <>
       {currentCard && (
-        <Card className="english">
-          <div className="study-card-header">
-            <p>English</p>
+        <>
+          <Card className="english">
+            <div className="study-card-header">
+              <p>English</p>
+            </div>
+            <div className="study-word" onClick={handleClick}>
+              <h1>{currentCard.english}</h1>
+            </div>
+            <p className="hint">Hint: Tap to flip to the other side</p>
+          </Card>
+          <div className="prev-next">
+            <Button
+              fullWidth
+              className="next-button"
+              size="large"
+              variant="contained"
+              onClick={handleClick}
+            >
+              Show Answer
+            </Button>
           </div>
-          <div className="study-word" onClick={handleClick}>
-            <h1>{currentCard.english}</h1>
-          </div>
-          <p className="hint">Hint: Tap to flip to the other side</p>
-        </Card>
+        </>
       )}
     </>
   );
@@ -132,16 +180,18 @@ export default function StudyPage() {
           <div className="prev-next">
             <Button
               fullWidth
+              className="repeat-button"
               size="large"
-              variant="outlined"
+              variant="contained"
               onClick={handleRepeat}
             >
               👎Again
             </Button>
             <Button
+              className="next-button"
               fullWidth
               size="large"
-              variant="outlined"
+              variant="contained"
               onClick={handleNextCard}
             >
               {currentIndex === totalCards - 1 ? "Done" : "👍Good"}
@@ -179,6 +229,12 @@ export default function StudyPage() {
         <>
           <div className="study-header">
             <h2>{deck.deckName}</h2>
+            <FormGroup>
+              <FormControlLabel
+                control={<Switch checked={autoPlay} onChange={handleChange} />}
+                label="Auto-Play"
+              />
+            </FormGroup>
           </div>
 
           <p className="current-index">
