@@ -73,7 +73,7 @@ export const CourseForm = () => {
         quizLink: quizLink,
         gid: gid,
         courseID: courseID,
-        dueDate: dueDate.toLocaleDateString(),
+        dueDate: dueDate,
       });
       window.scrollTo(0, 0); //scroll to the top after submission
       setShowSuccessAlert(true);
@@ -93,6 +93,7 @@ export const CourseForm = () => {
     } catch (error) {
       console.error("Error writing data to Firebase:", error);
       setShowErrorAlert(true);
+      //bug regenerate courseID if error
 
       // Reset error alert after 3 seconds
       setTimeout(() => {

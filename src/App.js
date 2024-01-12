@@ -5,6 +5,7 @@ import Auth from "./pages/Auth";
 import Teacher from "./pages/Teacher";
 import { CourseForm } from "./pages/CourseForm";
 import { AttendancePublic } from "./pages/AttendancePublic";
+import { StudentCourses } from "./pages/StudentCourses";
 
 const App = () => {
   return (
@@ -15,6 +16,7 @@ const App = () => {
           <Route path="teacher" element={<Teacher />} />
           <Route path="courseform" element={<CourseForm />} />
           <Route path="attendance" element={<AttendancePublic />} />
+          <Route path="student" element={<StudentCourses />} />
         </Routes>
       </BrowserRouter>
     </div>
