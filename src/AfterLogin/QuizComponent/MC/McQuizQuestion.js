@@ -1,20 +1,23 @@
 import { Button, Card, CardContent } from "@mui/material";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import McQuizHeader from "./McQuizHeader";
 import { useNavigate } from "react-router-dom";
-import { database } from "../../../firebase";
-import { ref, get, set } from "firebase/database";
 import ErrorPage from "../../../ErrorPage";
+import DBhandler from "../../Controller/DBhandler";
 
 //mc question content component
 export default function McQuizQuestion(props) {
   const [isCorrect, setIsCorrect] = useState(new Array(10).fill(false));
-  const [isAnswered, setIsAnswered] = useState(new Array(10).fill(""));
+  const [userChoice, setUserChoice] = useState(new Array(10).fill(""));
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [startAnimationNext, setAnimationNext] = useState(false);
   const [startAnimationPrev, setAnimationPrev] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const navi = useNavigate();
+  const dbHandler = useMemo(
+    () => new DBhandler(props.user.uid, setErrorMessage),
+    [props.user.uid, setErrorMessage]
+  );
 
   const handleErrorMessage = () => {
     setErrorMessage("");
@@ -65,7 +68,7 @@ export default function McQuizQuestion(props) {
         return [...prev];
       });
     }
-    setIsAnswered((prev) => {
+    setUserChoice((prev) => {
       prev[questionNo] = choice;
       return [...prev];
     });
@@ -73,45 +76,30 @@ export default function McQuizQuestion(props) {
 
   //handle after all question is answered, and go to the report page
   const handleToResult = async () => {
-    const userQuizReportRef = ref(
-      database,
-      `userInfo/${props.user.uid}/quizReport`
-    );
+    const score = isCorrect.reduce((a, b) => a + b, 0) * 10;
+    const answer = props.questions.map(({ english, answer, deckName }) => {
+      return { english: english, spanish: answer, deckName: deckName };
+    });
     try {
-      const userQuizReport = await get(userQuizReportRef);
-      const score = isCorrect.reduce((a, b) => a + b, 0) * 10;
-      const answer = props.questions.map(({ english, answer, deckName }) => {
-        return { english: english, spanish: answer, deckName: deckName };
-      });
-      const quizNo =
-        userQuizReport.val() === null
-          ? 1
-          : Object.values(userQuizReport.val()).length + 1;
-      const newQuizReportRef = ref(
-        database,
-        `userInfo/${props.user.uid}/quizReport/quiz${quizNo}`
+      const quizID = await dbHandler.putUserQuizReport(
+        score,
+        answer,
+        userChoice
       );
-      await set(newQuizReportRef, {
-        quizID: quizNo,
-        score: score,
-        choice: isAnswered,
-        answer: answer,
-        date: new Date().toLocaleDateString(),
-      });
-      navi(`/quizList/${quizNo}`);
+      navi(`/quizList/${quizID}`);
     } catch (error) {
       setErrorMessage(error.message);
     }
   };
 
-  const isFinishedAllQuestion = isAnswered.every((ans) => ans.length);
+  const isFinishedAllQuestion = userChoice.every((ans) => ans.length);
   //display for each of the question page
   const questionsDisplay = props.questions.map((question, i) => {
     //display for each choices for each question
     const choicesDisplay = question.choice.map((choice, j) => {
       const isCorrectAnswer = choice === question.answer;
-      const isQuestionAnswered = Boolean(isAnswered[i].length);
-      const userChoice = isAnswered[i] === choice;
+      const isQuestionAnswered = !!userChoice[i].length;
+      const IsUserChoice = !!(userChoice[i] === choice);
       return (
         <Card
           className="spanish-card"
@@ -126,13 +114,13 @@ export default function McQuizQuestion(props) {
             className={
               isCorrectAnswer && isQuestionAnswered
                 ? "correct"
-                : userChoice
+                : IsUserChoice
                 ? "wrong"
                 : null
             }
           >
             {isQuestionAnswered && isCorrectAnswer && <span>✓</span>}
-            {userChoice && !isCorrectAnswer && <span>X</span>}
+            {IsUserChoice && !isCorrectAnswer && <span>X</span>}
             {choice}
           </CardContent>
         </Card>

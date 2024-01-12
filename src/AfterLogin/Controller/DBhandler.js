@@ -87,7 +87,7 @@ export default class DBhandler {
   };
 
   //get single card Info
-  getCardsInfo = async (cardID, isGoHome) => {
+  getCardInfo = async (cardID, isGoHome) => {
     try {
       const cardRef = ref(database, `cards/card${cardID}`);
       const res = await get(cardRef);
@@ -109,7 +109,7 @@ export default class DBhandler {
 
       const cardNumber = Object.values(deckInfo.deckCards);
       const cardPromises = cardNumber.map(
-        async (cardID) => await this.getCardsInfo(cardID, isGoHome)
+        async (cardID) => await this.getCardInfo(cardID, isGoHome)
       );
       const cardsInfo = await Promise.all(cardPromises);
       return { deckInfo, cardsInfo };
@@ -208,7 +208,7 @@ export default class DBhandler {
     try {
       const newCards = [];
       const cardsPromises = deck.deckCards.map(
-        async (cardID) => await this.getCardsInfo(cardID, false)
+        async (cardID) => await this.getCardInfo(cardID, false)
       );
       //comparing cards order following deck.deckCardsID
       const comparingCardsRes = await Promise.all(cardsPromises);
@@ -285,6 +285,30 @@ export default class DBhandler {
       const userDeckIDs = res.val() ? res.val() : [];
       userDeckIDs.push(newDeckID);
       await set(userDeckRef, [...userDeckIDs]);
+    } catch (error) {
+      this.setErrorMessage(error.message);
+    }
+  };
+
+  //add new user quiz report
+  //return quizID
+  putUserQuizReport = async (score, answer, choice) => {
+    try {
+      const userQuizList = await this.getUserQuizList();
+      const quizID = userQuizList ? Object.values(userQuizList).length + 1 : 1;
+      const newQuizReportRef = ref(
+        database,
+        `userInfo/${this.uid}/quizReport/quiz${quizID}`
+      );
+      const newQuizReport = {
+        quizID: quizID,
+        score: score,
+        choice: choice,
+        answer: answer,
+        date: new Date().toLocaleDateString(),
+      };
+      await set(newQuizReportRef, newQuizReport);
+      return quizID;
     } catch (error) {
       this.setErrorMessage(error.message);
     }
