@@ -18,6 +18,7 @@ import { auth } from "../firebase";
 import {
   setPersistence,
   browserSessionPersistence,
+  browserLocalPersistence,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   sendPasswordResetEmail,
@@ -38,7 +39,7 @@ export default function SignIn() {
   };
 
   const persistAuthState = () => {
-    setPersistence(auth, browserSessionPersistence)
+    setPersistence(auth, browserLocalPersistence)
       .then(() => {
         return signInWithEmailAndPassword(auth, email, password);
       })
