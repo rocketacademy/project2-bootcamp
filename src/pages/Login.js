@@ -1,5 +1,7 @@
 import React, { useState } from "react";
-import { auth } from "../firebase";
+import { auth, db } from "../firebase";
+// import { ref, child, get } from "./firebase/database";
+import { ref, onValue } from "firebase/database";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 
@@ -7,6 +9,8 @@ const Signup = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
+  // const [isStudentLoggedIn, setIsStudentLoggedIn] = useState(false);
+  // const [user, setUser] = useState("");
   const navigate = useNavigate();
 
   const handleSignin = async (e) => {
@@ -15,6 +19,8 @@ const Signup = () => {
 
     try {
       const user = await signInWithEmailAndPassword(auth, email, password);
+      console.log(user);
+
       if (user) {
         setTimeout(() => {
           navigate("/teacher");
@@ -25,6 +31,27 @@ const Signup = () => {
       setMessage(error.message);
     }
   };
+
+  const searchTeacherDB = () => {
+    const teacher = ref(db, "/Teacher");
+    onValue(teacher, (snapshot) => {
+      const teacherValue = snapshot.val();
+      console.log(teacherValue);
+    });
+  };
+
+  console.log(searchTeacherDB());
+
+  const searchStudentDB = () => {
+    const student = ref(db, "/Student");
+    onValue(student, (snapshot) => {
+      const studentValue = snapshot.val();
+      console.log(studentValue);
+    });
+  };
+
+  console.log(searchStudentDB());
+
   return (
     <>
       <p class="font-bold tracking-wider">
@@ -71,6 +98,9 @@ const Signup = () => {
             <span class="underline underline-offset-4 m-1">Sign up</span>
           </button>
         </p>
+        {/* <p class="text-sm mt-2">
+          <button onClick={handleForget}>Forget password?</button>
+        </p> */}
       </div>
     </>
   );
