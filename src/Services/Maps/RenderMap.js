@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef } from "react";
+import React, { useState, useCallback, useRef, useEffect } from "react";
 import {
   GoogleMap,
   useLoadScript,
@@ -9,7 +9,7 @@ import {
 import axios from "axios";
 //import singaporeflag from "../../Data/singaporeflag.png";
 import { realTimeDatabase } from "../../firebase";
-import { set, ref, onValue } from "firebase/database";
+import { set, ref } from "firebase/database";
 
 // const icon = singaporeflag;
 // const iconSize = {
@@ -26,7 +26,7 @@ const center = {
   lng: 103.81404,
 };
 
-const RenderMap = ({ sendMessage, landmarks }) => {
+export default function RenderMap({ sendMessage, landmarks }) {
   const [libraries] = useState(["places"]);
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
@@ -42,6 +42,10 @@ const RenderMap = ({ sendMessage, landmarks }) => {
   const mapRef = useRef();
   const onMapLoad = useCallback((map) => {
     mapRef.current = map;
+    const transitLayer = new window.google.maps.TransitLayer();
+    const trafficLayer = new window.google.maps.TrafficLayer();
+    transitLayer.setMap(mapRef.current);
+    trafficLayer.setMap(mapRef.current);
   }, []);
 
   const onMarkerClick = (position) => {
@@ -106,54 +110,49 @@ const RenderMap = ({ sendMessage, landmarks }) => {
     //   googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
     //   libraries={libraries}
     // >
-    <GoogleMap
-      mapContainerStyle={mapContainerStyle}
-      mapId="6da2495ffc989dca"
-      zoom={12}
-      center={center}
-      onClick={onMapClick}
-      onLoad={onMapLoad}
-    >
-      {selectedLocation && <Marker position={selectedLocation} />}
-      {Object.entries(landmarks).map(([name, position]) => (
+    <>
+      <GoogleMap
+        mapContainerStyle={mapContainerStyle}
+        mapId="6da2495ffc989dca"
+        zoom={12}
+        center={center}
+        onClick={onMapClick}
+        onLoad={onMapLoad}
+        ref={mapRef}
+      >
+        {selectedLocation && <Marker position={selectedLocation} />}
+        {Object.entries(landmarks).map(([name, position]) => (
+          <Marker
+            key={name}
+            position={position}
+            onClick={onMapClick}
+            //icon={icon}
+            //scaledSize="10%"
+          />
+        ))}
         <Marker
-          key={name}
-          position={position}
-          onClick={onMapClick}
-          //icon={icon}
-          //scaledSize="10%"
-        />
-      ))}
-      <Marker position={selectedLocation} onLoad={() => setMarkerLoaded(true)}>
-        {markerLoaded && (
-          <InfoWindow>
-            <div>
-              <h2>{selectedPlace.formatted_address}</h2>
-            </div>
-          </InfoWindow>
-        )}
-      </Marker>
-      {Object.entries(landmarks).map(([name, position]) => (
-        <Marker
-          key={name}
-          position={position}
-          onClick={onMapClick}
-          //icon={icon}
-          //scaledSize="10%"
-        />
-      ))}
-      <Marker position={selectedLocation} onLoad={() => setMarkerLoaded(true)}>
-        {markerLoaded && (
-          <InfoWindow>
-            <div>
-              <h2>{selectedPlace.formatted_address}</h2>
-            </div>
-          </InfoWindow>
-        )}
-      </Marker>
-    </GoogleMap>
-    // {/* </LoadScript> */}
+          position={selectedLocation}
+          onLoad={() => setMarkerLoaded(true)}
+        >
+          {markerLoaded && (
+            <InfoWindow>
+              <div>
+                <h2>{selectedPlace.formatted_address}</h2>
+              </div>
+            </InfoWindow>
+          )}
+        </Marker>
+        {Object.entries(landmarks).map(([name, position]) => (
+          <Marker
+            key={name}
+            position={position}
+            onClick={onMapClick}
+            //icon={icon}
+            //scaledSize="10%"
+          />
+        ))}
+      </GoogleMap>
+      // {/* </LoadScript> */}
+    </>
   );
-};
-
-export default RenderMap;
+}

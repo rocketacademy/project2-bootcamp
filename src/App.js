@@ -124,9 +124,7 @@ const App = () => {
 
   const [drawerRef, setDrawerRef] = useState(null);
 
-  useEffect(()=>{
-
-  })
+  useEffect(() => {});
 
   // Handling the drawer opening
   useEffect(() => {
@@ -146,7 +144,6 @@ const App = () => {
       }
     });
   }, []);
-
 
   // onAuthStateChanged function to be passed down into the App child component
   const handleAuthStateChanged = () => {
@@ -291,38 +288,6 @@ const App = () => {
       {isLoggedIn && (
         <StyledContainer>
           <StyledGridItem item sx={{ margin: "20px" }}>
-            {/* <TextField
-              type="text"
-              value={userMessage}
-              onChange={(e) => setUserMessage(e.target.value)}
-            />
-            <Button
-              variant="contained"
-              onClick={sendMessage}
-              sx={{ mt: "20px", mb: "20px" }}
-            >
-              Send Message
-            </Button>
-
-            <Box className="ai-response">
-              <Typography
-                variant="h4"
-                sx={{
-                  fontFamily: "Comic Sans MS",
-                  color: "primary.main",
-                }}
-              >
-                AI Response:
-              </Typography>
-              <p>{aiResponse}</p>
-            </Box>
-            <Button
-              variant="contained"
-              onClick={clearAIResponse}
-              sx={{ mt: "20px", mb: "20px" }}
-            >
-              Clear
-            </Button> */}
             <Box
               sx={{
                 "& .MuiTextField-root": { m: 1, width: "25ch" },
@@ -351,7 +316,7 @@ const App = () => {
       </Box> */}
 
       {!isLoggedIn && (
-        <Box className='overlay'>
+        <Box className="overlay">
           <SignIn />
         </Box>
       )}
