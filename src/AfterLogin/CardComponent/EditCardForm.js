@@ -10,10 +10,12 @@ export default function EditCardForm(props) {
   const isDisable = props.editing !== card.cardID;
   const isEditDisable = props.editing && props.editing !== card.cardID;
   const [englishValue, setEnglishValue] = useState(card.english);
-  const [options, setOptions] = useState([card.spanish]);
+  const [spanishOptions, setSpanishOptions] = useState([card.spanish]);
+  const [englishOptions, setEnglishOptions] = useState([card.english]);
   const [spanishValue, setSpanishValue] = useState(card.spanish);
   const [errorMessage, setErrorMessage] = useState("");
   const [loadingAudio, setLoadingAudio] = useState(false);
+  const [englishInput, setEnglishInput] = useState(true);
   const translator = useMemo(
     () => new Translator(setErrorMessage, process.env.REACT_APP_SPANISH_KEY),
     [setErrorMessage]
@@ -38,13 +40,30 @@ export default function EditCardForm(props) {
   };
 
   const handleTranslate = async () => {
-    try {
-      const translation = await translator.engToSpan(englishValue);
-      setOptions(translation);
-      setSpanishValue(translation[0]);
-    } catch (error) {
-      setErrorMessage(error.message);
+    if (englishInput) {
+      try {
+        const translationToSpan = await translator.engToSpan(englishValue);
+        setSpanishOptions(translationToSpan);
+        setSpanishValue(translationToSpan[0]);
+      } catch (error) {
+        setErrorMessage(error.message);
+      }
+    } else {
+      try {
+        const translationToEng = await translator.spanToEng(englishValue);
+        setEnglishOptions(translationToEng);
+        setSpanishValue(translationToEng[0]);
+      } catch (error) {
+        setErrorMessage(error.message);
+      }
     }
+  };
+
+  const handleLanguageSwitch = () => {
+    setEnglishInput((prevEnglishInput) => !prevEnglishInput);
+    console.log(englishInput);
+    setEnglishValue("");
+    setSpanishValue("");
   };
 
   const handlePlayAudio = async (word) => {
@@ -62,6 +81,7 @@ export default function EditCardForm(props) {
         handleErrorMessage={() => setErrorMessage("")}
       />
       <div className="edit-buttons">
+        <Button onClick={handleLanguageSwitch}>Switch languages</Button>
         <Button disabled={isDisable} onClick={() => handleTranslate()}>
           Translate
         </Button>
@@ -77,7 +97,7 @@ export default function EditCardForm(props) {
             fullWidth
             value={englishValue}
             onChange={(e) => setEnglishValue(e.target.value)}
-            label="English"
+            label={englishInput ? "English" : "Spanish"}
             variant="standard"
           ></TextField>
         </div>
@@ -87,7 +107,7 @@ export default function EditCardForm(props) {
             <Autocomplete
               value={spanishValue}
               disabled={isDisable}
-              options={options}
+              options={englishInput ? spanishOptions : englishOptions}
               onChange={(e, input) => {
                 setSpanishValue(input);
               }}
@@ -100,7 +120,12 @@ export default function EditCardForm(props) {
               sx={{ width: 350 }}
               getOptionLabel={(option) => option}
               renderInput={(params) => (
-                <TextField {...params} label="Spanish translation" />
+                <TextField
+                  {...params}
+                  label={
+                    englishInput ? "Spanish translation" : "English translation"
+                  }
+                />
               )}
             />
           </div>
