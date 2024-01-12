@@ -1,8 +1,9 @@
 import { useMemo, useState } from "react";
 import Translator from "../../Controller/Translator";
 import { Autocomplete, Button, Card, TextField } from "@mui/material";
-import TextToSpeech from "../TextToSpeech";
 import ErrorPage from "../../ErrorPage";
+import LoadingButton from "@mui/lab/LoadingButton";
+import TextToSpeech from "../../Controller/TextToSpeech";
 
 export default function EditCardForm(props) {
   const card = props.card;
@@ -12,9 +13,19 @@ export default function EditCardForm(props) {
   const [options, setOptions] = useState([card.spanish]);
   const [spanishValue, setSpanishValue] = useState(card.spanish);
   const [errorMessage, setErrorMessage] = useState("");
+  const [loadingAudio, setLoadingAudio] = useState(false);
   const translator = useMemo(
     () => new Translator(setErrorMessage, process.env.REACT_APP_SPANISH_KEY),
     [setErrorMessage]
+  );
+  const audioHandler = useMemo(
+    () =>
+      new TextToSpeech(
+        setErrorMessage,
+        setLoadingAudio,
+        process.env.REACT_APP_OPENAI_KEY
+      ),
+    [setErrorMessage, setLoadingAudio]
   );
 
   const handleEdit = () => {
@@ -36,6 +47,14 @@ export default function EditCardForm(props) {
     }
   };
 
+  const handlePlayAudio = async (word) => {
+    try {
+      setLoadingAudio(true);
+      await audioHandler.playAudio(word);
+    } catch (error) {
+      setErrorMessage(error.message);
+    }
+  };
   return (
     <Card className="edit-card">
       <ErrorPage
@@ -85,7 +104,14 @@ export default function EditCardForm(props) {
               )}
             />
           </div>
-          <TextToSpeech />
+          <LoadingButton
+            loading={loadingAudio}
+            onClick={() => {
+              handlePlayAudio(spanishValue);
+            }}
+          >
+            🔊
+          </LoadingButton>
         </div>
       </div>
     </Card>
