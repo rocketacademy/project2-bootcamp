@@ -124,8 +124,6 @@ const App = () => {
 
   const [drawerRef, setDrawerRef] = useState(null);
 
-  useEffect(() => {});
-
   // Handling the drawer opening
   useEffect(() => {
     if (drawerRef) {
