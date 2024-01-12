@@ -66,8 +66,6 @@ export default function StudyPage() {
     navigate(`/`);
   };
 
-  console.log(currentIndex);
-
   const handleRepeat = () => {
     setCards((prevCards) => {
       const repeatedCards = { ...prevCards[currentIndex] };
