@@ -1,6 +1,119 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+// import { GoogleSpreadsheet } from "google-spreadsheet";
+// import { Chart } from "react-google-charts";
+import { db } from "../firebase";
+import { ref, onValue } from "firebase/database";
+// import axios from "axios";
 
 const Teacher = () => {
+  const navigate = useNavigate();
+  // const [loading, setLoading] = useState(false);
+  // const [chartData, setChartData] = useState([]);
+  // const [errMsg, setErrMsg] = useState("");
+  const [courses, setCourses] = useState([]);
+
+  useEffect(() => {
+    const coursesRef = ref(db, "/courses");
+    onValue(coursesRef, (snapshot) => {
+      const data = snapshot.val();
+      console.log(data);
+
+      Object.values(data).forEach((myData) => {
+        const courseId = myData.gid;
+        setCourses((courses) => {
+          return [...courses, courseId];
+        });
+      });
+    });
+  }, []);
+
+  console.log(courses);
+
+  // const fetchData = async () => {
+  //   setChartData(data);
+  // setLoading(true);
+  // try {
+  //   const response = await axios.get(
+  //     "https://docs.google.com/spreadsheets/d/e/2PACX-1vSTx5-VKJBxXasQweRDdzyQxrWQtuDm3OGpTCX00G4rlc6sBymaPbXsTDKO5QOOg3cog72Uatd-THzk/pub?gid=902545446&single=true&output=csv "
+  //   );
+  // "https://docs.google.com/spreadsheets/d/e/2PACX-1vSTx5-VKJBxXasQweRDdzyQxrWQtuDm3OGpTCX00G4rlc6sBymaPbXsTDKO5QOOg3cog72Uatd-THzk/pub?gid=832644199&single=true&output=csv"
+
+  //   "https://docs.google.com/spreadsheets/d/e/2PACX-1vSTx5-VKJBxXasQweRDdzyQxrWQtuDm3OGpTCX00G4rlc6sBymaPbXsTDKO5QOOg3cog72Uatd-THzk/pub?gid=1040383854&single=true&output=csv"
+
+  // const parsedCsvData = parseCSVToArr(response.data);
+  //     setChartData(data);
+  //     // console.log(parsedCsvData);
+  //   } catch (error) {
+  //     setErrMsg(error);
+  //   }
+  // };
+  // }
+  // const dbRef = ref(db, "courses/");
+
+  // useEffect(() => {
+  //   retrieveCourseData();
+  // }, []);
+  // `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${SHEET_NAME}?valueRenderOption=FORMATTED_VALUE&key=${API_KEY}`;
+
+  // const fetchDataing = async () => {
+  //   const getdata = await axios
+  //     .get(
+  //       "https://docs.google.com/spreadsheets/d/aBC-123_xYz/edit#gid=1162486732"
+  //       // "https://sheets.googleapis.com/v4/spreadsheets/1162486732/values:batchGet"
+  //     )
+  //     .then((response) => {
+  //       console.log(response);
+  //     });
+  //   return console.log(getdata);
+  // const SHEET_ID = "1570289415";
+  // const SHEET_NAME = `FormOne`;
+  // const API_KEY = "AIzaSyBRRRol9-C9iTmPuaxq1j5JbnvmbSAisFU";
+  // const URL = `https://docs.google.com/spreadsheets/d/aBC-123_xYz/edit#gid=${SHEET_ID}`;
+  // const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${SHEET_NAME}?valueRenderOption=FORMATTED_VALUE&key=${API_KEY}`;
+  // const URL = ` https://docs.google.com/spreadsheets/d/16HTIiiOq82Tm1tLHRQcr_8YJnO81QxZOOBOfR4hU3zc/edit#gid=1162486732`;
+  // axios.get(URL).then((res) => console.log(res.data));
+  // };
+
+  // console.log(fetchDataing());
+
+  // const data = [
+  //   ["Course", "Rate (%)"],
+  //   [`${retrieveCourse}`, 90],
+  // ];
+
+  // useEffect(()=> {
+
+  // }, [])
+
+  // const parseCSVToArr = (csvText) => {
+  //   const rows = csvText.split(/\r?\n/);
+  //   // const headers = rows[0].split(", ");
+  //   const data = [];
+  //   for (const row of rows) {
+  //     const values = row.split(", ");
+  //     data.push(values);
+  //   }
+  //   return data;
+  //   // for (let i = 0; i < rows.length; i += 1) {
+  //   //   const rowData = rows[i].split(", ");
+  //   //   const dataObj = {};
+  //   //   for (let j = 0; j < headers.length; j += 1) {
+  //   //     dataObj[headers[j]] = rowData[j];
+  //   //   }
+  //   //   data.push(dataObj);
+  //   // }
+  //   // return data;
+  // };
+  // console.log(chartData);
+
+  // const options = {
+  //   vAxis: { title: "Completion rate (%)" },
+  //   hAxis: { title: "Course Name" },
+  //   seriesType: "bars",
+  //   series: { 3: { type: "line" } },
+  // };
+
   return (
     <>
       {/* <div class="flex flex-col text-sm p-4 mt-4 justify-end">
@@ -21,11 +134,11 @@ const Teacher = () => {
           </svg>
         </span>
       </div> */}
-      <div class="h-screen  p-20 border">
+      <div class="h-screen  p-20">
         <div class="text-left">
           <p class="text-sm font-bold">Quick Access</p>
         </div>
-        <div class="space-x-10 flex shadow-lg rounded-lg dark:bg-amber-200 p-10 mb-20 mt-2.5">
+        <div class="space-x-20 flex shadow-lg rounded-lg dark:bg-[#fdba74] p-10 mb-20 mt-2.5">
           <div>
             <button>
               <svg
@@ -43,9 +156,10 @@ const Teacher = () => {
                 />
               </svg>
             </button>
+            <p class="text-sm">Attendance</p>
           </div>
           <div>
-            <button>
+            <button onClick={() => navigate("resources")}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -61,6 +175,7 @@ const Teacher = () => {
                 />
               </svg>
             </button>
+            <p class="text-sm">Resources</p>
           </div>
         </div>
 
@@ -91,6 +206,18 @@ const Teacher = () => {
             required
           />
         </div>
+        <div class="flex  justify-around">
+          <button>Course Progress</button>
+        </div>
+        {/* {!errMsg & errMsg} */}
+
+        {/* <Chart
+          chartType="ComboChart"
+          data={data}
+          options={options}
+          width={"100%"}
+          height={"400px"}
+        /> */}
       </div>
     </>
   );

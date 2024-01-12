@@ -3,13 +3,21 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+<<<<<<< HEAD
     "@auth0/auth0-react": "^2.2.4",
     "@react-oauth/google": "^0.12.1",
     "@tailwindcss/typography": "^0.5.10",
     "axios": "^1.6.3",
+=======
+    "@react-oauth/google": "^0.12.1",
+    "@tailwindcss/typography": "^0.5.10",
+    "axios": "^1.6.5",
+>>>>>>> my-feature
     "firebase": "^10.7.1",
     "react": "^18.1.0",
+    "react-daisyui": "^5.0.0",
     "react-dom": "^18.1.0",
+    "react-google-charts": "^4.0.1",
     "react-router-dom": "^6.21.0",
     "react-scripts": "5.0.1"
   },
@@ -37,6 +45,6 @@
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.7",
     "daisyui": "^4.4.20",
-    "tailwindcss": "^3.3.7"
+    "tailwindcss": "^3.4.0"
   }
 }
