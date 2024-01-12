@@ -16,6 +16,8 @@ import Card from "@mui/material/Card";
 import { useState } from "react";
 import { auth } from "../firebase";
 import {
+  setPersistence,
+  browserSessionPersistence,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   sendPasswordResetEmail,
@@ -26,6 +28,7 @@ const defaultTheme = createTheme();
 export default function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [resetPasswordTimer, setResetPasswordTimer] = useState(true);
 
   const signUp = async () => {
     const user = await createUserWithEmailAndPassword(auth, email, password);
@@ -34,10 +37,24 @@ export default function SignIn() {
     setPassword("");
   };
 
-  const forgotPassword = async () => {
+  const persistAuthState = () => {
+    setPersistence(auth, browserSessionPersistence)
+      .then(() => {
+        return signInWithEmailAndPassword(auth, email, password);
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+      });
+  };
+
+  const forgotPassword = () => {
     sendPasswordResetEmail(auth, email)
       .then(() => {
         console.log("Email sent");
+        // setResetPasswordTimer(false);
+        // setTimeout(5000);
+        // setResetPasswordTimer(true);
       })
       .catch((error) => {
         const errorCode = error.code;
@@ -104,12 +121,16 @@ export default function SignIn() {
               <FormControlLabel
                 control={<Checkbox value="remember" color="primary" />}
                 label="Remember me"
+                onClick={persistAuthState}
               />
-              <FormControlLabel
-                control={<Button value="forgot" color="secondary" />}
-                label="Forgot Password"
-                onClick={forgotPassword}
-              ></FormControlLabel>
+              {/* {!resetPasswordTimer && ( */}
+              {
+                <FormControlLabel
+                  control={<Button value="forgot" color="secondary" />}
+                  label="Forgot Password"
+                  onClick={forgotPassword}
+                ></FormControlLabel>
+              }
               <Button
                 margin="normal"
                 type="submit"
