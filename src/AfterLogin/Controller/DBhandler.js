@@ -9,6 +9,7 @@ export default class DBhandler {
   }
 
   //check the deck valid for user
+  //No return
   checkUserDeckID = async (deckID, isGoHome) => {
     try {
       const userInfo = await this.getUserInfo(isGoHome);
@@ -67,6 +68,7 @@ export default class DBhandler {
   };
 
   //Get single deck and cards in that deck
+  //return { deckInfo, cardsInfo }
   getDeckAndCards = async (deckID, isGoHome) => {
     try {
       const deckInfo = await this.getDeckInfo(deckID, isGoHome);
@@ -87,6 +89,7 @@ export default class DBhandler {
   };
 
   //get user info and decks detail related to user
+  //return { userInfo, userDecks }
   getUserAndDecksInfo = async (isGoHome) => {
     try {
       const userInfo = await this.getUserInfo(isGoHome);
@@ -107,6 +110,7 @@ export default class DBhandler {
   };
 
   //update/setuserURL
+  //no return
   putUserPicURL = async (url) => {
     const userPicRef = ref(database, `userInfo/${this.uid}/profilePic`);
     try {
@@ -116,7 +120,8 @@ export default class DBhandler {
     }
   };
 
-  //delete deck from user and return decks detail related to user
+  //delete deck from user
+  //return every decks detail related to user
   deleteUserDeck = async (deckID) => {
     try {
       const userInfo = await this.getUserInfo(false);
@@ -141,6 +146,7 @@ export default class DBhandler {
   };
 
   //upload a new Card
+  //no return
   postNewCard = async (card) => {
     const newCardRef = ref(database, `cards/card${card.cardID}`);
     try {
@@ -151,6 +157,7 @@ export default class DBhandler {
   };
 
   //upload a new Deck
+  //no return
   postNewDeck = async (deck) => {
     const newDeckRef = ref(database, `decks/deck${deck.deckID}`);
     try {
@@ -160,8 +167,9 @@ export default class DBhandler {
     }
   };
 
-  //update user deck to another deck
+  //update user deck,newDeck will replace oldDeck in userInfo
   //deck is new Info with old deckID
+  //no return
   postUserDecks = async (deck, cards) => {
     const userDeckRef = ref(database, `userInfo/${this.uid}/decks`);
     try {
@@ -220,6 +228,32 @@ export default class DBhandler {
       await set(userDeckRef, [...userDeckIDs]);
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  //add new user deck
+  //no return
+  putUserDecks = async (deckName, cards) => {
+    try {
+      const cardsPromises = cards.map(
+        async (card) => await this.postNewCard(card)
+      );
+      await Promise.all(cardsPromises);
+      const cardIDs = cards.map((card) => card.cardID);
+      const newDeckID = Date.now();
+      const newDeck = {
+        deckID: newDeckID,
+        deckName: deckName,
+        deckCards: cardIDs,
+      };
+      await this.postNewDeck(newDeck);
+      const userDeckRef = ref(database, `userInfo/${this.uid}/decks`);
+      const res = await get(userDeckRef);
+      const userDeckIDs = res.val() ? res.val() : [];
+      userDeckIDs.push(newDeckID);
+      await set(userDeckRef, [...userDeckIDs]);
+    } catch (error) {
+      this.setErrorMessage(error.message);
     }
   };
 }
