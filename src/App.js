@@ -5,20 +5,22 @@ import Signup from "./pages/Signup";
 import Teacher from "./pages/Teacher";
 import Resources from "./pages/Resources";
 import { CourseForm } from "./pages/CourseForm";
+import "./App.css";
 
 const App = () => {
   return (
     <div className="App">
       <header className="App-header">
-        {/* <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p> */}
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Auth />} />
+            <Route path="/" element={<Login />} />
+            <Route path="signup" element={<Signup />} />
             <Route path="teacher" element={<Teacher />} />
-            <Route path="courseform" element={<CourseForm />} />
+            <Route path="teacher/resources" element={<Resources />} />
+            <Route
+              path="teacher/resources/courseform"
+              element={<CourseForm />}
+            />
           </Routes>
         </BrowserRouter>
       </header>
