@@ -1,7 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useParams, useOutletContext, useNavigate } from "react-router-dom";
-import { database } from "../../firebase";
-import { get, ref } from "firebase/database";
 import {
   Backdrop,
   Button,
@@ -14,6 +12,7 @@ import {
   TableRow,
 } from "@mui/material";
 import ErrorPage from "../../ErrorPage";
+import DBHandler from "../../Controller/DBHandler";
 
 export default function QuizReport() {
   const [user] = useOutletContext();
@@ -21,6 +20,10 @@ export default function QuizReport() {
   const [quizInfo, setQuizInfo] = useState(null);
   const navi = useNavigate();
   const [errorMessage, setErrorMessage] = useState("");
+  const dbHandler = useMemo(
+    () => new DBHandler(user.uid, setErrorMessage),
+    [user.uid, setErrorMessage]
+  );
 
   const handleErrorMessage = () => {
     setErrorMessage("");
@@ -29,23 +32,16 @@ export default function QuizReport() {
 
   //get particular quiz report from the user's quiz report
   useEffect(() => {
-    const getQuizInfo = async () => {
-      const quizRef = ref(
-        database,
-        `userInfo/${user.uid}/quizReport/quiz${quizNo}`
-      );
+    const fetchData = async () => {
       try {
-        const quizReport = await get(quizRef);
-        if (!quizReport.val()) {
-          throw new Error("You don't have this quiz.");
-        }
-        setQuizInfo(quizReport.val());
+        const quizReport = await dbHandler.getUserQuizReport(quizNo);
+        setQuizInfo(quizReport);
       } catch (error) {
         setErrorMessage(error.message);
       }
     };
-    getQuizInfo();
-  }, [quizNo, user.uid]);
+    fetchData();
+  }, [quizNo, dbHandler]);
 
   //generate quiz detail formmatted to use in the table
   const quizDetail =

@@ -1,5 +1,3 @@
-import { ref, get } from "firebase/database";
-import { database } from "../../../firebase";
 import DisabledByDefaultOutlinedIcon from "@mui/icons-material/DisabledByDefaultOutlined";
 import {
   FormGroup,
@@ -9,103 +7,53 @@ import {
   Card,
   CircularProgress,
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import ErrorPage from "../../../ErrorPage";
+import DBHandler from "../../../Controller/DBHandler";
 //Take the user data from App.js state
 
 //Component let user choose which decks to include in the quiz
 export default function QuizFirstPageMC(props) {
-  const [userDeckIDs, setUserDeckIDs] = useState(`loading`);
   const [errorMessage, setErrorMessage] = useState("");
-  const [userDecks, setUserDecks] = useState([]);
+  const [userDecks, setUserDecks] = useState(null);
   const navi = useNavigate();
+  const dbHandler = useMemo(
+    () => new DBHandler(props.user.uid, setErrorMessage),
+    [props.user.uid, setErrorMessage]
+  );
 
   const handleErrorMessage = () => {
     setErrorMessage("");
     navi("/");
   };
+
   useEffect(() => {
-    const takeDecksInfo = async () => {
-      //Taking the decks Info
-      const decksRef = ref(database, `decks`);
+    const fetchData = async () => {
       try {
-        return await get(decksRef);
+        const { userDecks } = await dbHandler.getUserAndDecksInfo();
+        setUserDecks(userDecks);
       } catch (error) {
         setErrorMessage(error.message);
       }
     };
-
-    const takeDeckIDsInfo = async () => {
-      //Taking the user Decks
-      const userDecksRef = ref(database, `userInfo/${props.user.uid}/decks`);
-      try {
-        return await get(userDecksRef);
-      } catch (error) {
-        setErrorMessage(error.message);
-      }
-    };
-
-    const takeAllInfo = async () => {
-      try {
-        const [newDecksIDs, newDecks] = await Promise.all([
-          takeDeckIDsInfo(),
-          takeDecksInfo(),
-        ]);
-        setUserDeckIDs(newDecksIDs.val());
-        setUserDecks(newDecks.val());
-      } catch (error) {
-        setErrorMessage(error.message);
-      }
-    };
-    takeAllInfo();
-  }, [props.user.uid]);
+    fetchData();
+  }, [dbHandler]);
 
   //handle change for user to choose/unchoose decks
-  const handleChange = (e) => {
-    const decksInfo = userDecks[`deck${e.target.value}`];
-    if (e.target.checked) {
-      props.setDecks((prev) => [...prev, decksInfo]);
+  const handleChange = (e, deck) => {
+    const isChecked = e.target.checked;
+    if (isChecked) {
+      props.setDecks((prev) => [...prev, deck]);
     } else {
       props.setDecks((prev) => {
-        const index = prev.findIndex(
-          (deck) => deck.deckID === Number(e.target.value)
-        );
+        const deckID = Number(e.target.value);
+        const index = prev.findIndex((deck) => deck.deckID === deckID);
         const reduced = prev.toSpliced(index, 1);
         return reduced;
       });
     }
   };
-
-  //component show the decks option
-  const selection = Array.isArray(userDeckIDs) ? (
-    userDeckIDs.map((deckID) => {
-      const deckName = userDecks[`deck${deckID}`].deckName;
-      const cardsNum = userDecks[`deck${deckID}`].deckCards.length;
-      let isDeckChecked = false;
-      for (const deck of props.decks) {
-        if (deck.deckID === deckID) {
-          isDeckChecked = true;
-          break;
-        }
-      }
-      return (
-        <FormControlLabel
-          control={
-            <Checkbox
-              value={deckID}
-              onChange={handleChange}
-              checked={isDeckChecked}
-            />
-          }
-          label={`${deckName} (Cards: ${cardsNum})`}
-          key={deckID}
-        />
-      );
-    })
-  ) : (
-    <p>You need to add deck before taking the quiz.</p>
-  );
 
   const loadingPhase = (
     <div>
@@ -113,6 +61,39 @@ export default function QuizFirstPageMC(props) {
       <CircularProgress color="inherit" />
     </div>
   );
+
+  //component show the decks option
+  const selection =
+    userDecks && userDecks.length ? (
+      userDecks.map((deck) => {
+        const deckName = deck.deckName;
+        const cardsNum = deck.deckCards.length;
+        const deckID = deck.deckID;
+        let isDeckChecked = false;
+        for (const deck of props.decks) {
+          if (deckID === deck.deckID) {
+            isDeckChecked = true;
+            break;
+          }
+        }
+        return (
+          <FormControlLabel
+            control={
+              <Checkbox
+                value={deckID}
+                onChange={(e) => handleChange(e, deck)}
+                checked={isDeckChecked}
+              />
+            }
+            label={`${deckName} (Cards: ${cardsNum})`}
+            key={deckID}
+          />
+        );
+      })
+    ) : (
+      <p>You need to add deck before taking the quiz.</p>
+    );
+
   let questionAvailable = 0;
   props.decks.forEach(
     (deck) => (questionAvailable += deck.deckCards.length - 3)
@@ -136,10 +117,7 @@ export default function QuizFirstPageMC(props) {
           options and your task is to select the correct option.
         </h4>
         <h3>Please select decks include in the quiz.</h3>
-
-        <FormGroup>
-          {userDeckIDs === "loading" ? loadingPhase : selection}
-        </FormGroup>
+        <FormGroup>{userDecks ? selection : loadingPhase}</FormGroup>
         <Button
           variant="contained"
           disabled={!isEnoughCards}
