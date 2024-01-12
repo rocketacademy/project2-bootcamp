@@ -1,7 +1,10 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { auth } from "../firebase";
+import { auth, db } from "../firebase";
+import { ref, set, push } from "firebase/database";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+
+// const USER_REF = "/users";
 
 const Signup = () => {
   const [username, setUsername] = useState("");
@@ -27,13 +30,30 @@ const Signup = () => {
           uid: newUser.user.uid,
           displayName: username,
           email: email,
-          role: selectedRadio,
         });
+        linkUserToDB();
+        setUsername("");
+        setEmail("");
+        setPassword("");
+        setSelectedRadio("Teacher");
         console.log(newUser);
         navigate("/");
       }
     } catch (error) {
       setErrorMessage(error.message);
+    }
+  };
+
+  const linkUserToDB = () => {
+    if (selectedRadio === "Teacher" || selectedRadio === "Student") {
+      const userRef = ref(db, `/${selectedRadio}`);
+      const newUserRef = push(userRef);
+      set(newUserRef, {
+        userID: auth.currentUser.uid,
+        name: auth.currentUser.displayName,
+        email: auth.currentUser.email,
+        role: selectedRadio,
+      });
     }
   };
 
