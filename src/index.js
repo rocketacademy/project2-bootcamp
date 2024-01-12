@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 // import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import "./index.css";
 import App from "./App";
@@ -7,7 +8,9 @@ import App from "./App";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <App />
+  <GoogleOAuthProvider clientId={process.env.REACT_APP_CLIENT_ID}>
+    <App />
+  </GoogleOAuthProvider>
   // <BrowserRouter>
   //   <Link to="/courseform">Create Course</Link>
   //   <Routes>

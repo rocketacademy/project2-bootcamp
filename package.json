@@ -3,7 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@auth0/auth0-react": "^2.2.4",
+    "@react-oauth/google": "^0.12.1",
     "@tailwindcss/typography": "^0.5.10",
+    "axios": "^1.6.3",
     "firebase": "^10.7.1",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
