@@ -41,6 +41,8 @@ export default function HomePage() {
     try {
       const newUserDeck = await dbHandler.deleteUserDeck(deckID);
       setUserDecks(newUserDeck);
+      setSelectedID(null);
+      setAnchorEl(null);
     } catch (error) {
       setErrorMessage(error.message);
     }
@@ -79,7 +81,7 @@ export default function HomePage() {
             <MenuItem value={deckID} onClick={(e) => handleEdit(e.value)}>
               Edit
             </MenuItem>
-            <MenuItem onClick={() => handleDelete(deckID)}>Delete</MenuItem>
+            <MenuItem onClick={() => handleDelete(selectedID)}>Delete</MenuItem>
           </Menu>
           <div onClick={() => handleClick(deckID)}>
             <h4>{deckName}</h4>

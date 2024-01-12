@@ -20,6 +20,7 @@ export default function EditCardForm(props) {
   const handleEdit = () => {
     if (props.editing) {
       props.setEditing(null);
+      props.handleConfirmEdit(englishValue, spanishValue);
     } else {
       props.setEditing(card.cardID);
     }
@@ -45,12 +46,7 @@ export default function EditCardForm(props) {
         <Button disabled={isDisable} onClick={() => handleTranslate()}>
           Translate
         </Button>
-        <Button
-          disabled={isDisable}
-          onClick={() => props.handleDelete(card.cardID)}
-        >
-          Delete
-        </Button>
+        <Button onClick={() => props.handleDelete(card.cardID)}>Delete</Button>
         <Button disabled={isEditDisable} onClick={handleEdit}>
           {props.editing === card.cardID ? "OK" : "Edit"}
         </Button>

@@ -1,4 +1,4 @@
-import { get, ref, set, update } from "firebase/database";
+import { get, ref, set } from "firebase/database";
 import { database } from "../../firebase";
 
 export default class DBhandler {
@@ -164,15 +164,16 @@ export default class DBhandler {
       );
       //We want to keep the array structure, so using update instead of delete
       const newUserDeckIDs = userDeckIDs.toSpliced(deleteDeckIndex, 1);
-      const userDeckIDsRef = ref(database, `userInfo/${this.uid}/decks/`);
-      await update(userDeckIDsRef, newUserDeckIDs);
-      const decksPromise = userDeckIDs
-        ? userDeckIDs.map(
+
+      const userDeckIDsRef = ref(database, `userInfo/${this.uid}/decks`);
+      await set(userDeckIDsRef, newUserDeckIDs);
+      const decksPromise = newUserDeckIDs
+        ? newUserDeckIDs.map(
             async (deckID) => await this.getDeckInfo(deckID, false)
           )
         : [];
-      const userDecks = await Promise.all(decksPromise);
-      return userDecks;
+      const newUserDecks = await Promise.all(decksPromise);
+      return newUserDecks;
     } catch (error) {
       this.setErrorMessage(error.message);
     }
@@ -203,7 +204,7 @@ export default class DBhandler {
   //update user deck,newDeck will replace oldDeck in userInfo
   //deck is new Info with old deckID
   //no return
-  postUserDecks = async (deck, cards) => {
+  postUserDecks = async (deck, deckName, cards) => {
     const userDeckRef = ref(database, `userInfo/${this.uid}/decks`);
     try {
       const newCards = [];
@@ -216,15 +217,17 @@ export default class DBhandler {
       for (let i = 0; i < cards.length; i++) {
         const card = cards[i];
         //Checking for newCard
-        if (!comparingCards.includes(card.id)) {
+        const comparingCardIndex = comparingCards.findIndex(
+          (comparingCard) => comparingCard.cardID === card.cardID
+        );
+
+        if (comparingCardIndex === -1) {
           newCards.push(card);
           continue;
         }
         //old Card with edited card
-        const comparingCardIndex = comparingCards.findIndex(
-          (comparingCard) => comparingCard.cardID === card.cardID
-        );
         const comparingCard = comparingCards[comparingCardIndex];
+        console.log(card, comparingCard);
         if (
           card.english !== comparingCard.english ||
           card.spanish !== comparingCard.spanish
@@ -236,9 +239,15 @@ export default class DBhandler {
         //Need to deduce the comparing Card
         comparingCards.splice(comparingCardIndex, 1);
       }
-      if (!newCards.length && !comparingCards.length) {
-        //having comparingCards length means user have delete cards
+      console.log(newCards);
+      if (
+        !newCards.length &&
+        !comparingCards.length &&
+        deckName === deck.deckName
+      ) {
+        //having comparingCards length means user have deleted cards
         //No new cards means the deck is the same as before
+        //Deck name did not change
         return;
       }
       for (const card of newCards) {
@@ -248,7 +257,7 @@ export default class DBhandler {
       //need to filter out empty array
       const newDeckCards = deck.deckCards.filter((cardID) => !!cardID);
       await this.postNewDeck({
-        ...deck,
+        deckName: deckName,
         deckCards: newDeckCards,
         deckID: newDeckID,
       });

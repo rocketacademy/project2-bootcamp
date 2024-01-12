@@ -1,6 +1,6 @@
 import { useParams, useNavigate, useOutletContext } from "react-router-dom";
 import { useState, useEffect, useMemo } from "react";
-import { Button } from "@mui/material";
+import { Button, TextField } from "@mui/material";
 import SaveDone from "./EditComponent/SaveDone";
 import "./Study.css";
 import ErrorPage from "../ErrorPage";
@@ -9,10 +9,9 @@ import EditCardForm from "./CardComponent/EditCardForm";
 
 export default function EditDeckPage() {
   const [user] = useOutletContext();
-  const [deck, setDecks] = useState({ deckName: "" });
-  const [cards, setCards] = useState([
-    { cardID: Date.now(), english: "", spanish: "" },
-  ]);
+  const [deckName, setDeckName] = useState("");
+  const [deck, setDecks] = useState({});
+  const [cards, setCards] = useState([]);
   const [editing, setEditing] = useState(null);
   const [saveDone, setSaveDone] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -39,6 +38,7 @@ export default function EditDeckPage() {
           deckID,
           true
         );
+        setDeckName(deckInfo.deckName);
         setDecks(deckInfo);
         setCards(cardsInfo);
       } catch (error) {
@@ -47,17 +47,24 @@ export default function EditDeckPage() {
     };
     if (deckID) {
       getDecksInfo();
+    } else {
+      const newCardID = Date.now();
+      setCards([{ cardID: newCardID, english: "", spanish: "" }]);
+      setDecks({ deckName: "", deckCards: [newCardID] });
     }
   }, [deckID, dbHandler]);
 
   const handleSave = async () => {
     try {
+      if (!deckName.length) {
+        throw new Error("You must have a deck name");
+      }
       for (let i = 0; i < cards.length; i++) {
         if (cards[i].english === "" || cards[i].spanish === "") {
           throw new Error("You cannot save empty card");
         }
       }
-      await dbHandler.postUserDecks(deck, cards);
+      await dbHandler.postUserDecks(deck, deckName, cards);
       setSaveDone(true);
     } catch (error) {
       setErrorMessage(error.message);
@@ -73,7 +80,7 @@ export default function EditDeckPage() {
     const newCardID = Date.now();
     const newCard = { cardID: newCardID, english: "", spanish: "" };
     setCards((prevCards) => {
-      const newCards = [...prevCards];
+      const newCards = prevCards ? [...prevCards] : [];
       newCards.unshift(newCard);
       return newCards;
     });
@@ -82,6 +89,7 @@ export default function EditDeckPage() {
       const newDeck = { ...prevDeck, deckCards: newDeckCards };
       return newDeck;
     });
+    setEditing(newCardID);
   };
 
   const handleDelete = async (cardID) => {
@@ -89,6 +97,17 @@ export default function EditDeckPage() {
     const newDeck = { ...deck, deckCards: newCards };
     setCards(newCards);
     setDecks(newDeck);
+    if (cardID === editing) setEditing(null);
+  };
+
+  const handleConfirmEdit = (english, spanish) => {
+    const updatedCard = { cardID: editing, english: english, spanish: spanish };
+    setCards((prev) => {
+      const newCards = [...prev];
+      const index = prev.findIndex((card) => card.cardID === editing);
+      newCards[index] = updatedCard;
+      return newCards;
+    });
   };
 
   const cardsDisplay = cards.length
@@ -100,6 +119,7 @@ export default function EditDeckPage() {
             key={card.cardID}
             editing={editing}
             setEditing={setEditing}
+            handleConfirmEdit={handleConfirmEdit}
           />
         );
       })
@@ -113,7 +133,13 @@ export default function EditDeckPage() {
       />
       {
         <div>
-          <h1>{deck.deckName}</h1>
+          <h1>
+            <TextField
+              value={deckName}
+              onChange={(e) => setDeckName(e.target.value)}
+              label="Deck Name"
+            ></TextField>
+          </h1>
           <div className="edit-buttons">
             <Button variant="contained" onClick={handleAdd}>
               Add
