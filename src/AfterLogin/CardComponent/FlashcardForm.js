@@ -1,8 +1,8 @@
-import { useState } from "react";
-import axios from "axios";
-import "./AddDeckPage.css";
+import { useMemo, useState } from "react";
+import "../AddDeckPage.css";
 import { Autocomplete, TextField } from "@mui/material";
-import ErrorPage from "../ErrorPage";
+import ErrorPage from "../../ErrorPage";
+import Translator from "../Controller/Translator";
 //Take the user data from App.js state
 
 export default function FlashcardForm(props) {
@@ -10,7 +10,10 @@ export default function FlashcardForm(props) {
   const [options, setOptions] = useState([]);
   const [spanishValue, setSpanishValue] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  // const [translation, setTranslation] = useState("");
+  const translator = useMemo(
+    () => new Translator(setErrorMessage, process.env.REACT_APP_SPANISH_KEY),
+    [setErrorMessage]
+  );
 
   const handleAddCard = () => {
     if (englishValue && spanishValue) {
@@ -21,45 +24,10 @@ export default function FlashcardForm(props) {
     }
   };
 
-  const translateEnglishToSpanish = async (word) => {
-    const apiUrl = `https://www.dictionaryapi.com/api/v3/references/spanish/json/${word}?key=${process.env.REACT_APP_SPANISH_KEY}`;
-
+  const translateEnglishToSpanish = async (eng) => {
     try {
-      const translation = [];
-
-      const response = await axios.get(apiUrl);
-
-      const removeColon = (word) => {
-        if (word && word.includes(":")) word = word.split(":")[1];
-        return word;
-      };
-
-      if (response.data && response.data.length) {
-        let firstWord = response.data[0].shortdef[0];
-        firstWord = removeColon(firstWord);
-        firstWord = response.data[0].fl.concat(": ", firstWord);
-        translation.push(firstWord);
-        console.log(response.data[1]);
-
-        const addTranslationOptions = (data) => {
-          if (data && data.shortdef.length) {
-            let word = data.shortdef[0];
-            word = removeColon(word);
-            word = data.fl.concat(": ", word);
-            translation.push(word);
-            return translation;
-          }
-        };
-        const data1 = response.data[1];
-        const data2 = response.data[2];
-
-        addTranslationOptions(data1);
-        addTranslationOptions(data2);
-
-        console.log(translation);
-
-        setOptions(translation);
-      } else throw new Error("No translation found.");
+      const translation = await translator.engToSpan(eng);
+      setOptions(translation);
     } catch (error) {
       setErrorMessage(error.message);
     }

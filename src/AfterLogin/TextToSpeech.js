@@ -16,6 +16,16 @@ export default function TextToSpeech(props) {
     dangerouslyAllowBrowser: true,
   });
 
+  // const handleAudioURLChange = async (cardID, audioURL) => {
+  //   const newValueIndex = cards.findIndex((card) => card.cardID === cardID);
+  //   const newCards = [...cards];
+  //   newCards[newValueIndex] = {
+  //     ...newCards[newValueIndex],
+  //     URL: audioURL,
+  //   };
+  //   setCards(newCards);
+  // };
+
   const handleTextToSpeech = async () => {
     try {
       setLoading(true);

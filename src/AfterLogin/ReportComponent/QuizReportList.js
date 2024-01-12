@@ -61,8 +61,10 @@ export default function QuizReportList() {
         onRowClick={(e) => navi(`${e.id}`)}
         className="quiz-list"
         initialState={{
+          pagination: { paginationModel: { pageSize: 10 } },
           sorting: { sortModel: [{ field: "id", sort: "asc" }] },
         }}
+        pageSizeOptions={[10]}
       />
       <h6>Click on the row to view detailed report</h6>
       <Button onClick={() => navi("/report")}>Back</Button>

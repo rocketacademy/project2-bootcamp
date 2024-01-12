@@ -9,8 +9,7 @@ import ReportPage from "./AfterLogin/ReportPage";
 import QuizPage from "./AfterLogin/QuizPage";
 import SignInPage from "./BeforeLogin/SignInPage";
 import RegisterPage from "./BeforeLogin/RegisterPage";
-import EditdeckPage from "./AfterLogin/EditDeckPage";
-import AddDeckPage from "./AfterLogin/AddDeckPage";
+import EditDeckPage from "./AfterLogin/EditDeckPage";
 import QuizReportList from "./AfterLogin/ReportComponent/QuizReportList";
 import QuizReport from "./AfterLogin/ReportComponent/QuizReport";
 
@@ -20,9 +19,9 @@ root.render(
     <Routes>
       <Route path="/" element={<App />}>
         <Route path="" element={<HomePage />} />
-        <Route path="addDeck" element={<AddDeckPage />} />
-        <Route path="editDeck" element={<EditdeckPage />} />
-        <Route path="/editDeck/:deckID" element={<EditdeckPage />} />
+        <Route path="addDeck" element={<EditDeckPage />} />
+        <Route path="editDeck" element={<EditDeckPage />} />
+        <Route path="/editDeck/:deckID" element={<EditDeckPage />} />
         <Route path="study" element={<StudyPage />} />
         <Route path="/study/:deckID" element={<StudyPage />} />
         <Route path="report" element={<ReportPage />} />

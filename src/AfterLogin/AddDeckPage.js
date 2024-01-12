@@ -1,6 +1,6 @@
-import { useOutletContext, useNavigate } from "react-router-dom";
+import { useOutletContext, useNavigate, useParams } from "react-router-dom";
 import { useMemo, useState } from "react";
-import FlashcardForm from "./FlashcardForm";
+import FlashcardForm from "./CardComponent/FlashcardForm";
 import "./AddDeckPage.css";
 import ErrorPage from "../ErrorPage";
 import DBhandler from "./Controller/DBhandler";
@@ -15,7 +15,8 @@ export default function AddDeckPage() {
     () => new DBhandler(user.uid, setErrorMessage),
     [user.uid, setErrorMessage]
   );
-
+  const { deckID } = useParams();
+  console.log(deckID);
   const addCard = (englishValue, spanishValue) => {
     const newCardId = Date.now();
     const newCard = {
