@@ -267,7 +267,7 @@ export default class DBHandler {
       userDeckIDs[deckIndex] = newDeckID;
       await set(userDeckRef, [...userDeckIDs]);
     } catch (error) {
-      console.log(error);
+      this.setErrorMessage(error.message);
     }
   };
 
