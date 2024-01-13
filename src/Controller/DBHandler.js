@@ -1,4 +1,4 @@
-import { get, ref, set } from "firebase/database";
+import { get, ref, remove, set } from "firebase/database";
 import { database } from "../firebase";
 import axios from "axios";
 
@@ -328,6 +328,53 @@ export default class DBHandler {
       return quizID;
     } catch (error) {
       this.setErrorMessage(error.message);
+    }
+  };
+
+  //Clear Up unused data
+  clearUpData = async () => {
+    try {
+      const userInfoRef = ref(database, `userInfo`);
+      const allUserDataRes = await get(userInfoRef);
+      const allUserData = allUserDataRes.val();
+      const allUserDecks = new Set();
+      for (const userInfo of Object.values(allUserData)) {
+        if (!userInfo.decks) {
+          continue;
+        }
+        for (const deck of userInfo.decks) {
+          allUserDecks.add(deck);
+        }
+      }
+      const allDeckRef = ref(database, `decks`);
+      const allDecksRes = await get(allDeckRef);
+      const allDecks = allDecksRes.val();
+      const allRemainDecks = [];
+      for (const deck of Object.values(allDecks)) {
+        if (!allUserDecks.has(deck.deckID)) {
+          const deleteDeckRef = ref(database, `decks/deck${deck.deckID}`);
+          await remove(deleteDeckRef);
+        } else {
+          allRemainDecks.push(deck);
+        }
+      }
+      const allDeckCards = new Set();
+      for (const deck of allRemainDecks) {
+        for (const cardID of deck.deckCards) {
+          allDeckCards.add(cardID);
+        }
+      }
+      const allCardsRef = ref(database, `cards`);
+      const allCardsRes = await get(allCardsRef);
+      const allCards = allCardsRes.val();
+      for (const card of Object.values(allCards)) {
+        if (!allDeckCards.has(card.cardID)) {
+          const deleteCardRef = ref(database, `cards/card${card.cardID}`);
+          await remove(deleteCardRef);
+        }
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 }

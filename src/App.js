@@ -7,6 +7,8 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./firebase";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+import { TouchBackend } from "react-dnd-touch-backend";
+import { isBrowser } from "react-device-detect";
 
 export default function App() {
   const [user, setUser] = useState(null);
@@ -40,7 +42,9 @@ export default function App() {
   );
 
   return user ? (
-    <DndProvider backend={HTML5Backend}>{userDisplay}</DndProvider>
+    <DndProvider backend={isBrowser ? HTML5Backend : TouchBackend}>
+      {userDisplay}
+    </DndProvider>
   ) : (
     nonUserDisplay
   );
