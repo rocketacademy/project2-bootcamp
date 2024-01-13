@@ -146,7 +146,6 @@ export default function EditDeckPage() {
 
   const cardsDisplay = cards.length
     ? cards.map((card) => {
-        console.log(card.cardID);
         return (
           <EditCardForm
             card={card}
