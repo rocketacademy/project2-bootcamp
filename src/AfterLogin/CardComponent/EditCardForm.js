@@ -33,7 +33,7 @@ export default function EditCardForm(props) {
   const handleEdit = () => {
     if (props.editing) {
       props.setEditing(null);
-      if (props.englishInput) {
+      if (englishInput) {
         props.handleConfirmEdit(englishValue, spanishValue);
       } else props.handleConfirmEdit(spanishValue, englishValue);
     } else {
@@ -42,7 +42,7 @@ export default function EditCardForm(props) {
   };
 
   const handleTranslate = async () => {
-    if (props.englishInput) {
+    if (englishInput) {
       try {
         const translationToSpan = await translator.engToSpan(englishValue);
         setSpanishOptions(translationToSpan);
@@ -61,7 +61,10 @@ export default function EditCardForm(props) {
     }
   };
 
-  const handleLanguageSwitch = () => {};
+  const handleLanguageSwitch = () => {
+    setEnglishInput((prevEnglishInput) => !prevEnglishInput);
+    console.log(englishInput);
+  };
 
   const handlePlayAudio = async (word) => {
     try {
@@ -94,7 +97,7 @@ export default function EditCardForm(props) {
             fullWidth
             value={englishValue}
             onChange={(e) => setEnglishValue(e.target.value)}
-            label={props.englishInput ? "English" : "Spanish"}
+            label={englishInput ? "English" : "Spanish"}
             variant="standard"
           ></TextField>
         </div>
@@ -104,7 +107,7 @@ export default function EditCardForm(props) {
             <Autocomplete
               value={spanishValue}
               disabled={isDisable}
-              options={props.englishInput ? spanishOptions : englishOptions}
+              options={englishInput ? spanishOptions : englishOptions}
               onChange={(e, input) => {
                 setSpanishValue(input);
               }}
@@ -121,9 +124,7 @@ export default function EditCardForm(props) {
                 <TextField
                   {...params}
                   label={
-                    props.englishInput
-                      ? "Spanish translation"
-                      : "English translation"
+                    englishInput ? "Spanish translation" : "English translation"
                   }
                 />
               )}
