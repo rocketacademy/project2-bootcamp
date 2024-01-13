@@ -1,20 +1,44 @@
-import { useState } from "react";
-import { useOutletContext } from "react-router-dom";
+import { useEffect, useMemo, useState } from "react";
+import { useNavigate, useOutletContext } from "react-router-dom";
 //Take the user data from App.js state
 import QuizFirstPageMC from "./QuizComponent/MC/QuizFirstPageMC";
 import McQuiz from "./QuizComponent/MC/McQuiz";
 import "./QuizComponent/QuizPage.css";
 import QuizFirstPageMixAndMatch from "./QuizComponent/MixAndMatch/QuizFirstPageMixAndMatch";
 import MixAndMatchQuiz from "./QuizComponent/MixAndMatch/MixAndMatchQuiz";
-import { Button } from "@mui/material";
+import DBHandler from "../Controller/DBHandler";
+import ErrorPage from "../ErrorPage";
 
 export default function QuizPage() {
   const [user] = useOutletContext();
   const [decks, setDecks] = useState([]);
+  const [userDecks, setUserDecks] = useState(null);
   const [quizMode, setQuizMode] = useState("MC");
   const [quizPage, setQuizPage] = useState(false);
-  //false is the first page
-  //true is the quiz page
+  const [errorMessage, setErrorMessage] = useState("");
+  const navi = useNavigate();
+  const dbHandler = useMemo(
+    () => new DBHandler(user.uid, setErrorMessage),
+    [user.uid, setErrorMessage]
+  );
+
+  const handleErrorMessage = () => {
+    setErrorMessage("");
+    navi("/");
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const { userDecks } = await dbHandler.getUserAndDecksInfo();
+        setUserDecks(userDecks);
+      } catch (error) {
+        setErrorMessage(error.message);
+      }
+    };
+    fetchData();
+  }, [dbHandler]);
+
   let modeDisplay;
   switch (quizMode) {
     case "MC":
@@ -24,8 +48,10 @@ export default function QuizPage() {
         <QuizFirstPageMC
           user={user}
           decks={decks}
+          userDecks={userDecks}
           setDecks={setDecks}
           setQuizPage={setQuizPage}
+          setQuizMode={setQuizMode}
         />
       );
       break;
@@ -37,28 +63,23 @@ export default function QuizPage() {
         <QuizFirstPageMixAndMatch
           user={user}
           decks={decks}
+          userDecks={userDecks}
           setDecks={setDecks}
           setQuizPage={setQuizPage}
+          setQuizMode={setQuizMode}
         />
       );
       break;
     default:
       modeDisplay = <h1>Somethings went wrong!</h1>;
   }
-  const modeSelectionDiv = quizPage ? null : (
-    <div className="dialog-button-div">
-      <Button variant="contained" onClick={() => setQuizMode("MC")}>
-        MC Quiz
-      </Button>
-      <Button variant="contained" onClick={() => setQuizMode("MixAndMatch")}>
-        Mix&Match Quiz
-      </Button>
-    </div>
-  );
 
   return (
     <div className="App">
-      {modeSelectionDiv}
+      <ErrorPage
+        errorMessage={errorMessage}
+        handleErrorMessage={handleErrorMessage}
+      />
       {modeDisplay}
     </div>
   );
