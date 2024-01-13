@@ -70,6 +70,7 @@ export default function EditCardForm(props) {
       setErrorMessage(error.message);
     }
   };
+
   return (
     <Card className="edit-card">
       <ErrorPage

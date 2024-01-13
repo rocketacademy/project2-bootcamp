@@ -7,38 +7,12 @@ import {
   Card,
   CircularProgress,
 } from "@mui/material";
-import { useEffect, useMemo, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import ErrorPage from "../../../ErrorPage";
-import DBHandler from "../../../Controller/DBHandler";
+import { Link } from "react-router-dom";
 //Take the user data from App.js state
 
 //Component let user choose which decks to include in the quiz
 export default function QuizFirstPageMC(props) {
-  const [errorMessage, setErrorMessage] = useState("");
-  const [userDecks, setUserDecks] = useState(null);
-  const navi = useNavigate();
-  const dbHandler = useMemo(
-    () => new DBHandler(props.user.uid, setErrorMessage),
-    [props.user.uid, setErrorMessage]
-  );
-
-  const handleErrorMessage = () => {
-    setErrorMessage("");
-    navi("/");
-  };
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const { userDecks } = await dbHandler.getUserAndDecksInfo();
-        setUserDecks(userDecks);
-      } catch (error) {
-        setErrorMessage(error.message);
-      }
-    };
-    fetchData();
-  }, [dbHandler]);
+  const userDecks = props.userDecks;
 
   //handle change for user to choose/unchoose decks
   const handleChange = (e, deck) => {
@@ -47,7 +21,7 @@ export default function QuizFirstPageMC(props) {
       props.setDecks((prev) => [...prev, deck]);
     } else {
       props.setDecks((prev) => {
-        const deckID = Number(e.target.value);
+        const deckID = e.target.value;
         const index = prev.findIndex((deck) => deck.deckID === deckID);
         const reduced = prev.toSpliced(index, 1);
         return reduced;
@@ -103,15 +77,21 @@ export default function QuizFirstPageMC(props) {
 
   return (
     <div className="quiz-sub-page">
-      <ErrorPage
-        errorMessage={errorMessage}
-        handleErrorMessage={handleErrorMessage}
-      />
       <Card className="quiz-card">
         <Link to="/" className="homepage-button">
           <DisabledByDefaultOutlinedIcon />
         </Link>
-        <h3>Multiple Choice Quiz</h3>
+        <h1>
+          <div className="dialog-button-div">
+            <Button variant="contained">MC Quiz</Button>
+            <Button
+              variant="outlined"
+              onClick={() => props.setQuizMode("MixAndMatch")}
+            >
+              Mix&Match Quiz
+            </Button>
+          </div>
+        </h1>
         <h4>
           Hit the 'start' button to begin this quiz. You'll have 4 answer
           options and your task is to select the correct option.

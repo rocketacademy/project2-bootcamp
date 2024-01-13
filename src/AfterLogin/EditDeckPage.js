@@ -6,6 +6,7 @@ import "./Study.css";
 import ErrorPage from "../ErrorPage";
 import DBHandler from "../Controller/DBHandler";
 import EditCardForm from "./CardComponent/EditCardForm";
+import axios from "axios";
 
 export default function EditDeckPage() {
   const [user] = useOutletContext();
@@ -32,7 +33,7 @@ export default function EditDeckPage() {
   };
 
   useEffect(() => {
-    const getDecksInfo = async () => {
+    const getDeckInfo = async () => {
       try {
         await dbHandler.checkUserDeckID(deckID, true);
         const { deckInfo, cardsInfo } = await dbHandler.getDeckAndCards(
@@ -46,13 +47,23 @@ export default function EditDeckPage() {
         setErrorMessage(error.message);
       }
     };
+    const genDeckInfo = async () => {
+      try {
+        const genCardID = await axios.get(
+          "https://www.uuidgenerator.net/api/version7"
+        );
+        const newCardID = genCardID.data;
+        setCards([{ cardID: newCardID, english: "", spanish: "" }]);
+        setDecks({ deckName: "", deckCards: [newCardID] });
+        setEditing(newCardID);
+      } catch (error) {
+        setErrorMessage(error.message);
+      }
+    };
     if (deckID) {
-      getDecksInfo();
+      getDeckInfo();
     } else {
-      const newCardID = Date.now();
-      setCards([{ cardID: newCardID, english: "", spanish: "" }]);
-      setDecks({ deckName: "", deckCards: [newCardID] });
-      setEditing(newCardID);
+      genDeckInfo();
     }
   }, [deckID, dbHandler]);
 
@@ -89,19 +100,24 @@ export default function EditDeckPage() {
   };
 
   const handleAdd = async () => {
-    const newCardID = Date.now();
-    const newCard = { cardID: newCardID, english: "", spanish: "" };
-    setCards((prevCards) => {
-      const newCards = prevCards ? [...prevCards] : [];
-      newCards.unshift(newCard);
-      return newCards;
-    });
-    setDecks((prevDeck) => {
-      const newDeckCards = [...prevDeck.deckCards, newCardID];
-      const newDeck = { ...prevDeck, deckCards: newDeckCards };
-      return newDeck;
-    });
-    setEditing(newCardID);
+    try {
+      const res = await axios.get("https://www.uuidgenerator.net/api/version7");
+      const newCardID = res.data;
+      const newCard = { cardID: newCardID, english: "", spanish: "" };
+      setCards((prevCards) => {
+        const newCards = prevCards ? [...prevCards] : [];
+        newCards.unshift(newCard);
+        return newCards;
+      });
+      setDecks((prevDeck) => {
+        const newDeckCards = [...prevDeck.deckCards, newCardID];
+        const newDeck = { ...prevDeck, deckCards: newDeckCards };
+        return newDeck;
+      });
+      setEditing(newCardID);
+    } catch (error) {
+      setErrorMessage(error.message);
+    }
   };
 
   const handleDelete = async (cardID) => {
@@ -130,6 +146,7 @@ export default function EditDeckPage() {
 
   const cardsDisplay = cards.length
     ? cards.map((card) => {
+        console.log(card.cardID);
         return (
           <EditCardForm
             card={card}

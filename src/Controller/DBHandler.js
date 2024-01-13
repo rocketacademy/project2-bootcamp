@@ -1,5 +1,6 @@
 import { get, ref, set } from "firebase/database";
 import { database } from "../firebase";
+import axios from "axios";
 
 export default class DBHandler {
   constructor(uid, setErrorMessage, setGoHome) {
@@ -14,7 +15,7 @@ export default class DBHandler {
     try {
       const userInfo = await this.getUserInfo(isGoHome);
       const userDeckIDs = userInfo.decks ? userInfo.decks : [];
-      if (!userDeckIDs.length || !userDeckIDs.includes(Number(deckID))) {
+      if (!userDeckIDs.length || !userDeckIDs.includes(deckID)) {
         throw new Error("You don't have this deck!");
       }
     } catch (error) {
@@ -231,7 +232,10 @@ export default class DBHandler {
           card.english !== comparingCard.english ||
           card.spanish !== comparingCard.spanish
         ) {
-          const newCardID = Date.now() + i;
+          const genCardID = await axios.get(
+            "https://www.uuidgenerator.net/api/version7"
+          );
+          const newCardID = genCardID.data;
           newCards.push({ ...card, cardID: newCardID });
           deck.deckCards[i] = newCardID;
         }
@@ -251,7 +255,10 @@ export default class DBHandler {
       for (const card of newCards) {
         await this.postNewCard(card);
       }
-      const newDeckID = Date.now();
+      const genDeckID = await axios.get(
+        "https://www.uuidgenerator.net/api/version7"
+      );
+      const newDeckID = genDeckID.data;
       //need to filter out empty array
       const newDeckCards = deck.deckCards.filter((cardID) => !!cardID);
       await this.postNewDeck({
@@ -280,7 +287,10 @@ export default class DBHandler {
       );
       await Promise.all(cardsPromises);
       const cardIDs = cards.map((card) => card.cardID);
-      const newDeckID = Date.now();
+      const genDeckID = await axios.get(
+        "https://www.uuidgenerator.net/api/version7"
+      );
+      const newDeckID = genDeckID.data;
       const newDeck = {
         deckID: newDeckID,
         deckName: deckName,
