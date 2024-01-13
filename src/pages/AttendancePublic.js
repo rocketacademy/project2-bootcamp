@@ -33,7 +33,9 @@ const QuizData = ({ gid, courseName }) => {
   };
 
   useEffect(() => {
-    fetchData();
+    if (gid) {
+      fetchData();
+    }
   }, [gid]);
 
   return (
