@@ -9,11 +9,12 @@ export default function EditCardForm(props) {
   const card = props.card;
   const isDisable = props.editing !== card.cardID;
   const isEditDisable = props.editing && props.editing !== card.cardID;
-  const [englishValue, setEnglishValue] = useState(card.english);
+  const [userInputValue, setUserInputValue] = useState(card.english);
   const [options, setOptions] = useState([card.spanish]);
-  const [spanishValue, setSpanishValue] = useState(card.spanish);
+  const [translationValue, setTranslationValue] = useState(card.spanish);
   const [errorMessage, setErrorMessage] = useState("");
   const [loadingAudio, setLoadingAudio] = useState(false);
+  const [englishToSpanish, setEnglishToSpanish] = useState(true);
   const translator = useMemo(
     () => new Translator(setErrorMessage, process.env.REACT_APP_SPANISH_KEY),
     [setErrorMessage]
@@ -31,7 +32,9 @@ export default function EditCardForm(props) {
   const handleEdit = () => {
     if (props.editing) {
       props.setEditing(null);
-      props.handleConfirmEdit(englishValue, spanishValue);
+      if (englishToSpanish) {
+        props.handleConfirmEdit(userInputValue, translationValue);
+      } else props.handleConfirmEdit(translationValue, userInputValue);
     } else {
       props.setEditing(card.cardID);
     }
@@ -39,13 +42,24 @@ export default function EditCardForm(props) {
 
   const handleTranslate = async () => {
     try {
-      const translation = await translator.engToSpan(englishValue);
-      setOptions(translation);
-      setSpanishValue(translation[0]);
+      if (englishToSpanish) {
+        const translationToSpan = await translator.engToSpan(userInputValue);
+        setOptions(translationToSpan);
+        setTranslationValue(translationToSpan[0]);
+      } else {
+        const translationToEng = await translator.spanToEng(userInputValue);
+        setOptions(translationToEng);
+        setTranslationValue(translationToEng[0]);
+      }
     } catch (error) {
       setOptions([]);
       setSpanishValue("");
     }
+  };
+
+  const handleLanguageSwitch = () => {
+    setEnglishToSpanish((prevEnglishInput) => !prevEnglishInput);
+    console.log(englishToSpanish);
   };
 
   const handlePlayAudio = async (word) => {
@@ -63,6 +77,9 @@ export default function EditCardForm(props) {
         handleErrorMessage={() => setErrorMessage("")}
       />
       <div className="edit-buttons">
+        <Button disabled={isDisable} onClick={handleLanguageSwitch}>
+          Switch languages
+        </Button>
         <Button disabled={isDisable} onClick={() => handleTranslate()}>
           Translate
         </Button>
@@ -76,9 +93,9 @@ export default function EditCardForm(props) {
           <TextField
             disabled={isDisable}
             fullWidth
-            value={englishValue}
-            onChange={(e) => setEnglishValue(e.target.value)}
-            label="English"
+            value={userInputValue}
+            onChange={(e) => setUserInputValue(e.target.value)}
+            label={englishToSpanish ? "English" : "Spanish"}
             variant="standard"
           ></TextField>
         </div>
@@ -86,29 +103,37 @@ export default function EditCardForm(props) {
         <div className="field-audio">
           <div className="field">
             <Autocomplete
-              value={spanishValue}
+              value={translationValue}
               disabled={isDisable}
               options={options}
               onChange={(e, input) => {
-                setSpanishValue(input);
+                setTranslationValue(input);
               }}
               onInputChange={(e, input) => {
-                setSpanishValue(input);
+                setTranslationValue(input);
               }}
+              autoSelect
               freeSolo
               disablePortal
               id="combo-box-demo"
               sx={{ width: 350 }}
               getOptionLabel={(option) => option}
               renderInput={(params) => (
-                <TextField {...params} label="Spanish translation" />
+                <TextField
+                  {...params}
+                  label={
+                    englishToSpanish
+                      ? "Spanish translation"
+                      : "English translation"
+                  }
+                />
               )}
             />
           </div>
           <LoadingButton
             loading={loadingAudio}
             onClick={() => {
-              handlePlayAudio(spanishValue);
+              handlePlayAudio(translationValue);
             }}
           >
             🔊
