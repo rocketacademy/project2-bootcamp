@@ -3,32 +3,74 @@ import { useNavigate } from "react-router-dom";
 
 // import { Chart } from "react-google-charts";
 import { db } from "../firebase";
-import { ref, onValue } from "firebase/database";
-// import axios from "axios";
+import { ref, onChildAdded } from "firebase/database";
+import axios from "axios";
 
 const Teacher = () => {
   const navigate = useNavigate();
   // const [loading, setLoading] = useState(false);
   // const [chartData, setChartData] = useState([]);
   // const [errMsg, setErrMsg] = useState("");
-  const [courses, setCourses] = useState([]);
+
+  const [courseOptions, setCourseOptions] = useState([]);
+  const [courseName, setCourseName] = useState("");
+  const [courseGidMap, setCourseGidMap] = useState(new Map());
+  const [gid, setGid] = useState("");
+
+  // useEffect(() => {
+  //   const coursesRef = ref(db, "/courses");
+  //   onValue(coursesRef, (snapshot) => {
+  //     const data = snapshot.val();
+  //     // console.log(data);
+
+  //     Object.values(data).forEach((myData) => {
+  //       const courseId = myData.gid;
+  //       setCourses((courses) => {
+  //         return [...courses, courseId];
+  //       });
+  //     });
+  //   });
+  // }, []);
+
+  // console.log(courses);
 
   useEffect(() => {
-    const coursesRef = ref(db, "/courses");
-    onValue(coursesRef, (snapshot) => {
-      const data = snapshot.val();
-      console.log(data);
-
-      Object.values(data).forEach((myData) => {
-        const courseId = myData.gid;
-        setCourses((courses) => {
-          return [...courses, courseId];
-        });
-      });
+    const coursesRef = ref(db, "courses");
+    onChildAdded(coursesRef, (data) => {
+      const { courseTitle, gid } = data.val();
+      setCourseGidMap((prevMap) => prevMap.set(courseTitle, gid));
+      const courseTitles = Array.from(courseGidMap.keys());
+      setCourseOptions(
+        courseTitles.map((title) => (
+          <option key={title} value={title}>
+            {title}
+          </option>
+        ))
+      );
     });
   }, []);
 
-  console.log(courses);
+  useEffect(() => {
+    const getGid = courseGidMap.get(courseName);
+    console.log(getGid);
+    setGid(getGid);
+  }, [courseName]);
+
+  console.log(gid);
+
+  const spreadSheetId = "16HTIiiOq82Tm1tLHRQcr_8YJnO81QxZOOBOfR4hU3zc";
+
+  const fetchSheetData = async () => {
+    const publicSheetURL = `https://docs.google.com/spreadsheets/d/${spreadSheetId}/edit#gid=${gid}`;
+
+    try {
+      const response = await axios.get(publicSheetURL);
+      console.log(publicSheetURL);
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   // const data = [
   //   ["Course", "Rate (%)"],
@@ -151,9 +193,26 @@ const Teacher = () => {
             </svg>
           </div>
         </div>
+        {/* <select
+          className="select select-bordered"
+          value={courseName}
+          onChange={(e) => {
+            setCourseName(e.target.value);
+          }}
+        >
+          {courseOptions}
+          
+        </select> */}
+        <select
+          value={courseName}
+          onChange={(e) => setCourseName(e.target.value)}
+        >
+          {courseOptions}
+        </select>
         <div class="flex  justify-around">
           <button>Course Progress</button>
         </div>
+        <button onClick={fetchSheetData()}>Fetch data</button>
         {/* {!errMsg & errMsg} */}
 
         {/* <Chart
