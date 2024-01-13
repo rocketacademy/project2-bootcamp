@@ -9,6 +9,7 @@ import "./App.css";
 import { AttendancePublic } from "./pages/AttendancePublic";
 import { StudentCourses } from "./pages/StudentCourses";
 import { Navbar } from "./components/Navbar";
+import { StudentHome } from "./pages/StudentHome";
 
 const App = () => {
   return (
@@ -26,8 +27,8 @@ const App = () => {
               element={<CourseForm />}
             />
             <Route path="teacher/attendance" element={<AttendancePublic />} />
-            {/* <Route path="student" element={<Student />} /> */}
-            <Route path="student" element={<StudentCourses />} />
+            <Route path="student" element={<StudentHome />} />
+            <Route path="studentcourses" element={<StudentCourses />} />
           </Routes>
         </BrowserRouter>
       </header>
