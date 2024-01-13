@@ -9,13 +9,13 @@ export default function EditCardForm(props) {
   const card = props.card;
   const isDisable = props.editing !== card.cardID;
   const isEditDisable = props.editing && props.editing !== card.cardID;
-  const [englishValue, setEnglishValue] = useState(card.english);
+  const [userInputValue, setUserInputValue] = useState(card.english);
   const [spanishOptions, setSpanishOptions] = useState([card.spanish]);
   const [englishOptions, setEnglishOptions] = useState([card.english]);
-  const [spanishValue, setSpanishValue] = useState(card.spanish);
+  const [translationValue, setTranslationValue] = useState(card.spanish);
   const [errorMessage, setErrorMessage] = useState("");
   const [loadingAudio, setLoadingAudio] = useState(false);
-  const [englishInput, setEnglishInput] = useState(true);
+  const [englishToSpanish, setEnglishToSpanish] = useState(true);
   const translator = useMemo(
     () => new Translator(setErrorMessage, process.env.REACT_APP_SPANISH_KEY),
     [setErrorMessage]
@@ -33,28 +33,30 @@ export default function EditCardForm(props) {
   const handleEdit = () => {
     if (props.editing) {
       props.setEditing(null);
-      if (englishInput) {
-        props.handleConfirmEdit(englishValue, spanishValue);
-      } else props.handleConfirmEdit(spanishValue, englishValue);
+      if (englishToSpanish) {
+        props.handleConfirmEdit(userInputValue, translationValue);
+      } else props.handleConfirmEdit(translationValue, userInputValue);
     } else {
       props.setEditing(card.cardID);
     }
   };
 
   const handleTranslate = async () => {
-    if (englishInput) {
+    if (englishToSpanish) {
       try {
-        const translationToSpan = await translator.engToSpan(englishValue);
+        const translationToSpan = await translator.englishToSpanish(
+          userInputValue
+        );
         setSpanishOptions(translationToSpan);
-        setSpanishValue(translationToSpan[0]);
+        setTranslationValue(translationToSpan[0]);
       } catch (error) {
         setErrorMessage(error.message);
       }
     } else {
       try {
-        const translationToEng = await translator.spanToEng(englishValue);
+        const translationToEng = await translator.spanToEng(userInputValue);
         setEnglishOptions(translationToEng);
-        setSpanishValue(translationToEng[0]);
+        setTranslationValue(translationToEng[0]);
       } catch (error) {
         setErrorMessage(error.message);
       }
@@ -62,8 +64,8 @@ export default function EditCardForm(props) {
   };
 
   const handleLanguageSwitch = () => {
-    setEnglishInput((prevEnglishInput) => !prevEnglishInput);
-    console.log(englishInput);
+    setEnglishToSpanish((prevEnglishInput) => !prevEnglishInput);
+    console.log(englishToSpanish);
   };
 
   const handlePlayAudio = async (word) => {
@@ -95,9 +97,9 @@ export default function EditCardForm(props) {
           <TextField
             disabled={isDisable}
             fullWidth
-            value={englishValue}
-            onChange={(e) => setEnglishValue(e.target.value)}
-            label={englishInput ? "English" : "Spanish"}
+            value={userInputValue}
+            onChange={(e) => setUserInputValue(e.target.value)}
+            label={englishToSpanish ? "English" : "Spanish"}
             variant="standard"
           ></TextField>
         </div>
@@ -105,14 +107,14 @@ export default function EditCardForm(props) {
         <div className="field-audio">
           <div className="field">
             <Autocomplete
-              value={spanishValue}
+              value={translationValue}
               disabled={isDisable}
-              options={englishInput ? spanishOptions : englishOptions}
+              options={englishToSpanish ? spanishOptions : englishOptions}
               onChange={(e, input) => {
-                setSpanishValue(input);
+                setTranslationValue(input);
               }}
               onInputChange={(e, input) => {
-                setSpanishValue(input);
+                setTranslationValue(input);
               }}
               autoSelect
               freeSolo
@@ -124,7 +126,9 @@ export default function EditCardForm(props) {
                 <TextField
                   {...params}
                   label={
-                    englishInput ? "Spanish translation" : "English translation"
+                    englishToSpanish
+                      ? "Spanish translation"
+                      : "English translation"
                   }
                 />
               )}
@@ -133,7 +137,7 @@ export default function EditCardForm(props) {
           <LoadingButton
             loading={loadingAudio}
             onClick={() => {
-              handlePlayAudio(spanishValue);
+              handlePlayAudio(translationValue);
             }}
           >
             🔊
