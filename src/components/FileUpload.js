@@ -46,22 +46,27 @@ export const FileUpload = ({ courseID }) => {
 
   return (
     <>
-      <label className="form-control w-full mb-2">
-        <div className="label">
-          <span className="label-text">Upload Course Materials</span>
+      <div className="sm:grid sm:gap-x-4 sm:grid-cols-6">
+        <label className="form-control mb-2 sm:col-span-5">
+          <div className="label ">
+            <span className="label-text">Upload Course Materials</span>
+          </div>
+          <input
+            type="file"
+            className="file-input file-input-bordered"
+            onChange={handleFileUpload}
+            value={fileInputValue}
+          />
+        </label>
+        <div
+          className="btn w-full sm:col-span-1 sm:place-self-center sm:mt-7"
+          onClick={uploadFile}
+        >
+          Upload
         </div>
-        <input
-          type="file"
-          className="file-input file-input-bordered"
-          onChange={handleFileUpload}
-          value={fileInputValue}
-        />
-      </label>
-      <div className="btn w-full" onClick={uploadFile}>
-        Upload
-      </div>
-      <div>
-        <CurrentUploadedFiles currentCourseID={courseID} />
+        <div className="sm:col-span-6">
+          <CurrentUploadedFiles currentCourseID={courseID} />
+        </div>
       </div>
     </>
   );

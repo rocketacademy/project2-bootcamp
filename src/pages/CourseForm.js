@@ -140,9 +140,9 @@ export const CourseForm = () => {
         <h1 className="text-center">Create A Course</h1>
 
         {/* course form */}
-        <form className="pb-8 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
+        <form className="pb-8 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-8">
           {/* Course Title Description File Upload */}
-          <div className="sm:col-span-2">
+          <div className="sm:col-start-2 sm:col-span-2">
             <TextboxWithLabels
               label={"Course Title"}
               onChange={handleCourseTitle}
@@ -164,12 +164,12 @@ export const CourseForm = () => {
               pattern="\d{4}-\d{2}-\d{2}"
             />
           </div>
-          <div className="sm:col-span-6">
+          <div className="sm:col-start-2 sm:col-span-6">
             <FileUpload courseID={courseID} />
           </div>
 
           {/* create quiz on gform*/}
-          <div className="sm:col-span-1">
+          <div className="sm:col-start-2 sm:col-span-1">
             <a
               role="button"
               className="btn btn-accent w-full"
@@ -184,7 +184,7 @@ export const CourseForm = () => {
           {/* quiz link */}
           <div className="sm:col-span-3">
             <TextboxWithoutLabels
-              inlineLabel={"Paste the SHAREABLE Google Form link here!"}
+              inlineLabel={"Paste SHAREABLE Google Form link here!"}
               onChange={handleQuizLink}
               value={quizLink}
             />
@@ -192,7 +192,7 @@ export const CourseForm = () => {
           {/* GID link */}
           <div className="sm:col-span-2">
             <TextboxWithoutLabels
-              inlineLabel={"Paste the Google Sheets link here!"}
+              inlineLabel={"Paste Google Sheets link here!"}
               onChange={handleGidLink}
               value={gidValue}
             />
@@ -202,10 +202,13 @@ export const CourseForm = () => {
           {/* <div className="sm:col-span-6">
             <AssignCourseCard cardTitle={"Assign Course"} />
           </div> */}
+          <button
+            className="btn btn-primary sm:col-start-4 sm:col-span-2"
+            onClick={writeData}
+          >
+            Submit
+          </button>
         </form>
-        <button className="btn btn-primary" onClick={writeData}>
-          Submit
-        </button>
       </div>
     </>
   );

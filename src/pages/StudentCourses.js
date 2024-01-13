@@ -94,7 +94,7 @@ export const StudentCourses = () => {
             </div>
           </div>
           <h2 className="card-title">{courseData.courseTitle}</h2>
-          <p>{courseData.courseDescription}</p>
+          <p className="text-start">{courseData.courseDescription}</p>
           <div className="card-actions justify-start">
             <CourseMaterialsButton cardCourseID={courseID} />
           </div>
