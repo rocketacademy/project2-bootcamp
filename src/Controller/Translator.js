@@ -22,6 +22,9 @@ export default class Translator {
       if (!Array.isArray(datas) || !datas.length) {
         throw new Error("No Translation found.");
       }
+      if (!datas[0].meta) {
+        throw new Error("No Translation found");
+      }
       const translation = [];
       for (const data of datas) {
         //We need to know it is eng

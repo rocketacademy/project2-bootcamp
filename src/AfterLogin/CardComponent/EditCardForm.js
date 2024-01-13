@@ -43,7 +43,8 @@ export default function EditCardForm(props) {
       setOptions(translation);
       setSpanishValue(translation[0]);
     } catch (error) {
-      setErrorMessage(error.message);
+      setOptions([]);
+      setSpanishValue("");
     }
   };
 
