@@ -9,7 +9,8 @@
     width: 10%;
   }
 
-  .link-container {
+  .link-container,
+  .pills-landmarks {
     display: none;
   }
 }
@@ -17,6 +18,10 @@
 @media all and (min-width: 501px) {
   .drawer-links {
     display: none;
+  }
+
+  .pills-landmarks {
+    display: flex;
   }
 }
 

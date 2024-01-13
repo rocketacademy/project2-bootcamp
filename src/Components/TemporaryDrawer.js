@@ -38,6 +38,9 @@ export default function TemporaryDrawer({
   handleLogout,
   isLoggedIn,
   loading,
+  historicalLandmarks,
+  setSelectedLandmarks,
+  renderMapComponent,
 }) {
   const [state, setState] = React.useState({
     top: false,
@@ -85,6 +88,9 @@ export default function TemporaryDrawer({
           >
             <CloseIcon />
           </IconButton>
+          <Button onClick={toggleDrawer(anchor, false)}>
+            Historical Landmarks
+          </Button>
           {linksData.map((text, index) => (
             <ListItemButton key={text}>
               <ListItemIcon>

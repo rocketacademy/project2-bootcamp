@@ -256,6 +256,14 @@ const App = () => {
                   isLoggedIn={isLoggedIn}
                   handleLogout={handleLogout}
                   loading={loading}
+                  historicalLandmarks={historicalLandmarks}
+                  setSelectedLandmarks={setSelectedLandmarks}
+                  renderMapComponent={
+                    <RenderMap
+                      sendMessage={sendMessage}
+                      landmarks={historicalLandmarks}
+                    />
+                  }
                 />
                 <Typography
                   variant="h5"
@@ -277,51 +285,53 @@ const App = () => {
                   {/* <h2>Welcome back {user.email}</h2> */}
                   {/* <AppLinks /> */}
                 </StyledGridItem>
-                {/* <StyledGridPills item>
-                  <Button
-                    variant="outlined"
-                    onClick={() => {
-                      setSelectedLandmarks(natureParks);
-                      <RenderMap
-                        sendMessage={sendMessage}
-                        landmarks={natureParks}
-                      />;
-                    }}
-                    sx={{ width: '150px', height: '50px' }}
-                  >
-                    Nature Parks
-                  </Button>
-                </StyledGridPills>
-                <StyledGridPills item>
-                  <Button
-                    variant="outlined"
-                    onClick={() => {
-                      setSelectedLandmarks(politicalLandmarks);
-                      <RenderMap
-                        sendMessage={sendMessage}
-                        landmarks={politicalLandmarks}
-                      />;
-                    }}
-                    sx={{ width: '150px', height: '50px' }}
-                  >
-                    Political Landmarks
-                  </Button>
-                </StyledGridPills>
-                <StyledGridPills item>
-                  <Button
-                    variant="outlined"
-                    onClick={() => {
-                      setSelectedLandmarks(historicalLandmarks);
-                      <RenderMap
-                        sendMessage={sendMessage}
-                        landmarks={historicalLandmarks}
-                      />;
-                    }}
-                    sx={{ width: '150px', height: '50px' }}
-                  >
-                    Historical Landmarks
-                  </Button>
-                </StyledGridPills> */}
+                <Box className="pills-landmarks">
+                  <StyledGridPills item>
+                    <Button
+                      variant="outlined"
+                      onClick={() => {
+                        setSelectedLandmarks(natureParks);
+                        <RenderMap
+                          sendMessage={sendMessage}
+                          landmarks={natureParks}
+                        />;
+                      }}
+                      sx={{ width: '150px', height: '50px' }}
+                    >
+                      Nature Parks
+                    </Button>
+                  </StyledGridPills>
+                  <StyledGridPills item>
+                    <Button
+                      variant="outlined"
+                      onClick={() => {
+                        setSelectedLandmarks(politicalLandmarks);
+                        <RenderMap
+                          sendMessage={sendMessage}
+                          landmarks={politicalLandmarks}
+                        />;
+                      }}
+                      sx={{ width: '150px', height: '50px' }}
+                    >
+                      Political Landmarks
+                    </Button>
+                  </StyledGridPills>
+                  <StyledGridPills item>
+                    <Button
+                      variant="outlined"
+                      onClick={() => {
+                        setSelectedLandmarks(historicalLandmarks);
+                        <RenderMap
+                          sendMessage={sendMessage}
+                          landmarks={historicalLandmarks}
+                        />;
+                      }}
+                      sx={{ width: '150px', height: '50px' }}
+                    >
+                      Historical Landmarks
+                    </Button>
+                  </StyledGridPills>
+                </Box>
               </StyledContainer>
             )}
           </Box>
