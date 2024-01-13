@@ -8,12 +8,14 @@ import { CourseForm } from "./pages/CourseForm";
 import "./App.css";
 import { AttendancePublic } from "./pages/AttendancePublic";
 import { StudentCourses } from "./pages/StudentCourses";
+import { Navbar } from "./components/Navbar";
 
 const App = () => {
   return (
     <div className="App">
       <header className="App-header">
         <BrowserRouter>
+          <Navbar />
           <Routes>
             <Route path="/" element={<Login />} />
             <Route path="signup" element={<Signup />} />
@@ -25,7 +27,7 @@ const App = () => {
             />
             <Route path="teacher/attendance" element={<AttendancePublic />} />
             {/* <Route path="student" element={<Student />} /> */}
-            <Route path="student/studentcourses" element={<StudentCourses />} />
+            <Route path="student" element={<StudentCourses />} />
           </Routes>
         </BrowserRouter>
       </header>
