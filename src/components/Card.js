@@ -13,3 +13,13 @@ export const AssignCourseCard = ({ cardTitle, studentList }) => {
     </div>
   );
 };
+
+export const CardWithoutActions = ({ cardContent }) => {
+  return (
+    <div className="card w-full bg-base-100 shadow-md">
+      <div className="card-body">
+        <p>{cardContent}</p>
+      </div>
+    </div>
+  );
+};
