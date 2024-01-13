@@ -1,49 +1,49 @@
-import { useState } from "react";
-import { BrowserRouter as Router, Link, Routes, Route } from "react-router-dom";
+import { useState } from 'react';
+import { BrowserRouter as Router, Link, Routes, Route } from 'react-router-dom';
 
-import { auth } from "../firebase";
+import { auth } from '../firebase';
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
-} from "firebase/auth";
+} from 'firebase/auth';
 
 // MUI
-import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
-import Grid from "@mui/material/Grid";
-import { CssBaseline, Typography } from "@mui/material";
-import Box from "@mui/material/Box";
-import Avatar from "@mui/material/Avatar";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import Grid from '@mui/material/Grid';
+import { CssBaseline, Typography } from '@mui/material';
+import Box from '@mui/material/Box';
+import Avatar from '@mui/material/Avatar';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 
 export default function AuthForm() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState();
 
   const signUp = async () => {
     try {
       const user = await createUserWithEmailAndPassword(auth, email, password);
       console.log(user);
-      setEmail("");
-      setPassword("");
+      setEmail('');
+      setPassword('');
     } catch (error) {
       setError(
-        "This email is either already in use, or it is an invalid email"
+        'This email is either already in use, or it is an invalid email',
       );
-      console.error("Error signing up:", error.message);
+      console.error('Error signing up:', error.message);
     }
   };
 
   const signIn = async () => {
     const user = await signInWithEmailAndPassword(auth, email, password);
     console.log(user);
-    setEmail("");
-    setPassword("");
+    setEmail('');
+    setPassword('');
   };
 
   return (
-    <Grid container sx={{ height: "100vh" }}>
+    <Grid container sx={{ height: '100vh' }}>
       <CssBaseline />
       <Grid
         item
@@ -51,17 +51,17 @@ export default function AuthForm() {
         sm={4}
         md={7}
         sx={{
-          backgroundImage: "url(https://source.unsplash.com/random?city)",
-          backgroundRepeat: "no-repeat",
+          backgroundImage: 'url(https://source.unsplash.com/random?city)',
+          backgroundRepeat: 'no-repeat',
           backgroundColor: (t) =>
-            t.palette.mode === "light"
+            t.palette.mode === 'light'
               ? t.palette.grey[50]
               : t.palette.grey[900],
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
         }}
       />
       <Grid item xs={12} sm={8} md={5} elevation={6}>
@@ -69,25 +69,25 @@ export default function AuthForm() {
           sx={{
             my: 8,
             mx: 4,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            "& .MuiTextField-root": {
-              width: "400px", // Adjust TextField width
-              marginBottom: "20px", // Increase bottom margin for spacing
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            '& .MuiTextField-root': {
+              width: '400px', // Adjust TextField width
+              marginBottom: '20px', // Increase bottom margin for spacing
             },
-            "& .MuiButton-root": {
-              width: "150px", // Make buttons full width
-              height: "60px", // Increase button height
-              fontSize: "1.2rem", // Increase button text size
-              marginBottom: "20px", // Increase bottom margin for spacing
+            '& .MuiButton-root': {
+              width: '150px', // Make buttons full width
+              height: '60px', // Increase button height
+              fontSize: '1.2rem', // Increase button text size
+              marginBottom: '20px', // Increase bottom margin for spacing
             },
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
             <LockOutlinedIcon />
           </Avatar>
-          <Typography component="h1" variant="h5" sx={{ margin: "40px" }}>
+          <Typography component="h1" variant="h5" sx={{ margin: '40px' }}>
             Welcome to the Merlion Landmarks App
           </Typography>
           <Grid item xs={12} sx={{ mt: 3, mb: 2 }}>

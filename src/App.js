@@ -1,61 +1,66 @@
 // Use this file in index.js as the root only as backup!
-import React from "react";
-import RenderMap from "../src/Services/Maps/RenderMap";
-import { useState, useEffect } from "react";
-import "./App.css";
-import AuthFormTesting from "./Components/AuthFormTesting";
-import { auth } from "./firebase";
-import { onAuthStateChanged, signOut } from "firebase/auth";
-import AppBackground from "./Components/BackgroundApp";
-import SignIn from "./Components/AuthFormDiffVersion";
+import React from 'react';
+import RenderMap from '../src/Services/Maps/RenderMap';
+import { useState, useEffect } from 'react';
+import './App.css';
+import AuthFormTesting from './Components/AuthFormTesting';
+import { auth } from './firebase';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
+import AppBackground from './Components/BackgroundApp';
+import SignIn from './Components/SignIn';
 
-import SvgIcon from '@mui/material/SvgIcon';
-
-import { AppLinks } from "./AppMain";
-import CertificateGenerator from "./Services/CreateCertificate";
+import { AppLinks } from './AppMain';
+import CertificateGenerator from './Services/CreateCertificate';
 
 // MUI
-import { TextField, Box, Typography, CircularProgress, LinearProgress } from "@mui/material";
-import Button from "@mui/material/Button";
-import Grid from "@mui/material/Grid";
-import { styled } from "@mui/system";
+import {
+  TextField,
+  Box,
+  Typography,
+  CircularProgress,
+  LinearProgress,
+} from '@mui/material';
+import Button from '@mui/material/Button';
+import Grid from '@mui/material/Grid';
+import { styled } from '@mui/system';
 // import { Typography } from "@mui/material/styles/createTypography";
-import MenuItem from "@mui/material/MenuItem";
-import TemporaryDrawer from "./Components/TemporaryDrawer";
-import FetchingDataAnimation from "./Components/FetchingDataAnimation";
+import MenuItem from '@mui/material/MenuItem';
+import TemporaryDrawer from './Components/TemporaryDrawer';
+import FetchingDataAnimation from './Components/FetchingDataAnimation';
+import { useNavigate } from 'react-router-dom';
 // import { mapToStyles } from "@popperjs/core/lib/modifiers/computeStyles";
 // import { assertExpressionStatement } from "@babel/types";
 
 // Styling MUI function
-const StyledContainer = styled("div")({
-  display: "flex",
-  justifyContent: "flex-start",
+const StyledContainer = styled('div')({
+  display: 'flex',
+  justifyContent: 'flex-start',
 });
 
 const StyledGridItem = styled(Grid)({
-  width: "30%",
+  width: '30%',
 });
 
-const StyledGridPills = styled("div")({
-  width: "150px", // Define the width of your container
-  height: "100px", // Define the height of your container
-  marginBottom: "30px",
-  display: "flex",
-  flexDirection: "column",
-  justifyContent: "flex-end",
-  marginRight: "20px",
-  marginLeft: "20px",
+const StyledGridPills = styled('div')({
+  width: '150px', // Define the width of your container
+  height: '100px', // Define the height of your container
+  marginBottom: '30px',
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'flex-end',
+  marginRight: '20px',
+  marginLeft: '20px',
 });
 
 const linkStyle = {
-  marginRight: "50px",
-  marginLeft: "50px",
-  marginTop: "10px",
-  marginBottom: "10px",
-  textDecoration: "none",
-  color: "black",
-  fontWeight: "bold",
-  fontSize: "30px",
+  marginRight: '50px',
+  marginLeft: '50px',
+  marginTop: '10px',
+  marginBottom: '10px',
+  textDecoration: 'none',
+  color: 'black',
+  fontWeight: 'bold',
+  fontSize: '30px',
 };
 
 // Commented out because we will remove this feature + it is confusing React from parsing the landmarks props to RenderMap.js
@@ -115,8 +120,8 @@ const politicalLandmarks = {
 };
 
 const App = () => {
-  const [userMessage, setUserMessage] = useState("");
-  const [aiResponse, setAiResponse] = useState("");
+  const [userMessage, setUserMessage] = useState('');
+  const [aiResponse, setAiResponse] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [selectedLandmarks, setSelectedLandmarks] =
     useState(historicalLandmarks);
@@ -125,7 +130,9 @@ const App = () => {
 
   const [drawerRef, setDrawerRef] = useState(null);
 
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
+
+  const navigate = useNavigate();
 
   // Handling the drawer opening
   useEffect(() => {
@@ -138,14 +145,17 @@ const App = () => {
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       console.log(user);
-
       if (user) {
         setIsLoggedIn(true);
-        setUser(user);
+        return setUser(user);
       }
+      // setIsLoggedIn(false);
+      // return () => {
+      //   console.log('Routing to different page');
+      //   navigate('/sign-in');
+      // };
     });
   }, []);
-
 
   // onAuthStateChanged function to be passed down into the App child component
   const handleAuthStateChanged = () => {
@@ -159,220 +169,196 @@ const App = () => {
 
   //Function to call OpenAI API
   const sendMessage = async (targetMessage) => {
-    setLoading(true)
+    setLoading(true);
 
     try {
-      const messageToSend = userMessage === "" ? targetMessage : userMessage;
+      const messageToSend = userMessage === '' ? targetMessage : userMessage;
 
-      const response = await fetch("http://localhost:3002/send-message", {
-        method: "POST",
+      const response = await fetch('http://localhost:3002/send-message', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({ message: messageToSend }),
       });
 
       const data = await response.json();
       setAiResponse(data.message);
-      setUserMessage("");
-      console.log(data.message);
+      setUserMessage('');
 
-      setLoading(false)
+      // console.log(data.message);
+
+      setLoading(false);
     } catch (error) {
-      setLoading(true)
-      console.error("Error sending message:", error);
+      setLoading(true);
+      console.error('Error sending message:', error);
       // Handle error state here if needed
     }
   };
 
   const clearAIResponse = () => {
-    setAiResponse("");
+    setAiResponse('');
   };
 
-  console.log(aiResponse);
-  console.log(user);
+  // console.log(aiResponse);
+  // console.log(user);
 
-  const handleLogout = () => {
-    setIsLoggedIn(false);
-    signOut(auth);
-    setUser({});
+  // const handleLogout1 = () => {
+  //   setIsLoggedIn(false);
+  //   signOut(auth);
+
+  //   setUser({});
+  // };
+
+  const handleLogout = async () => {
+    try {
+      console.log('Logging out...');
+      await logoutUser();
+      console.log('User signed out');
+      setUser({});
+      navigate('/');
+
+      console.log('Navigation complete');
+    } catch (err) {
+      console.error('Error signing out', err);
+    }
+  };
+
+  const logoutUser = async () => {
+    await signOut(auth);
+    return setIsLoggedIn(false);
   };
 
   return (
-    <Box>
-    {loading ? 
-      <Box>
-        <AppBackground />
-        <FetchingDataAnimation />
-        {/* <Box
-        className='overlay'
-        sx={{
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-        minHeight: "50vh",
-        }}
-        >
-          <Typography variant="h2">Fetching data from OpenAI</Typography>
-          <CircularProgress />
-        </Box> */}
-      </Box>
-       : 
-    <Box>
-      <Box>
-        {isLoggedIn ? (
+    <Box className="app-container">
+      {loading ? (
+        <Box>
+          <AppBackground />
+          <FetchingDataAnimation />
+        </Box>
+      ) : (
+        <Box>
           <Box>
-            <TemporaryDrawer
-              aiResponse={aiResponse}
-              clearAIResponse={clearAIResponse}
-              onDrawerOpen={(func) => setDrawerRef(func)}
-              sendMessage={sendMessage}
-              handleAuthStateChanged={handleAuthStateChanged}
-              isLoggedIn={isLoggedIn}
-              handleLogout={handleLogout}
-              loading={loading}
-            />
+            {isLoggedIn ? (
+              <Box
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  marginBottom: '20px',
+                }}
+              >
+                <TemporaryDrawer
+                  aiResponse={aiResponse}
+                  clearAIResponse={clearAIResponse}
+                  onDrawerOpen={(func) => setDrawerRef(func)}
+                  sendMessage={sendMessage}
+                  handleAuthStateChanged={handleAuthStateChanged}
+                  isLoggedIn={isLoggedIn}
+                  handleLogout={handleLogout}
+                  loading={loading}
+                />
+                <Typography
+                  variant="h5"
+                  style={{ whiteSpace: 'nowrap', margin: '0' }}
+                >
+                  Merlion Landmarks
+                </Typography>
+                <Box className="link-container">
+                  <AppLinks />
+                </Box>
+              </Box>
+            ) : (
+              <AppBackground />
+            )}
+
+            {isLoggedIn && (
+              <StyledContainer className="user-container">
+                <StyledGridItem item>
+                  {/* <h2>Welcome back {user.email}</h2> */}
+                  {/* <AppLinks /> */}
+                </StyledGridItem>
+                {/* <StyledGridPills item>
+                  <Button
+                    variant="outlined"
+                    onClick={() => {
+                      setSelectedLandmarks(natureParks);
+                      <RenderMap
+                        sendMessage={sendMessage}
+                        landmarks={natureParks}
+                      />;
+                    }}
+                    sx={{ width: '150px', height: '50px' }}
+                  >
+                    Nature Parks
+                  </Button>
+                </StyledGridPills>
+                <StyledGridPills item>
+                  <Button
+                    variant="outlined"
+                    onClick={() => {
+                      setSelectedLandmarks(politicalLandmarks);
+                      <RenderMap
+                        sendMessage={sendMessage}
+                        landmarks={politicalLandmarks}
+                      />;
+                    }}
+                    sx={{ width: '150px', height: '50px' }}
+                  >
+                    Political Landmarks
+                  </Button>
+                </StyledGridPills>
+                <StyledGridPills item>
+                  <Button
+                    variant="outlined"
+                    onClick={() => {
+                      setSelectedLandmarks(historicalLandmarks);
+                      <RenderMap
+                        sendMessage={sendMessage}
+                        landmarks={historicalLandmarks}
+                      />;
+                    }}
+                    sx={{ width: '150px', height: '50px' }}
+                  >
+                    Historical Landmarks
+                  </Button>
+                </StyledGridPills> */}
+              </StyledContainer>
+            )}
           </Box>
-        ) : (
-          <AppBackground /> 
-        )}
 
-        {isLoggedIn && (
-          <StyledContainer>
-            <StyledGridItem item>
-              <h2>Welcome back {user.email}</h2>
-              <AppLinks />
+          {isLoggedIn && (
+            <StyledContainer className="map-container">
+              <StyledGridItem item sx={{ margin: '20px' }}>
+                <Box
+                  sx={{
+                    '& .MuiTextField-root': { m: 1, width: '25ch' },
+                  }}
+                ></Box>
+              </StyledGridItem>
+              <StyledGridItem
+                item
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  position: 'relative',
+                  marginTop: '20px',
+                }}
+              >
+                <RenderMap
+                  sendMessage={sendMessage}
+                  landmarks={selectedLandmarks}
+                />
+              </StyledGridItem>
+            </StyledContainer>
+          )}
 
-              <Button
-                variant="outlined"
-                onClick={(e) => {
-                  setIsLoggedIn(false);
-                  signOut(auth);
-                  setUser({});
-                }}
-                sx={{ marginLeft: "20px" }}
-              >
-                Log out
-              </Button>
-            </StyledGridItem>
-            <StyledGridPills item>
-              <Button
-                variant="outlined"
-                onClick={() => {
-                  setSelectedLandmarks(natureParks);
-                  <RenderMap
-                    sendMessage={sendMessage}
-                    landmarks={natureParks}
-                  />;
-                }}
-                sx={{ width: "150px", height: "50px" }}
-              >
-                Nature Parks
-              </Button>
-            </StyledGridPills>
-            <StyledGridPills item>
-              <Button
-                variant="outlined"
-                onClick={() => {
-                  setSelectedLandmarks(politicalLandmarks);
-                  <RenderMap
-                    sendMessage={sendMessage}
-                    landmarks={politicalLandmarks}
-                  />;
-                }}
-                sx={{ width: "150px", height: "50px" }}
-              >
-                Political Landmarks
-              </Button>
-            </StyledGridPills>
-            <StyledGridPills item>
-              <Button
-                variant="outlined"
-                onClick={() => {
-                  setSelectedLandmarks(historicalLandmarks);
-                  <RenderMap
-                    sendMessage={sendMessage}
-                    landmarks={historicalLandmarks}
-                  />;
-                }}
-                sx={{ width: "150px", height: "50px" }}
-              >
-                Historical Landmarks
-              </Button>
-            </StyledGridPills>
-          </StyledContainer>
-        )}
-      </Box>
-
-      {isLoggedIn && (
-        <StyledContainer>
-          <StyledGridItem item sx={{ margin: "20px" }}>
-            {/* <TextField
-              type="text"
-              value={userMessage}
-              onChange={(e) => setUserMessage(e.target.value)}
-            />
-            <Button
-              variant="contained"
-              onClick={sendMessage}
-              sx={{ mt: "20px", mb: "20px" }}
-            >
-              Send Message
-            </Button>
-
-            <Box className="ai-response">
-              <Typography
-                variant="h4"
-                sx={{
-                  fontFamily: "Comic Sans MS",
-                  color: "primary.main",
-                }}
-              >
-                AI Response:
-              </Typography>
-              <p>{aiResponse}</p>
+          {!isLoggedIn && (
+            <Box className="overlay">
+              <SignIn />
             </Box>
-            <Button
-              variant="contained"
-              onClick={clearAIResponse}
-              sx={{ mt: "20px", mb: "20px" }}
-            >
-              Clear
-            </Button> */}
-            <Box
-              sx={{
-                "& .MuiTextField-root": { m: 1, width: "25ch" },
-              }}
-            ></Box>
-          </StyledGridItem>
-          <StyledGridItem
-            item
-            style={{
-              width: "100%",
-              height: "100%",
-              position: "relative",
-              marginTop: "20px",
-            }}
-          >
-            <RenderMap
-              sendMessage={sendMessage}
-              landmarks={selectedLandmarks}
-            />
-          </StyledGridItem>
-        </StyledContainer>
-      )}
-      {/* 
-      <Box style={{ display: isLoggedIn ? "none" : "block" }}>
-        {!isLoggedIn && <AuthFormTesting />}
-      </Box> */}
-
-      {!isLoggedIn && (
-        <Box className='overlay'>
-          <SignIn />
+          )}
         </Box>
       )}
-    </Box>}
     </Box>
   );
 };

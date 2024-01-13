@@ -1,12 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Box, CircularProgress } from '@mui/material';
-import { quantum } from 'ldrs'
+import { quantum } from 'ldrs';
 
-quantum.register()
-
-
-
-
+quantum.register();
 
 const FetchingDataAnimation = () => {
   const text = 'Fetching data from OpenAI';
@@ -32,7 +28,7 @@ const FetchingDataAnimation = () => {
 
   return (
     <Box
-      className='overlay'
+      className="overlay"
       sx={{
         display: 'flex',
         flexDirection: 'column',
@@ -42,14 +38,12 @@ const FetchingDataAnimation = () => {
       }}
     >
       <Box>
-        <span style={{ fontSize: '2em', fontWeight: 'bold' }}>{visibleText}</span>
+        <span style={{ fontSize: '2em', fontWeight: 'bold' }}>
+          {visibleText}
+        </span>
       </Box>
-      
-      <l-quantum
-      size="45"
-      speed="1.75" 
-      color="black" 
-      ></l-quantum>
+
+      <l-quantum size="45" speed="1.75" color="black"></l-quantum>
     </Box>
   );
 };

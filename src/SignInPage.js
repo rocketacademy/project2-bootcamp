@@ -1,60 +1,60 @@
 // Use this file in index.js as the root only as backup!
-import React from "react";
-import RenderMap from "../src/Services/Maps/RenderMap";
-import { useState, useEffect } from "react";
-import "./App.css";
-import AuthFormTesting from "./Components/AuthFormTesting";
-import { auth } from "./firebase";
-import { onAuthStateChanged, signOut } from "firebase/auth";
-import AppBackground from "./Components/BackgroundApp";
-import SignIn from "./Components/AuthFormDiffVersion";
+import React from 'react';
+import RenderMap from './Services/Maps/RenderMap';
+import { useState, useEffect } from 'react';
+import './App.css';
+import AuthFormTesting from './Components/AuthFormTesting';
+import { auth } from './firebase';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
+import AppBackground from './Components/BackgroundApp';
+import SignIn from './Components/SignIn';
 
-import { BrowserRouter as Router, Link, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Link, Routes, Route } from 'react-router-dom';
 
-import { AppLinks } from "./AppMain";
-import CertificateGenerator from "./Services/CreateCertificate";
+import { AppLinks } from './AppMain';
+import CertificateGenerator from './Services/CreateCertificate';
 
 // MUI
-import { TextField, Box, Typography } from "@mui/material";
-import Button from "@mui/material/Button";
-import Grid from "@mui/material/Grid";
-import { styled } from "@mui/system";
+import { TextField, Box, Typography } from '@mui/material';
+import Button from '@mui/material/Button';
+import Grid from '@mui/material/Grid';
+import { styled } from '@mui/system';
 // import { Typography } from "@mui/material/styles/createTypography";
-import MenuItem from "@mui/material/MenuItem";
-import TemporaryDrawer from "./Components/TemporaryDrawer";
+import MenuItem from '@mui/material/MenuItem';
+import TemporaryDrawer from './Components/TemporaryDrawer';
 // import { mapToStyles } from "@popperjs/core/lib/modifiers/computeStyles";
 // import { assertExpressionStatement } from "@babel/types";
 
 // Styling MUI function
-const StyledContainer = styled("div")({
-  display: "flex",
-  justifyContent: "flex-start",
+const StyledContainer = styled('div')({
+  display: 'flex',
+  justifyContent: 'flex-start',
 });
 
 const StyledGridItem = styled(Grid)({
-  width: "30%",
+  width: '30%',
 });
 
-const StyledGridPills = styled("div")({
-  width: "150px", // Define the width of your container
-  height: "100px", // Define the height of your container
-  marginBottom: "30px",
-  display: "flex",
-  flexDirection: "column",
-  justifyContent: "flex-end",
-  marginRight: "20px",
-  marginLeft: "20px",
+const StyledGridPills = styled('div')({
+  width: '150px', // Define the width of your container
+  height: '100px', // Define the height of your container
+  marginBottom: '30px',
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'flex-end',
+  marginRight: '20px',
+  marginLeft: '20px',
 });
 
 const linkStyle = {
-  marginRight: "50px",
-  marginLeft: "50px",
-  marginTop: "10px",
-  marginBottom: "10px",
-  textDecoration: "none",
-  color: "black",
-  fontWeight: "bold",
-  fontSize: "30px",
+  marginRight: '50px',
+  marginLeft: '50px',
+  marginTop: '10px',
+  marginBottom: '10px',
+  textDecoration: 'none',
+  color: 'black',
+  fontWeight: 'bold',
+  fontSize: '30px',
 };
 
 // Commented out because we will remove this feature + it is confusing React from parsing the landmarks props to RenderMap.js
@@ -113,9 +113,9 @@ const politicalLandmarks = {
   NationalMuseumofSingapore: { lat: 1.2966, lng: 103.8485 },
 };
 
-const BackgroundAppTesting = () => {
-  const [userMessage, setUserMessage] = useState("");
-  const [aiResponse, setAiResponse] = useState("");
+const SignInPage = () => {
+  const [userMessage, setUserMessage] = useState('');
+  const [aiResponse, setAiResponse] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [selectedLandmarks, setSelectedLandmarks] =
     useState(historicalLandmarks);
@@ -124,9 +124,7 @@ const BackgroundAppTesting = () => {
 
   const [drawerRef, setDrawerRef] = useState(null);
 
-  useEffect(()=>{
-
-  })
+  useEffect(() => {});
 
   // Handling the drawer opening
   useEffect(() => {
@@ -147,7 +145,6 @@ const BackgroundAppTesting = () => {
     });
   }, []);
 
-
   // onAuthStateChanged function to be passed down into the App child component
   const handleAuthStateChanged = () => {
     onAuthStateChanged(auth, (user) => {
@@ -161,28 +158,28 @@ const BackgroundAppTesting = () => {
   //Function to call OpenAI API
   const sendMessage = async (targetMessage) => {
     try {
-      const messageToSend = userMessage === "" ? targetMessage : userMessage;
+      const messageToSend = userMessage === '' ? targetMessage : userMessage;
 
-      const response = await fetch("http://localhost:3002/send-message", {
-        method: "POST",
+      const response = await fetch('http://localhost:3002/send-message', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({ message: messageToSend }),
       });
 
       const data = await response.json();
       setAiResponse(data.message);
-      setUserMessage("");
+      setUserMessage('');
       console.log(data.message);
     } catch (error) {
-      console.error("Error sending message:", error);
+      console.error('Error sending message:', error);
       // Handle error state here if needed
     }
   };
 
   const clearAIResponse = () => {
-    setAiResponse("");
+    setAiResponse('');
   };
 
   console.log(aiResponse);
@@ -210,7 +207,7 @@ const BackgroundAppTesting = () => {
             />
           </Box>
         ) : (
-          <AppBackground /> 
+          <AppBackground />
         )}
 
         {isLoggedIn && (
@@ -226,7 +223,7 @@ const BackgroundAppTesting = () => {
                   signOut(auth);
                   setUser({});
                 }}
-                sx={{ marginLeft: "20px" }}
+                sx={{ marginLeft: '20px' }}
               >
                 Log out
               </Button>
@@ -241,7 +238,7 @@ const BackgroundAppTesting = () => {
                     landmarks={natureParks}
                   />;
                 }}
-                sx={{ width: "150px", height: "50px" }}
+                sx={{ width: '150px', height: '50px' }}
               >
                 Nature Parks
               </Button>
@@ -256,7 +253,7 @@ const BackgroundAppTesting = () => {
                     landmarks={politicalLandmarks}
                   />;
                 }}
-                sx={{ width: "150px", height: "50px" }}
+                sx={{ width: '150px', height: '50px' }}
               >
                 Political Landmarks
               </Button>
@@ -271,7 +268,7 @@ const BackgroundAppTesting = () => {
                     landmarks={historicalLandmarks}
                   />;
                 }}
-                sx={{ width: "150px", height: "50px" }}
+                sx={{ width: '150px', height: '50px' }}
               >
                 Historical Landmarks
               </Button>
@@ -282,7 +279,7 @@ const BackgroundAppTesting = () => {
 
       {isLoggedIn && (
         <StyledContainer>
-          <StyledGridItem item sx={{ margin: "20px" }}>
+          <StyledGridItem item sx={{ margin: '20px' }}>
             {/* <TextField
               type="text"
               value={userMessage}
@@ -317,17 +314,17 @@ const BackgroundAppTesting = () => {
             </Button> */}
             <Box
               sx={{
-                "& .MuiTextField-root": { m: 1, width: "25ch" },
+                '& .MuiTextField-root': { m: 1, width: '25ch' },
               }}
             ></Box>
           </StyledGridItem>
           <StyledGridItem
             item
             style={{
-              width: "100%",
-              height: "100%",
-              position: "relative",
-              marginTop: "20px",
+              width: '100%',
+              height: '100%',
+              position: 'relative',
+              marginTop: '20px',
             }}
           >
             <RenderMap
@@ -343,7 +340,7 @@ const BackgroundAppTesting = () => {
       </Box> */}
 
       {!isLoggedIn && (
-        <Box className='overlay'>
+        <Box className="overlay">
           <SignIn />
         </Box>
       )}
@@ -351,4 +348,4 @@ const BackgroundAppTesting = () => {
   );
 };
 
-export default BackgroundAppTesting;
+export default SignInPage;

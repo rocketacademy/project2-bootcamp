@@ -12,39 +12,41 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { useState } from "react";
-import { auth } from "../firebase";
+import { useState } from 'react';
+import { auth } from '../firebase';
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
-} from "firebase/auth";
+} from 'firebase/auth';
+
+import { useNavigate } from 'react-router-dom';
 
 const defaultTheme = createTheme();
 
 export default function SignIn() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
-
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   const signUp = async () => {
     try {
       const user = await createUserWithEmailAndPassword(auth, email, password);
-    console.log(user);
-    setEmail("");
-    setPassword("");
-
-
-    } catch(error){
-      console.error('Error signing up', error)
+      console.log(user);
+      setEmail('');
+      setPassword('');
+    } catch (error) {
+      console.error('Error signing up', error);
     }
   };
 
   const signIn = async () => {
     const user = await signInWithEmailAndPassword(auth, email, password);
     console.log(user);
-    setEmail("");
-    setPassword("");
+    setEmail('');
+    setPassword('');
+
+    navigate('/');
   };
 
   // const handleSubmit = (event) => {
@@ -81,7 +83,7 @@ export default function SignIn() {
               fullWidth
               id="email"
               value={email}
-              onChange={(e)=> setEmail(e.target.value)}
+              onChange={(e) => setEmail(e.target.value)}
               label="Email Address"
               name="email"
               autoComplete="email"
@@ -94,7 +96,7 @@ export default function SignIn() {
               name="password"
               label="Password"
               value={password}
-              onChange={(e)=> setPassword(e.target.value)}
+              onChange={(e) => setPassword(e.target.value)}
               type="password"
               id="password"
               autoComplete="current-password"
@@ -121,11 +123,9 @@ export default function SignIn() {
             >
               Sign Up
             </Button>
-            <Grid container>
-            </Grid>
+            <Grid container></Grid>
           </Box>
         </Box>
-        
       </Container>
     </ThemeProvider>
   );

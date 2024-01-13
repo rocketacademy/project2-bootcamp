@@ -4,6 +4,22 @@
   align-items: center;
 } */
 
+@media all and (max-width: 500px) {
+  .app-container {
+    width: 10%;
+  }
+
+  .link-container {
+    display: none;
+  }
+}
+
+@media all and (min-width: 501px) {
+  .drawer-links {
+    display: none;
+  }
+}
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;
@@ -45,7 +61,6 @@
 .ai-response {
   animation: fadeIn 0.5s ease;
 }
-
 
 .overlay {
   position: fixed;
