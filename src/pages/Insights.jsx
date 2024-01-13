@@ -4,7 +4,7 @@ import LineGraph from "../components/LineGraph";
 import InsightChart from "../components/InsightChart";
 import Navbar from "../components/Navbar";
 import Dropdown from "react-bootstrap/Dropdown";
-
+import StockList from "../components/StockList"
 const Insights = () => {
   return (
     <div className="p-5">
@@ -21,7 +21,7 @@ const Insights = () => {
         </Dropdown>
         <h5 className="text-center ">Past six months performance</h5>
         <InsightChart />
-        <h4>Metrics</h4>
+        {/* <h4>Metrics</h4>
         <table class="table">
           <thead>
             <tr>
@@ -51,7 +51,8 @@ const Insights = () => {
               <td>twitter</td>
             </tr>
           </tbody>
-        </table>
+        </table> */}
+        <StockList/>
       </div>
     </div>
   );

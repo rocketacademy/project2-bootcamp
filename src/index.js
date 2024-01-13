@@ -17,6 +17,9 @@ import "./App.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { ThemeProvider } from "./components/ThemeContext";
 
+import AddStock from "./pages/AddStock.jsx"
+
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -27,6 +30,7 @@ const router = createBrowserRouter([
     element: <App />,
   },
   { path: "/history", element: <History /> },
+  { path: "/addstock", element: <AddStock /> },
   { path: "/insights", element: <Insights /> },
   { path: "/settings", element: <Settings /> },
 ]);
