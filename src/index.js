@@ -12,6 +12,7 @@ import RegisterPage from "./BeforeLogin/RegisterPage";
 import EditDeckPage from "./AfterLogin/EditDeckPage";
 import QuizReportList from "./AfterLogin/ReportComponent/QuizReportList";
 import QuizReport from "./AfterLogin/ReportComponent/QuizReport";
+import SecretPage from "./SecretPage";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -33,6 +34,7 @@ root.render(
       <Route path="*" element={<div>404</div>} />
       <Route path="/signin" element={<SignInPage />} />
       <Route path="/register" element={<RegisterPage />} />
+      <Route path="/SecretPage" element={<SecretPage />} />
     </Routes>
   </BrowserRouter>
 );
