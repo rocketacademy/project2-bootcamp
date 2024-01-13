@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-// import { GoogleSpreadsheet } from "google-spreadsheet";
+
 // import { Chart } from "react-google-charts";
 import { db } from "../firebase";
 import { ref, onValue } from "firebase/database";
@@ -29,53 +29,6 @@ const Teacher = () => {
   }, []);
 
   console.log(courses);
-
-  // const fetchData = async () => {
-  //   setChartData(data);
-  // setLoading(true);
-  // try {
-  //   const response = await axios.get(
-  //     "https://docs.google.com/spreadsheets/d/e/2PACX-1vSTx5-VKJBxXasQweRDdzyQxrWQtuDm3OGpTCX00G4rlc6sBymaPbXsTDKO5QOOg3cog72Uatd-THzk/pub?gid=902545446&single=true&output=csv "
-  //   );
-  // "https://docs.google.com/spreadsheets/d/e/2PACX-1vSTx5-VKJBxXasQweRDdzyQxrWQtuDm3OGpTCX00G4rlc6sBymaPbXsTDKO5QOOg3cog72Uatd-THzk/pub?gid=832644199&single=true&output=csv"
-
-  //   "https://docs.google.com/spreadsheets/d/e/2PACX-1vSTx5-VKJBxXasQweRDdzyQxrWQtuDm3OGpTCX00G4rlc6sBymaPbXsTDKO5QOOg3cog72Uatd-THzk/pub?gid=1040383854&single=true&output=csv"
-
-  // const parsedCsvData = parseCSVToArr(response.data);
-  //     setChartData(data);
-  //     // console.log(parsedCsvData);
-  //   } catch (error) {
-  //     setErrMsg(error);
-  //   }
-  // };
-  // }
-  // const dbRef = ref(db, "courses/");
-
-  // useEffect(() => {
-  //   retrieveCourseData();
-  // }, []);
-  // `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${SHEET_NAME}?valueRenderOption=FORMATTED_VALUE&key=${API_KEY}`;
-
-  // const fetchDataing = async () => {
-  //   const getdata = await axios
-  //     .get(
-  //       "https://docs.google.com/spreadsheets/d/aBC-123_xYz/edit#gid=1162486732"
-  //       // "https://sheets.googleapis.com/v4/spreadsheets/1162486732/values:batchGet"
-  //     )
-  //     .then((response) => {
-  //       console.log(response);
-  //     });
-  //   return console.log(getdata);
-  // const SHEET_ID = "1570289415";
-  // const SHEET_NAME = `FormOne`;
-  // const API_KEY = "AIzaSyBRRRol9-C9iTmPuaxq1j5JbnvmbSAisFU";
-  // const URL = `https://docs.google.com/spreadsheets/d/aBC-123_xYz/edit#gid=${SHEET_ID}`;
-  // const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${SHEET_NAME}?valueRenderOption=FORMATTED_VALUE&key=${API_KEY}`;
-  // const URL = ` https://docs.google.com/spreadsheets/d/16HTIiiOq82Tm1tLHRQcr_8YJnO81QxZOOBOfR4hU3zc/edit#gid=1162486732`;
-  // axios.get(URL).then((res) => console.log(res.data));
-  // };
-
-  // console.log(fetchDataing());
 
   // const data = [
   //   ["Course", "Rate (%)"],
@@ -197,14 +150,6 @@ const Teacher = () => {
               />
             </svg>
           </div>
-
-          <input
-            type="search"
-            id="default-search"
-            class="block w-60 p-2 ps-10 text-sm bg-transparent rounded-lg border border-gray-700 "
-            placeholder="Search course name..."
-            required
-          />
         </div>
         <div class="flex  justify-around">
           <button>Course Progress</button>
