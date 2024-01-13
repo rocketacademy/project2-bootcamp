@@ -2,11 +2,11 @@
 import { useState, useEffect } from "react";
 
 // Components
-import Navbar from "../components/Navbar";
-import TradeLineItem from "../components/History/TradeLineItem";
-import FilterInputModal from "../components/History/FilterInputModal";
-import HistoryDropdown from "../components/History/HistoryDropdown";
-import AddTradeLineItem from "../components/History/AddTradeLineItem";
+import Navbar from "../components/Navbar.js";
+import TradeLineItem from "../components/Trades/TradeLineItem.js";
+import FilterInputModal from "../components/Trades/FilterInputModal.js";
+import TradesDropdown from "../components/Trades/TradesDropdown.js";
+import AddTradeLineItem from "../components/Trades/AddTradeLineItem.js";
 
 // Firebase
 import { onChildAdded, ref, get } from "firebase/database";
@@ -14,11 +14,11 @@ import { database } from "../firebase.js";
 import { auth } from "../firebase.js";
 
 // CSS
-import "./History.css";
+import "./Trades.css";
 
 const TRADES_KEY = "trades";
 
-const History = () => {
+const Trades = () => {
   const [user, setUser] = useState("noUser");
   const [userDisplayName, setUserDisplayName] = useState("noUserDisplayName");
   const [sort, setSort] = useState("timeA");
@@ -131,7 +131,7 @@ const History = () => {
             <h1>Your Trades</h1>
             <div className="flex-row">
               <AddTradeLineItem />
-              <HistoryDropdown
+              <TradesDropdown
                 isDark={isDark}
                 setSort={setSort}
                 filterTradesInput={filterTradesInput}
@@ -156,4 +156,4 @@ const History = () => {
   );
 };
 
-export default History;
+export default Trades;

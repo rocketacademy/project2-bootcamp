@@ -33,8 +33,8 @@ const Navbar = ({ toggleDarkMode, darkMode }) => {
             <Link className="nav-link" to="/dash">
               Dashboard
             </Link>
-            <Link className="nav-link" to="/history">
-              History
+            <Link className="nav-link" to="/trades">
+              Trades
             </Link>
             <Link className="nav-link" to="/insights">
               Insights
