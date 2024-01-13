@@ -257,6 +257,8 @@ const App = () => {
                   handleLogout={handleLogout}
                   loading={loading}
                   historicalLandmarks={historicalLandmarks}
+                  natureParks={natureParks}
+                  politicalLandmarks={politicalLandmarks}
                   setSelectedLandmarks={setSelectedLandmarks}
                   renderMapComponent={
                     <RenderMap

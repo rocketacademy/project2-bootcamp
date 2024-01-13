@@ -39,6 +39,8 @@ export default function TemporaryDrawer({
   isLoggedIn,
   loading,
   historicalLandmarks,
+  natureParks,
+  politicalLandmarks,
   setSelectedLandmarks,
   renderMapComponent,
 }) {
@@ -49,9 +51,11 @@ export default function TemporaryDrawer({
     right: false,
   });
   const [userMessage, setUserMessage] = React.useState('');
+  const [landmarksChange, setLandmarksChange] = React.useState(null);
 
   const toggleDrawer = (anchor, open) => (event) => {
     // toggleDrawer is a higher order function that accepts the left and true/false arguments and returns an event object (e.g., can be a keydown or tab/shift)
+    setLandmarksChange(null);
     if (
       event.type === 'keydown' &&
       (event.key === 'Tab' || event.key === 'Shift')
@@ -68,6 +72,17 @@ export default function TemporaryDrawer({
       setState({ ...state, left: true });
     }
   }, [aiResponse]);
+
+  React.useEffect(() => {
+    if (landmarksChange === true) {
+      setState({ ...state, left: false });
+    }
+
+    if (landmarksChange === false) {
+      // set the state of left to be true so that the drawer can be opened
+      setState({ ...state, left: true });
+    }
+  }, [landmarksChange]);
 
   React.useEffect(() => {
     handleAuthStateChanged();
@@ -88,9 +103,7 @@ export default function TemporaryDrawer({
           >
             <CloseIcon />
           </IconButton>
-          <Button onClick={toggleDrawer(anchor, false)}>
-            Historical Landmarks
-          </Button>
+
           {linksData.map((text, index) => (
             <ListItemButton key={text}>
               <ListItemIcon>
@@ -115,6 +128,44 @@ export default function TemporaryDrawer({
           ))}
         </List>
         <List>
+          <ListItemIcon>
+            <IconButton
+              onClick={() => {
+                setSelectedLandmarks(historicalLandmarks);
+                setLandmarksChange(true);
+                console.log(landmarksChange);
+              }}
+            >
+              <AttractionsIcon sx={{ margin: '10px' }} />
+              Historical Landmarks
+            </IconButton>
+          </ListItemIcon>
+          <ListItemIcon>
+            <IconButton
+              onClick={() => {
+                setSelectedLandmarks(natureParks);
+                setLandmarksChange(true);
+                console.log(landmarksChange);
+              }}
+            >
+              <SailingIcon sx={{ margin: '10px' }} />
+              Nature Parks
+            </IconButton>
+          </ListItemIcon>
+          <ListItemIcon>
+            <IconButton
+              onClick={() => {
+                setSelectedLandmarks(politicalLandmarks);
+                setLandmarksChange(true);
+                console.log(landmarksChange);
+              }}
+            >
+              <TakeoutDiningIcon sx={{ margin: '10px' }} />
+              Political Landmarks
+            </IconButton>
+          </ListItemIcon>
+        </List>
+        {/* <List>
           {['Singapore Flyer', 'Sentosa Island', 'Chinatown Singapore'].map(
             (text, index) => (
               <ListItemButton key={text}>
@@ -167,7 +218,7 @@ export default function TemporaryDrawer({
               </ListItemButton>
             ),
           )}
-        </List>
+        </List> */}
       </List>
       <Divider />
       <Box sx={{ marginLeft: '10px' }}>
