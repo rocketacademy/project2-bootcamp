@@ -1,7 +1,7 @@
 .study-header {
   margin-top: 40px;
   display: flex;
-  justify-content: left;
+  justify-content: space-between;
   margin-bottom: 15px;
 }
 
@@ -34,8 +34,12 @@
   margin: 10px;
 }
 
-.spanish {
-  background-color: white;
+.repeat-button {
+  background-color: grey !important;
+}
+
+.next-button {
+  background-color: #4f6ef7 !important;
 }
 
 .hint {

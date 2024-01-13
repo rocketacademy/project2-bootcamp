@@ -14,6 +14,9 @@ export default class TextToSpeech {
 
   //get audio from storage, if no such file, generate one from openAI
   playAudio = async (word) => {
+    if (!word) {
+      return this.setLoadingAudio(false);
+    }
     const audioRef = ref(storage, `audio/${word}`);
     try {
       const url = await getDownloadURL(audioRef);
@@ -42,6 +45,7 @@ export default class TextToSpeech {
       audio.play();
       this.setLoadingAudio(false);
     } catch (error) {
+      this.setLoadingAudio(false);
       this.setErrorMessage(error.message);
     }
   };
