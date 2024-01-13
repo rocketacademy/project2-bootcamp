@@ -10,8 +10,9 @@ export default function EditCardForm(props) {
   const isDisable = props.editing !== card.cardID;
   const isEditDisable = props.editing && props.editing !== card.cardID;
   const [userInputValue, setUserInputValue] = useState(card.english);
-  const [spanishOptions, setSpanishOptions] = useState([card.spanish]);
-  const [englishOptions, setEnglishOptions] = useState([card.english]);
+  // const [spanishOptions, setSpanishOptions] = useState([card.spanish]);
+  // const [englishOptions, setEnglishOptions] = useState([card.english]);
+  const [options, setOptions] = useState([card.spanish]);
   const [translationValue, setTranslationValue] = useState(card.spanish);
   const [errorMessage, setErrorMessage] = useState("");
   const [loadingAudio, setLoadingAudio] = useState(false);
@@ -44,10 +45,8 @@ export default function EditCardForm(props) {
   const handleTranslate = async () => {
     if (englishToSpanish) {
       try {
-        const translationToSpan = await translator.englishToSpanish(
-          userInputValue
-        );
-        setSpanishOptions(translationToSpan);
+        const translationToSpan = await translator.engToSpan(userInputValue);
+        setOptions(translationToSpan);
         setTranslationValue(translationToSpan[0]);
       } catch (error) {
         setErrorMessage(error.message);
@@ -55,7 +54,7 @@ export default function EditCardForm(props) {
     } else {
       try {
         const translationToEng = await translator.spanToEng(userInputValue);
-        setEnglishOptions(translationToEng);
+        setOptions(translationToEng);
         setTranslationValue(translationToEng[0]);
       } catch (error) {
         setErrorMessage(error.message);
@@ -109,7 +108,7 @@ export default function EditCardForm(props) {
             <Autocomplete
               value={translationValue}
               disabled={isDisable}
-              options={englishToSpanish ? spanishOptions : englishOptions}
+              options={options}
               onChange={(e, input) => {
                 setTranslationValue(input);
               }}
