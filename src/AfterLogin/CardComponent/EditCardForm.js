@@ -33,14 +33,16 @@ export default function EditCardForm(props) {
   const handleEdit = () => {
     if (props.editing) {
       props.setEditing(null);
-      props.handleConfirmEdit(englishValue, spanishValue);
+      if (props.englishInput) {
+        props.handleConfirmEdit(englishValue, spanishValue);
+      } else props.handleConfirmEdit(spanishValue, englishValue);
     } else {
       props.setEditing(card.cardID);
     }
   };
 
   const handleTranslate = async () => {
-    if (englishInput) {
+    if (props.englishInput) {
       try {
         const translationToSpan = await translator.engToSpan(englishValue);
         setSpanishOptions(translationToSpan);
@@ -59,12 +61,7 @@ export default function EditCardForm(props) {
     }
   };
 
-  const handleLanguageSwitch = () => {
-    setEnglishInput((prevEnglishInput) => !prevEnglishInput);
-    console.log(englishInput);
-    setEnglishValue("");
-    setSpanishValue("");
-  };
+  const handleLanguageSwitch = () => {};
 
   const handlePlayAudio = async (word) => {
     try {
@@ -97,7 +94,7 @@ export default function EditCardForm(props) {
             fullWidth
             value={englishValue}
             onChange={(e) => setEnglishValue(e.target.value)}
-            label={englishInput ? "English" : "Spanish"}
+            label={props.englishInput ? "English" : "Spanish"}
             variant="standard"
           ></TextField>
         </div>
@@ -107,13 +104,14 @@ export default function EditCardForm(props) {
             <Autocomplete
               value={spanishValue}
               disabled={isDisable}
-              options={englishInput ? spanishOptions : englishOptions}
+              options={props.englishInput ? spanishOptions : englishOptions}
               onChange={(e, input) => {
                 setSpanishValue(input);
               }}
               onInputChange={(e, input) => {
                 setSpanishValue(input);
               }}
+              autoSelect
               freeSolo
               disablePortal
               id="combo-box-demo"
@@ -123,7 +121,9 @@ export default function EditCardForm(props) {
                 <TextField
                   {...params}
                   label={
-                    englishInput ? "Spanish translation" : "English translation"
+                    props.englishInput
+                      ? "Spanish translation"
+                      : "English translation"
                   }
                 />
               )}
