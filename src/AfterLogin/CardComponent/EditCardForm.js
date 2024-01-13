@@ -53,13 +53,12 @@ export default function EditCardForm(props) {
       }
     } catch (error) {
       setOptions([]);
-      setSpanishValue("");
+      setTranslationValue("");
     }
   };
 
   const handleLanguageSwitch = () => {
     setEnglishToSpanish((prevEnglishInput) => !prevEnglishInput);
-    console.log(englishToSpanish);
   };
 
   const handlePlayAudio = async (word) => {
