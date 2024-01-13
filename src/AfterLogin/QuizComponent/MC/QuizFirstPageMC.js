@@ -21,7 +21,7 @@ export default function QuizFirstPageMC(props) {
       props.setDecks((prev) => [...prev, deck]);
     } else {
       props.setDecks((prev) => {
-        const deckID = Number(e.target.value);
+        const deckID = e.target.value;
         const index = prev.findIndex((deck) => deck.deckID === deckID);
         const reduced = prev.toSpliced(index, 1);
         return reduced;
