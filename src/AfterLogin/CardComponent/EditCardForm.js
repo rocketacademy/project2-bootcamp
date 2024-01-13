@@ -10,8 +10,6 @@ export default function EditCardForm(props) {
   const isDisable = props.editing !== card.cardID;
   const isEditDisable = props.editing && props.editing !== card.cardID;
   const [userInputValue, setUserInputValue] = useState(card.english);
-  // const [spanishOptions, setSpanishOptions] = useState([card.spanish]);
-  // const [englishOptions, setEnglishOptions] = useState([card.english]);
   const [options, setOptions] = useState([card.spanish]);
   const [translationValue, setTranslationValue] = useState(card.spanish);
   const [errorMessage, setErrorMessage] = useState("");
@@ -43,22 +41,18 @@ export default function EditCardForm(props) {
   };
 
   const handleTranslate = async () => {
-    if (englishToSpanish) {
-      try {
+    try {
+      if (englishToSpanish) {
         const translationToSpan = await translator.engToSpan(userInputValue);
         setOptions(translationToSpan);
         setTranslationValue(translationToSpan[0]);
-      } catch (error) {
-        setErrorMessage(error.message);
-      }
-    } else {
-      try {
+      } else {
         const translationToEng = await translator.spanToEng(userInputValue);
         setOptions(translationToEng);
         setTranslationValue(translationToEng[0]);
-      } catch (error) {
-        setErrorMessage(error.message);
       }
+    } catch (error) {
+      setErrorMessage(error.message);
     }
   };
 
@@ -82,7 +76,9 @@ export default function EditCardForm(props) {
         handleErrorMessage={() => setErrorMessage("")}
       />
       <div className="edit-buttons">
-        <Button onClick={handleLanguageSwitch}>Switch languages</Button>
+        <Button disabled={isDisable} onClick={handleLanguageSwitch}>
+          Switch languages
+        </Button>
         <Button disabled={isDisable} onClick={() => handleTranslate()}>
           Translate
         </Button>
