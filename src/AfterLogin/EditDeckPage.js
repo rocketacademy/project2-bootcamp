@@ -13,6 +13,7 @@ export default function EditDeckPage() {
   const [deck, setDecks] = useState({});
   const [cards, setCards] = useState([]);
   const [editing, setEditing] = useState(null);
+  const [englishInput, setEnglishInput] = useState(true);
   const [saveDone, setSaveDone] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [goHome, setGoHome] = useState(false);
@@ -122,6 +123,11 @@ export default function EditDeckPage() {
     });
   };
 
+  const handleLanguageSwitch = (card) => {
+    setEnglishInput((prevEnglishInput) => !prevEnglishInput);
+    console.log(englishInput);
+  };
+
   const cardsDisplay = cards.length
     ? cards.map((card) => {
         return (
@@ -132,6 +138,8 @@ export default function EditDeckPage() {
             editing={editing}
             setEditing={setEditing}
             handleConfirmEdit={handleConfirmEdit}
+            handleLanguageSwitch={handleLanguageSwitch}
+            englishInput={englishInput}
           />
         );
       })
