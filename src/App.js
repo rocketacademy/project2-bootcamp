@@ -32,13 +32,13 @@ const StyledContainer = styled("div")({
 });
 
 const StyledGridItem = styled(Grid)({
-  width: "30%",
+  width: "50%",
 });
 
 const StyledGridPills = styled("div")({
   width: "150px", // Define the width of your container
   height: "100px", // Define the height of your container
-  marginBottom: "30px",
+  marginBottom: "0px",
   display: "flex",
   flexDirection: "column",
   justifyContent: "flex-end",
@@ -57,47 +57,46 @@ const linkStyle = {
   fontSize: "30px",
 };
 
-// Commented out because we will remove this feature + it is confusing React from parsing the landmarks props to RenderMap.js
-// SelectTextFields MUI
-// const landmarks = [
-//   {
-//     value: "Historical Landmarks",
-//     label: "Historical Landmarks",
-//   },
-//   {
-//     value: "Nature Parks",
-//     label: "Nature Parks",
-//   },
-//   {
-//     value: "Political Landmarks",
-//     label: "Political Landmarks",
-//   },
-// ];
-
+//Landmark coordinates
 const historicalLandmarks = {
-  Merlion: { lat: 1.2868, lng: 103.8545 },
-  MarinaBaySands: { lat: 1.2836, lng: 103.8585 },
-  GardensByTheBay: { lat: 1.2816, lng: 103.8636 },
-  SentosaIsland: { lat: 1.2494, lng: 103.8303 },
-  UniversalStudios: { lat: 1.254, lng: 103.8238 },
-  OrchardRoad: { lat: 1.3048, lng: 103.8318 },
-  RafflesHotel: { lat: 1.2946, lng: 103.8534 },
-  Chinatown: { lat: 1.2839, lng: 103.8436 },
-  LittleIndia: { lat: 1.3064, lng: 103.8495 },
-  ClarkeQuay: { lat: 1.2905, lng: 103.8466 },
+  RafflesHotel: { lat: 1.2949, lng: 103.8543 },
+  OldHillStreetPoliceStation: { lat: 1.2908, lng: 103.8485 },
+  FormerFordFactory: { lat: 1.3396, lng: 103.7742 },
+  ChangiChapelAndMuseum: { lat: 1.3404, lng: 103.9822 },
+  KranjiWarMemorial: { lat: 1.4197, lng: 103.7618 },
+  ReflectionsAtBukitChandu: { lat: 1.28, lng: 103.802 },
+  FortCanningHill: { lat: 1.2929, lng: 103.8469 },
+  CivilianWarMemorial: { lat: 1.2934, lng: 103.8524 },
+  OldParliamentHouse: { lat: 1.2899, lng: 103.8507 },
+  TheFullertonBuilding: { lat: 1.2856, lng: 103.8535 },
+  VictoriaTheatreAndConcertHall: { lat: 1.2888, lng: 103.8514 },
+  CityHallAndOldSupremeCourtBuilding: { lat: 1.293, lng: 103.8537 },
+  BattleboxAtFortCanning: { lat: 1.2942, lng: 103.8463 },
+  AlkaffMansion: { lat: 1.2806, lng: 103.7982 },
+  TiongBahruAirRaidShelter: { lat: 1.2867, lng: 103.8334 },
+  LimBoSengMemorial: { lat: 1.2897, lng: 103.8525 },
+  LabradorBattery: { lat: 1.2667, lng: 103.8025 },
+  SingaporeConferenceHall: { lat: 1.2909, lng: 103.8527 },
+  NationalMuseumOfSingapore: { lat: 1.2966, lng: 103.8485 },
+  SungeiBulohWetlandReserve: { lat: 1.4467, lng: 103.7303 },
 };
 
 const natureParks = {
-  BukitTimahNatureReserve: { lat: 1.3547, lng: 103.7764 },
-  MacRitchieReservoir: { lat: 1.344, lng: 103.8206 },
-  SungeiBulohWetlandReserve: { lat: 1.4467, lng: 103.7306 },
-  LabradorNatureReserve: { lat: 1.2672, lng: 103.8021 },
-  PulauUbin: { lat: 1.412, lng: 103.9572 },
-  ConeyIslandPark: { lat: 1.3986, lng: 103.921 },
-  PasirRisPark: { lat: 1.3752, lng: 103.9544 },
-  EastCoastPark: { lat: 1.304, lng: 103.922 },
-  KentRidgePark: { lat: 1.2897, lng: 103.7847 },
-  FortCanningPark: { lat: 1.2921, lng: 103.8469 },
+  BukitTimahNatureReserve: { lat: 1.3543, lng: 103.7764 },
+  SingaporeBotanicGardens: { lat: 1.3138, lng: 103.8159 },
+  PulauUbin: { lat: 1.4043, lng: 103.9578 },
+  SungeiBulohWetlandReserve: { lat: 1.4467, lng: 103.7303 },
+  MacRitchieReservoirPark: { lat: 1.3425, lng: 103.8346 },
+  EastCoastPark: { lat: 1.3006, lng: 103.9125 },
+  LabradorNatureReserve: { lat: 1.2667, lng: 103.8025 },
+  FortCanningPark: { lat: 1.2942, lng: 103.8463 },
+  GardensByTheBay: { lat: 1.2816, lng: 103.8636 },
+  MountFaberPark: { lat: 1.2733, lng: 103.8185 },
+  PasirRisPark: { lat: 1.3721, lng: 103.9495 },
+  ChekJawaWetlands: { lat: 1.4099, lng: 103.9774 },
+  ConeyIslandPark: { lat: 1.4098, lng: 103.9226 },
+  SouthernRidges: { lat: 1.2806, lng: 103.8057 },
+  JurongLakeGardens: { lat: 1.3358, lng: 103.7263 },
 };
 
 const politicalLandmarks = {
@@ -111,8 +110,14 @@ const politicalLandmarks = {
   VictoriaTheatreConcertHall: { lat: 1.2888, lng: 103.8514 },
   AsianCivilisationsMuseum: { lat: 1.2875, lng: 103.8519 },
   NationalMuseumofSingapore: { lat: 1.2966, lng: 103.8485 },
+  ThePadang: { lat: 1.2867, lng: 103.8514 },
+  FortCanningHill: { lat: 1.2929, lng: 103.8469 },
+  TheFullertonBuilding: { lat: 1.2856, lng: 103.8535 },
+  SingaporeConferenceHall: { lat: 1.2909, lng: 103.8527 },
+  RafflesPlace: { lat: 1.283, lng: 103.851 },
 };
 
+//Main App Function
 const App = () => {
   const [userMessage, setUserMessage] = useState("");
   const [aiResponse, setAiResponse] = useState("");
@@ -123,10 +128,6 @@ const App = () => {
   const [user, setUser] = useState({});
 
   const [drawerRef, setDrawerRef] = useState(null);
-
-  useEffect(()=>{
-
-  })
 
   // Handling the drawer opening
   useEffect(() => {
@@ -146,7 +147,6 @@ const App = () => {
       }
     });
   }, []);
-
 
   // onAuthStateChanged function to be passed down into the App child component
   const handleAuthStateChanged = () => {
@@ -239,119 +239,83 @@ const App = () => {
                 Log out
               </Button>
             </StyledGridItem>
-            <StyledGridPills item>
-              <Button
-                variant="outlined"
-                onClick={() => {
-                  setSelectedLandmarks(natureParks);
-                  <RenderMap
-                    sendMessage={sendMessage}
-                    landmarks={natureParks}
-                  />;
+            <StyledGridItem item sx={{ margin: "20px" }}>
+              <Box
+                sx={{
+                  "& .MuiTextField-root": { m: 1, width: "25ch" },
                 }}
-                sx={{ width: "150px", height: "50px" }}
+              ></Box>
+            </StyledGridItem>
+            <StyledGridItem
+              item
+              style={{
+                width: "100%",
+                height: "100%",
+                position: "relative", // Make this a positioning context
+                marginTop: "0px",
+              }}
+            >
+              <RenderMap
+                sendMessage={sendMessage}
+                landmarks={selectedLandmarks}
+              />
+              <StyledGridPills
+                item
+                style={{ position: "absolute", top: -40, left: 560 }}
               >
-                Nature Parks
-              </Button>
-            </StyledGridPills>
-            <StyledGridPills item>
-              <Button
-                variant="outlined"
-                onClick={() => {
-                  setSelectedLandmarks(politicalLandmarks);
-                  <RenderMap
-                    sendMessage={sendMessage}
-                    landmarks={politicalLandmarks}
-                  />;
-                }}
-                sx={{ width: "150px", height: "50px" }}
+                <Button
+                  variant="contained"
+                  onClick={() => {
+                    setSelectedLandmarks(natureParks);
+                    <RenderMap
+                      sendMessage={sendMessage}
+                      landmarks={natureParks}
+                    />;
+                  }}
+                  sx={{ width: "150px", height: "50px", zIndex: "100" }}
+                >
+                  Nature Parks
+                </Button>
+              </StyledGridPills>
+              <StyledGridPills
+                item
+                style={{ position: "absolute", top: -40, left: 380 }}
               >
-                Political Landmarks
-              </Button>
-            </StyledGridPills>
-            <StyledGridPills item>
-              <Button
-                variant="outlined"
-                onClick={() => {
-                  setSelectedLandmarks(historicalLandmarks);
-                  <RenderMap
-                    sendMessage={sendMessage}
-                    landmarks={historicalLandmarks}
-                  />;
-                }}
-                sx={{ width: "150px", height: "50px" }}
+                <Button
+                  variant="contained"
+                  onClick={() => {
+                    setSelectedLandmarks(politicalLandmarks);
+                    <RenderMap
+                      sendMessage={sendMessage}
+                      landmarks={politicalLandmarks}
+                    />;
+                  }}
+                  sx={{ width: "150px", height: "50px", zIndex: "100" }}
+                >
+                  Political Landmarks
+                </Button>
+              </StyledGridPills>
+              <StyledGridPills
+                item
+                style={{ position: "absolute", top: -40, left: 200 }}
               >
-                Historical Landmarks
-              </Button>
-            </StyledGridPills>
+                <Button
+                  variant="contained"
+                  onClick={() => {
+                    setSelectedLandmarks(historicalLandmarks);
+                  }}
+                  sx={{ width: "150px", height: "50px", zIndex: "100" }}
+                >
+                  Historical Landmarks
+                </Button>
+              </StyledGridPills>
+            </StyledGridItem>
           </StyledContainer>
         )}
       </Box>
 
-      {isLoggedIn && (
-        <StyledContainer>
-          <StyledGridItem item sx={{ margin: "20px" }}>
-            {/* <TextField
-              type="text"
-              value={userMessage}
-              onChange={(e) => setUserMessage(e.target.value)}
-            />
-            <Button
-              variant="contained"
-              onClick={sendMessage}
-              sx={{ mt: "20px", mb: "20px" }}
-            >
-              Send Message
-            </Button>
-
-            <Box className="ai-response">
-              <Typography
-                variant="h4"
-                sx={{
-                  fontFamily: "Comic Sans MS",
-                  color: "primary.main",
-                }}
-              >
-                AI Response:
-              </Typography>
-              <p>{aiResponse}</p>
-            </Box>
-            <Button
-              variant="contained"
-              onClick={clearAIResponse}
-              sx={{ mt: "20px", mb: "20px" }}
-            >
-              Clear
-            </Button> */}
-            <Box
-              sx={{
-                "& .MuiTextField-root": { m: 1, width: "25ch" },
-              }}
-            ></Box>
-          </StyledGridItem>
-          <StyledGridItem
-            item
-            style={{
-              width: "100%",
-              height: "100%",
-              position: "relative",
-              marginTop: "20px",
-            }}
-          >
-            <RenderMap
-              sendMessage={sendMessage}
-              landmarks={selectedLandmarks}
-            />
-          </StyledGridItem>
-        </StyledContainer>
-      )}
-      {/* 
-      <Box style={{ display: isLoggedIn ? "none" : "block" }}>
-        {!isLoggedIn && <AuthFormTesting />}
-      </Box> */}
-
       {!isLoggedIn && (
-        <Box className='overlay'>
+        <Box className="overlay">
           <SignIn />
         </Box>
       )}

@@ -55,23 +55,6 @@ const linkStyle = {
   fontSize: "30px",
 };
 
-// Commented out because we will remove this feature + it is confusing React from parsing the landmarks props to RenderMap.js
-// SelectTextFields MUI
-// const landmarks = [
-//   {
-//     value: "Historical Landmarks",
-//     label: "Historical Landmarks",
-//   },
-//   {
-//     value: "Nature Parks",
-//     label: "Nature Parks",
-//   },
-//   {
-//     value: "Political Landmarks",
-//     label: "Political Landmarks",
-//   },
-// ];
-
 const historicalLandmarks = {
   Merlion: { lat: 1.2868, lng: 103.8545 },
   MarinaBaySands: { lat: 1.2836, lng: 103.8585 },
@@ -188,7 +171,7 @@ const AppBackground = () => {
   };
 
   return (
-    <Box className='App'>
+    <Box className="App">
       <Box>
         {isLoggedIn ? (
           <Box>
@@ -210,101 +193,89 @@ const AppBackground = () => {
               handleLogout={handleLogout}
             />
           </Box>
-        ) : (
-          null
-        )}
+        ) : null}
 
-       
-          <StyledContainer>
-            <StyledGridItem item>
-              <h2>Welcome back {user.email}</h2>
-              <AppLinks />
+        <StyledContainer>
+          <StyledGridItem item>
+            <h2>Welcome back {user.email}</h2>
+            <AppLinks />
 
-              <Button
-                variant="outlined"
-                onClick={(e) => {
-                  setIsLoggedIn(false);
-                  signOut(auth);
-                  setUser({});
-                }}
-                sx={{ marginLeft: "20px" }}
-              >
-                Log out
-              </Button>
-            </StyledGridItem>
-            <StyledGridPills item>
-              <Button
-                variant="outlined"
-                onClick={() => {
-                  // const message = "Singapore Flyer in 1 sentence";
-                  setSelectedLandmarks(natureParks);
-                  <RenderMap
-                    sendMessage={sendMessage}
-                    landmarks={natureParks}
-                  />;
-                  // sendMessage(message);
-                }}
-                sx={{ width: "150px", height: "50px" }}
-              >
-                Nature Parks
-              </Button>
-            </StyledGridPills>
-            <StyledGridPills item>
-              <Button
-                variant="outlined"
-                onClick={() => {
-                  // const message = "Sentosa Island in 1 sentence";
-                  setSelectedLandmarks(politicalLandmarks);
-                  <RenderMap
-                    sendMessage={sendMessage}
-                    landmarks={politicalLandmarks}
-                  />;
-                  // sendMessage(message);
-                }}
-                sx={{ width: "150px", height: "50px" }}
-              >
-                Political Landmarks
-              </Button>
-            </StyledGridPills>
-            <StyledGridPills item>
-              <Button
-                variant="outlined"
-                onClick={() => {
-                  // const message = "Chinatown Singapore in 1 sentence";
-                  setSelectedLandmarks(historicalLandmarks);
-                  <RenderMap
-                    sendMessage={sendMessage}
-                    landmarks={historicalLandmarks}
-                  />;
-                  // sendMessage(message);
-                }}
-                sx={{ width: "150px", height: "50px" }}
-              >
-                Historical Landmarks
-              </Button>
-            </StyledGridPills>
-          </StyledContainer>
-        
+            <Button
+              variant="outlined"
+              onClick={(e) => {
+                setIsLoggedIn(false);
+                signOut(auth);
+                setUser({});
+              }}
+              sx={{ marginLeft: "20px" }}
+            >
+              Log out
+            </Button>
+          </StyledGridItem>
+          <StyledGridPills item>
+            <Button
+              variant="outlined"
+              onClick={() => {
+                // const message = "Singapore Flyer in 1 sentence";
+                setSelectedLandmarks(natureParks);
+                <RenderMap sendMessage={sendMessage} landmarks={natureParks} />;
+                // sendMessage(message);
+              }}
+              sx={{ width: "150px", height: "50px" }}
+            >
+              Nature Parks
+            </Button>
+          </StyledGridPills>
+          <StyledGridPills item>
+            <Button
+              variant="outlined"
+              onClick={() => {
+                // const message = "Sentosa Island in 1 sentence";
+                setSelectedLandmarks(politicalLandmarks);
+                <RenderMap
+                  sendMessage={sendMessage}
+                  landmarks={politicalLandmarks}
+                />;
+                // sendMessage(message);
+              }}
+              sx={{ width: "150px", height: "50px" }}
+            >
+              Political Landmarks
+            </Button>
+          </StyledGridPills>
+          <StyledGridPills item>
+            <Button
+              variant="outlined"
+              onClick={() => {
+                // const message = "Chinatown Singapore in 1 sentence";
+                setSelectedLandmarks(historicalLandmarks);
+                <RenderMap
+                  sendMessage={sendMessage}
+                  landmarks={historicalLandmarks}
+                />;
+                // sendMessage(message);
+              }}
+              sx={{ width: "150px", height: "50px" }}
+            >
+              Historical Landmarks
+            </Button>
+          </StyledGridPills>
+        </StyledContainer>
       </Box>
 
-      
-        <StyledContainer>
-          <StyledGridItem item sx={{ margin: "20px" }}>
-          </StyledGridItem>
-          <StyledGridItem
-            item
-            style={{
-              width: "100%",
-              height: "100%",
-              position: "relative",
-              marginTop: "20px",
-            }}
-          >
-            <RenderMap
-              sendMessage={sendMessage}
-              landmarks={selectedLandmarks}
-            />
-            {/*<GoogleMap
+      <StyledContainer>
+        <StyledGridItem item sx={{ margin: "20px" }}></StyledGridItem>
+        <StyledGridItem
+          item
+          style={{
+            width: "100%",
+            height: "100%",
+            position: "relative",
+            marginTop: "20px",
+          }}
+        >
+          <RenderMap sendMessage={sendMessage} landmarks={selectedLandmarks} />
+          {/*<GoogleMap
                 mapContainerStyle={mapContainerStyle}
                 mapId="6da2495ffc989dca"
                 zoom={12}
@@ -324,9 +295,9 @@ const AppBackground = () => {
                   }}
                 />
               </GoogleMap>*/}
-          </StyledGridItem>
-        </StyledContainer>
-      
+        </StyledGridItem>
+      </StyledContainer>
+
       {/* 
       <Box style={{ display: isLoggedIn ? "none" : "block" }}>
         {!isLoggedIn && <AuthFormTesting />}
