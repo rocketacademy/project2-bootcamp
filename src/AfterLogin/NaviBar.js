@@ -3,7 +3,7 @@ import PostAddIcon from "@mui/icons-material/PostAdd";
 import { Link } from "react-router-dom";
 import QuizIcon from "@mui/icons-material/Quiz";
 import { signOut, updateProfile } from "firebase/auth";
-import { auth, database, storage } from "../firebase";
+import { auth } from "../firebase";
 import {
   Avatar,
   Button,
@@ -13,10 +13,10 @@ import {
   Menu,
   MenuItem,
 } from "@mui/material";
-import { useEffect, useState } from "react";
-import { ref as DBref, get, set } from "firebase/database";
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { useEffect, useMemo, useState } from "react";
 import ErrorPage from "../ErrorPage";
+import DBHandler from "../Controller/DBHandler";
+import StorageHandler from "../Controller/StorageHandler";
 
 export default function NaviBar(props) {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -25,25 +25,27 @@ export default function NaviBar(props) {
   const [name, setName] = useState("");
   const [file, setFile] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const dbHandler = useMemo(
+    () => new DBHandler(props.user.uid, setErrorMessage),
+    [props.user.uid, setErrorMessage]
+  );
+  const stroageHandler = useMemo(
+    () => new StorageHandler(setErrorMessage),
+    [setErrorMessage]
+  );
 
   useEffect(() => {
-    const takePic = async () => {
-      const userPicRef = DBref(
-        database,
-        `userInfo/${props.user.uid}/profilePic`
-      );
+    const getProfilePics = async () => {
       try {
-        const urlDB = await get(userPicRef);
-        setProfilePicUrl(urlDB.val());
+        const userInfo = await dbHandler.getUserInfo(false);
+        const userPicURL = userInfo.profilePic;
+        setProfilePicUrl(userPicURL);
       } catch (error) {
         setErrorMessage(error.message);
       }
     };
-
-    if (props.user) {
-      takePic();
-    }
-  }, [props.user]);
+    getProfilePics();
+  }, [dbHandler]);
 
   const handleSighOut = () => {
     signOut(auth);
@@ -67,12 +69,9 @@ export default function NaviBar(props) {
   };
 
   const handleUploadPhoto = async () => {
-    const photoRef = ref(storage, `profilePics/${props.user.uid}.jpg`);
     try {
-      await uploadBytes(photoRef, file);
-      const url = await getDownloadURL(photoRef);
-      const userRef = DBref(database, `userInfo/${props.user.uid}/profilePic`);
-      await set(userRef, url);
+      const url = await stroageHandler.postPhoto(props.user.uid, file);
+      await dbHandler.putUserPicURL(url);
       setProfilePicUrl(url);
       setFile("");
       setOpenDialog("");

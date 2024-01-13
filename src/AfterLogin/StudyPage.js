@@ -1,26 +1,40 @@
 import { useParams, useNavigate, useOutletContext } from "react-router-dom";
-import { useState, useEffect } from "react";
-import { ref, get } from "firebase/database";
-import { storage, database } from "../firebase";
-import { ref as storageRef, getDownloadURL } from "firebase/storage";
-import { Card, Button } from "@mui/material";
+import { useState, useEffect, useMemo } from "react";
 import LinearProgress from "@mui/material/LinearProgress";
-import { Backdrop, CircularProgress } from "@mui/material";
+import {
+  Card,
+  Button,
+  Switch,
+  Backdrop,
+  CircularProgress,
+} from "@mui/material";
+import VolumeUpIcon from "@mui/icons-material/VolumeUp";
+import FormGroup from "@mui/material/FormGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
 import StudyDone from "./StudyComponent/StudyDone";
-import "./Study.css";
 import ErrorPage from "../ErrorPage";
+import DBHandler from "../Controller/DBHandler";
+import "./Study.css";
 
 export default function StudyPage() {
   const [user] = useOutletContext();
-  const [decks, setDecks] = useState([]);
+  const [deck, setDeck] = useState([]);
   const [cards, setCards] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [length, setLength] = useState(0);
   const [displayEnglish, setDisplayEnglish] = useState(true);
   const [studyDone, setStudyDone] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [goHome, setGoHome] = useState(false);
-  const navigate = useNavigate();
+  const [autoPlay, setAutoPlay] = useState(false);
+  const [intervalID, setIntervalID] = useState(null);
   const { deckID } = useParams();
+  const dbHandler = useMemo(
+    () => new DBHandler(user.uid, setErrorMessage, setGoHome),
+    [user.uid, setErrorMessage, setGoHome]
+  );
+
+  const navigate = useNavigate();
 
   const handleErrorMessage = () => {
     setErrorMessage("");
@@ -30,78 +44,28 @@ export default function StudyPage() {
   };
 
   useEffect(() => {
-    const checkUserDeckID = async () => {
+    const fetchData = async () => {
       try {
-        const userDeckIDsSS = await get(
-          ref(database, `userInfo/${user.uid}/decks`)
+        await dbHandler.checkUserDeckID(deckID, true);
+        const { deckInfo, cardsInfo } = await dbHandler.getDeckAndCards(
+          deckID,
+          true
         );
-        const userDeckIDs = userDeckIDsSS.val();
-        if (!userDeckIDs.length || !userDeckIDs.includes(Number(deckID))) {
-          throw new Error("You don't have this deck!");
-        }
-      } catch (error) {
-        setGoHome(true);
-        setErrorMessage(error.message);
-      }
+        const shuffledCards = handleShuffle(cardsInfo);
+        setDeck(deckInfo);
+        setCards(shuffledCards);
+        setLength(shuffledCards.length);
+      } catch (error) {}
     };
-    checkUserDeckID();
-    const takeDecksInfo = async () => {
-      try {
-        const decksRef = ref(database, `decks/deck${deckID}`);
-        return await get(decksRef);
-      } catch (error) {
-        setGoHome(true);
-        setErrorMessage(error.message);
-      }
-    };
-
-    const takeCardsInfo = async (cardNumber) => {
-      try {
-        const cardsRef = ref(database, `cards/card${cardNumber}`);
-        return await get(cardsRef);
-      } catch (error) {
-        setGoHome(true);
-        setErrorMessage(error.message);
-      }
-    };
-
-    const fetchDeckAndCards = async () => {
-      try {
-        const deckInfo = await takeDecksInfo();
-        const deckInfoData = deckInfo.val();
-
-        if (deckInfoData) {
-          const cardNumber = Object.values(deckInfoData.deckCards);
-          const cardPromises = cardNumber.map((cardID) =>
-            takeCardsInfo(cardID)
-          );
-          const cardInfo = await Promise.all(cardPromises);
-          const cardInfoData = cardInfo.map((number) => number.val());
-
-          setDecks(deckInfoData);
-          setCards(cardInfoData);
-        }
-      } catch (error) {
-        setGoHome(true);
-        setErrorMessage(error.message);
-      }
-    };
-    fetchDeckAndCards();
-  }, [deckID, user.uid]);
+    fetchData();
+  }, [deckID, dbHandler]);
 
   const handleNextCard = () => {
-    if (currentIndex < Object.keys(decks.deckCards).length - 1) {
+    if (currentIndex < length - 1) {
       setCurrentIndex(currentIndex + 1);
       setDisplayEnglish(true);
     } else {
       setStudyDone(true);
-    }
-  };
-
-  const handlePrevCard = () => {
-    if (currentIndex > 0) {
-      setCurrentIndex(currentIndex - 1);
-      setDisplayEnglish(true);
     }
   };
 
@@ -114,16 +78,28 @@ export default function StudyPage() {
     navigate(`/`);
   };
 
-  const handleShuffle = () => {
-    setCards((prev) => {
-      for (let i = 0; i < prev.length; i++) {
-        let temp = cards[i];
-        let randomIndex = Math.floor(Math.random() * prev.length);
-        cards[i] = cards[randomIndex];
-        cards[randomIndex] = temp;
-      }
-      return [...prev];
+  const handleRepeat = () => {
+    setCards((prevCards) => {
+      const repeatedCards = { ...prevCards[currentIndex] };
+      return [...prevCards, repeatedCards];
     });
+    setLength((prevLength) => prevLength + 1);
+    if (currentIndex <= length) {
+      setCurrentIndex(currentIndex + 1);
+      setDisplayEnglish(true);
+    } else {
+      setStudyDone(true);
+    }
+  };
+
+  const handleShuffle = (cards) => {
+    for (let i = 0; i < cards.length; i++) {
+      let temp = cards[i];
+      let randomIndex = Math.floor(Math.random() * cards.length);
+      cards[i] = cards[randomIndex];
+      cards[randomIndex] = temp;
+    }
+    return cards;
   };
 
   const playAudio = async () => {
@@ -137,9 +113,94 @@ export default function StudyPage() {
     }
   };
 
-  const currentCard = decks.deckCards && cards[currentIndex];
+  const handleChange = (event) => {
+    setAutoPlay(event.target.checked);
+    if (event.target.checked) {
+      const id = setInterval(() => {
+        setDisplayEnglish(false);
+      }, 3000);
+      setIntervalID(id);
+    } else {
+      clearInterval(intervalID);
+      setIntervalID(null);
+    }
+  };
 
-  const totalCards = decks.deckCards ? Object.keys(decks.deckCards).length : 0;
+  const currentCard = deck.deckCards && cards[currentIndex];
+
+  const totalCards = deck.deckCards ? length : 0;
+
+  const cardEnglish = (
+    <>
+      {currentCard && (
+        <>
+          <Card className="english">
+            <div className="study-card-header">
+              <p>English</p>
+            </div>
+            <div className="study-word" onClick={handleClick}>
+              <h1>{currentCard.english}</h1>
+            </div>
+            <p className="hint">Hint: Tap to flip to the other side</p>
+          </Card>
+          <div className="prev-next">
+            <Button
+              fullWidth
+              className="next-button"
+              size="large"
+              variant="contained"
+              onClick={handleClick}
+            >
+              Show Answer
+            </Button>
+          </div>
+        </>
+      )}
+    </>
+  );
+
+  const cardSpanish = (
+    <>
+      {currentCard && (
+        <>
+          <Card className="spanish">
+            <div className="study-card-header">
+              <p>Spanish</p>
+              <VolumeUpIcon
+                onClick={playAudio}
+                fontSize="large"
+                color="primary"
+              />
+            </div>
+            <div className="study-word" onClick={handleClick}>
+              <h1>{currentCard.spanish}</h1>
+            </div>
+            <p className="hint">Hint: Tap to flip to the other side</p>
+          </Card>
+          <div className="prev-next">
+            <Button
+              fullWidth
+              className="repeat-button"
+              size="large"
+              variant="contained"
+              onClick={handleRepeat}
+            >
+              👎Again
+            </Button>
+            <Button
+              className="next-button"
+              fullWidth
+              size="large"
+              variant="contained"
+              onClick={handleNextCard}
+            >
+              {currentIndex === totalCards - 1 ? "Done" : "👍Good"}
+            </Button>
+          </div>
+        </>
+      )}
+    </>
+  );
 
   const progressBar = ({ current, total }) => {
     const progress = (current / total) * 100;
@@ -152,69 +213,41 @@ export default function StudyPage() {
       />
     );
   };
-
-  const deckName = decks.deckName;
-
   return (
     <div>
       <ErrorPage
         errorMessage={errorMessage}
         handleErrorMessage={handleErrorMessage}
       />
-      <Backdrop open={!decks.deckCards}>
+      <Backdrop open={!deck.deckCards}>
         <h3>Generating deck</h3>
         <h1>
           <CircularProgress color="inherit" />
         </h1>
       </Backdrop>
-      {decks.deckCards && Object.keys(decks.deckCards).length > 0 && (
+      {deck.deckCards && Object.keys(deck.deckCards).length > 0 && (
         <>
           <div className="study-header">
-            <p>{deckName}</p>
-            <div className="shuffle-quiz">
-              <Button onClick={handleShuffle}>Shuffle</Button>
-            </div>
+            <h2>{deck.deckName}</h2>
+            <FormGroup>
+              <FormControlLabel
+                control={<Switch checked={autoPlay} onChange={handleChange} />}
+                label="Auto-Play"
+              />
+            </FormGroup>
           </div>
+
           <p className="current-index">
             {currentIndex + 1}/{totalCards}
           </p>
           {progressBar({ current: currentIndex + 1, total: totalCards })}
-          <Card className="study-card">
-            {displayEnglish ? (
-              <>
-                <div className="study-card-header">
-                  <p>English</p>
-                </div>
-                <div className="study-word" onClick={handleClick}>
-                  <h1>{currentCard.english}</h1>
-                </div>
-                <p className="hint">Hint: Tap to flip to the other side</p>
-              </>
-            ) : (
-              <>
-                <div className="study-card-header">
-                  <p>Spanish</p>
-                  <Button onClick={playAudio}>Audio</Button>
-                </div>
-                <div className="study-word" onClick={handleClick}>
-                  <h1>{currentCard.spanish}</h1>
-                </div>
-                <p className="hint">Hint: Tap to flip to the other side</p>
-              </>
-            )}
-          </Card>
-          <div className="prev-next">
-            <Button onClick={handlePrevCard} disabled={currentIndex <= 0}>
-              Prev
-            </Button>
-            <Button onClick={handleNextCard}>
-              {currentIndex === totalCards - 1 ? "Done" : "Next"}
-            </Button>
+
+          <div className="study-card">
+            {displayEnglish ? cardEnglish : cardSpanish}
           </div>
         </>
       )}
 
-      {/* showing dialog after reviewing done */}
       {studyDone && (
         <StudyDone open={studyDone} onClose={handleCloseStudyDone} />
       )}

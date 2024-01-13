@@ -1,12 +1,11 @@
 import { Backdrop, Button, CircularProgress } from "@mui/material";
-import { useEffect, useState } from "react";
-import { useOutletContext, Link } from "react-router-dom";
-import { database } from "../firebase";
-import { get, ref } from "firebase/database";
+import { useEffect, useMemo, useState } from "react";
+import { useOutletContext, Link, useNavigate } from "react-router-dom";
 import Divider from "@mui/material/Divider";
 import "./ReportPage.css";
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
 import ErrorPage from "../ErrorPage";
+import DBHandler from "../Controller/DBHandler";
 //Take the user data from App.js state
 
 export default function ReportPage() {
@@ -14,43 +13,40 @@ export default function ReportPage() {
   const [userInfo, setUserInfo] = useState(null);
   const [userWords, setUserWords] = useState(0);
   const [errorMessage, setErrorMessage] = useState("");
+  const [goHome, setGoHome] = useState(false);
+  const navi = useNavigate();
+  const dbHandler = useMemo(
+    () => new DBHandler(user.uid, setErrorMessage, setGoHome),
+    [user.uid, setErrorMessage, setGoHome]
+  );
+
+  const handleErrorMessage = () => {
+    setErrorMessage("");
+    if (goHome) {
+      navi("/");
+    }
+  };
 
   useEffect(() => {
     const getUserAndDeckInfo = async () => {
-      const userInfoRef = ref(database, `userInfo/${user.uid}`);
       try {
-        const newUserInfo = await get(userInfoRef);
-        setUserInfo(newUserInfo.val());
-        const decks = newUserInfo.val().decks;
-
-        //get promise for deck
-        const decksPromise = decks
-          ? decks.map((deck) => {
-              const getDeckInfo = async () => {
-                const deckRef = ref(database, `decks/deck${deck}`);
-                const deckInfo = await get(deckRef);
-                return deckInfo.val().deckCards;
-              };
-              return getDeckInfo();
-            })
-          : [];
-
-        //get all cards number from each deck
-        const promises = Promise.all(decksPromise);
-        const cardIDsInDecks = await promises;
+        const { userInfo, userDecks } = await dbHandler.getUserAndDecksInfo(
+          true
+        );
         const words = new Set();
-        for (const deck of cardIDsInDecks) {
-          for (const cardID of deck) {
+        for (const deck of userDecks) {
+          for (const cardID of deck.deckCards) {
             words.add(cardID);
           }
         }
+        setUserInfo(userInfo);
         setUserWords(words.size);
       } catch (error) {
         setErrorMessage(error.message);
       }
     };
     getUserAndDeckInfo();
-  }, [user.uid]);
+  }, [dbHandler]);
 
   //Data of each average score after each quiz
   let accumulateScore = 0;
@@ -131,7 +127,7 @@ export default function ReportPage() {
     <div>
       <ErrorPage
         errorMessage={errorMessage}
-        handleErrorMessage={() => setErrorMessage("")}
+        handleErrorMessage={handleErrorMessage}
       />
       {display}
     </div>

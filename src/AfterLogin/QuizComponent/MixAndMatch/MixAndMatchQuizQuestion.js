@@ -2,16 +2,19 @@ import { Button, Card } from "@mui/material";
 import MixAndMatchQuizHeader from "./MixAndMatchQuizHeader";
 import AnswerDrag from "./AnswerDrag";
 import AnswerDrop from "./AnswerDrop";
-import { useState } from "react";
-import { database } from "../../../firebase";
-import { get, ref, set } from "@firebase/database";
+import { useMemo, useState } from "react";
 import { useNavigate } from "react-router";
 import ErrorPage from "../../../ErrorPage";
+import DBHandler from "../../../Controller/DBHandler";
 
 export default function MixAndMatchQuizQuestion(props) {
   const [answer, setAnswer] = useState(new Array(10).fill(""));
   const [errorMessage, setErrorMessage] = useState("");
   const navi = useNavigate();
+  const dbHandler = useMemo(
+    () => new DBHandler(props.user.uid, setErrorMessage),
+    [props.user.uid, setErrorMessage]
+  );
 
   const handleErrorMessage = () => {
     setErrorMessage("");
@@ -24,10 +27,6 @@ export default function MixAndMatchQuizQuestion(props) {
   }
 
   const handleConfirm = async () => {
-    const userQuizReportRef = ref(
-      database,
-      `userInfo/${props.user.uid}/quizReport`
-    );
     //comparing props.question with answer to check.
     let score = 0;
     const correctAnswer = props.questions.map((card, i) => {
@@ -35,23 +34,12 @@ export default function MixAndMatchQuizQuestion(props) {
       return { english: card.english, spanish: card.spanish };
     });
     try {
-      const userQuizReport = await get(userQuizReportRef);
-      const quizNo =
-        userQuizReport.val() === null
-          ? 1
-          : Object.values(userQuizReport.val()).length + 1;
-      const newQuizReportRef = ref(
-        database,
-        `userInfo/${props.user.uid}/quizReport/quiz${quizNo}`
+      const quizID = await dbHandler.putUserQuizReport(
+        score,
+        correctAnswer,
+        answer
       );
-      await set(newQuizReportRef, {
-        quizID: quizNo,
-        score: score,
-        choice: answer,
-        answer: correctAnswer,
-        date: new Date().toLocaleDateString(),
-      });
-      navi(`/quizList/${quizNo}`);
+      navi(`/quizList/${quizID}`);
     } catch (error) {
       setErrorMessage(error.message);
     }
