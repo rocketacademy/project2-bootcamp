@@ -9,6 +9,12 @@ const QuizData = ({ gid, courseName }) => {
 
   const spreadsheetId = "16HTIiiOq82Tm1tLHRQcr_8YJnO81QxZOOBOfR4hU3zc"; // Replace with your Sheet ID
 
+  const downloadSheet = () => {
+    const publicSheetUrl = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/export?format=csv&gid=${gid}`;
+    console.log(publicSheetUrl);
+    window.open(publicSheetUrl, "_blank");
+  };
+
   const fetchData = async () => {
     setIsLoading(true);
     const publicSheetUrl = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/export?format=csv&gid=${gid}`;
@@ -41,16 +47,22 @@ const QuizData = ({ gid, courseName }) => {
   return (
     <div className="mt-8 pb-8 grid grid-cols-1 justify-items-center sm:grid-cols-6">
       {isLoading ? (
-        <span className="loading loading-dots loading-lg  sm:col-span-6"></span>
+        <span className="loading loading-dots loading-lg sm:col-span-6"></span>
       ) : (
         responses.length > 0 && (
           <>
             <h1 className="text-center sm:col-span-6">{courseName}</h1>
             <button
-              className="mb-6 btn btn-ghost sm:col-start-3 col-span-2 "
+              className="mb-6 btn btn-ghost sm:col-start-3 sm:col-span-2"
               onClick={fetchData}
             >
               REFRESH
+            </button>
+            <button
+              className="mb-6 btn btn-ghost sm:col-start-6 sm:col-span-1"
+              onClick={downloadSheet}
+            >
+              DOWNLOAD
             </button>
             <QuizTable responses={responses} />
           </>
