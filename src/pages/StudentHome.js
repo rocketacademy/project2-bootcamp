@@ -16,14 +16,14 @@ const AttemptData = ({ userEmail }) => {
         <span className="loading loading-dots loading-lg col-span-2 sm:col-span-6"></span>
       ) : (
         <>
-          <div className="stats shadow col-span-1 sm:col-span-3">
+          <div className="stats shadow col-span-1 sm:col-start-2 sm:col-span-2">
             <div className="stat">
               <div className="stat-title">Courses Completed</div>
               <div className="stat-value">{attemptCount}</div>
               <div className="stat-desc">Keep it up!</div>
             </div>
           </div>
-          <div className="stats shadow col-span-1 sm:col-span-3">
+          <div className="stats shadow col-span-1 sm:col-span-2">
             <div className="stat">
               <div className="stat-title">Incomplete Courses</div>
               <div className="stat-value">{notAttemptCount}</div>
