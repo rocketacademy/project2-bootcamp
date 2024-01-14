@@ -21,14 +21,6 @@ export default function RegisterPage() {
   const [errorMessage, setErrorMessage] = useState("");
   const navi = useNavigate();
 
-  useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        navi("/");
-      }
-    });
-  });
-
   const register = async () => {
     try {
       await createUserWithEmailAndPassword(auth, email, password, name);

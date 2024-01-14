@@ -19,14 +19,6 @@ export default function SignInPage() {
   const [errorMessage, setErrorMessage] = useState("");
   const navi = useNavigate();
 
-  useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        navi("/");
-      }
-    });
-  });
-
   const logIn = async () => {
     await signInWithEmailAndPassword(auth, email, password)
       .then(() => {
