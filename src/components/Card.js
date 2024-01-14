@@ -49,7 +49,7 @@ export const CourseCards = ({ courseMap }) => {
   return Array.from(courseMap.entries()).map(([courseID, courseData]) => (
     <div
       key={courseID}
-      className="card max-w-full bg-base-100 shadow-xl sm:col-start-3 col-span-3"
+      className="card max-w-full mb-8 bg-base-100 shadow-xl sm:col-start-2 sm:col-span-5"
     >
       <div className="card-body">
         <div className="card-actions justify-end">

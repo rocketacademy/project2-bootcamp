@@ -1,4 +1,3 @@
-import { CardWithoutActions } from "../components/Card";
 import { useAttemptData } from "../components/FetchCourses";
 import { CourseCards } from "../components/Card";
 
@@ -31,21 +30,21 @@ const AttemptData = ({ userEmail }) => {
               <div className="stat-desc">Hello?</div>
             </div>
           </div>
-          <div className="hidden sm:block w-full col-span-2 sm:col-span-3">
+          {/* <div className="hidden sm:block w-full col-span-2 sm:col-span-3">
             <h3>Completed</h3>
             <div className="mb-8">
               <CourseCards courseMap={attemptedCourseMap} />
             </div>
-            {/* {attemptedCourses
+            {attemptedCourses
               .filter((course) => course.hasAttempted)
               .map((course) => (
                 <div key={course.courseTitle} className="mb-8">
                   <CardWithoutActions cardContent={course.courseTitle} />
                 </div>
-              ))} */}
-          </div>
+              ))}
+          </div> */}
 
-          <div className="w-full col-span-2 sm:col-span-3">
+          <div className="w-full col-span-2 sm:col-start-2 sm:col-span-4">
             <h3>Not Attempted</h3>
             <div className="mb-8">
               <CourseCards courseMap={notAttemptedCourseMap} />
