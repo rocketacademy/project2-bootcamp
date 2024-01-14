@@ -156,7 +156,7 @@ export default function StudyPage() {
           <div className="study-container-button">
             <Button
               fullWidth
-              className="next-button"
+              className="study-show-answer-button"
               size="large"
               variant="contained"
               onClick={handleClick}
