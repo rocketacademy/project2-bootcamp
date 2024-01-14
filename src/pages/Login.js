@@ -1,6 +1,13 @@
 import React, { useState } from "react";
 import { auth, db } from "../firebase";
-import { ref, query, get, orderByChild } from "firebase/database";
+import {
+  ref,
+  query,
+  get,
+  orderByChild,
+  limitToFirst,
+  equalTo,
+} from "firebase/database";
 
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
@@ -37,7 +44,9 @@ const Signup = () => {
 
     const queryRef = query(
       studentRef,
-      orderByChild("email").equalTo(email).limitToFirst(1)
+      orderByChild("email"),
+      equalTo(email),
+      limitToFirst(1)
     );
 
     get(queryRef)
