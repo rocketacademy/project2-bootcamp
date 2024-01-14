@@ -15,7 +15,7 @@
 @media screen and (min-width: 601px) {
   .study-card {
     width: 70vw;
-    height: 50vh;
+    height: 55vh;
   }
   .homepage-layout {
     display: grid;
@@ -27,6 +27,11 @@
 }
 
 @media screen and (min-width: 992px) {
+  .study-card {
+    width: 70vw;
+    height: 55vh;
+  }
+
   .homepage-layout {
     display: grid;
     grid-template-columns: 25vw 25vw 25vw;

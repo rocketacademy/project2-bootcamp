@@ -72,8 +72,9 @@ export default function HomePage() {
       style={{ marginBottom: "10px" }}
       className="homepage-add-deck-card-form"
       variant="outlined"
+      onClick={() => handleAdd()}
     >
-      <div onClick={() => handleAdd()}>
+      <div>
         <h4>+ New deck</h4>
       </div>
     </Card>

@@ -8,12 +8,14 @@ import {
   Backdrop,
   CircularProgress,
 } from "@mui/material";
-import VolumeUpIcon from "@mui/icons-material/VolumeUp";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
+import LoadingButton from "@mui/lab/LoadingButton";
+import VolumeUpIcon from "@mui/icons-material/VolumeUp";
 import StudyDone from "./StudyComponent/StudyDone";
 import ErrorPage from "../ErrorPage";
 import DBHandler from "../Controller/DBHandler";
+import TextToSpeech from "../Controller/TextToSpeech";
 import "./Study.css";
 
 export default function StudyPage() {
@@ -28,10 +30,20 @@ export default function StudyPage() {
   const [goHome, setGoHome] = useState(false);
   const [autoPlay, setAutoPlay] = useState(false);
   const [intervalID, setIntervalID] = useState(null);
+  const [loadingAudio, setLoadingAudio] = useState(false);
   const { deckID } = useParams();
   const dbHandler = useMemo(
     () => new DBHandler(user.uid, setErrorMessage, setGoHome),
     [user.uid, setErrorMessage, setGoHome]
+  );
+  const audioHandler = useMemo(
+    () =>
+      new TextToSpeech(
+        setErrorMessage,
+        setLoadingAudio,
+        process.env.REACT_APP_OPENAI_KEY
+      ),
+    [setErrorMessage, setLoadingAudio]
   );
 
   const navigate = useNavigate();
@@ -102,12 +114,10 @@ export default function StudyPage() {
     return cards;
   };
 
-  const playAudio = async () => {
+  const handlePlayAudio = async (word) => {
     try {
-      const audioUrl = currentCard.URL;
-      console.log(currentCard);
-      const audio = new Audio(audioUrl);
-      audio.play();
+      setLoadingAudio(true);
+      await audioHandler.playAudio(word);
     } catch (error) {
       setErrorMessage(error.message);
     }
@@ -167,11 +177,14 @@ export default function StudyPage() {
             <div className="study-card-header">
               {/* <p>Spanish</p> */}
               <img src="/Spain.png" alt="spanish-flag" className="icon" />
-              <VolumeUpIcon
-                onClick={playAudio}
-                fontSize="large"
-                color="primary"
-              />
+              <LoadingButton
+                loading={loadingAudio}
+                onClick={() => {
+                  handlePlayAudio(currentCard.spanish);
+                }}
+              >
+                <VolumeUpIcon fontSize="large" />
+              </LoadingButton>
             </div>
             <div className="study-word" onClick={handleClick}>
               <h1>{currentCard.spanish}</h1>
