@@ -2,7 +2,7 @@ import { Card, Button, Menu, MenuList, MenuItem } from "@mui/material";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate, useOutletContext } from "react-router-dom";
+import { useNavigate, useOutletContext, Link } from "react-router-dom";
 import "./Study.css";
 import ErrorPage from "../ErrorPage";
 import DBHandler from "../Controller/DBHandler";
@@ -62,6 +62,23 @@ export default function HomePage() {
     setAnchorEl(null);
   };
 
+  const handleAdd = () => {
+    navigate("/addDeck");
+  };
+
+  const addDeckCardForm = (
+    <Card
+      key="new-deck"
+      style={{ marginBottom: "10px" }}
+      className="homepage-add-deck-card-form"
+      variant="outlined"
+    >
+      <div onClick={() => handleAdd()}>
+        <h4>+ New deck</h4>
+      </div>
+    </Card>
+  );
+
   //component show the decks option
   const deckList = userDecks.length ? (
     userDecks.map((deck) => {
@@ -119,6 +136,8 @@ export default function HomePage() {
     <p>You have 0 deck</p>
   );
 
+  const allCards = userDecks.length ? [...deckList, addDeckCardForm] : null;
+
   return (
     <div>
       <ErrorPage
@@ -131,8 +150,9 @@ export default function HomePage() {
         </h5> */}
         <br />
         <h3>🗂️Decks</h3>
+        <br />
       </div>
-      <div className="homepage-layout">{deckList}</div>
+      <div className="homepage-layout">{allCards}</div>
     </div>
   );
 }

@@ -143,6 +143,15 @@
   margin-top: 5vh;
 }
 
+.homepage-add-deck-card-form {
+  background-color: transparent !important;
+  border-color: black !important;
+  border-style: dashed !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .edit-card {
   display: flex;
   flex-direction: column;
