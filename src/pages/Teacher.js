@@ -16,30 +16,19 @@ const Teacher = () => {
   const [courseName, setCourseName] = useState("");
   const [courseGidMap, setCourseGidMap] = useState(new Map());
   const [gid, setGid] = useState("");
-
-  // useEffect(() => {
-  //   const coursesRef = ref(db, "/courses");
-  //   onValue(coursesRef, (snapshot) => {
-  //     const data = snapshot.val();
-  //     // console.log(data);
-
-  //     Object.values(data).forEach((myData) => {
-  //       const courseId = myData.gid;
-  //       setCourses((courses) => {
-  //         return [...courses, courseId];
-  //       });
-  //     });
-  //   });
-  // }, []);
-
-  // console.log(courses);
+  const [responses, setResponses] = useState([]);
 
   useEffect(() => {
     const coursesRef = ref(db, "courses");
     onChildAdded(coursesRef, (data) => {
       const { courseTitle, gid } = data.val();
+      courseGidMap.set(courseTitle, gid);
+
+      console.log(courseTitle);
+      console.log(gid);
       setCourseGidMap((prevMap) => prevMap.set(courseTitle, gid));
       const courseTitles = Array.from(courseGidMap.keys());
+      console.log(courseTitles);
       setCourseOptions(
         courseTitles.map((title) => (
           <option key={title} value={title}>
@@ -61,12 +50,21 @@ const Teacher = () => {
   const spreadSheetId = "16HTIiiOq82Tm1tLHRQcr_8YJnO81QxZOOBOfR4hU3zc";
 
   const fetchSheetData = async () => {
-    const publicSheetURL = `https://docs.google.com/spreadsheets/d/${spreadSheetId}/edit#gid=${gid}`;
+    const publicSheetURL = `https://docs.google.com/spreadsheets/d/${spreadSheetId}/export?format=csv&gid=${gid}`;
 
     try {
       const response = await axios.get(publicSheetURL);
       console.log(publicSheetURL);
-      console.log(response);
+      console.log(response.data);
+
+      const csvData = response.data;
+      console.log(csvData);
+
+      const rows = csvData.split("\n");
+      const parsedData = rows.map((row) => row.split(","));
+      console.log(parsedData);
+      setResponses(parsedData);
+      console.log(responses);
     } catch (error) {
       console.log(error);
     }
@@ -207,12 +205,13 @@ const Teacher = () => {
           value={courseName}
           onChange={(e) => setCourseName(e.target.value)}
         >
+          <option>Select Courses</option>
           {courseOptions}
         </select>
         <div class="flex  justify-around">
           <button>Course Progress</button>
         </div>
-        <button onClick={fetchSheetData()}>Fetch data</button>
+        <button onClick={fetchSheetData}>Fetch data</button>
         {/* {!errMsg & errMsg} */}
 
         {/* <Chart
