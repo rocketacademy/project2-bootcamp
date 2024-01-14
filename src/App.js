@@ -9,6 +9,7 @@ import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { TouchBackend } from "react-dnd-touch-backend";
 import { isBrowser } from "react-device-detect";
+import { Button } from "@mui/material";
 
 export default function App() {
   const [user, setUser] = useState(null);
@@ -36,8 +37,14 @@ export default function App() {
     <div className="App">
       <h1>Flashcard</h1>
       <h2>Spanish-English</h2>
-      <button onClick={() => navi("/register")}>Register</button>
-      <button onClick={() => navi("/signin")}>Sign in</button>
+      <div>
+        <Button variant="contained" onClick={() => navi("/register")}>
+          Register
+        </Button>
+        <Button variant="contained" onClick={() => navi("/signin")}>
+          Sign in
+        </Button>
+      </div>
     </div>
   );
 

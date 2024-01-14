@@ -5,6 +5,8 @@ import {
   Menu,
   MenuList,
   MenuItem,
+  Backdrop,
+  CircularProgress,
 } from "@mui/material";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemIcon from "@mui/material/ListItemIcon";
@@ -158,6 +160,12 @@ export default function HomePage() {
         errorMessage={errorMessage}
         handleErrorMessage={() => setErrorMessage("")}
       />
+      <Backdrop open={!allCards}>
+        <h3></h3>
+        <h1>
+          <CircularProgress color="inherit" />
+        </h1>
+      </Backdrop>
       <div className="homepage-welcome">
         {/* <h5>
           👋 Welcome back, {user.displayName ? user.displayName : "Student"}.
