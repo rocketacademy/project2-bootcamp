@@ -8,12 +8,14 @@ import {
   Backdrop,
   CircularProgress,
 } from "@mui/material";
-import VolumeUpIcon from "@mui/icons-material/VolumeUp";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
+import LoadingButton from "@mui/lab/LoadingButton";
+import VolumeUpIcon from "@mui/icons-material/VolumeUp";
 import StudyDone from "./StudyComponent/StudyDone";
 import ErrorPage from "../ErrorPage";
 import DBHandler from "../Controller/DBHandler";
+import TextToSpeech from "../Controller/TextToSpeech";
 import "./Study.css";
 
 export default function StudyPage() {
@@ -28,10 +30,20 @@ export default function StudyPage() {
   const [goHome, setGoHome] = useState(false);
   const [autoPlay, setAutoPlay] = useState(false);
   const [intervalID, setIntervalID] = useState(null);
+  const [loadingAudio, setLoadingAudio] = useState(false);
   const { deckID } = useParams();
   const dbHandler = useMemo(
     () => new DBHandler(user.uid, setErrorMessage, setGoHome),
     [user.uid, setErrorMessage, setGoHome]
+  );
+  const audioHandler = useMemo(
+    () =>
+      new TextToSpeech(
+        setErrorMessage,
+        setLoadingAudio,
+        process.env.REACT_APP_OPENAI_KEY
+      ),
+    [setErrorMessage, setLoadingAudio]
   );
 
   const navigate = useNavigate();
@@ -102,12 +114,10 @@ export default function StudyPage() {
     return cards;
   };
 
-  const playAudio = async () => {
+  const handlePlayAudio = async (word) => {
     try {
-      const audioUrl = currentCard.URL;
-      console.log(currentCard);
-      const audio = new Audio(audioUrl);
-      audio.play();
+      setLoadingAudio(true);
+      await audioHandler.playAudio(word);
     } catch (error) {
       setErrorMessage(error.message);
     }
@@ -136,12 +146,12 @@ export default function StudyPage() {
         <>
           <Card className="english">
             <div className="study-card-header">
-              <p>English</p>
+              {/* <p>English</p> */}
+              <img src="/UK.png" alt="uk-flag" className="icon" />
             </div>
             <div className="study-word" onClick={handleClick}>
               <h1>{currentCard.english}</h1>
             </div>
-            <p className="hint">Hint: Tap to flip to the other side</p>
           </Card>
           <div className="prev-next">
             <Button
@@ -165,17 +175,20 @@ export default function StudyPage() {
         <>
           <Card className="spanish">
             <div className="study-card-header">
-              <p>Spanish</p>
-              <VolumeUpIcon
-                onClick={playAudio}
-                fontSize="large"
-                color="primary"
-              />
+              {/* <p>Spanish</p> */}
+              <img src="/Spain.png" alt="spanish-flag" className="icon" />
+              <LoadingButton
+                loading={loadingAudio}
+                onClick={() => {
+                  handlePlayAudio(currentCard.spanish);
+                }}
+              >
+                <VolumeUpIcon fontSize="large" />
+              </LoadingButton>
             </div>
             <div className="study-word" onClick={handleClick}>
               <h1>{currentCard.spanish}</h1>
             </div>
-            <p className="hint">Hint: Tap to flip to the other side</p>
           </Card>
           <div className="prev-next">
             <Button
@@ -225,6 +238,7 @@ export default function StudyPage() {
           <CircularProgress color="inherit" />
         </h1>
       </Backdrop>
+
       {deck.deckCards && Object.keys(deck.deckCards).length > 0 && (
         <>
           <div className="study-header">
