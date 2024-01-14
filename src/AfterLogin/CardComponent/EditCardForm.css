@@ -1,0 +1,48 @@
+.edit-card {
+  position: relative;
+  width: 70vw;
+  height: 50vh;
+}
+
+.edit-card-buttons {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-evenly;
+  margin-bottom: 20px;
+  margin-top: 10px;
+  margin-right: 10px;
+  flex-wrap: wrap;
+}
+
+.edit-card .edit {
+  margin-top: 20px;
+}
+
+.edit {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding-left: 18%;
+}
+
+.field {
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.field-audio {
+  display: flex;
+  align-items: center;
+}
+
+.field-audio .field {
+  margin-right: 0;
+}
+
+.play-audio-button {
+  margin-left: 0;
+}

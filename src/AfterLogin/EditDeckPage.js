@@ -7,6 +7,7 @@ import ErrorPage from "../ErrorPage";
 import DBHandler from "../Controller/DBHandler";
 import EditCardForm from "./CardComponent/EditCardForm";
 import axios from "axios";
+import "./EditDeckPage.css";
 
 export default function EditDeckPage() {
   const [user] = useOutletContext();
@@ -139,11 +140,6 @@ export default function EditDeckPage() {
     });
   };
 
-  // const handleLanguageSwitch = (card) => {
-  //   setEnglishInput((prevEnglishInput) => !prevEnglishInput);
-  //   console.log(englishInput);
-  // };
-
   const cardsDisplay = cards.length
     ? cards.map((card) => {
         return (
@@ -174,15 +170,15 @@ export default function EditDeckPage() {
               label="Deck Name"
             ></TextField>
           </h1>
-          <div className="edit-buttons">
+          <div className="edit-deck-buttons">
             <Button variant="contained" onClick={handleAdd}>
-              Add
+              Add card
             </Button>
             <Button variant="contained" onClick={handleSave}>
-              Save
+              Save deck
             </Button>
           </div>
-          {cardsDisplay}
+          <div> {cardsDisplay}</div>
         </div>
       }
       {saveDone && <SaveDone open={saveDone} onClose={handleCloseSaveDone} />}
