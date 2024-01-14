@@ -1,6 +1,6 @@
 import { useCourseData } from "../components/FetchCourses";
 
-export const StudentCourses = () => {
+export const CourseCards = () => {
   const { courseMap, courseMaterialsMap } = useCourseData();
 
   const CourseMaterialsButton = ({ cardCourseID }) => {
@@ -20,39 +20,39 @@ export const StudentCourses = () => {
     );
   };
 
-  const CourseCards = () => {
-    return Array.from(courseMap.entries()).map(([courseID, courseData]) => (
-      <div
-        key={courseID}
-        className="card max-w-full bg-base-100 shadow-xl sm:col-start-3 col-span-3"
-      >
-        <div className="card-body">
-          <div className="card-actions justify-end">
-            <div className="badge badge-base-100">
-              Due Date: {courseData.dueDate}
-            </div>
-          </div>
-          <h2 className="card-title">{courseData.courseTitle}</h2>
-          <p className="text-start">{courseData.courseDescription}</p>
-          <div className="card-actions justify-start">
-            <CourseMaterialsButton cardCourseID={courseID} />
-          </div>
-          <div className="mt-5 card-actions justify-end">
-            {/* Link to quizLink */}
-            <a
-              href={courseData.quizLink}
-              className="btn btn-primary"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              TAKE QUIZ
-            </a>
+  return Array.from(courseMap.entries()).map(([courseID, courseData]) => (
+    <div
+      key={courseID}
+      className="card max-w-full bg-base-100 shadow-xl sm:col-start-3 col-span-3"
+    >
+      <div className="card-body">
+        <div className="card-actions justify-end">
+          <div className="badge badge-base-100">
+            Due Date: {courseData.dueDate}
           </div>
         </div>
+        <h2 className="card-title">{courseData.courseTitle}</h2>
+        <p className="text-start">{courseData.courseDescription}</p>
+        <div className="card-actions justify-start">
+          <CourseMaterialsButton cardCourseID={courseID} />
+        </div>
+        <div className="mt-5 card-actions justify-end">
+          {/* Link to quizLink */}
+          <a
+            href={courseData.quizLink}
+            className="btn btn-primary"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            TAKE QUIZ
+          </a>
+        </div>
       </div>
-    ));
-  };
+    </div>
+  ));
+};
 
+export const StudentCourses = () => {
   return (
     <>
       <div className="prose grid grid-cols-1 gap-y-8 p-6 max-w-full sm:grid-cols-7">
