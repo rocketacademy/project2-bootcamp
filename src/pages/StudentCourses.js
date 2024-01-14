@@ -1,68 +1,7 @@
-import React, { useState, useEffect } from "react";
-import { ref, onChildAdded } from "firebase/database";
-import { db } from "../firebase";
+import { useCourseData } from "../components/FetchCourses";
 
 export const StudentCourses = () => {
-  const DB_COURSE_KEY = "courses";
-  const DB_STORAGE_KEY = "courseMaterials";
-  const coursesRef = ref(db, DB_COURSE_KEY);
-  const courseMaterialsRef = ref(db, DB_STORAGE_KEY);
-  const [courseMap, setCourseMap] = useState(new Map());
-  const [courseMaterialsMap, setCourseMaterialsMap] = useState(new Map());
-
-  useEffect(() => {
-    onChildAdded(coursesRef, (data) => {
-      const {
-        courseDescription,
-        courseID,
-        courseTitle,
-        createdDate,
-        dueDate,
-        quizLink,
-      } = data.val();
-      courseMap.set(courseID, {
-        courseDescription,
-        courseTitle,
-        courseID,
-        createdDate,
-        dueDate,
-        quizLink,
-      });
-      setCourseMap(
-        (prevMap) =>
-          new Map(
-            prevMap.set(courseID, {
-              courseDescription,
-              courseTitle,
-              courseID,
-              createdDate,
-              dueDate,
-              quizLink,
-            })
-          )
-      );
-    });
-
-    onChildAdded(courseMaterialsRef, (data) => {
-      const { courseID, fileName, url } = data.val();
-      courseMaterialsMap.set(data.key, {
-        fileName,
-        url,
-      });
-      setCourseMaterialsMap(
-        (prevMap) =>
-          new Map(
-            prevMap.set(data.key, {
-              courseID,
-              fileName,
-              url,
-            })
-          )
-      );
-    });
-  }, []);
-  console.log(courseMap);
-  console.log(courseMaterialsMap);
+  const { courseMap, courseMaterialsMap } = useCourseData();
 
   const CourseMaterialsButton = ({ cardCourseID }) => {
     return Array.from(courseMaterialsMap.entries()).map(
