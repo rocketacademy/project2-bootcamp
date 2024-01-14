@@ -136,12 +136,12 @@ export default function StudyPage() {
         <>
           <Card className="english">
             <div className="study-card-header">
-              <p>English</p>
+              {/* <p>English</p> */}
+              <img src="/UK.png" alt="uk-flag" className="icon" />
             </div>
             <div className="study-word" onClick={handleClick}>
               <h1>{currentCard.english}</h1>
             </div>
-            <p className="hint">Hint: Tap to flip to the other side</p>
           </Card>
           <div className="prev-next">
             <Button
@@ -165,7 +165,8 @@ export default function StudyPage() {
         <>
           <Card className="spanish">
             <div className="study-card-header">
-              <p>Spanish</p>
+              {/* <p>Spanish</p> */}
+              <img src="/Spain.png" alt="spanish-flag" className="icon" />
               <VolumeUpIcon
                 onClick={playAudio}
                 fontSize="large"
@@ -175,7 +176,6 @@ export default function StudyPage() {
             <div className="study-word" onClick={handleClick}>
               <h1>{currentCard.spanish}</h1>
             </div>
-            <p className="hint">Hint: Tap to flip to the other side</p>
           </Card>
           <div className="prev-next">
             <Button
@@ -225,6 +225,7 @@ export default function StudyPage() {
           <CircularProgress color="inherit" />
         </h1>
       </Backdrop>
+
       {deck.deckCards && Object.keys(deck.deckCards).length > 0 && (
         <>
           <div className="study-header">

@@ -1,5 +1,5 @@
 import LeaderboardIcon from "@mui/icons-material/Leaderboard";
-import PostAddIcon from "@mui/icons-material/PostAdd";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import { Link } from "react-router-dom";
 import QuizIcon from "@mui/icons-material/Quiz";
 import { signOut, updateProfile } from "firebase/auth";
@@ -128,14 +128,14 @@ export default function NaviBar(props) {
         <Link to="/">App.</Link>
       </h1>
       <div className="navi-icon-div">
-        <Link to="/report">
-          <LeaderboardIcon />
-        </Link>
         <Link to="/addDeck">
-          <PostAddIcon />
+          <AddCircleOutlineIcon />
         </Link>
         <Link to="/quiz">
           <QuizIcon />
+        </Link>
+        <Link to="/report">
+          <LeaderboardIcon />
         </Link>
         <Avatar
           onClick={handleOpenMenu}

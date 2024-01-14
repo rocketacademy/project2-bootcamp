@@ -1,9 +1,14 @@
-import { Card, Button, Menu, MenuItem } from "@mui/material";
+import { Card, Button, Menu, MenuList, MenuItem } from "@mui/material";
+import ListItemText from "@mui/material/ListItemText";
+import ListItemIcon from "@mui/material/ListItemIcon";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import "./Study.css";
 import ErrorPage from "../ErrorPage";
 import DBHandler from "../Controller/DBHandler";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import ModeEditIcon from "@mui/icons-material/ModeEdit";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 export default function HomePage() {
   const [user] = useOutletContext();
@@ -69,21 +74,41 @@ export default function HomePage() {
           style={{ marginBottom: "10px" }}
           className="homepage-deck"
         >
-          <div className="options">
-            <Button onClick={(event) => handleMenu(event, deckID)}>:</Button>
+          <div className="homepage-card-header">
+            {<MoreVertIcon onClick={(event) => handleMenu(event, deckID)} />}
+            <Menu
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              onClose={handleMenuClose}
+              anchorOrigin={{
+                horizontal: "right",
+                vertical: "bottom",
+              }}
+              transformOrigin={{
+                horizontal: "right",
+              }}
+              PaperProps={{ elevation: 1 }}
+            >
+              <MenuList dense>
+                <MenuItem value={deckID} onClick={(e) => handleEdit(e.value)}>
+                  <ListItemIcon>
+                    <ModeEditIcon fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText>Edit</ListItemText>
+                </MenuItem>
+                <MenuItem onClick={() => handleDelete(selectedID)}>
+                  <ListItemIcon>
+                    <DeleteIcon fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText>Delete</ListItemText>
+                </MenuItem>
+              </MenuList>
+            </Menu>
           </div>
-
-          <Menu
-            anchorEl={anchorEl}
-            open={Boolean(anchorEl)}
-            onClose={handleMenuClose}
+          <div
+            className="homepage-card-body"
+            onClick={() => handleClick(deckID)}
           >
-            <MenuItem value={deckID} onClick={(e) => handleEdit(e.value)}>
-              Edit
-            </MenuItem>
-            <MenuItem onClick={() => handleDelete(selectedID)}>Delete</MenuItem>
-          </Menu>
-          <div onClick={() => handleClick(deckID)}>
             <h4>{deckName}</h4>
             <p>{cardsNum} cards</p>
           </div>
@@ -100,9 +125,14 @@ export default function HomePage() {
         errorMessage={errorMessage}
         handleErrorMessage={() => setErrorMessage("")}
       />
-      <div>Hi, {user.displayName ? user.displayName : "student"}.</div>
-      <p>Your current deck:</p>
-      {deckList}
+      <div className="homepage-welcome">
+        {/* <h5>
+          👋 Welcome back, {user.displayName ? user.displayName : "Student"}.
+        </h5> */}
+        <br />
+        <h3>🗂️Decks</h3>
+      </div>
+      <div className="homepage-layout">{deckList}</div>
     </div>
   );
 }
