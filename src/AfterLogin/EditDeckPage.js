@@ -1,13 +1,12 @@
 import { useParams, useNavigate, useOutletContext } from "react-router-dom";
 import { useState, useEffect, useMemo } from "react";
-import { Button, TextField } from "@mui/material";
+import { Button, TextField, Grid, Stack } from "@mui/material";
 import SaveDone from "./EditComponent/SaveDone";
 import "./Study.css";
 import ErrorPage from "../ErrorPage";
 import DBHandler from "../Controller/DBHandler";
 import EditCardForm from "./CardComponent/EditCardForm";
 import axios from "axios";
-import "./EditDeckPage.css";
 
 export default function EditDeckPage() {
   const [user] = useOutletContext();
@@ -15,7 +14,6 @@ export default function EditDeckPage() {
   const [deck, setDecks] = useState({});
   const [cards, setCards] = useState([]);
   const [editing, setEditing] = useState(null);
-  // const [englishInput, setEnglishInput] = useState(true);
   const [saveDone, setSaveDone] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [goHome, setGoHome] = useState(false);
@@ -163,22 +161,50 @@ export default function EditDeckPage() {
       />
       {
         <div>
-          <h1>
-            <TextField
-              value={deckName}
-              onChange={(e) => setDeckName(e.target.value)}
-              label="Deck Name"
-            ></TextField>
-          </h1>
-          <div className="edit-deck-buttons">
-            <Button variant="contained" onClick={handleAdd}>
-              Add card
-            </Button>
-            <Button variant="contained" onClick={handleSave}>
-              Save deck
-            </Button>
-          </div>
-          <div> {cardsDisplay}</div>
+          <Stack
+            direction="column"
+            justifyContent="center"
+            alignItems="center"
+            spacing={1}
+          >
+            <div className="deck-name-field">
+              <h1
+                style={{
+                  display: "inline-block",
+                  marginLeft: "-20px",
+                  marginTop: "10px",
+                }}
+              >
+                <TextField
+                  sx={{ width: 300 }}
+                  value={deckName}
+                  onChange={(e) => setDeckName(e.target.value)}
+                  label="Deck Name"
+                ></TextField>
+              </h1>
+            </div>
+            <div className="edit-deck-buttons">
+              <Grid
+                container
+                spacing={2}
+                display="flex"
+                justifyContent="center"
+                mt={2}
+              >
+                <Grid item>
+                  <Button variant="contained" onClick={handleAdd}>
+                    Add card
+                  </Button>
+                </Grid>
+                <Grid item>
+                  <Button variant="contained" onClick={handleSave}>
+                    Save deck
+                  </Button>
+                </Grid>
+              </Grid>
+            </div>
+            <div> {cardsDisplay}</div>
+          </Stack>
         </div>
       }
       {saveDone && <SaveDone open={saveDone} onClose={handleCloseSaveDone} />}

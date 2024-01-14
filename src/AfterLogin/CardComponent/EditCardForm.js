@@ -79,22 +79,19 @@ export default function EditCardForm(props) {
           handleErrorMessage={() => setErrorMessage("")}
         />
         <div className="edit-card-buttons">
-          {/* <div className="button-pair"> */}
           <Button disabled={isDisable} onClick={handleLanguageSwitch}>
             Switch languages
           </Button>
           <Button disabled={isDisable} onClick={() => handleTranslate()}>
             Translate
           </Button>
-          {/* </div>
-          <div className="button-pair"> */}
+
           <Button onClick={() => props.handleDelete(card.cardID)}>
             Delete card
           </Button>
           <Button disabled={isEditDisable} onClick={handleEdit}>
             {props.editing === card.cardID ? "Save card" : "Edit"}
           </Button>
-          {/* </div> */}
         </div>
         <div className="edit">
           <div className="field">
