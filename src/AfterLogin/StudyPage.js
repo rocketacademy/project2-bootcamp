@@ -144,19 +144,19 @@ export default function StudyPage() {
     <>
       {currentCard && (
         <>
-          <Card className="english">
+          <Card className="study-card-english">
             <div className="study-card-header">
               {/* <p>English</p> */}
-              <img src="/UK.png" alt="uk-flag" className="icon" />
+              <img src="/UK.png" alt="uk-flag" className="study-flag-icon " />
             </div>
             <div className="study-word" onClick={handleClick}>
               <h1>{currentCard.english}</h1>
             </div>
           </Card>
-          <div className="prev-next">
+          <div className="study-container-button">
             <Button
               fullWidth
-              className="next-button"
+              className="study-show-answer-button"
               size="large"
               variant="contained"
               onClick={handleClick}
@@ -173,12 +173,17 @@ export default function StudyPage() {
     <>
       {currentCard && (
         <>
-          <Card className="spanish">
+          <Card className="study-card-spanish">
             <div className="study-card-header">
               {/* <p>Spanish</p> */}
-              <img src="/Spain.png" alt="spanish-flag" className="icon" />
+              <img
+                src="/Spain.png"
+                alt="spanish-flag"
+                className="study-flag-icon "
+              />
               <LoadingButton
                 loading={loadingAudio}
+                className="study-audio-loading"
                 onClick={() => {
                   handlePlayAudio(currentCard.spanish);
                 }}
@@ -190,10 +195,10 @@ export default function StudyPage() {
               <h1>{currentCard.spanish}</h1>
             </div>
           </Card>
-          <div className="prev-next">
+          <div className="study-container-button">
             <Button
               fullWidth
-              className="repeat-button"
+              className="study-repeat-button"
               size="large"
               variant="contained"
               onClick={handleRepeat}
@@ -201,7 +206,7 @@ export default function StudyPage() {
               👎Again
             </Button>
             <Button
-              className="next-button"
+              className="study-next-button"
               fullWidth
               size="large"
               variant="contained"
@@ -251,7 +256,7 @@ export default function StudyPage() {
             </FormGroup>
           </div>
 
-          <p className="current-index">
+          <p className="study-current-index">
             {currentIndex + 1}/{totalCards}
           </p>
           {progressBar({ current: currentIndex + 1, total: totalCards })}

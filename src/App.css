@@ -17,6 +17,14 @@ a {
   font-size: calc(10px + 2vmin);
 }
 
+.app-register-button {
+  display: flex;
+  padding: 10px;
+  margin: 10px;
+  gap: 10px;
+  justify-content: center;
+}
+
 .outlet {
   text-align: center;
   min-height: 90vh;
@@ -33,6 +41,11 @@ a {
   align-items: center;
   justify-content: space-between;
   background-color: #f0f1f7;
+}
+
+.navi-bar a {
+  color: black;
+  text-decoration: none;
 }
 
 .profile-pic:hover {

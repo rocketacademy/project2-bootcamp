@@ -8,7 +8,7 @@ export default function StudyDone({ open, onClose }) {
       onClose={onClose}
       PaperProps={{ elevation: 0, variant: "outlined" }}
     >
-      <DialogContent className="dialog">
+      <DialogContent className="study-done-dialog">
         <h2>✨Well done!</h2>
         You have finished reviewing this deck.
         <br />

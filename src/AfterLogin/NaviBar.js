@@ -12,6 +12,7 @@ import {
   Input,
   Menu,
   MenuItem,
+  Divider,
 } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import ErrorPage from "../ErrorPage";
