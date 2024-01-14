@@ -1,42 +1,80 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-
+// import { GoogleSpreadsheet } from "google-spreadsheet";
 // import { Chart } from "react-google-charts";
 import { db } from "../firebase";
-import { ref, onValue } from "firebase/database";
-// import axios from "axios";
+import { ref, onChildAdded } from "firebase/database";
+import axios from "axios";
 
 const Teacher = () => {
   const navigate = useNavigate();
   // const [loading, setLoading] = useState(false);
   // const [chartData, setChartData] = useState([]);
   // const [errMsg, setErrMsg] = useState("");
-  const [courses, setCourses] = useState([]);
+
+  const [courseOptions, setCourseOptions] = useState([]);
+  const [courseName, setCourseName] = useState("");
+  const [courseGidMap, setCourseGidMap] = useState(new Map());
+  const [gid, setGid] = useState("");
+  const [responses, setResponses] = useState([]);
 
   useEffect(() => {
-    const coursesRef = ref(db, "/courses");
-    onValue(coursesRef, (snapshot) => {
-      const data = snapshot.val();
-      console.log(data);
+    const coursesRef = ref(db, "courses");
+    onChildAdded(coursesRef, (data) => {
+      const { courseTitle, gid } = data.val();
+      courseGidMap.set(courseTitle, gid);
 
-      Object.values(data).forEach((myData) => {
-        const courseId = myData.gid;
-        setCourses((courses) => {
-          return [...courses, courseId];
-        });
-      });
+      console.log(courseTitle);
+      console.log(gid);
+      setCourseGidMap((prevMap) => prevMap.set(courseTitle, gid));
+      const courseTitles = Array.from(courseGidMap.keys());
+      console.log(courseTitles);
+      setCourseOptions(
+        courseTitles.map((title) => (
+          <option key={title} value={title}>
+            {title}
+          </option>
+        ))
+      );
     });
   }, []);
 
+  useEffect(() => {
+    const getGid = courseGidMap.get(courseName);
+    console.log(getGid);
+    setGid(getGid);
+  }, [courseName]);
+
+  console.log(gid);
+
+  const spreadSheetId = "16HTIiiOq82Tm1tLHRQcr_8YJnO81QxZOOBOfR4hU3zc";
+
+  const fetchSheetData = async () => {
+    const publicSheetURL = `https://docs.google.com/spreadsheets/d/${spreadSheetId}/export?format=csv&gid=${gid}`;
+
+    try {
+      const response = await axios.get(publicSheetURL);
+      console.log(publicSheetURL);
+      console.log(response.data);
+
+      const csvData = response.data;
+      console.log(csvData);
+
+      const rows = csvData.split("\n");
+      const parsedData = rows.map((row) => row.split(","));
+      console.log(parsedData);
+      setResponses(parsedData);
+      console.log(responses);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   console.log(courses);
-
-
 
   // const data = [
   //   ["Course", "Rate (%)"],
   //   [`${retrieveCourse}`, 90],
   // ];
-
 
   // const parseCSVToArr = (csvText) => {
   //   const rows = csvText.split(/\r?\n/);
@@ -149,18 +187,28 @@ const Teacher = () => {
               />
             </svg>
           </div>
-
-          <input
-            type="search"
-            id="default-search"
-            class="block w-60 p-2 ps-10 text-sm bg-transparent rounded-lg border border-gray-700 "
-            placeholder="Search course name..."
-            required
-          />
         </div>
+        {/* <select
+          className="select select-bordered"
+          value={courseName}
+          onChange={(e) => {
+            setCourseName(e.target.value);
+          }}
+        >
+          {courseOptions}
+          
+        </select> */}
+        <select
+          value={courseName}
+          onChange={(e) => setCourseName(e.target.value)}
+        >
+          <option>Select Courses</option>
+          {courseOptions}
+        </select>
         <div class="flex  justify-around">
           <button>Course Progress</button>
         </div>
+        <button onClick={fetchSheetData}>Fetch data</button>
         {/* {!errMsg & errMsg} */}
 
         {/* <Chart
