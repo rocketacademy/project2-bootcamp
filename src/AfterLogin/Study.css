@@ -158,6 +158,23 @@
   justify-content: center;
 }
 
+.homepage-empty-deck {
+  width: 80vw;
+  height: 60vh;
+  background-color: transparent;
+  border-color: black;
+  border-style: dashed;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.homepage-empty-deck-image {
+  object-fit: contain;
+  width: 70%;
+  height: 70%;
+}
+
 .edit-card {
   display: flex;
   flex-direction: column;

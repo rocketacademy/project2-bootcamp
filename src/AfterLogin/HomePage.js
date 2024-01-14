@@ -1,4 +1,11 @@
-import { Card, Button, Menu, MenuList, MenuItem } from "@mui/material";
+import {
+  Card,
+  CardMedia,
+  Button,
+  Menu,
+  MenuList,
+  MenuItem,
+} from "@mui/material";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import { useEffect, useMemo, useState } from "react";
@@ -81,7 +88,8 @@ export default function HomePage() {
   );
 
   //component show the decks option
-  const deckList = userDecks.length ? (
+  const deckList =
+    userDecks.length &&
     userDecks.map((deck) => {
       const deckName = deck.deckName;
       const cardsNum = deck.deckCards.length;
@@ -104,6 +112,7 @@ export default function HomePage() {
               }}
               transformOrigin={{
                 horizontal: "right",
+                vertical: "bottom",
               }}
               PaperProps={{ elevation: 1 }}
             >
@@ -132,12 +141,16 @@ export default function HomePage() {
           </div>
         </Card>
       );
-    })
-  ) : (
-    <p>You have 0 deck</p>
-  );
+    });
 
   const allCards = userDecks.length ? [...deckList, addDeckCardForm] : null;
+
+  const emptyCard = (
+    <div className="homepage-empty-deck" onClick={() => handleAdd()}>
+      <img className="homepage-empty-deck-image" src="Home.png" />{" "}
+      <h4>+ New deck</h4>
+    </div>
+  );
 
   return (
     <div>
@@ -154,6 +167,7 @@ export default function HomePage() {
         <br />
       </div>
       <div className="homepage-layout">{allCards}</div>
+      {!allCards && emptyCard}
     </div>
   );
 }

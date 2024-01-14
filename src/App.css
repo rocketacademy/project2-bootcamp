@@ -35,6 +35,11 @@ a {
   background-color: #f0f1f7;
 }
 
+.navi-bar a {
+  color: black;
+  text-decoration: none;
+}
+
 .profile-pic:hover {
   cursor: pointer;
 }
