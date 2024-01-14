@@ -4,7 +4,8 @@ import {
   useLoadScript,
   Marker,
   InfoWindow,
-  LoadScript,
+  DirectionsRenderer,
+  DirectionsService,
 } from "@react-google-maps/api";
 import axios from "axios";
 //import singaporeflag from "../../Data/singaporeflag.png";
@@ -33,19 +34,54 @@ export default function RenderMap({ sendMessage, landmarks }) {
     libraries,
   });
   const [markerLoaded, setMarkerLoaded] = useState(false);
-  const [selectedLocation, setSelectedLocation] = useState();
+  const [selectedLocation, setSelectedLocation] = useState({
+    lat: null,
+    lng: null,
+  });
   const [selectedPlace, setSelectedPlace] = useState({
     lat: 1.3513,
     lng: 103.81404,
   });
+  const [userStartLocation, setUserStartLocation] = useState({
+    lat: 1.3513,
+    lng: 103.81404,
+  });
 
+  const directionsServiceRef = useRef();
+  const directionsRendererRef = useRef();
   const mapRef = useRef();
+
   const onMapLoad = useCallback((map) => {
     mapRef.current = map;
     const transitLayer = new window.google.maps.TransitLayer();
     const trafficLayer = new window.google.maps.TrafficLayer();
+    const directionsRenderer = new window.google.maps.DirectionsRenderer();
     transitLayer.setMap(mapRef.current);
     trafficLayer.setMap(mapRef.current);
+    directionsRenderer.setMap(mapRef.current);
+  }, []);
+
+  const onDirectionsServiceLoad = useCallback((directionsService) => {
+    directionsServiceRef.current = directionsService;
+  }, []);
+
+  const onDirectionsRendererLoad = useCallback((directionsRenderer) => {
+    directionsRendererRef.current = directionsRenderer;
+  }, []);
+
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        function (position) {
+          setUserStartLocation({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          });
+        },
+        function () {}
+      );
+    } else {
+    }
   }, []);
 
   const onMarkerClick = (position) => {
@@ -73,14 +109,14 @@ export default function RenderMap({ sendMessage, landmarks }) {
   const onMapClick = useCallback((event) => {
     const lat = event.latLng.lat();
     const lng = event.latLng.lng();
-    setSelectedLocation({
-      lat: event.latLng.lat(),
-      lng: event.latLng.lng(),
-    });
-    onMarkerClick({
-      lat: event.latLng.lat(),
-      lng: event.latLng.lng(),
-    });
+    //function variable to avoid race condition
+    const newLocation = {
+      lat: lat,
+      lng: lng,
+    };
+    setSelectedLocation(newLocation);
+    onMarkerClick(newLocation);
+    calculateRoute(newLocation);
     axios
       .get(
         `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`
@@ -101,6 +137,35 @@ export default function RenderMap({ sendMessage, landmarks }) {
         );
       });
   }, []);
+
+  const calculateRoute = (selectedLocation) => {
+    console.log(userStartLocation);
+    const start = userStartLocation;
+    console.log(selectedLocation);
+    const end = selectedLocation;
+
+    if (directionsServiceRef.current) {
+      directionsServiceRef.current.route(
+        {
+          origin: start,
+          destination: end,
+          travelMode: "TRANSIT",
+        },
+        (result, status) => {
+          if (status === "OK") {
+            if (directionsRendererRef.current) {
+              directionsRendererRef.current.setDirections(result);
+            }
+            console.log(result);
+            const steps = result.routes[0].legs[0].steps;
+            console.log(steps);
+          } else {
+            console.log(`error`);
+          }
+        }
+      );
+    }
+  };
 
   if (loadError) return "Error loading maps";
   if (!isLoaded) return "Loading Maps";
@@ -151,8 +216,21 @@ export default function RenderMap({ sendMessage, landmarks }) {
             //scaledSize="10%"
           />
         ))}
+        <DirectionsService
+          options={{
+            origin: userStartLocation,
+            destination: selectedLocation,
+            travelMode: "TRANSIT",
+            transitOptions: {
+              modes: ["BUS", "RAIL", "SUBWAY"],
+              routingPreference: "FEWER_TRANSFERS",
+            },
+          }}
+          onLoad={onDirectionsServiceLoad}
+        />
+        <DirectionsRenderer onLoad={onDirectionsRendererLoad} />
       </GoogleMap>
-      // {/* </LoadScript> */}
+      {/* </LoadScript> */}
     </>
   );
 }

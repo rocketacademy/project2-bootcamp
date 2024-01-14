@@ -261,6 +261,10 @@ const App = () => {
               />
               <StyledGridPills
                 item
+                style={{ position: "absolute", top: -40, left: 740 }}
+              ></StyledGridPills>
+              <StyledGridPills
+                item
                 style={{ position: "absolute", top: -40, left: 560 }}
               >
                 <Button
