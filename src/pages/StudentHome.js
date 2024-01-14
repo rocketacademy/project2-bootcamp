@@ -3,6 +3,8 @@ import { ref, onChildAdded } from "firebase/database";
 import { db } from "../firebase";
 import { CardWithoutActions } from "../components/Card";
 import { fetchAttemptedCourses } from "../components/FetchCourses";
+import { useCourseData } from "../components/FetchCourses";
+import { CourseCards } from "./StudentCourses";
 
 const AttemptData = ({ userEmail }) => {
   const DB_COURSE_KEY = "courses";
@@ -13,13 +15,19 @@ const AttemptData = ({ userEmail }) => {
   const [attemptCount, setAttemptCount] = useState(0);
   const [notAttemptCount, setNotAttemptCount] = useState(0);
 
+  const [attemptedCourseMap, setAttemptedCourseMap] = useState(new Map());
+  const [notAttemptedCourseMap, setNotAttemptedCourseMap] = useState(new Map());
+  const { courseMap } = useCourseData();
+
   const spreadsheetId = "16HTIiiOq82Tm1tLHRQcr_8YJnO81QxZOOBOfR4hU3zc"; // Replace with your Sheet ID
 
   useEffect(() => {
     onChildAdded(coursesRef, (data) => {
-      const { courseTitle, gid } = data.val();
-      courseGidMap.set(courseTitle, gid);
-      setCourseGidMap((prevMap) => new Map(prevMap.set(courseTitle, gid)));
+      const { courseTitle, gid, courseID } = data.val();
+      courseGidMap.set(courseID, { courseTitle, gid });
+      setCourseGidMap(
+        (prevMap) => new Map(prevMap.set(courseID, { courseTitle, gid }))
+      );
     });
   }, []);
 
@@ -36,7 +44,7 @@ const AttemptData = ({ userEmail }) => {
         setAttemptedCourses((prevCourses) => {
           const hasDuplicates = attemptedCoursesResults.some((newCourse) =>
             prevCourses.some(
-              (prevCourse) => prevCourse.courseTitle === newCourse.courseTitle
+              (prevCourse) => prevCourse.courseID === newCourse.courseID
             )
           );
 
@@ -60,7 +68,43 @@ const AttemptData = ({ userEmail }) => {
         ? setAttemptCount((prevCount) => prevCount + 1)
         : setNotAttemptCount((prevCount) => prevCount + 1);
     });
+    getAttemptedCourseMap();
+    getNotAttemptedCourseMap();
   }, [attemptedCourses]);
+
+  const getAttemptedCourseMap = () => {
+    const courseArray = Array.from(courseMap.entries());
+    const filteredArray = courseArray.filter(([courseID, courseData]) => {
+      return attemptedCourses.some(
+        (attemptedCourse) =>
+          attemptedCourse.courseID === courseID && attemptedCourse.hasAttempted
+      );
+    });
+    setAttemptedCourseMap((prevMap) => {
+      const newMap = new Map(prevMap);
+      filteredArray.forEach(([courseID, courseData]) => {
+        newMap.set(courseID, courseData);
+      });
+      return newMap;
+    });
+  };
+
+  const getNotAttemptedCourseMap = () => {
+    const courseArray = Array.from(courseMap.entries());
+    const filteredArray = courseArray.filter(([courseID, courseData]) => {
+      return !attemptedCourses.some(
+        (attemptedCourse) =>
+          attemptedCourse.courseID === courseID && attemptedCourse.hasAttempted
+      );
+    });
+    setNotAttemptedCourseMap((prevMap) => {
+      const newMap = new Map(prevMap);
+      filteredArray.forEach(([courseID, courseData]) => {
+        newMap.set(courseID, courseData);
+      });
+      return newMap;
+    });
+  };
 
   return (
     <div className="mt-8 pb-8 grid grid-cols-2 gap-x-8 gap-y-8 justify-items-center sm:grid-cols-6">
@@ -84,24 +128,30 @@ const AttemptData = ({ userEmail }) => {
           </div>
           <div className="hidden sm:block w-full col-span-2 sm:col-span-3">
             <h3>Completed</h3>
-            {attemptedCourses
+            <div className="mb-8">
+              <CourseCards courseMap={attemptedCourseMap} />
+            </div>
+            {/* {attemptedCourses
               .filter((course) => course.hasAttempted)
               .map((course) => (
                 <div key={course.courseTitle} className="mb-8">
                   <CardWithoutActions cardContent={course.courseTitle} />
                 </div>
-              ))}
+              ))} */}
           </div>
 
           <div className="w-full col-span-2 sm:col-span-3">
             <h3>Not Attempted</h3>
-            {attemptedCourses
+            <div className="mb-8">
+              <CourseCards courseMap={notAttemptedCourseMap} />
+            </div>
+            {/* {attemptedCourses
               .filter((course) => !course.hasAttempted)
               .map((course) => (
                 <div key={course.courseTitle} className="mb-8">
                   <CardWithoutActions cardContent={course.courseTitle} />
                 </div>
-              ))}
+              ))} */}
           </div>
         </>
       )}

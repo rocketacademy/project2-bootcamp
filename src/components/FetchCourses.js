@@ -10,8 +10,8 @@ export const fetchAttemptedCourses = async (
 ) => {
   const attemptedCoursesResults = [];
 
-  for (const [courseTitle, courseGid] of courseGidMap.entries()) {
-    const publicSheetUrl = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/export?format=csv&gid=${courseGid}`;
+  for (const [courseID, { courseTitle, gid }] of courseGidMap.entries()) {
+    const publicSheetUrl = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/export?format=csv&gid=${gid}`;
     const response = await axios.get(publicSheetUrl);
     const csvData = response.data;
     const rows = csvData.split("\n");
@@ -21,6 +21,7 @@ export const fetchAttemptedCourses = async (
       .some((row) => row[1] === userEmail);
 
     attemptedCoursesResults.push({
+      courseID: courseID,
       courseTitle: courseTitle,
       hasAttempted: userAttemptedCourse,
     });
