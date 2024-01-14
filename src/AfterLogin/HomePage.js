@@ -110,11 +110,11 @@ export default function HomePage() {
               onClose={handleMenuClose}
               anchorOrigin={{
                 horizontal: "right",
-                vertical: "bottom",
+                vertical: "top",
               }}
               transformOrigin={{
                 horizontal: "right",
-                vertical: "bottom",
+                vertical: "top",
               }}
               PaperProps={{ elevation: 1 }}
             >
