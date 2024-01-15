@@ -150,8 +150,7 @@ export default function HomePage() {
   const emptyCard = (
     <div className="homepage-empty-deck">
       <img className="homepage-empty-deck-image" src="Home.png" /> <br />
-      <h5>You have 0 deck</h5>
-      <p>Create a new deck by tapping this button</p>
+      <p>Tap this button to start a new deck</p>
       <Button
         variant="contained"
         className="homepage-add-deck-button"
@@ -168,12 +167,7 @@ export default function HomePage() {
         errorMessage={errorMessage}
         handleErrorMessage={() => setErrorMessage("")}
       />
-      <Backdrop open={!allCards}>
-        <h3></h3>
-        <h1>
-          <CircularProgress color="inherit" />
-        </h1>
-      </Backdrop>
+
       <div className="homepage-welcome">
         {/* <h5>
           👋 Welcome back, {user.displayName ? user.displayName : "Student"}.
