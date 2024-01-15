@@ -5,6 +5,7 @@ import App from "./App";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import HomePage from "./AfterLogin/HomePage";
 import StudyPage from "./AfterLogin/StudyPage";
+import BrowsePage from "./AfterLogin/BrowsePage";
 import ReportPage from "./AfterLogin/ReportPage";
 import QuizPage from "./AfterLogin/QuizPage";
 import SignInPage from "./BeforeLogin/SignInPage";
@@ -25,6 +26,8 @@ root.render(
         <Route path="/editDeck/:deckID" element={<EditDeckPage />} />
         <Route path="study" element={<StudyPage />} />
         <Route path="/study/:deckID" element={<StudyPage />} />
+        <Route path="browse" element={<BrowsePage />} />
+        <Route path="/browse/:deckID" element={<BrowsePage />} />
         <Route path="report" element={<ReportPage />} />
         <Route path="quizList" element={<QuizReportList />} />
         <Route path="quizList/:quizNo" element={<QuizReport />} />
