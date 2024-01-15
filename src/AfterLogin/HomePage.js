@@ -44,7 +44,7 @@ export default function HomePage() {
   }, [dbHandler]);
 
   const handleClick = (deckID) => {
-    navigate(`/study/${deckID}`);
+    navigate(`/browse/${deckID}`);
   };
 
   const handleEdit = () => {
@@ -148,9 +148,17 @@ export default function HomePage() {
   const allCards = userDecks.length ? [...deckList, addDeckCardForm] : null;
 
   const emptyCard = (
-    <div className="homepage-empty-deck" onClick={() => handleAdd()}>
-      <img className="homepage-empty-deck-image" src="Home.png" />{" "}
-      <h4>+ New deck</h4>
+    <div className="homepage-empty-deck">
+      <img className="homepage-empty-deck-image" src="Home.png" /> <br />
+      <h5>You have 0 deck</h5>
+      <p>Create a new deck by tapping this button</p>
+      <Button
+        variant="contained"
+        className="homepage-add-deck-button"
+        onClick={() => handleAdd()}
+      >
+        Add a deck
+      </Button>
     </div>
   );
 

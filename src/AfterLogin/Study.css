@@ -10,6 +10,10 @@
     grid-row-gap: 2vw;
     grid-column-gap: 2vw;
   }
+  .browse-card {
+    grid-template-columns: 1fr 6fr;
+    width: 80vw;
+  }
 }
 
 @media screen and (min-width: 601px) {
@@ -23,6 +27,10 @@
     grid-auto-rows: 30vw;
     grid-row-gap: 2vw;
     grid-column-gap: 2vw;
+  }
+  .browse-card {
+    grid-template-columns: 1fr 9fr;
+    width: 70vw;
   }
 }
 
@@ -38,6 +46,10 @@
     grid-auto-rows: 20vw;
     grid-row-gap: 2vw;
     grid-column-gap: 2vw;
+  }
+  .browse-card {
+    grid-template-columns: 1fr 12fr;
+    width: 70vw;
   }
 }
 .study-header {
@@ -162,7 +174,7 @@
 
 .homepage-empty-deck {
   width: 80vw;
-  height: 60vh;
+  height: 65vh;
   background-color: transparent;
   border-color: black;
   border-style: dashed;
@@ -173,8 +185,44 @@
 }
 .homepage-empty-deck-image {
   object-fit: contain;
-  width: 70%;
-  height: 70%;
+  width: 60%;
+  height: 60%;
+}
+.homepage-add-deck-button {
+  background-color: black !important;
+}
+
+.browse-card-layout {
+  display: flex;
+  width: 60vw;
+  margin-bottom: 10px;
+}
+
+.browse-card {
+  margin-bottom: 10px;
+  margin-top: 10px;
+  padding-right: 10px;
+  padding-top: 10px;
+  display: grid;
+}
+
+.browse-card-number {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.browse-card-texts {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.browse-flashcard-button {
+  background-color: #dde2fc !important;
+  color: black !important;
+  height: 25vh;
 }
 
 .edit-card {
