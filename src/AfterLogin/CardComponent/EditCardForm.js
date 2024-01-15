@@ -4,6 +4,7 @@ import { Autocomplete, Button, Card, TextField } from "@mui/material";
 import ErrorPage from "../../ErrorPage";
 import LoadingButton from "@mui/lab/LoadingButton";
 import TextToSpeech from "../../Controller/TextToSpeech";
+import "./EditCardForm.css";
 
 export default function EditCardForm(props) {
   const card = props.card;
@@ -71,75 +72,84 @@ export default function EditCardForm(props) {
   };
 
   return (
-    <Card className="edit-card">
-      <ErrorPage
-        errorMessage={errorMessage}
-        handleErrorMessage={() => setErrorMessage("")}
-      />
-      <div className="edit-buttons">
-        <Button disabled={isDisable} onClick={handleLanguageSwitch}>
-          Switch languages
-        </Button>
-        <Button disabled={isDisable} onClick={() => handleTranslate()}>
-          Translate
-        </Button>
-        <Button onClick={() => props.handleDelete(card.cardID)}>Delete</Button>
-        <Button disabled={isEditDisable} onClick={handleEdit}>
-          {props.editing === card.cardID ? "OK" : "Edit"}
-        </Button>
-      </div>
-      <div className="edit">
-        <div className="field">
-          <TextField
-            disabled={isDisable}
-            fullWidth
-            value={userInputValue}
-            onChange={(e) => setUserInputValue(e.target.value)}
-            label={englishToSpanish ? "English" : "Spanish"}
-            variant="standard"
-          ></TextField>
+    <div>
+      <Card className="edit-card">
+        <ErrorPage
+          errorMessage={errorMessage}
+          handleErrorMessage={() => setErrorMessage("")}
+        />
+        <div className="edit-card-buttons">
+          <Button disabled={isDisable} onClick={handleLanguageSwitch}>
+            Switch languages
+          </Button>
+          <Button disabled={isDisable} onClick={() => handleTranslate()}>
+            Translate
+          </Button>
+
+          <Button onClick={() => props.handleDelete(card.cardID)}>
+            Delete card
+          </Button>
+          <Button disabled={isEditDisable} onClick={handleEdit}>
+            {props.editing === card.cardID ? "Save card" : "Edit"}
+          </Button>
         </div>
-        <br />
-        <div className="field-audio">
+        <div className="edit">
           <div className="field">
-            <Autocomplete
-              value={translationValue}
+            <TextField
+              className="user-input"
               disabled={isDisable}
-              options={options}
-              onChange={(e, input) => {
-                setTranslationValue(input);
-              }}
-              onInputChange={(e, input) => {
-                setTranslationValue(input);
-              }}
-              autoSelect
-              freeSolo
-              disablePortal
-              id="combo-box-demo"
-              sx={{ width: 350 }}
-              getOptionLabel={(option) => option}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label={
-                    englishToSpanish
-                      ? "Spanish translation"
-                      : "English translation"
-                  }
-                />
-              )}
-            />
+              fullWidth
+              value={userInputValue}
+              onChange={(e) => setUserInputValue(e.target.value)}
+              label={englishToSpanish ? "English" : "Spanish"}
+              variant="standard"
+              sx={{ marginTop: 4 }}
+            ></TextField>
           </div>
-          <LoadingButton
-            loading={loadingAudio}
-            onClick={() => {
-              handlePlayAudio(translationValue);
-            }}
-          >
-            🔊
-          </LoadingButton>
+          <br />
+          <div className="field-audio">
+            <div className="field">
+              <Autocomplete
+                value={translationValue}
+                disabled={isDisable}
+                options={options}
+                onChange={(e, input) => {
+                  setTranslationValue(input);
+                }}
+                onInputChange={(e, input) => {
+                  setTranslationValue(input);
+                }}
+                autoSelect
+                freeSolo
+                disablePortal
+                id="combo-box-demo"
+                sx={{ width: 350 }}
+                getOptionLabel={(option) => option}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label={
+                      englishToSpanish
+                        ? "Spanish translation"
+                        : "English translation"
+                    }
+                  />
+                )}
+              />
+            </div>
+            <div className="play-audio-button">
+              <LoadingButton
+                loading={loadingAudio}
+                onClick={() => {
+                  handlePlayAudio(translationValue);
+                }}
+              >
+                🔊
+              </LoadingButton>
+            </div>
+          </div>
         </div>
-      </div>
-    </Card>
+      </Card>
+    </div>
   );
 }
