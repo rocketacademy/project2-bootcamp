@@ -177,6 +177,7 @@
   height: 65vh;
   background-color: transparent;
   border-color: black;
+  border-radius: 10px;
   border-style: dashed;
   display: flex;
   flex-direction: column;
