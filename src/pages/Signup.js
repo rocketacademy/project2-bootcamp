@@ -17,40 +17,24 @@ const Signup = () => {
     if (!password || !email || !username) return;
 
     try {
-      const newUser = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
+      await createUserWithEmailAndPassword(auth, email, password).then(
+        (userCredential) => {
+          const user = userCredential.user;
+          set(ref(db, `${selectedRadio}/` + user.uid), {
+            uid: user.uid,
+            username: username,
+            email: email,
+            role: selectedRadio,
+          });
+          setUsername("");
+          setEmail("");
+          setPassword("");
+          setSelectedRadio("Teacher");
+          navigate("/");
+        }
       );
-
-      if (newUser) {
-        updateProfile(auth.currentUser, {
-          uid: newUser.user.uid,
-          displayName: username,
-          email: email,
-        });
-        linkUserToDB();
-        setUsername("");
-        setEmail("");
-        setPassword("");
-        setSelectedRadio("Teacher");
-        navigate("/");
-      }
     } catch (error) {
       setErrorMessage(error.code);
-    }
-  };
-
-  const linkUserToDB = () => {
-    if (selectedRadio === "Teacher" || selectedRadio === "Student") {
-      const userRef = ref(db, `/${selectedRadio}`);
-      const newUserRef = push(userRef);
-      set(newUserRef, {
-        userID: auth.currentUser.uid,
-        name: auth.currentUser.displayName,
-        email: auth.currentUser.email,
-        role: selectedRadio,
-      });
     }
   };
 
@@ -88,7 +72,7 @@ const Signup = () => {
             onChange={(e) => setEmail(e.target.value)}
             className="input input-bordered w-full max-w-xs dark:bg-white mb-2 dark:border-gray-600"
           />
-          <label for="password" class="block text-sm text-left mb-2">
+          <label for="password" className="block text-sm text-left mb-2">
             Password
           </label>
           <input
