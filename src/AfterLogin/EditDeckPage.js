@@ -1,6 +1,6 @@
 import { useParams, useNavigate, useOutletContext } from "react-router-dom";
 import { useState, useEffect, useMemo } from "react";
-import { Button, TextField, Grid, Stack } from "@mui/material";
+import { Button, TextField } from "@mui/material";
 import SaveDone from "./EditComponent/SaveDone";
 import "./Study.css";
 import ErrorPage from "../ErrorPage";
@@ -163,7 +163,11 @@ export default function EditDeckPage() {
       {
         <div>
           <div className="save-button">
-            <Button variant="contained" onClick={handleSave}>
+            <Button
+              variant="contained"
+              sx={{ color: "white", backgroundColor: "black" }}
+              onClick={handleSave}
+            >
               Save deck
             </Button>
           </div>
@@ -186,6 +190,7 @@ export default function EditDeckPage() {
               variant="outlined"
               className="add-card-button"
               onClick={handleAdd}
+              sx={{ color: "black" }}
             >
               + New card
             </Button>
