@@ -119,7 +119,7 @@ const politicalLandmarks = {
   NationalMuseumofSingapore: { lat: 1.2966, lng: 103.8485 },
 };
 
-const App = () => {
+const App = ({ handleLogoutAppMain }) => {
   const [userMessage, setUserMessage] = useState('');
   const [aiResponse, setAiResponse] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -200,23 +200,13 @@ const App = () => {
     setAiResponse('');
   };
 
-  // console.log(aiResponse);
-  // console.log(user);
-
-  // const handleLogout1 = () => {
-  //   setIsLoggedIn(false);
-  //   signOut(auth);
-
-  //   setUser({});
-  // };
-
   const handleLogout = async () => {
     try {
       console.log('Logging out...');
       await logoutUser();
       console.log('User signed out');
       setUser({});
-      navigate('/');
+      navigate('/sign-in');
 
       console.log('Navigation complete');
     } catch (err) {

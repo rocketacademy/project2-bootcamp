@@ -35,6 +35,8 @@ export default function SignIn() {
       console.log(user);
       setEmail('');
       setPassword('');
+
+      navigate('/onboarding');
     } catch (error) {
       console.error('Error signing up', error);
     }

@@ -57,23 +57,6 @@ const linkStyle = {
   fontSize: '30px',
 };
 
-// Commented out because we will remove this feature + it is confusing React from parsing the landmarks props to RenderMap.js
-// SelectTextFields MUI
-// const landmarks = [
-//   {
-//     value: "Historical Landmarks",
-//     label: "Historical Landmarks",
-//   },
-//   {
-//     value: "Nature Parks",
-//     label: "Nature Parks",
-//   },
-//   {
-//     value: "Political Landmarks",
-//     label: "Political Landmarks",
-//   },
-// ];
-
 const historicalLandmarks = {
   Merlion: { lat: 1.2868, lng: 103.8545 },
   MarinaBaySands: { lat: 1.2836, lng: 103.8585 },
@@ -280,38 +263,6 @@ const SignInPage = () => {
       {isLoggedIn && (
         <StyledContainer>
           <StyledGridItem item sx={{ margin: '20px' }}>
-            {/* <TextField
-              type="text"
-              value={userMessage}
-              onChange={(e) => setUserMessage(e.target.value)}
-            />
-            <Button
-              variant="contained"
-              onClick={sendMessage}
-              sx={{ mt: "20px", mb: "20px" }}
-            >
-              Send Message
-            </Button>
-
-            <Box className="ai-response">
-              <Typography
-                variant="h4"
-                sx={{
-                  fontFamily: "Comic Sans MS",
-                  color: "primary.main",
-                }}
-              >
-                AI Response:
-              </Typography>
-              <p>{aiResponse}</p>
-            </Box>
-            <Button
-              variant="contained"
-              onClick={clearAIResponse}
-              sx={{ mt: "20px", mb: "20px" }}
-            >
-              Clear
-            </Button> */}
             <Box
               sx={{
                 '& .MuiTextField-root': { m: 1, width: '25ch' },
@@ -334,10 +285,6 @@ const SignInPage = () => {
           </StyledGridItem>
         </StyledContainer>
       )}
-      {/* 
-      <Box style={{ display: isLoggedIn ? "none" : "block" }}>
-        {!isLoggedIn && <AuthFormTesting />}
-      </Box> */}
 
       {!isLoggedIn && (
         <Box className="overlay">

@@ -15,6 +15,9 @@ import { Box } from '@mui/material';
 
 import SignInPage from './SignInPage';
 import GuidePage from './Components/GuidePage';
+import Protected from './Components/Protected';
+import Onboarding from './Components/OnboardingForm';
+import { useNavigate } from 'react-router-dom';
 
 const libraries = ['places'];
 
@@ -84,19 +87,20 @@ const AppMain = () => {
     return <div>Loading maps</div>;
   }
 
-  // const handleLogout = async () => {
-  //   try {
-  //     console.log('Logging out...');
-  //     await signOut(auth);
-  //     console.log('User signed out');
-  //     setUser({});
-  //     navigate('/sign-in');
-  //     setIsLoggedIn(false);
-  //     console.log('Navigation complete');
-  //   } catch (err) {
-  //     console.error('Error signing out', err);
-  //   }
-  // };
+  // PASS LOGOUT FUNCTION FROM APPMAIN TO APP SO THAT YOU CAN USE NAVIGATE(/SIGN-IN)
+  const handleLogoutAppMain = async () => {
+    try {
+      console.log('Logging out...');
+      await signOut(auth);
+      console.log('User signed out');
+      setUser({});
+      // navigate('/sign-in');
+      setIsLoggedIn(false);
+      console.log('Navigation complete');
+    } catch (err) {
+      console.error('Error signing out', err);
+    }
+  };
 
   console.log(isLoggedIn);
 
@@ -115,19 +119,48 @@ const AppMain = () => {
         </div>
       )}
       <Routes>
-        <Route path="/" element={<App />} />
+        <Route
+          path="/"
+          element={<App handleLogoutAppMain={handleLogoutAppMain} />}
+        />
+        <Route
+          path="/"
+          element={
+            <Protected isLoggedIn={isLoggedIn}>
+              <App />
+            </Protected>
+          }
+        />
+        <Route
+          path="/quizzesAI"
+          element={
+            <Protected isLoggedIn={isLoggedIn}>
+              <QuizAI user={user} />
+            </Protected>
+          }
+        />
+        <Route path="/sign-in" element={<SignInPage />} />
+        <Route
+          path="/guide"
+          element={
+            <Protected isLoggedIn={isLoggedIn}>
+              <GuidePage />
+            </Protected>
+          }
+        />
+        <Route path="/onboarding" element={<Onboarding />} />
         {isLoggedIn ? (
           <>
-            <Route path="/quizzes" element={<Quiz user={user} />} />
-            <Route path="/map" element={<App />} />
-            <Route path="/quizzesAI" element={<QuizAI user={user} />} />
-            <Route path="/guide" element={<GuidePage />} />
+            {/* <Route path="/quizzes" element={<Quiz user={user} />} />
+            <Route path="/map" element={<App />} /> */}
+            {/* <Route path="/quizzesAI" element={<QuizAI user={user} />} /> */}
+            {/* <Route path="/guide" element={<GuidePage />} /> */}
           </>
         ) : (
           <>
-            <Route path="/quizzes" element={<AuthFormTesting />} />
+            {/* <Route path="/quizzes" element={<AuthFormTesting />} />
             <Route path="/sign-in" element={<SignInPage />} />
-            <Route path="/map" element={<SignInPage />} />
+            <Route path="/map" element={<SignInPage />} /> */}
           </>
         )}
       </Routes>
