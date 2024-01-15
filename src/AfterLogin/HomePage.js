@@ -169,9 +169,6 @@ export default function HomePage() {
       />
 
       <div className="homepage-welcome">
-        {/* <h5>
-          👋 Welcome back, {user.displayName ? user.displayName : "Student"}.
-        </h5> */}
         <br />
         <h3>🗂️Decks</h3>
         <br />
