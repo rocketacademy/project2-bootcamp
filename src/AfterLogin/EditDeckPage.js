@@ -7,6 +7,7 @@ import ErrorPage from "../ErrorPage";
 import DBHandler from "../Controller/DBHandler";
 import EditCardForm from "./CardComponent/EditCardForm";
 import axios from "axios";
+import "./EditDeckPage.css";
 
 export default function EditDeckPage() {
   const [user] = useOutletContext();
@@ -161,50 +162,35 @@ export default function EditDeckPage() {
       />
       {
         <div>
-          <Stack
-            direction="column"
-            justifyContent="center"
-            alignItems="center"
-            spacing={1}
-          >
+          <div className="save-button">
+            <Button variant="contained" onClick={handleSave}>
+              Save deck
+            </Button>
+          </div>
+          <div className="content-container">
             <div className="deck-name-field">
-              <h1
+              <TextField
                 style={{
-                  display: "inline-block",
-                  marginLeft: "-20px",
-                  marginTop: "10px",
+                  width: "70vw",
+                  marginBottom: "50px",
+                  marginTop: "20px",
+                  backgroundColor: "white",
                 }}
-              >
-                <TextField
-                  sx={{ width: 300 }}
-                  value={deckName}
-                  onChange={(e) => setDeckName(e.target.value)}
-                  label="Deck Name"
-                ></TextField>
-              </h1>
+                value={deckName}
+                onChange={(e) => setDeckName(e.target.value)}
+                label="Deck Name"
+              ></TextField>
             </div>
-            <div className="edit-deck-buttons">
-              <Grid
-                container
-                spacing={2}
-                display="flex"
-                justifyContent="center"
-                mt={2}
-              >
-                <Grid item>
-                  <Button variant="contained" onClick={handleAdd}>
-                    Add card
-                  </Button>
-                </Grid>
-                <Grid item>
-                  <Button variant="contained" onClick={handleSave}>
-                    Save deck
-                  </Button>
-                </Grid>
-              </Grid>
-            </div>
+
+            <Button
+              variant="outlined"
+              className="add-card-button"
+              onClick={handleAdd}
+            >
+              + New card
+            </Button>
             <div> {cardsDisplay}</div>
-          </Stack>
+          </div>
         </div>
       }
       {saveDone && <SaveDone open={saveDone} onClose={handleCloseSaveDone} />}

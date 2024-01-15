@@ -1,0 +1,17 @@
+.save-button {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 15px;
+  width: 70vw;
+}
+.add-card-button {
+  width: 70vw;
+  height: 8vh;
+  border-style: dashed !important;
+}
+.content-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 70vw;
+}
