@@ -16,7 +16,6 @@ export default function EditCardForm(props) {
   const [translationValue, setTranslationValue] = useState(card.spanish);
   const [errorMessage, setErrorMessage] = useState("");
   const [loadingAudio, setLoadingAudio] = useState(false);
-  const [englishToSpanish, setEnglishToSpanish] = useState(true);
   const theme = useTheme();
   const translator = useMemo(
     () => new Translator(setErrorMessage, process.env.REACT_APP_SPANISH_KEY),
@@ -35,7 +34,7 @@ export default function EditCardForm(props) {
   const handleEdit = () => {
     if (props.editing) {
       props.setEditing(null);
-      if (englishToSpanish) {
+      if (props.englishToSpanish) {
         props.handleConfirmEdit(userInputValue, translationValue);
       } else props.handleConfirmEdit(translationValue, userInputValue);
     } else {
@@ -45,7 +44,7 @@ export default function EditCardForm(props) {
 
   const handleTranslate = async () => {
     try {
-      if (englishToSpanish) {
+      if (props.englishToSpanish) {
         const translationToSpan = await translator.engToSpan(userInputValue);
         setOptions(translationToSpan);
         setTranslationValue(translationToSpan[0]);
@@ -58,10 +57,6 @@ export default function EditCardForm(props) {
       setOptions([]);
       setTranslationValue("");
     }
-  };
-
-  const handleLanguageSwitch = () => {
-    setEnglishToSpanish((prevEnglishInput) => !prevEnglishInput);
   };
 
   const handlePlayAudio = async (word) => {
@@ -81,24 +76,6 @@ export default function EditCardForm(props) {
           handleErrorMessage={() => setErrorMessage("")}
         />
         <div className="edit-card-buttons">
-          <Button
-            disabled={isDisable}
-            sx={{
-              color: "black",
-              [theme.breakpoints.down("sm")]: {
-                fontSize: "10px",
-              },
-              [theme.breakpoints.up("md")]: {
-                fontSize: "14px",
-              },
-              [theme.breakpoints.up("lg")]: {
-                fontSize: "16px",
-              },
-            }}
-            onClick={handleLanguageSwitch}
-          >
-            Switch languages
-          </Button>
           <Button
             disabled={isDisable}
             sx={{
@@ -162,7 +139,7 @@ export default function EditCardForm(props) {
               fullWidth
               value={userInputValue}
               onChange={(e) => setUserInputValue(e.target.value)}
-              label={englishToSpanish ? "English" : "Spanish"}
+              label={props.englishToSpanish ? "English" : "Spanish"}
               variant="standard"
               sx={{ marginTop: 4 }}
             ></TextField>
@@ -191,7 +168,7 @@ export default function EditCardForm(props) {
                     variant="standard"
                     {...params}
                     label={
-                      englishToSpanish
+                      props.englishToSpanish
                         ? "Spanish translation"
                         : "English translation"
                     }

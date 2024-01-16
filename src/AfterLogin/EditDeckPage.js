@@ -17,6 +17,7 @@ export default function EditDeckPage() {
   const [editing, setEditing] = useState(null);
   const [saveDone, setSaveDone] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [englishToSpanish, setEnglishToSpanish] = useState(true);
   const [goHome, setGoHome] = useState(false);
   const navigate = useNavigate();
   const { deckID } = useParams();
@@ -140,6 +141,9 @@ export default function EditDeckPage() {
       return newCards;
     });
   };
+  const handleLanguageSwitch = () => {
+    setEnglishToSpanish((prevEnglishInput) => !prevEnglishInput);
+  };
 
   const cardsDisplay = cards.length
     ? cards.map((card) => {
@@ -151,6 +155,8 @@ export default function EditDeckPage() {
             editing={editing}
             setEditing={setEditing}
             handleConfirmEdit={handleConfirmEdit}
+            englishToSpanish={englishToSpanish}
+            setEnglishToSpanish={setEnglishToSpanish}
           />
         );
       })
@@ -164,7 +170,29 @@ export default function EditDeckPage() {
       />
       {
         <div>
-          <div className="save-button">
+          <div className="top-buttons">
+            <Button
+              variant="contained"
+              sx={{
+                color: "white",
+                backgroundColor: "black",
+                [theme.breakpoints.down("sm")]: {
+                  fontSize: "10px",
+                  padding: "6px 12px",
+                },
+                [theme.breakpoints.up("md")]: {
+                  fontSize: "12px",
+                  padding: "8px 16px",
+                },
+                [theme.breakpoints.up("lg")]: {
+                  fontSize: "16px",
+                  padding: "10px 20px",
+                },
+              }}
+              onClick={handleLanguageSwitch}
+            >
+              Switch languages
+            </Button>
             <Button
               variant="contained"
               sx={{
