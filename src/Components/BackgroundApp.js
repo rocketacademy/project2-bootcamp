@@ -1,58 +1,54 @@
 // Use this file in index.js as the root only as backup!
-import React from "react";
-import RenderMap from "../src/Services/Maps/RenderMap";
-import { useState, useEffect } from "react";
-import "./App.css";
-import AuthFormTesting from "./Components/AuthFormTesting";
-import SignIn from "./Components/AuthFormDiffVersion";
-import { auth } from "./firebase";
-import { onAuthStateChanged, signOut } from "firebase/auth";
-import PersistentDrawerLeft from "./Components/Drawer";
-import { BrowserRouter as Router, Link, Routes, Route } from "react-router-dom";
-import Quiz from "./Components/Quizzes";
-import { AppLinks } from "./AppMain";
+import React from 'react';
+import RenderMap from '../Services/Maps/RenderMap';
+import { useState, useEffect } from 'react';
+// import "./App.css";
+import '../App.css';
+import AuthFormTesting from './AuthFormTesting';
+import SignIn from './SignIn';
+import { auth } from '../firebase';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
+
+import { AppLinks } from '../AppMain';
 
 // MUI
-import { TextField, Box, Typography } from "@mui/material";
-import Button from "@mui/material/Button";
-import Grid from "@mui/material/Grid";
-import { styled } from "@mui/system";
-// import { Typography } from "@mui/material/styles/createTypography";
-import MenuItem from "@mui/material/MenuItem";
-import TemporaryDrawer from "./Components/TemporaryDrawer";
-// import { mapToStyles } from "@popperjs/core/lib/modifiers/computeStyles";
-// import { assertExpressionStatement } from "@babel/types";
+import { Box } from '@mui/material';
+import Button from '@mui/material/Button';
+import Grid from '@mui/material/Grid';
+import { styled } from '@mui/system';
+
+import TemporaryDrawer from './TemporaryDrawer';
 
 // Styling MUI function
-const StyledContainer = styled("div")({
-  display: "flex",
-  justifyContent: "flex-start",
+const StyledContainer = styled('div')({
+  display: 'flex',
+  justifyContent: 'flex-start',
 });
 
 const StyledGridItem = styled(Grid)({
-  width: "30%",
+  width: '30%',
 });
 
-const StyledGridPills = styled("div")({
-  width: "150px", // Define the width of your container
-  height: "100px", // Define the height of your container
-  marginBottom: "30px",
-  display: "flex",
-  flexDirection: "column",
-  justifyContent: "flex-end",
-  marginRight: "20px",
-  marginLeft: "20px",
+const StyledGridPills = styled('div')({
+  width: '150px', // Define the width of your container
+  height: '100px', // Define the height of your container
+  marginBottom: '30px',
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'flex-end',
+  marginRight: '20px',
+  marginLeft: '20px',
 });
 
 const linkStyle = {
-  marginRight: "50px",
-  marginLeft: "50px",
-  marginTop: "10px",
-  marginBottom: "10px",
-  textDecoration: "none",
-  color: "black",
-  fontWeight: "bold",
-  fontSize: "30px",
+  marginRight: '50px',
+  marginLeft: '50px',
+  marginTop: '10px',
+  marginBottom: '10px',
+  textDecoration: 'none',
+  color: 'black',
+  fontWeight: 'bold',
+  fontSize: '30px',
 };
 
 const historicalLandmarks = {
@@ -95,8 +91,8 @@ const politicalLandmarks = {
 };
 
 const AppBackground = () => {
-  const [userMessage, setUserMessage] = useState("");
-  const [aiResponse, setAiResponse] = useState("");
+  const [userMessage, setUserMessage] = useState('');
+  const [aiResponse, setAiResponse] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [selectedLandmarks, setSelectedLandmarks] =
     useState(historicalLandmarks);
@@ -115,8 +111,6 @@ const AppBackground = () => {
   //Authentication Handling
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
-      console.log(user);
-
       if (user) {
         setIsLoggedIn(true);
         setUser(user);
@@ -137,32 +131,28 @@ const AppBackground = () => {
   //Function to call OpenAI API
   const sendMessage = async (targetMessage) => {
     try {
-      const messageToSend = userMessage === "" ? targetMessage : userMessage;
+      const messageToSend = userMessage === '' ? targetMessage : userMessage;
 
-      const response = await fetch("http://localhost:3002/send-message", {
-        method: "POST",
+      const response = await fetch('http://localhost:3002/send-message', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({ message: messageToSend }),
       });
 
       const data = await response.json();
       setAiResponse(data.message);
-      setUserMessage("");
-      console.log(data.message);
+      setUserMessage('');
     } catch (error) {
-      console.error("Error sending message:", error);
+      console.error('Error sending message:', error);
       // Handle error state here if needed
     }
   };
 
   const clearAIResponse = () => {
-    setAiResponse("");
+    setAiResponse('');
   };
-
-  console.log(aiResponse);
-  console.log(user);
 
   const handleLogout = () => {
     setIsLoggedIn(false);
@@ -175,14 +165,6 @@ const AppBackground = () => {
       <Box>
         {isLoggedIn ? (
           <Box>
-            {/* <PersistentDrawerLeft
-              aiResponse={aiResponse}
-              clearAIResponse={clearAIResponse}
-              // onDrawerOpen: the function to set drawerRef state is passed as argument to onDrawerOpen
-              onDrawerOpen={(func) => setDrawerRef(func)}
-              sendMessage={sendMessage}
-            /> */}
-
             <TemporaryDrawer
               aiResponse={aiResponse}
               clearAIResponse={clearAIResponse}
@@ -207,7 +189,7 @@ const AppBackground = () => {
                 signOut(auth);
                 setUser({});
               }}
-              sx={{ marginLeft: "20px" }}
+              sx={{ marginLeft: '20px' }}
             >
               Log out
             </Button>
@@ -221,7 +203,7 @@ const AppBackground = () => {
                 <RenderMap sendMessage={sendMessage} landmarks={natureParks} />;
                 // sendMessage(message);
               }}
-              sx={{ width: "150px", height: "50px" }}
+              sx={{ width: '150px', height: '50px' }}
             >
               Nature Parks
             </Button>
@@ -238,7 +220,7 @@ const AppBackground = () => {
                 />;
                 // sendMessage(message);
               }}
-              sx={{ width: "150px", height: "50px" }}
+              sx={{ width: '150px', height: '50px' }}
             >
               Political Landmarks
             </Button>
@@ -255,7 +237,7 @@ const AppBackground = () => {
                 />;
                 // sendMessage(message);
               }}
-              sx={{ width: "150px", height: "50px" }}
+              sx={{ width: '150px', height: '50px' }}
             >
               Historical Landmarks
             </Button>
@@ -264,50 +246,19 @@ const AppBackground = () => {
       </Box>
 
       <StyledContainer>
-        <StyledGridItem item sx={{ margin: "20px" }}></StyledGridItem>
+        <StyledGridItem item sx={{ margin: '20px' }}></StyledGridItem>
         <StyledGridItem
           item
           style={{
-            width: "100%",
-            height: "100%",
-            position: "relative",
-            marginTop: "20px",
+            width: '100%',
+            height: '100%',
+            position: 'relative',
+            marginTop: '20px',
           }}
         >
           <RenderMap sendMessage={sendMessage} landmarks={selectedLandmarks} />
-          {/*<GoogleMap
-                mapContainerStyle={mapContainerStyle}
-                mapId="6da2495ffc989dca"
-                zoom={12}
-                center={center}
-              >
-                <Marker position={center} />
-                <Marker
-                  position={{ lat: 1.40058, lng: 103.90899 }}
-                  onClick={() => {
-                    const lat = 1.40058;
-                    const lng = 103.90899;
-                    console.log("Marker clicked!");
-                    console.log(lat);
-                    console.log(lng);
-                    const message = `What is the name of this location with the following address: 100 Punggol Central, Singapore 828839. Share with me its history, and what developments occured in the last 20 years in Singapore. Word limit is 30 words.`;
-                    sendMessage(message);
-                  }}
-                />
-              </GoogleMap>*/}
         </StyledGridItem>
       </StyledContainer>
-
-      {/* 
-      <Box style={{ display: isLoggedIn ? "none" : "block" }}>
-        {!isLoggedIn && <AuthFormTesting />}
-      </Box> */}
-
-      {/* {!isLoggedIn && (
-        <Box className='overlay'>
-          <SignIn />
-        </Box>
-      )} */}
     </Box>
   );
 };

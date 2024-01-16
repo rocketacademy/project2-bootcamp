@@ -1,15 +1,15 @@
-import React, { useState, useCallback, useRef, useEffect } from "react";
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import {
   GoogleMap,
   useLoadScript,
   Marker,
   InfoWindow,
   LoadScript,
-} from "@react-google-maps/api";
-import axios from "axios";
+} from '@react-google-maps/api';
+import axios from 'axios';
 //import singaporeflag from "../../Data/singaporeflag.png";
-import { realTimeDatabase } from "../../firebase";
-import { set, ref } from "firebase/database";
+import { realTimeDatabase } from '../../firebase';
+import { set, ref } from 'firebase/database';
 
 // const icon = singaporeflag;
 // const iconSize = {
@@ -18,8 +18,8 @@ import { set, ref } from "firebase/database";
 // };
 
 const mapContainerStyle = {
-  width: "80vw",
-  height: "80vh",
+  width: '80vw',
+  height: '80vh',
 };
 const center = {
   lat: 1.3513,
@@ -27,7 +27,7 @@ const center = {
 };
 
 export default function RenderMap({ sendMessage, landmarks }) {
-  const [libraries] = useState(["places"]);
+  const [libraries] = useState(['places']);
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
     libraries,
@@ -55,7 +55,7 @@ export default function RenderMap({ sendMessage, landmarks }) {
 
   const writeCoordinatesData = (lat = null, lng = null) => {
     const db = realTimeDatabase;
-    set(ref(db, "coordinates/"), {
+    set(ref(db, 'coordinates/'), {
       latitude: lat,
       longitude: lng,
     });
@@ -83,27 +83,27 @@ export default function RenderMap({ sendMessage, landmarks }) {
     });
     axios
       .get(
-        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`
+        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`,
       )
       .then((res) => {
         if (res.data.results && res.data.results[0]) {
           console.log(res.data.results[0].formatted_address);
           writeCoordinatesData(lat, lng);
-          console.log("Coordinates written to Firebase");
+          console.log('Coordinates written to Firebase');
           //readCoordinatesData();
         } else {
-          console.log("No results found");
+          console.log('No results found');
         }
         setSelectedPlace(res.data.results[0]);
         sendMessage(
           `You are a world class historian, who is as established as Associate Professor Joey Long, or Dr Masuda Hajimu, with expert knowledge on Singapore's every landmark and building, as well as its relevant historical developments. 
-          What is the name of this landmark with the following address:${res.data.results[0].formatted_address}. In 3 different paragraphs, separated by \n\n, share related historical events, and what developments occurred in the last 20 years in Singapore. Word limit is 200 words. Provide a break with the end of each paragraph`
+          What is the name of this landmark with the following address:${res.data.results[0].formatted_address}. In 3 different paragraphs, separated by \n\n, share related historical events, and what developments occurred in the last 20 years in Singapore. Word limit is 200 words. Provide a break with the end of each paragraph`,
         );
       });
   }, []);
 
-  if (loadError) return "Error loading maps";
-  if (!isLoaded) return "Loading Maps";
+  if (loadError) return 'Error loading maps';
+  if (!isLoaded) return 'Loading Maps';
 
   return (
     // <LoadScript
