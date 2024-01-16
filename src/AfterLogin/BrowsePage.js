@@ -4,11 +4,11 @@ import { Card, Button, TextField } from "@mui/material";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
+import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import Divider from "@mui/material/Divider";
 import "./Study.css";
 import ErrorPage from "../ErrorPage";
 import DBHandler from "../Controller/DBHandler";
-import axios from "axios";
 
 export default function BrowsePage() {
   const [user] = useOutletContext();
@@ -35,6 +35,10 @@ export default function BrowsePage() {
     navigate(`/study/${deckID}`);
   };
 
+  const handleEdit = () => {
+    navigate(`/editDeck/${deckID}`);
+  };
+
   useEffect(() => {
     const getDeckInfo = async () => {
       try {
@@ -50,22 +54,9 @@ export default function BrowsePage() {
         setErrorMessage(error.message);
       }
     };
-    const genDeckInfo = async () => {
-      try {
-        const genCardID = await axios.get(
-          "https://www.uuidgenerator.net/api/version7"
-        );
-        const newCardID = genCardID.data;
-        setCards([{ cardID: newCardID, english: "", spanish: "" }]);
-        setDecks({ deckName: "", deckCards: [newCardID] });
-      } catch (error) {
-        setErrorMessage(error.message);
-      }
-    };
+
     if (deckID) {
       getDeckInfo();
-    } else {
-      genDeckInfo();
     }
   }, [deckID, dbHandler]);
 
@@ -106,10 +97,13 @@ export default function BrowsePage() {
         errorMessage={errorMessage}
         handleErrorMessage={handleErrorMessage}
       />
-      <div className="browse-card-layout">
+      <div className="browse-card-title">
         <h2>{deck.deckName}</h2>
+        <Button value={deckID} onClick={(e) => handleEdit(e.value)}>
+          <ModeEditIcon />
+        </Button>
       </div>
-      <div>
+      <div className="browse-card-button-layout">
         <Button
           fullWidth
           className="browse-flashcard-button"
@@ -117,9 +111,29 @@ export default function BrowsePage() {
           variant="contained"
           onClick={() => handleStudy()}
         >
-          👩🏻‍💻Study Flashcard 💡
+          Study Flashcard
+        </Button>
+
+        <Button
+          fullWidth
+          className="browse-flashcard-button"
+          size="large"
+          variant="contained"
+        >
+          Quiz
+        </Button>
+
+        <Button
+          fullWidth
+          className="browse-flashcard-button"
+          size="large"
+          variant="contained"
+        >
+          Match
         </Button>
       </div>
+      <br />
+      <p className="browse-text">Terms in this set:</p>
       {<div>{cardsDisplay}</div>}
     </div>
   );
