@@ -23,7 +23,8 @@ const App = () => {
         </p> */}
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Auth />} />
+            <Route path="/" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
             <Route path="teacher" element={<Teacher />} />
             <Route path="password-reset" element={<Reset />} />
             <Route path="student" element={<Student />} />

@@ -27,7 +27,7 @@ const Signup = () => {
         updateProfile(auth.currentUser, {
           displayName: username,
         });
-        set(ref(db, `${selectedRadio}/${username}`), {
+        set(ref(db, `${selectedRadio}/${user.uid}`), {
           uid: user.uid,
           username: username,
           email: email,

@@ -1,6 +1,13 @@
 import React, { useState } from "react";
 import { auth, db } from "../firebase";
-import { ref, onValue, query, orderByKey, equalTo } from "firebase/database";
+import {
+  ref,
+  onValue,
+  query,
+  orderByKey,
+  equalTo,
+  get,
+} from "firebase/database";
 
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
@@ -29,12 +36,14 @@ const Login = () => {
     try {
       await signInWithEmailAndPassword(auth, email, password).then(
         (userCredential) => {
-          console.log(userCredential);
-          const userEmail = userCredential.user.email;
           const userName = userCredential.user.displayName;
-          console.log(userName);
-          checkStudentDB(userName, userEmail);
-          checkTeacherDB(userName);
+          const uid = userCredential.user.uid;
+          console.log("Username: " + userName);
+          checkStudentDBV2(uid);
+          checkTeacherDBV2(uid);
+          if ((checkStudentDBV2(uid) === checkTeacherDBV2(uid)) === null) {
+            console.log("User does not exist");
+          }
         }
       );
     } catch (error) {
@@ -42,7 +51,6 @@ const Login = () => {
       setMessage(error.message);
     }
   };
-  console.log(response);
 
   const checkStudentDB = (userID, emailID) => {
     return onValue(
@@ -56,6 +64,28 @@ const Login = () => {
         onlyOnce: true,
       }
     );
+  };
+
+  const checkStudentDBV2 = (uid) => {
+    const dbRef = ref(db, `Student/${uid}`);
+    get(dbRef).then((snapshot) => {
+      const data = snapshot.val();
+      if (data === null) {
+        return;
+      }
+      data.role === "Student" && setResponse("Student");
+    });
+  };
+
+  const checkTeacherDBV2 = (uid) => {
+    const dbRef = ref(db, `Teacher/${uid}`);
+    get(dbRef).then((snapshot) => {
+      const data = snapshot.val();
+      if (data === null) {
+        return;
+      }
+      data.role === "Teacher" && setResponse("Teacher");
+    });
   };
 
   const checkTeacherDB = (userID) => {
@@ -72,23 +102,7 @@ const Login = () => {
     );
   };
 
-  // useEffect(() => {
-  //   if (!response) return;
-  //   if (response === "Teacher") {
-  //     setTimeout(() => {
-  //       navigate("/teacher");
-  //     }, 2000);
-  //   } else {
-  //     setTimeout(() => {
-  //       navigate("/student");
-  //     }, 2000);
-  //   }
-  //   setMessage("Redirecting...");
-  //   setUser(auth.currentUser.displayName);
-  // }, [response]);
-
-  console.log(user);
-  console.log(response);
+  console.log("Response: " + response);
   return (
     <>
       <UserContext.Provider value={value}>
@@ -104,9 +118,7 @@ const Login = () => {
             <p className="text-sm text-left mb-4 font-bold">Login</p>
             <p className="mb-2">{message && message}</p>
 
-            <label for="email" className="block text-sm text-left mb-2">
-              Email
-            </label>
+            <label className="block text-sm text-left mb-2">Email</label>
             <input
               type="email"
               autoComplete="email"
@@ -114,9 +126,7 @@ const Login = () => {
               onChange={(e) => setEmail(e.target.value)}
               className="input input-bordered w-full max-w-xs dark:bg-white mb-2 dark:border-gray-600"
             />
-            <label for="password" className="block text-sm text-left mb-2">
-              Password
-            </label>
+            <label className="block text-sm text-left mb-2">Password</label>
             <input
               type="password"
               autoComplete="current-password"
