@@ -1,6 +1,7 @@
 import { useParams, useNavigate, useOutletContext } from "react-router-dom";
 import { useState, useEffect, useMemo } from "react";
 import { Button, TextField } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import SaveDone from "./EditComponent/SaveDone";
 import "./Study.css";
 import ErrorPage from "../ErrorPage";
@@ -20,6 +21,7 @@ export default function EditDeckPage() {
   const [goHome, setGoHome] = useState(false);
   const navigate = useNavigate();
   const { deckID } = useParams();
+  const theme = useTheme();
   const dbHandler = useMemo(
     () => new DBHandler(user.uid, setErrorMessage, setGoHome),
     [user.uid, setErrorMessage, setGoHome]
@@ -165,7 +167,22 @@ export default function EditDeckPage() {
           <div className="save-button">
             <Button
               variant="contained"
-              sx={{ color: "white", backgroundColor: "black" }}
+              sx={{
+                color: "white",
+                backgroundColor: "black",
+                [theme.breakpoints.down("sm")]: {
+                  fontSize: "10px",
+                  padding: "6px 12px",
+                },
+                [theme.breakpoints.up("md")]: {
+                  fontSize: "15px",
+                  padding: "10px 20px",
+                },
+                [theme.breakpoints.up("lg")]: {
+                  fontSize: "18px",
+                  padding: "14px 28px",
+                },
+              }}
               onClick={handleSave}
             >
               Save deck

@@ -5,6 +5,7 @@ import ErrorPage from "../../ErrorPage";
 import LoadingButton from "@mui/lab/LoadingButton";
 import TextToSpeech from "../../Controller/TextToSpeech";
 import "./EditCardForm.css";
+import { useTheme } from "@mui/material/styles";
 
 export default function EditCardForm(props) {
   const card = props.card;
@@ -16,6 +17,7 @@ export default function EditCardForm(props) {
   const [errorMessage, setErrorMessage] = useState("");
   const [loadingAudio, setLoadingAudio] = useState(false);
   const [englishToSpanish, setEnglishToSpanish] = useState(true);
+  const theme = useTheme();
   const translator = useMemo(
     () => new Translator(setErrorMessage, process.env.REACT_APP_SPANISH_KEY),
     [setErrorMessage]
@@ -81,27 +83,71 @@ export default function EditCardForm(props) {
         <div className="edit-card-buttons">
           <Button
             disabled={isDisable}
-            sx={{ color: "black" }}
+            sx={{
+              color: "black",
+              [theme.breakpoints.down("sm")]: {
+                fontSize: "10px",
+              },
+              [theme.breakpoints.up("md")]: {
+                fontSize: "16px",
+              },
+              [theme.breakpoints.up("lg")]: {
+                fontSize: "20px",
+              },
+            }}
             onClick={handleLanguageSwitch}
           >
             Switch languages
           </Button>
           <Button
             disabled={isDisable}
-            sx={{ color: "black" }}
+            sx={{
+              color: "black",
+              [theme.breakpoints.down("sm")]: {
+                fontSize: "10px",
+              },
+              [theme.breakpoints.up("md")]: {
+                fontSize: "15px",
+              },
+              [theme.breakpoints.up("lg")]: {
+                fontSize: "20px",
+              },
+            }}
             onClick={() => handleTranslate()}
           >
             Translate
           </Button>
 
           <Button
-            sx={{ color: "black" }}
+            sx={{
+              color: "black",
+              [theme.breakpoints.down("sm")]: {
+                fontSize: "10px",
+              },
+              [theme.breakpoints.up("md")]: {
+                fontSize: "15px",
+              },
+              [theme.breakpoints.up("lg")]: {
+                fontSize: "20px",
+              },
+            }}
             onClick={() => props.handleDelete(card.cardID)}
           >
             Delete card
           </Button>
           <Button
-            sx={{ color: "black" }}
+            sx={{
+              color: "black",
+              [theme.breakpoints.down("sm")]: {
+                fontSize: "10px",
+              },
+              [theme.breakpoints.up("md")]: {
+                fontSize: "15px",
+              },
+              [theme.breakpoints.up("lg")]: {
+                fontSize: "20px",
+              },
+            }}
             disabled={isEditDisable}
             onClick={handleEdit}
           >
