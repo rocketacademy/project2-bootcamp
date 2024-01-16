@@ -27,6 +27,8 @@ a {
 }
 
 .navi-bar {
+  position: relative;
+  overflow: hidden;
   height: 10vh;
   display: flex;
   flex-direction: row;
@@ -44,14 +46,6 @@ a {
   cursor: pointer;
 }
 
-.navi-icon-div {
-  padding-right: 10px;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-}
-
 @media screen and (max-width: 600px) {
   .navi-icon-div {
     width: 50vw;
@@ -60,13 +54,7 @@ a {
 
 @media screen and (min-width: 601px) {
   .navi-icon-div {
-    width: 30vw;
-  }
-}
-
-@media screen and (min-width: 992px) {
-  .navi-icon-div {
-    width: 20vw;
+    width: 500px;
   }
 }
 
@@ -115,4 +103,25 @@ a {
 .navi-logo {
   height: 10vh;
   margin-left: 5px;
+}
+
+.large-search-bar {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+}
+
+.small-search-bar {
+  position: absolute;
+  right: 5vw;
+  display: flex;
+  flex-direction: row;
+}
+
+.navi-icon-div {
+  padding-right: 10px;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: space-between;
 }

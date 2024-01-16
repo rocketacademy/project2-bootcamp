@@ -1,6 +1,6 @@
 import { useParams, useNavigate, useOutletContext } from "react-router-dom";
 import { useState, useEffect, useMemo } from "react";
-import { Card, Button, Tooltip, Snackbar } from "@mui/material";
+import { Card, Button, Snackbar } from "@mui/material";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
@@ -98,15 +98,17 @@ export default function BrowsePage() {
         } else {
           navigate(`/quiz/MixAndMatch/${deckID}`);
         }
+        break;
       case "MC":
-        if (deck.deckCards.length < 10) {
+        if (deck.deckCards.length < 13) {
           setSnackBar(13);
         } else {
           navigate(`/quiz/MC/${deckID}`);
         }
+        break;
+      default:
     }
   };
-
   return (
     <div>
       <Snackbar
