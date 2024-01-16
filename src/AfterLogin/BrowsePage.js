@@ -111,25 +111,23 @@ export default function BrowsePage() {
           variant="contained"
           onClick={() => handleStudy()}
         >
-          Study Flashcard
+          📖 Study Flashcard
         </Button>
-
         <Button
           fullWidth
-          className="browse-flashcard-button"
+          className="browse-flashcard-button-blue"
           size="large"
           variant="contained"
         >
-          Quiz
+          📝 Quiz
         </Button>
-
         <Button
           fullWidth
-          className="browse-flashcard-button"
+          className="browse-flashcard-button-blue"
           size="large"
           variant="contained"
         >
-          Match
+          📋 Match
         </Button>
       </div>
       <br />

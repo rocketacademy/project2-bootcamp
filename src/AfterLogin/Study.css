@@ -246,8 +246,13 @@
 }
 
 .browse-flashcard-button {
-  background-color: #dde2fc !important;
-  color: black !important;
+  background-color: black !important;
+  margin-top: 10px;
+  padding-top: 10px;
+}
+
+.browse-flashcard-button-blue {
+  background-color: #4f6ef7 !important;
   margin-top: 10px;
   padding-top: 10px;
 }
