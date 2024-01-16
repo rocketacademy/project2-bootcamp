@@ -1,118 +1,99 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-// import { GoogleSpreadsheet } from "google-spreadsheet";
-// import { Chart } from "react-google-charts";
 import { db } from "../firebase";
 import { ref, onValue } from "firebase/database";
-// import axios from "axios";
+import { Chart } from "react-google-charts";
+import useLoadChartData from "../hooks/useLoadData";
+import useLoadCourseSearch from "../hooks/useLoadCourseSearch";
+import axios from "axios";
 
 const Teacher = () => {
+  const { initialGid, initialCourse } = useLoadChartData();
+  const [count, setCount] = useState(null);
+
+  console.log(count);
+  const [gid, setGid] = useState(null);
+  // console.log(gid);
+  const { courseOptions, courseGidMap } = useLoadCourseSearch();
+  const [courseName, setCourseName] = useState("");
   const navigate = useNavigate();
-  // const [loading, setLoading] = useState(false);
-  // const [chartData, setChartData] = useState([]);
-  // const [errMsg, setErrMsg] = useState("");
-  const [courses, setCourses] = useState([]);
+
+  const spreadSheetId = "16HTIiiOq82Tm1tLHRQcr_8YJnO81QxZOOBOfR4hU3zc";
+
+  const fetchAllUsers = () => {
+    const usersRef = ref(db, "Student");
+    onValue(usersRef, (snapshot) => {
+      console.log(snapshot.val());
+    });
+  };
+  fetchAllUsers();
+  useEffect(() => {
+    const fetchCount = async () => {
+      await axios
+        .get(
+          `https://docs.google.com/spreadsheets/d/${spreadSheetId}/export?format=csv&gid=${initialGid}`
+        )
+        .then((res) => {
+          const numEntries = parseCSVToArr(res.data);
+          setCount(numEntries);
+        });
+    };
+    if (initialGid) {
+      fetchCount();
+    }
+  }, [initialGid]);
+
+  const parseCSVToArr = (csvText) => {
+    const rows = csvText.split(/\r?\n/);
+    console.log(rows);
+    const data = [];
+    for (const row of rows) {
+      const rowData = row.split(", ");
+      data.push(rowData);
+    }
+    return data.length - 1;
+  };
 
   useEffect(() => {
-    const coursesRef = ref(db, "/courses");
-    onValue(coursesRef, (snapshot) => {
-      const data = snapshot.val();
-      console.log(data);
+    const getGid = courseGidMap.get(courseName);
+    setGid(getGid);
+    setCourseName(courseName);
+  }, [courseName]);
 
-      Object.values(data).forEach((myData) => {
-        const courseId = myData.gid;
-        setCourses((courses) => {
-          return [...courses, courseId];
+  useEffect(() => {
+    const fetchData = async () => {
+      await axios
+        .get(
+          `https://docs.google.com/spreadsheets/d/${spreadSheetId}/export?format=csv&gid=${gid}`
+        )
+        .then((res) => {
+          const numEntries = parseCSVToArr(res.data);
+          console.log(numEntries);
+          setCount(numEntries);
         });
-      });
-    });
-  }, []);
+    };
+    if (gid) {
+      fetchData();
+    }
+  }, [gid]);
 
-  console.log(courses);
+  useEffect(() => {
+    if (initialCourse) {
+      setCourseName(initialCourse);
+    }
+  }, [initialCourse]);
 
-  // const fetchData = async () => {
-  //   setChartData(data);
-  // setLoading(true);
-  // try {
-  //   const response = await axios.get(
-  //     "https://docs.google.com/spreadsheets/d/e/2PACX-1vSTx5-VKJBxXasQweRDdzyQxrWQtuDm3OGpTCX00G4rlc6sBymaPbXsTDKO5QOOg3cog72Uatd-THzk/pub?gid=902545446&single=true&output=csv "
-  //   );
-  // "https://docs.google.com/spreadsheets/d/e/2PACX-1vSTx5-VKJBxXasQweRDdzyQxrWQtuDm3OGpTCX00G4rlc6sBymaPbXsTDKO5QOOg3cog72Uatd-THzk/pub?gid=832644199&single=true&output=csv"
+  const data = [
+    ["Course", "Completion Rate "],
+    [courseName, count],
+  ];
 
-  //   "https://docs.google.com/spreadsheets/d/e/2PACX-1vSTx5-VKJBxXasQweRDdzyQxrWQtuDm3OGpTCX00G4rlc6sBymaPbXsTDKO5QOOg3cog72Uatd-THzk/pub?gid=1040383854&single=true&output=csv"
-
-  // const parsedCsvData = parseCSVToArr(response.data);
-  //     setChartData(data);
-  //     // console.log(parsedCsvData);
-  //   } catch (error) {
-  //     setErrMsg(error);
-  //   }
-  // };
-  // }
-  // const dbRef = ref(db, "courses/");
-
-  // useEffect(() => {
-  //   retrieveCourseData();
-  // }, []);
-  // `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${SHEET_NAME}?valueRenderOption=FORMATTED_VALUE&key=${API_KEY}`;
-
-  // const fetchDataing = async () => {
-  //   const getdata = await axios
-  //     .get(
-  //       "https://docs.google.com/spreadsheets/d/aBC-123_xYz/edit#gid=1162486732"
-  //       // "https://sheets.googleapis.com/v4/spreadsheets/1162486732/values:batchGet"
-  //     )
-  //     .then((response) => {
-  //       console.log(response);
-  //     });
-  //   return console.log(getdata);
-  // const SHEET_ID = "1570289415";
-  // const SHEET_NAME = `FormOne`;
-  // const API_KEY = "AIzaSyBRRRol9-C9iTmPuaxq1j5JbnvmbSAisFU";
-  // const URL = `https://docs.google.com/spreadsheets/d/aBC-123_xYz/edit#gid=${SHEET_ID}`;
-  // const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${SHEET_NAME}?valueRenderOption=FORMATTED_VALUE&key=${API_KEY}`;
-  // const URL = ` https://docs.google.com/spreadsheets/d/16HTIiiOq82Tm1tLHRQcr_8YJnO81QxZOOBOfR4hU3zc/edit#gid=1162486732`;
-  // axios.get(URL).then((res) => console.log(res.data));
-  // };
-
-  // console.log(fetchDataing());
-
-  // const data = [
-  //   ["Course", "Rate (%)"],
-  //   [`${retrieveCourse}`, 90],
-  // ];
-
-  // useEffect(()=> {
-
-  // }, [])
-
-  // const parseCSVToArr = (csvText) => {
-  //   const rows = csvText.split(/\r?\n/);
-  //   // const headers = rows[0].split(", ");
-  //   const data = [];
-  //   for (const row of rows) {
-  //     const values = row.split(", ");
-  //     data.push(values);
-  //   }
-  //   return data;
-  //   // for (let i = 0; i < rows.length; i += 1) {
-  //   //   const rowData = rows[i].split(", ");
-  //   //   const dataObj = {};
-  //   //   for (let j = 0; j < headers.length; j += 1) {
-  //   //     dataObj[headers[j]] = rowData[j];
-  //   //   }
-  //   //   data.push(dataObj);
-  //   // }
-  //   // return data;
-  // };
-  // console.log(chartData);
-
-  // const options = {
-  //   vAxis: { title: "Completion rate (%)" },
-  //   hAxis: { title: "Course Name" },
-  //   seriesType: "bars",
-  //   series: { 3: { type: "line" } },
-  // };
+  const options = {
+    vAxis: { title: "Completion rate (%)" },
+    hAxis: { title: "Course Name" },
+    seriesType: "bars",
+    series: { 5: { type: "line" } },
+  };
 
   return (
     <>
@@ -134,6 +115,7 @@ const Teacher = () => {
           </svg>
         </span>
       </div> */}
+      {/* <p>hi {user}</p> */}
       <div class="h-screen  p-20">
         <div class="text-left">
           <p class="text-sm font-bold">Quick Access</p>
@@ -178,7 +160,6 @@ const Teacher = () => {
             <p class="text-sm">Resources</p>
           </div>
         </div>
-
         <div class="flex flex-end relative">
           <div class="absolute inset-y-0  flex items-center ps-3 pointer-events-none">
             <svg
@@ -197,28 +178,22 @@ const Teacher = () => {
               />
             </svg>
           </div>
-
-          <input
-            type="search"
-            id="default-search"
-            class="block w-60 p-2 ps-10 text-sm bg-transparent rounded-lg border border-gray-700 "
-            placeholder="Search course name..."
-            required
-          />
         </div>
-        <div class="flex  justify-around">
-          <button>Course Progress</button>
-        </div>
-        {/* {!errMsg & errMsg} */}
-
-        {/* <Chart
+        <select
+          value={courseName}
+          onChange={(e) => setCourseName(e.target.value)}
+        >
+          {courseOptions}
+        </select>
+        <Chart
           chartType="ComboChart"
           data={data}
           options={options}
           width={"100%"}
-          height={"400px"}
-        /> */}
+          height={"300px"}
+        />
       </div>
+      <button onClick={() => navigate("settings")}>Settings</button>
     </>
   );
 };
