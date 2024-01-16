@@ -54,7 +54,6 @@ export default function QuizAI({ user }) {
   const [answerSelected, setAnswerSelected] = useState(false);
 
   const [loading, setLoading] = useState(false);
-  const [loading, setLoading] = useState(false);
 
   const quizData = [
     {
@@ -75,12 +74,9 @@ export default function QuizAI({ user }) {
       counter: 0,
     },
   ];
-      counter: 0,
-    },
-  ];
 
-  const getQuizFromOpenAI = async (argument) => {
-    setLoading(true);
+
+  
   const getQuizFromOpenAI = async (argument) => {
     setLoading(true);
 
@@ -91,9 +87,8 @@ export default function QuizAI({ user }) {
     }
 
     const landmark = argument.question;
-    const landmark = argument.question;
+   
     try {
-      const prompt = `Generate a multiple choice question about ${landmark} where the options are labelled in capital letters, A), B), C), D). Don't leave any empty lines between the question and options. Put just the answer letter at the bottom as Answer: answer letter and don't put Question at the beginning`;
       const prompt = `Generate a multiple choice question about ${landmark} where the options are labelled in capital letters, A), B), C), D). Don't leave any empty lines between the question and options. Put just the answer letter at the bottom as Answer: answer letter and don't put Question at the beginning`;
 
       const response = await fetch('http://localhost:3002/send-message', {
@@ -106,8 +101,7 @@ export default function QuizAI({ user }) {
 
       const data = await response.json();
       console.log(data.message);
-      const data = await response.json();
-      console.log(data.message);
+    
 
       const { question, extractedData, answer } = parseOpenAIResponse(
         data.message,
@@ -133,12 +127,9 @@ export default function QuizAI({ user }) {
       setLoading(false);
       console.error(`Error sending message due to: ${err}`);
       setLoading(false);
-    } catch (err) {
-      setLoading(false);
-      console.error(`Error sending message due to: ${err}`);
-    }
+    } 
   };
-  };
+  
 
   const handleAnswerClick = async (selectedAnswer) => {
     if (selectedAnswer === answer && counter === 0) {
