@@ -212,14 +212,14 @@ export default function EditDeckPage() {
                 [theme.breakpoints.down("sm")]: {
                   fontSize: "10px",
                   padding: "6px 12px",
-                  height: "50px",
+                  height: "40px",
                   marginTop: "20px",
                   marginBottom: "5px",
                 },
                 [theme.breakpoints.up("md")]: {
                   fontSize: "14px",
                   padding: "12px 24px",
-                  height: "65px",
+                  height: "50px",
                   marginTop: "40px",
                   marginBottom: "10px",
                 },
