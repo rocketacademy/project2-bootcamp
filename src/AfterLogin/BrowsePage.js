@@ -64,7 +64,7 @@ export default function BrowsePage() {
   const cardsDisplay = cards.length
     ? cards.map((card, index) => {
         return (
-          <Card className="browse-card">
+          <Card className="browse-card" key={card.cardID}>
             <div className="browse-card-number">
               <p>{index + 1}</p>
             </div>
@@ -103,24 +103,36 @@ export default function BrowsePage() {
         >
           👩🏻‍💻Study Flashcard 💡
         </Button>
-        <Button
-          fullWidth
-          className="browse-flashcard-quiz-button"
-          size="large"
-          variant="contained"
-          onClick={() => navigate(`/quiz/MC/${deckID}`)}
-        >
-          👩🏻‍💻Multiple Choice Quiz💡
-        </Button>
-        <Button
-          fullWidth
-          className="browse-flashcard-quiz-button"
-          size="large"
-          variant="contained"
-          onClick={() => navigate(`/quiz/MM/${deckID}`)}
-        >
-          👩🏻‍💻Mix & Match Quiz💡
-        </Button>
+        {deck.deckCards && deck.deckCards.length < 13 ? (
+          <p>
+            You need to have at least 13 cards to start Multiple Choice Quiz.
+          </p>
+        ) : (
+          <Button
+            fullWidth
+            disabled={deck.deckCards && deck.deckCards.length < 13}
+            className="browse-flashcard-quiz-button"
+            size="large"
+            variant="contained"
+            onClick={() => navigate(`/quiz/MC/${deckID}`)}
+          >
+            👩🏻‍💻Multiple Choice Quiz💡
+          </Button>
+        )}
+        {deck.deckCards && deck.deckCards.length < 10 ? (
+          <p>You need to have at least 10 cards to start Mix & Match Quiz.</p>
+        ) : (
+          <Button
+            fullWidth
+            className="browse-flashcard-quiz-button"
+            size="large"
+            variant="contained"
+            onClick={() => navigate(`/quiz/MixAndMatch/${deckID}`)}
+            disabled={deck.deckCards && deck.deckCards.length < 10}
+          >
+            👩🏻‍💻Mix & Match Quiz💡
+          </Button>
+        )}
       </div>
       {<div>{cardsDisplay}</div>}
     </div>

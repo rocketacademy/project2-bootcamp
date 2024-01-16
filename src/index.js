@@ -32,6 +32,7 @@ root.render(
         <Route path="quizList" element={<QuizReportList />} />
         <Route path="quizList/:quizNo" element={<QuizReport />} />
         <Route path="quiz" element={<QuizPage />} />
+        <Route path="quiz/:mode/:deckID" element={<QuizPage />} />
         <Route path="*" element={<div>404</div>} />
       </Route>
       <Route path="*" element={<div>404</div>} />

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate, useOutletContext } from "react-router-dom";
+import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 //Take the user data from App.js state
 import QuizFirstPageMC from "./QuizComponent/MC/QuizFirstPageMC";
 import McQuiz from "./QuizComponent/MC/McQuiz";
@@ -16,6 +16,7 @@ export default function QuizPage() {
   const [quizMode, setQuizMode] = useState("MC");
   const [quizPage, setQuizPage] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const { mode, deckID } = useParams();
   const navi = useNavigate();
   const dbHandler = useMemo(
     () => new DBHandler(user.uid, setErrorMessage),
@@ -32,6 +33,14 @@ export default function QuizPage() {
       try {
         const { userDecks } = await dbHandler.getUserAndDecksInfo();
         setUserDecks(userDecks);
+        if (mode && deckID) {
+          const targetDeckIndex = userDecks.findIndex(
+            (deck) => deck.deckID === deckID
+          );
+          setDecks([userDecks[targetDeckIndex]]);
+          setQuizMode(mode);
+          setQuizPage(true);
+        }
       } catch (error) {
         setErrorMessage(error.message);
       }

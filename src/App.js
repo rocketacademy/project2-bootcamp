@@ -26,7 +26,9 @@ export default function App() {
 
   const userDisplay = (
     <div>
-      {path.pathname !== "/quiz" && <NaviBar user={user} setUser={setUser} />}
+      {path.pathname.substring(0, 5) !== "/quiz" && (
+        <NaviBar user={user} setUser={setUser} />
+      )}
       <div className="outlet">
         <Outlet context={[user, setUser]} />
       </div>

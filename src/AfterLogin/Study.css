@@ -218,6 +218,7 @@
   padding-right: 10px;
   padding-top: 10px;
   display: grid;
+  width: 100%;
 }
 
 .browse-card-number {
@@ -243,7 +244,7 @@
   background-color: #dde2fc !important;
   color: black !important;
   width: fit-content;
-  height: 5vh;
+  height: 10vh;
 }
 
 .edit-card {
