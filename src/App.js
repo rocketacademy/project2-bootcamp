@@ -8,7 +8,8 @@ import Resources from "./pages/Resources";
 import { CourseForm } from "./pages/CourseForm";
 import "./App.css";
 // import { AttendancePublic } from "./pages/AttendancePublic";
-// import Student from "./pages/Student";
+import Student from "./pages/Student";
+import Settings from "./pages/Settings";
 
 // import { StudentCourses } from "./pages/StudentCourses";
 
@@ -22,8 +23,9 @@ const App = () => {
             <Route path="signup" element={<Signup />} />
             <Route path="teacher" element={<Teacher />} />
             <Route path="password-reset" element={<Reset />} />
-            {/* <Route path="student" element={<Student />} /> */}
+            <Route path="student" element={<Student />} />
             <Route path="teacher/resources" element={<Resources />} />
+            <Route path="teacher/settings" element={<Settings />} />
             <Route
               path="teacher/resources/courseform"
               element={<CourseForm />}
