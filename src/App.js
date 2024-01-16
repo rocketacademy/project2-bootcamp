@@ -44,16 +44,29 @@ export default function App() {
   const nonUserDisplay = (
     <div className="App">
       <div className="intro-page">
-        <img src={logo} alt="logo" className="logo" />
-        <h1>Welcome to our Spanish-English Flashcard App</h1>
-        <div className="front-page-button">
-          <Button variant="contained" onClick={() => navi("/register")}>
-            Register
-          </Button>
-          <p>or</p>
-          <Button variant="contained" onClick={() => navi("/signin")}>
-            Sign in
-          </Button>
+        {/* <img src={logo} alt="logo" className="logo" /> */}
+        <div className="intro-page-right-layout">
+          <h1>Master Spanish effortlessly with Flashcard App</h1>
+          <div className="front-page-button">
+            <Button
+              className="register-button"
+              variant="contained"
+              onClick={() => navi("/register")}
+            >
+              Register
+            </Button>
+            <p>or</p>
+            <Button
+              className="register-button"
+              variant="contained"
+              onClick={() => navi("/signin")}
+            >
+              Sign in
+            </Button>
+          </div>
+        </div>
+        <div className="intro-page-left-layout">
+          <img className="intro-image" src="intro.gif" alt="Home" />
         </div>
       </div>
       <div className="intro-features-page">
@@ -62,7 +75,10 @@ export default function App() {
 
         <LibraryBooksIcon fontSize="large" />
         <h5>Comprehensive Vocabulary</h5>
-        <p>Access over 10,000 words translated from a robust dictionary API.</p>
+        <p>
+          Access over 80,000 entry words translated from Merriam-Webster's
+          Dictionary.
+        </p>
         <br />
 
         <GraphicEqIcon fontSize="large" />
