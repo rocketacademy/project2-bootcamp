@@ -207,7 +207,30 @@ export default function EditDeckPage() {
               variant="outlined"
               className="add-card-button"
               onClick={handleAdd}
-              sx={{ color: "black" }}
+              sx={{
+                color: "black",
+                [theme.breakpoints.down("sm")]: {
+                  fontSize: "10px",
+                  padding: "6px 12px",
+                  height: "50px",
+                  marginTop: "20px",
+                  marginBottom: "5px",
+                },
+                [theme.breakpoints.up("md")]: {
+                  fontSize: "15px",
+                  padding: "12px 24px",
+                  height: "65px",
+                  marginTop: "40px",
+                  marginBottom: "10px",
+                },
+                [theme.breakpoints.up("lg")]: {
+                  fontSize: "20px",
+                  padding: "16px 32px",
+                  height: "80px",
+                  marginTop: "50px",
+                  marginBottom: "10px",
+                },
+              }}
             >
               + New card
             </Button>
