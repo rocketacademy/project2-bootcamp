@@ -174,10 +174,10 @@ export default function EditCardForm(props) {
                     }
                     sx={{
                       [theme.breakpoints.down("sm")]: {
-                        marginTop: "18px",
+                        marginTop: "10px",
                       },
                       [theme.breakpoints.up("md")]: {
-                        marginTop: "25px",
+                        marginTop: "15px",
                       },
                       [theme.breakpoints.up("lg")]: {
                         marginTop: "25px",
