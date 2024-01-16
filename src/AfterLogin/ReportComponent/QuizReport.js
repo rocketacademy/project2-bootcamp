@@ -88,10 +88,10 @@ export default function QuizReport() {
       </Button>
       <div className="quiz-report-header">
         <h2>Quiz {quizNo}</h2>
-        <h5>Score:{quizInfo.score}</h5>
+        <h5>Score: {quizInfo.score}</h5>
       </div>
       <div>{quizDetailTable}</div>
-      <div>Date:{quizInfo.date}</div>
+      <div>Date: {quizInfo.date}</div>
     </div>
   ) : (
     <Backdrop open={true}>

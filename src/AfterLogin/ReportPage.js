@@ -52,10 +52,12 @@ export default function ReportPage() {
   let accumulateScore = 0;
   const chartData =
     userInfo && userInfo.quizReport
-      ? Object.values(userInfo.quizReport).map(({ score, quizID }) => {
-          accumulateScore += score;
-          return { averageScore: accumulateScore / quizID, quiz: quizID };
-        })
+      ? Object.values(userInfo.quizReport)
+          .sort((a, b) => a.quizID - b.quizID)
+          .map(({ score, quizID }) => {
+            accumulateScore += score;
+            return { averageScore: accumulateScore / quizID, quiz: quizID };
+          })
       : [];
 
   //Total average score same as the last index
