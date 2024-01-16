@@ -102,10 +102,10 @@ a {
 }
 
 .front-page-button {
-  width: 60vw;
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+  justify-content: center;
+  padding: 20px;
+  gap: 20px;
 }
 
 .logo {
@@ -115,4 +115,28 @@ a {
 .navi-logo {
   height: 10vh;
   margin-left: 5px;
+}
+
+.intro-page {
+  width: 80vw;
+  height: 110vh;
+  margin-left: 10px;
+  margin-right: 10px;
+  align-items: center;
+}
+
+.intro-features-page {
+  width: 80vw;
+  display: flex;
+  margin-left: 10px;
+  margin-right: 10px;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  row-gap: 5px;
+  margin-bottom: 30px;
+}
+
+.intro-features-page > h1 {
+  padding-left: 0px !important;
 }
