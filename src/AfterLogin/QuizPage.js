@@ -8,6 +8,7 @@ import QuizFirstPageMixAndMatch from "./QuizComponent/MixAndMatch/QuizFirstPageM
 import MixAndMatchQuiz from "./QuizComponent/MixAndMatch/MixAndMatchQuiz";
 import DBHandler from "../Controller/DBHandler";
 import ErrorPage from "../ErrorPage";
+import { Button, Card } from "@mui/material";
 
 export default function QuizPage() {
   const [user] = useOutletContext();
@@ -26,6 +27,14 @@ export default function QuizPage() {
   const handleErrorMessage = () => {
     setErrorMessage("");
     navi("/");
+  };
+
+  const handleMcQ = () => {
+    setQuizMode("MC");
+  };
+
+  const handleMnM = () => {
+    setQuizMode("MixAndMatch");
   };
 
   useEffect(() => {
@@ -60,6 +69,7 @@ export default function QuizPage() {
           userDecks={userDecks}
           setDecks={setDecks}
           setQuizPage={setQuizPage}
+          quizMode={quizMode}
           setQuizMode={setQuizMode}
         />
       );
@@ -75,6 +85,7 @@ export default function QuizPage() {
           userDecks={userDecks}
           setDecks={setDecks}
           setQuizPage={setQuizPage}
+          quizMode={quizMode}
           setQuizMode={setQuizMode}
         />
       );
@@ -89,6 +100,21 @@ export default function QuizPage() {
         errorMessage={errorMessage}
         handleErrorMessage={handleErrorMessage}
       />
+      {!modeDisplay && (
+        <>
+          {/* <h1>Set up your quiz</h1>
+          <div className="quiz-mode-card-container">
+            <Card className="quiz-mode-card" onClick={handleMcQ}>
+              <h4>📝 Multiple Choice Quiz</h4>
+              <p>Select one correct answer from 4 multiple choices</p>
+            </Card>
+            <Card className="quiz-mode-card" onClick={handleMnM}>
+              <h4>📋Mix & Match Quiz</h4>
+              <p>Match the english and spanish words correctly</p>
+            </Card>
+          </div> */}
+        </>
+      )}
       {modeDisplay}
     </div>
   );
