@@ -9,7 +9,7 @@ import TradesDropdown from "../components/Trades/TradesDropdown.js";
 import AddTradeLineItem from "../components/Trades/AddTradeLineItem.js";
 
 // Firebase
-import { onChildAdded, ref, get } from "firebase/database";
+import { onChildAdded, ref, remove } from "firebase/database";
 import { database } from "../firebase.js";
 import { auth } from "../firebase.js";
 
@@ -47,9 +47,8 @@ const Trades = () => {
   useEffect(() => {
     let loadedTrades = [];
     const tradesRef = ref(database, `${user}/${TRADES_KEY}`);
-    // onChildAdded will return data for every child at the reference and every subsequent new child
+
     const unsubscribe = onChildAdded(tradesRef, (data) => {
-      // Add the subsequent child to local component state, initialising a new array to trigger re-render
       loadedTrades = [...loadedTrades, { key: data.key, val: data.val() }];
       setTradesArr(loadedTrades);
       setMasterTradesArr(loadedTrades);
@@ -68,14 +67,13 @@ const Trades = () => {
       tradesArr.map((obj) => (
         <TradeLineItem
           key={obj.key}
-          stockName={obj.val.stockName}
-          stockCode={obj.val.stockCode}
-          tradeTime={obj.val.date}
-          tradePrice={obj.val.price + obj.val.currency}
-          platform={obj.val.platform}
+          uid={obj.key}
+          val={obj.val}
+          handleDel={handleDel}
         />
       ))
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tradesArr, sort]);
 
   const sortTrades = (arr, sortMethod) => {
@@ -93,8 +91,6 @@ const Trades = () => {
 
   const filterTrades = (filter) => {
     const loadedTrades = [];
-    let trades = {};
-    const tradesRef = ref(database, `${user}/${TRADES_KEY}`);
     if (filter === "none") {
       setTradesArr(masterTradesArr);
     } else {
@@ -105,6 +101,19 @@ const Trades = () => {
       }
       setTradesArr(loadedTrades);
     }
+  };
+
+  const handleDel = (tradeUid) => {
+    console.log(tradeUid);
+    remove(ref(database, `${user}/${TRADES_KEY}/${tradeUid}`)).then(() => {
+      let newTradesArr = tradesArr;
+      for (let i = 0; i < newTradesArr.length; i++) {
+        if (newTradesArr[i].key === tradeUid) {
+          newTradesArr.splice(i, 1);
+          setTradesArr([...newTradesArr]);
+        }
+      }
+    });
   };
 
   const handleClose = () => setShowModal(false);

@@ -128,7 +128,7 @@ const AddTradeLineItem = () => {
         onHide={() => handleClose(false)}
       >
         <Modal.Header closeButton>
-          <Modal.Title>Add your new trade here {user}</Modal.Title>
+          <Modal.Title>Add your new trade here</Modal.Title>
         </Modal.Header>
         <Modal.Body className="input-fields-container">
           {inputFields}
