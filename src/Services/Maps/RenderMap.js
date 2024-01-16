@@ -27,7 +27,11 @@ const center = {
   lng: 103.81404,
 };
 
-export default function RenderMap({ sendMessage, landmarks }) {
+export default function RenderMap({
+  sendMessage,
+  landmarks,
+  onDirectionsResult,
+}) {
   const [libraries] = useState(["places"]);
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
@@ -158,6 +162,9 @@ export default function RenderMap({ sendMessage, landmarks }) {
             }
             console.log(result);
             const steps = result.routes[0].legs[0].steps;
+            //if (typeof onDirectionsResult === "function") {
+            onDirectionsResult(steps);
+            //}
             console.log(steps);
           } else {
             console.log(`error`);

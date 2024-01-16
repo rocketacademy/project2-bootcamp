@@ -124,6 +124,12 @@ const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [selectedLandmarks, setSelectedLandmarks] =
     useState(historicalLandmarks);
+  const [directionSteps, setDirectionSteps] = useState({
+    id: null,
+    instruction: null,
+    distance: null,
+    duration: null,
+  });
 
   const [user, setUser] = useState({});
 
@@ -188,10 +194,19 @@ const App = () => {
   console.log(aiResponse);
   console.log(user);
 
-  const handleLogout = () => {
-    setIsLoggedIn(false);
-    signOut(auth);
-    setUser({});
+  const handleDirectionsResult = (steps) => {
+    // Slice the array from index 0 to 5
+    const slicedSteps = steps.slice(0, 5);
+    // Map the sliced array into discrete steps
+    const discreteSteps = slicedSteps.map((steps, index) => {
+      setDirectionSteps({
+        id: index,
+        instruction: steps.instructions,
+        distance: steps.distance.text,
+        duration: steps.duration.text,
+      });
+    });
+    console.log(`This is the ${discreteSteps}`);
   };
 
   return (
@@ -214,7 +229,8 @@ const App = () => {
               sendMessage={sendMessage}
               handleAuthStateChanged={handleAuthStateChanged}
               isLoggedIn={isLoggedIn}
-              handleLogout={handleLogout}
+              // handleLogout={handleLogout}
+              onDirectionsResult={handleDirectionsResult}
             />
           </Box>
         ) : (
@@ -258,6 +274,7 @@ const App = () => {
               <RenderMap
                 sendMessage={sendMessage}
                 landmarks={selectedLandmarks}
+                onDirectionsResult={handleDirectionsResult}
               />
               <StyledGridPills
                 item
