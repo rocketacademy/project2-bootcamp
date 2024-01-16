@@ -183,17 +183,29 @@ export default function EditCardForm(props) {
                 autoSelect
                 freeSolo
                 disablePortal
+                fullWidth
                 id="combo-box-demo"
-                sx={{ width: 350 }}
                 getOptionLabel={(option) => option}
                 renderInput={(params) => (
                   <TextField
+                    variant="standard"
                     {...params}
                     label={
                       englishToSpanish
                         ? "Spanish translation"
                         : "English translation"
                     }
+                    sx={{
+                      [theme.breakpoints.down("sm")]: {
+                        marginTop: "18px",
+                      },
+                      [theme.breakpoints.up("md")]: {
+                        marginTop: "25px",
+                      },
+                      [theme.breakpoints.up("lg")]: {
+                        marginTop: "25px",
+                      },
+                    }}
                   />
                 )}
               />
