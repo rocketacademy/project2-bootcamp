@@ -98,6 +98,9 @@ export default function ReportPage() {
       </Backdrop>
     ) : (
       <div className="page">
+        <h3 className="report-greeting">
+          Hi, {user.displayName ? user.displayName : "student"}. Keep fighting!
+        </h3>
         <div className="report-sub-page">
           <div className="info">
             Words in learning

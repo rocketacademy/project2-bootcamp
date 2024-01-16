@@ -1,6 +1,6 @@
 import { useParams, useNavigate, useOutletContext } from "react-router-dom";
 import { useState, useEffect, useMemo } from "react";
-import { Card, Button, TextField } from "@mui/material";
+import { Card, Button } from "@mui/material";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
@@ -8,11 +8,9 @@ import Divider from "@mui/material/Divider";
 import "./Study.css";
 import ErrorPage from "../ErrorPage";
 import DBHandler from "../Controller/DBHandler";
-import axios from "axios";
 
 export default function BrowsePage() {
   const [user] = useOutletContext();
-  const [deckName, setDeckName] = useState("");
   const [deck, setDecks] = useState({});
   const [cards, setCards] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
@@ -38,35 +36,21 @@ export default function BrowsePage() {
   useEffect(() => {
     const getDeckInfo = async () => {
       try {
+        if (!deckID) {
+          throw new Error("Page not found.");
+        }
         await dbHandler.checkUserDeckID(deckID, true);
         const { deckInfo, cardsInfo } = await dbHandler.getDeckAndCards(
           deckID,
           true
         );
-        setDeckName(deckInfo.deckName);
         setDecks(deckInfo);
         setCards(cardsInfo);
       } catch (error) {
         setErrorMessage(error.message);
       }
     };
-    const genDeckInfo = async () => {
-      try {
-        const genCardID = await axios.get(
-          "https://www.uuidgenerator.net/api/version7"
-        );
-        const newCardID = genCardID.data;
-        setCards([{ cardID: newCardID, english: "", spanish: "" }]);
-        setDecks({ deckName: "", deckCards: [newCardID] });
-      } catch (error) {
-        setErrorMessage(error.message);
-      }
-    };
-    if (deckID) {
-      getDeckInfo();
-    } else {
-      genDeckInfo();
-    }
+    getDeckInfo();
   }, [deckID, dbHandler]);
 
   const style = {
@@ -118,6 +102,24 @@ export default function BrowsePage() {
           onClick={() => handleStudy()}
         >
           👩🏻‍💻Study Flashcard 💡
+        </Button>
+        <Button
+          fullWidth
+          className="browse-flashcard-quiz-button"
+          size="large"
+          variant="contained"
+          onClick={() => navigate(`/quiz/MC/${deckID}`)}
+        >
+          👩🏻‍💻Multiple Choice Quiz💡
+        </Button>
+        <Button
+          fullWidth
+          className="browse-flashcard-quiz-button"
+          size="large"
+          variant="contained"
+          onClick={() => navigate(`/quiz/MM/${deckID}`)}
+        >
+          👩🏻‍💻Mix & Match Quiz💡
         </Button>
       </div>
       {<div>{cardsDisplay}</div>}

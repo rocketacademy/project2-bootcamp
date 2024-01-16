@@ -207,6 +207,11 @@
   margin-bottom: 10px;
 }
 
+.browse-flashcard-div {
+  display: flex;
+  flex-direction: row;
+}
+
 .browse-card {
   margin-bottom: 10px;
   margin-top: 10px;
@@ -232,6 +237,13 @@
   background-color: #dde2fc !important;
   color: black !important;
   height: 25vh;
+}
+
+.browse-flashcard-quiz-button {
+  background-color: #dde2fc !important;
+  color: black !important;
+  width: fit-content;
+  height: 5vh;
 }
 
 .edit-card {

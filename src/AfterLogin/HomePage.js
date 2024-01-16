@@ -1,17 +1,8 @@
-import {
-  Card,
-  CardMedia,
-  Button,
-  Menu,
-  MenuList,
-  MenuItem,
-  Backdrop,
-  CircularProgress,
-} from "@mui/material";
+import { Card, Button, Menu, MenuList, MenuItem } from "@mui/material";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate, useOutletContext, Link } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import "./Study.css";
 import ErrorPage from "../ErrorPage";
 import DBHandler from "../Controller/DBHandler";
@@ -154,7 +145,8 @@ export default function HomePage() {
 
   const emptyCard = (
     <div className="homepage-empty-deck">
-      <img className="homepage-empty-deck-image" src="Home.png" /> <br />
+      <img className="homepage-empty-deck-image" src="Home.png" alt="Home" />
+      <br />
       <p>Tap this button to start a new deck</p>
       <Button
         variant="contained"

@@ -125,11 +125,9 @@ export default function NaviBar(props) {
         <MenuItem onClick={handleSighOut}>Logout</MenuItem>
       </Menu>
 
-      <h1>
-        <Link to="/">
-          <img src={logo} alt="logo" className="navi-logo" />
-        </Link>
-      </h1>
+      <Link to="/">
+        <img src={logo} alt="logo" className="navi-logo" />
+      </Link>
       <div className="navi-icon-div">
         <Link to="/addDeck">
           <AddCircleOutlineIcon />
