@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { auth, db } from "../firebase";
-import { ref, set, push } from "firebase/database";
+import { ref, set } from "firebase/database";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 
 const Signup = () => {
@@ -17,22 +17,28 @@ const Signup = () => {
     if (!password || !email || !username) return;
 
     try {
-      await createUserWithEmailAndPassword(auth, email, password).then(
-        (userCredential) => {
-          const user = userCredential.user;
-          set(ref(db, `${selectedRadio}/` + user.uid), {
-            uid: user.uid,
-            username: username,
-            email: email,
-            role: selectedRadio,
-          });
-          setUsername("");
-          setEmail("");
-          setPassword("");
-          setSelectedRadio("Teacher");
-          navigate("/");
-        }
-      );
+      await createUserWithEmailAndPassword(
+        auth,
+
+        email,
+        password
+      ).then((userCredential) => {
+        const user = userCredential.user;
+        updateProfile(auth.currentUser, {
+          displayName: username,
+        });
+        set(ref(db, `${selectedRadio}/${username}`), {
+          uid: user.uid,
+          username: username,
+          email: email,
+          role: selectedRadio,
+        });
+        setUsername("");
+        setEmail("");
+        setPassword("");
+        setSelectedRadio("Teacher");
+        navigate("/");
+      });
     } catch (error) {
       setErrorMessage(error.code);
     }
