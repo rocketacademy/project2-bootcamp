@@ -10,6 +10,7 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import { TouchBackend } from "react-dnd-touch-backend";
 import { isBrowser } from "react-device-detect";
 import { Button } from "@mui/material";
+import logo from "./img/logo.jpg";
 
 export default function App() {
   const [user, setUser] = useState(null);
@@ -35,9 +36,8 @@ export default function App() {
   //Display for User haven't login
   const nonUserDisplay = (
     <div className="App">
-      <h1>Flashcard</h1>
-      <h2>Spanish-English</h2>
-      <div>
+      <img src={logo} alt="logo" className="logo" />
+      <div className="front-page-button">
         <Button variant="contained" onClick={() => navi("/register")}>
           Register
         </Button>
