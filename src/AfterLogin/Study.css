@@ -154,6 +154,10 @@
   height: 85%;
 }
 
+.homepage-card-body:hover {
+  cursor: pointer;
+}
+
 .homepage-welcome {
   display: flex;
   flex-direction: column;
@@ -170,6 +174,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.homepage-add-deck-card-form {
+  cursor: pointer;
 }
 
 .homepage-empty-deck {
@@ -254,4 +262,8 @@
 
 .field-audio {
   display: flex;
+}
+
+.homepage-menu:hover {
+  cursor: pointer;
 }

@@ -103,7 +103,12 @@ export default function HomePage() {
           className="homepage-deck"
         >
           <div className="homepage-card-header">
-            {<MoreVertIcon onClick={(event) => handleMenu(event, deckID)} />}
+            {
+              <MoreVertIcon
+                onClick={(event) => handleMenu(event, deckID)}
+                className="homepage-menu"
+              />
+            }
             <Menu
               anchorEl={anchorEl}
               open={Boolean(anchorEl)}
