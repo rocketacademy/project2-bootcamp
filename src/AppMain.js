@@ -119,15 +119,15 @@ const AppMain = () => {
         </div>
       )}
       <Routes>
-        <Route
+        {/* <Route
           path="/"
           element={<App handleLogoutAppMain={handleLogoutAppMain} />}
-        />
+        /> */}
         <Route
           path="/"
           element={
             <Protected isLoggedIn={isLoggedIn}>
-              <App />
+              <App handleLogoutAppMain={handleLogoutAppMain} />
             </Protected>
           }
         />
@@ -136,6 +136,14 @@ const AppMain = () => {
           element={
             <Protected isLoggedIn={isLoggedIn}>
               <QuizAI user={user} />
+            </Protected>
+          }
+        />
+        <Route
+          path="/quizzes"
+          element={
+            <Protected isLoggedIn={isLoggedIn}>
+              <Quiz user={user} />
             </Protected>
           }
         />

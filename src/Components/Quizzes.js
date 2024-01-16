@@ -1,241 +1,295 @@
-import { useState } from "react";
-import {
-  collection,
-  addDoc,
-  getDocs,
-  deleteDoc,
-  doc,
-} from "firebase/firestore";
-import { db } from "../firebase";
-import { AppLinks } from "../AppMain";
+import { useState } from 'react';
+import { collection, addDoc, getDocs, deleteDoc } from 'firebase/firestore';
+import { db } from '../firebase';
+import { AppLinks } from '../AppMain';
+import OpenAI from 'openai';
+import { Link } from 'react-router-dom';
+
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 // MUI
-import { Button, Grid, Typography, Box } from "@mui/material";
-import generateCertificate from "../Services/CreateCertificate";
+import {
+  Button,
+  Grid,
+  Typography,
+  Box,
+  CircularProgress,
+  Paper,
+  ListItem,
+} from '@mui/material';
 
-export default function Quiz({ user }) {
-  const quizData = [
+const parseOpenAIResponse = (responseString) => {
+  const lines = responseString.split('\n');
+
+  const question = lines[0];
+
+  const answer = lines[lines.length - 1].split(': ')[1];
+
+  console.log(answer);
+
+  const arrayOfOptions = lines
+    .slice(1, -1)
+    .filter((line) => line.trim() !== '');
+
+  const extractedData = arrayOfOptions.map((option) => {
+    const letter = option.split(') ')[0];
+    const choice = option.split(') ')[1];
+
+    return { letter, choice };
+  }); // Extracted Data is an array of objects with letter and choice as keys
+
+  return { question, extractedData, answer };
+};
+
+export default function QuizAI({ user }) {
+  // state for openai's response
+  const [question, setQuestion] = useState('');
+  const [options, setOptions] = useState([]);
+  const [indexOfQuestion, setIndexOfQuestion] = useState(0);
+  const [answer, setAnswer] = useState('');
+  const [score, setScore] = useState(0);
+  const [counter, setCounter] = useState(0);
+  const [selectedAnswerCorrectness, setSelectedAnswerCorrectness] =
+    useState(null);
+  const [answerSelected, setAnswerSelected] = useState(false);
+
+  const [loading, setLoading] = useState(false);
+
+  const quizDataNatureParks = [
     {
-      question: "Where is the Merlion located?",
+      question: 'UniversalStudios',
       index: 0,
-      options: ["Clarke Quay", "Marina Bay", "Ang Mo Kio"],
-      image:
-        "https://www.straitstimes.com/multimedia/graphics/2021/08/singapore-merlion-real-anatomy/assets/images/intro-proposed/1.jpg?v=62dce0b6",
-      correctAnswer: "Clarke Quay",
     },
     {
-      question: "When was the Merlion built?",
+      question: 'Pulau Ubin',
       index: 1,
-      options: [1972, 1968, 1980, 1955],
-      image:
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Singapore_-_Merlion_0003.jpg/285px-Singapore_-_Merlion_0003.jpg",
-      correctAnswer: 1972,
     },
     {
-      question: "Where is the Infinity Pool located",
+      question: 'Singapore Botanic Gardens',
       index: 2,
-      options: ["Marina Bay", "Clarke Quay", "Bishan"],
-      image:
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/SkyPark_Infinity_Pool_%28view_from_deckchair%29.jpg/1200px-SkyPark_Infinity_Pool_%28view_from_deckchair%29.jpg",
-      correctAnswer: "Marina Bay",
     },
     {
-      question: "dummy question",
+      question: 'UniversalStudios',
+      index: 3,
+    },
+    {
+      question: 'dummy question',
+      index: 4,
+      counter: 0,
     },
   ];
 
-  const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [userAnswer, setUserAnswer] = useState(null);
-  const [score, setScore] = useState(0);
-  const userName = "Charles Lee";
-  const course = "Singapore Landmarks Quiz";
-  const scoreText = `For scoring ${score} out of 3 for the ${course}`;
+  // User can only attempt the quiz once, otherwise error message pops up
+  // Refer to App.js to use
+  // Have an image for each landmark from App.js
+  // Timer for each question
+  // Play some happy music for correct answer and sad music for wrong answer
 
-  const userId = user.uid;
+  const getQuizFromOpenAI = async (argument) => {
+    setLoading(true);
 
-  const usersCollectionRef = collection(db, "users", userId, "scores");
+    if (answerSelected === true) {
+      setAnswerSelected(false);
+    }
+
+    const landmark = argument.question;
+    try {
+      const prompt = `Generate a multiple choice question about ${landmark} where the options are labelled in capital letters, A), B), C), D). Don't leave any empty lines between the question and options. Put just the answer letter at the bottom as Answer: answer letter and don't put Question at the beginning`;
+
+      const response = await fetch('http://localhost:3002/send-message', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ message: prompt }),
+      });
+
+      const data = await response.json();
+      console.log(data.message);
+
+      const { question, extractedData, answer } = parseOpenAIResponse(
+        data.message,
+      );
+
+      console.log(question);
+      console.log(extractedData);
+
+      setQuestion(question);
+      setOptions(extractedData);
+      setAnswer(answer);
+
+      setIndexOfQuestion(argument.index);
+
+      setLoading(false);
+    } catch (err) {
+      setLoading(false);
+      console.error(`Error sending message due to: ${err}`);
+    }
+  };
 
   const handleAnswerClick = async (selectedAnswer) => {
-    setUserAnswer(selectedAnswer);
-
-    const moveToNextQuestion = () => {
-      return setTimeout(() => {
-        if (currentQuestion + 1 < quizData.length) {
-          setCurrentQuestion(currentQuestion + 1);
-          setUserAnswer(null);
-        } else {
-          console.log("Quiz ended:", score);
-        }
-      }, 2000);
-    };
-
-    if (selectedAnswer === quizData[currentQuestion].correctAnswer) {
+    if (selectedAnswer === answer && counter === 0) {
+      // Increase counter by 1 so that user cannot click the same answer more than twice to increase score
       setScore(score + 1);
-
-      try {
-        const docRef = await addDoc(collection(db, "users", userId, "scores"), {
-          quizName: "Quiz 1",
-          score: score + 1,
-        });
-        console.log("Document written with ID: ", docRef.id);
-      } catch (err) {
-        console.error("Error adding document: ", err);
-      }
-
-      moveToNextQuestion();
+      setCounter(counter + 1);
+      setSelectedAnswerCorrectness(true);
     } else {
-      try {
-        const docRef = await addDoc(collection(db, "users", userId, "scores"), {
-          quizName: "Quiz 1",
-          score: score,
-        });
-        console.log("Document written with ID: ", docRef.id);
-      } catch (err) {
-        console.error("Error adding document: ", err);
-      }
-      moveToNextQuestion();
+      setSelectedAnswerCorrectness(false);
     }
+    setAnswerSelected(true);
   };
 
-  const deleteUsersCollection = async () => {
-    try {
-      const querySnapshot = await getDocs(usersCollectionRef);
-      console.log(querySnapshot);
+  const moveToNextQuestion = () => {
+    setQuestion('');
+    setOptions([]);
+    setCounter(0);
+    setSelectedAnswerCorrectness(null);
+    setAnswerSelected(false);
 
-      querySnapshot.forEach((doc) => {
-        deleteDoc(doc.ref);
-        console.log(`Document ${doc.id} successfully deleted`);
-      });
-    } catch (err) {
-      console.error(`Error deleting documents: ${err}`);
-    }
+    getQuizFromOpenAI(quizDataNatureParks[indexOfQuestion + 1]);
   };
 
-  const querySnapshot = async () => {
-    await getDocs(collection(db, "users"));
-    querySnapshot.forEach((doc) => {
-      console.log(`${doc.id} => ${doc.data()}`);
-    });
-  };
-
-  const resetButton = () => {
-    setCurrentQuestion(0);
-    setUserAnswer(null);
+  const resetQuiz = () => {
+    setQuestion('');
+    setOptions([]);
+    setIndexOfQuestion(0);
+    setAnswer('');
     setScore(0);
-    console.log(currentQuestion, quizData.length);
   };
 
-  console.log(currentQuestion, quizData.length);
-  console.log(user);
+  console.log(indexOfQuestion);
 
   return (
     <Box>
-      <Box sx={{ display: "flex", justifyContent: "center" }}>
-        <AppLinks />
-      </Box>
-      <Box
-        sx={{
-          height: "100vh",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Box>
-          {currentQuestion < quizData.length - 1 ? (
-            <Box
-              key={quizData[currentQuestion].index}
-              component="form"
-              noValidate
-              sx={{ mt: 1 }}
-            >
-              <Typography
-                variant="h4"
-                // key={quizData[currentQuestion].index}
+      <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+        <Box className="link-container">
+          <AppLinks />
+        </Box>
+        <Box className="drawer-links">
+          <ListItem>
+            <Link to="/">
+              <ArrowBackIcon
                 sx={{
-                  marginLeft: "16px", // Adjust the gap between index and option
-                  // fontSize: "1.2rem", // Change font size
-                  fontWeight: "bold", // Make it bold
-                  color: "blue", // Change the color
+                  marginRight: '300px',
+                  color: (theme) => theme.palette.primary.main,
                 }}
-              >
-                Question {quizData[currentQuestion].index + 1}:{" "}
-                {quizData[currentQuestion].question}
-              </Typography>
-
-              {/* Image goes here */}
-              {/* <Box>
-                <img
-                  src={`${quizData[currentQuestion].image}`}
-                  alt="Pic of Landmark"
-                  style={{ width: "300px", height: "300px" }}
-                />
-              </Box> */}
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  width: "100%",
-                }}
-              >
-                {quizData[currentQuestion].options.map((option, index) => (
-                  <Box
-                    key={index}
-                    sx={{
-                      display: "flex",
-
-                      alignItems: "center",
-                      width: "100%",
-                      marginRight: "8px",
-                      marginBottom: "10px",
-                    }}
-                  >
-                    <Typography
-                      sx={{
-                        marginRight: "16px", // Adjust the gap between index and option
-                        fontSize: "1.2rem", // Change font size
-                        fontWeight: "bold", // Make it bold
-                        color: "blue", // Change the color
-                      }}
-                    >
-                      {index + 1}
-                    </Typography>
-                    <Button
-                      variant="contained"
-                      onClick={() => handleAnswerClick(option)}
-                      disabled={userAnswer !== null}
-                      sx={{ mt: 1, width: "100%" }}
-                    >
-                      {option}
-                    </Button>
-                  </Box>
-                ))}
-              </Box>
-            </Box>
-          ) : (
-            <Box>
-              <Typography variant="h5">Quiz Finished</Typography>
-              <Typography variant="body1">Your final score: {score}</Typography>
-              <Button variant="contained" onClick={(e) => resetButton()}>
-                Reset
-              </Button>
-              <Button
-                variant="contained"
-                onClick={() => deleteUsersCollection()}
-              >
-                Delete score from Cloud Firestore
-              </Button>
-              <Button
-                variant="contained"
-                onClick={() => generateCertificate(userName, course, scoreText)}
-              >
-                Generate Certificate
-              </Button>
-            </Box>
-          )}
+              />
+            </Link>
+          </ListItem>
         </Box>
       </Box>
+      <Button onClick={() => getQuizFromOpenAI(quizDataNatureParks[0])}>
+        Start Quiz!
+      </Button>
+
+      {question ? (
+        <Typography
+          variant="h4"
+          sx={{
+            width: '900px',
+            marginBottom: '20px',
+            marginTop: '25px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          Question: {question}
+        </Typography>
+      ) : null}
+
+      {loading ? (
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+            minHeight: '50vh',
+          }}
+        >
+          <CircularProgress />
+        </Box>
+      ) : (
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+            minHeight: '50vh',
+          }}
+        >
+          <Box>
+            {options ? (
+              <Grid container spacing={2} justifyContent="center">
+                {/* Wrap options in a separate Grid container */}
+                <Grid
+                  container
+                  item
+                  xs={12}
+                  md={6}
+                  lg={4}
+                  spacing={2}
+                  justifyContent="center"
+                >
+                  {options.map((option, index) => {
+                    const { letter, choice } = option;
+                    const isCorrect =
+                      answer === letter && selectedAnswerCorrectness === true;
+                    const isWrong =
+                      answer !== letter && selectedAnswerCorrectness === false;
+                    return (
+                      <Grid item key={index} xs={6}>
+                        <Paper
+                          elevation={3}
+                          sx={{
+                            padding: '10px',
+                            textAlign: 'center',
+                            width: '250px',
+                            height: '100px',
+                          }}
+                        >
+                          <Grid item xs={3}>
+                            <Typography
+                              variant="h4"
+                              sx={{
+                                color: isCorrect
+                                  ? 'green'
+                                  : isWrong
+                                  ? 'red'
+                                  : 'inherit',
+                              }}
+                            >
+                              {letter}
+                            </Typography>
+                          </Grid>
+                          <Grid item xs={9}>
+                            <Button
+                              onClick={() => handleAnswerClick(letter)}
+                              disabled={answerSelected}
+                              fullWidth
+                            >
+                              {choice}
+                            </Button>
+                          </Grid>
+                        </Paper>
+                      </Grid>
+                    );
+                  })}
+                </Grid>
+              </Grid>
+            ) : null}
+          </Box>
+        </Box>
+      )}
+      {question && indexOfQuestion < quizDataNatureParks.length - 2 ? (
+        <Button onClick={moveToNextQuestion}>Move to next question</Button>
+      ) : null}
+      {indexOfQuestion >= quizDataNatureParks.length - 2 ? (
+        <Button onClick={resetQuiz}>Reset</Button>
+      ) : null}
+      <Typography variant="h5">Your score: {score}</Typography>
     </Box>
   );
 }
