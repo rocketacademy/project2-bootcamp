@@ -1,111 +1,99 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-
-// import { Chart } from "react-google-charts";
 import { db } from "../firebase";
-import { ref, onChildAdded } from "firebase/database";
+import { ref, onValue } from "firebase/database";
+import { Chart } from "react-google-charts";
+import useLoadChartData from "../hooks/useLoadData";
+import useLoadCourseSearch from "../hooks/useLoadCourseSearch";
 import axios from "axios";
 
 const Teacher = () => {
-  const navigate = useNavigate();
-  // const [loading, setLoading] = useState(false);
-  // const [chartData, setChartData] = useState([]);
-  // const [errMsg, setErrMsg] = useState("");
+  const { initialGid, initialCourse } = useLoadChartData();
+  const [count, setCount] = useState(null);
 
-  const [courseOptions, setCourseOptions] = useState([]);
+  console.log(count);
+  const [gid, setGid] = useState(null);
+  // console.log(gid);
+  const { courseOptions, courseGidMap } = useLoadCourseSearch();
   const [courseName, setCourseName] = useState("");
-  const [courseGidMap, setCourseGidMap] = useState(new Map());
-  const [gid, setGid] = useState("");
-  const [responses, setResponses] = useState([]);
-
-  useEffect(() => {
-    const coursesRef = ref(db, "courses");
-    onChildAdded(coursesRef, (data) => {
-      const { courseTitle, gid } = data.val();
-      courseGidMap.set(courseTitle, gid);
-
-      console.log(courseTitle);
-      console.log(gid);
-      setCourseGidMap((prevMap) => prevMap.set(courseTitle, gid));
-      const courseTitles = Array.from(courseGidMap.keys());
-      console.log(courseTitles);
-      setCourseOptions(
-        courseTitles.map((title) => (
-          <option key={title} value={title}>
-            {title}
-          </option>
-        ))
-      );
-    });
-  }, []);
-
-  useEffect(() => {
-    const getGid = courseGidMap.get(courseName);
-    console.log(getGid);
-    setGid(getGid);
-  }, [courseName]);
-
-  console.log(gid);
+  const navigate = useNavigate();
 
   const spreadSheetId = "16HTIiiOq82Tm1tLHRQcr_8YJnO81QxZOOBOfR4hU3zc";
 
-  const fetchSheetData = async () => {
-    const publicSheetURL = `https://docs.google.com/spreadsheets/d/${spreadSheetId}/export?format=csv&gid=${gid}`;
-
-    try {
-      const response = await axios.get(publicSheetURL);
-      console.log(publicSheetURL);
-      console.log(response.data);
-
-      const csvData = response.data;
-      console.log(csvData);
-
-      const rows = csvData.split("\n");
-      const parsedData = rows.map((row) => row.split(","));
-      console.log(parsedData);
-      setResponses(parsedData);
-      console.log(responses);
-    } catch (error) {
-      console.log(error);
+  const fetchAllUsers = () => {
+    const usersRef = ref(db, "Student");
+    onValue(usersRef, (snapshot) => {
+      console.log(snapshot.val());
+    });
+  };
+  fetchAllUsers();
+  useEffect(() => {
+    const fetchCount = async () => {
+      await axios
+        .get(
+          `https://docs.google.com/spreadsheets/d/${spreadSheetId}/export?format=csv&gid=${initialGid}`
+        )
+        .then((res) => {
+          const numEntries = parseCSVToArr(res.data);
+          setCount(numEntries);
+        });
+    };
+    if (initialGid) {
+      fetchCount();
     }
+  }, [initialGid]);
+
+  const parseCSVToArr = (csvText) => {
+    const rows = csvText.split(/\r?\n/);
+    console.log(rows);
+    const data = [];
+    for (const row of rows) {
+      const rowData = row.split(", ");
+      data.push(rowData);
+    }
+    return data.length - 1;
   };
 
-  // const data = [
-  //   ["Course", "Rate (%)"],
-  //   [`${retrieveCourse}`, 90],
-  // ];
+  useEffect(() => {
+    const getGid = courseGidMap.get(courseName);
+    setGid(getGid);
+    setCourseName(courseName);
+  }, [courseName]);
 
-  // useEffect(()=> {
+  useEffect(() => {
+    const fetchData = async () => {
+      await axios
+        .get(
+          `https://docs.google.com/spreadsheets/d/${spreadSheetId}/export?format=csv&gid=${gid}`
+        )
+        .then((res) => {
+          const numEntries = parseCSVToArr(res.data);
+          console.log(numEntries);
+          setCount(numEntries);
+        });
+    };
+    if (gid) {
+      fetchData();
+    }
+  }, [gid]);
 
-  // }, [])
+  useEffect(() => {
+    if (initialCourse) {
+      setCourseName(initialCourse);
+    }
+  }, [initialCourse]);
 
-  // const parseCSVToArr = (csvText) => {
-  //   const rows = csvText.split(/\r?\n/);
-  //   // const headers = rows[0].split(", ");
-  //   const data = [];
-  //   for (const row of rows) {
-  //     const values = row.split(", ");
-  //     data.push(values);
-  //   }
-  //   return data;
-  //   // for (let i = 0; i < rows.length; i += 1) {
-  //   //   const rowData = rows[i].split(", ");
-  //   //   const dataObj = {};
-  //   //   for (let j = 0; j < headers.length; j += 1) {
-  //   //     dataObj[headers[j]] = rowData[j];
-  //   //   }
-  //   //   data.push(dataObj);
-  //   // }
-  //   // return data;
-  // };
-  // console.log(chartData);
+  const data = [
+    ["Course", "Completion Rate "],
+    [courseName, count],
+  ];
 
-  // const options = {
-  //   vAxis: { title: "Completion rate (%)" },
-  //   hAxis: { title: "Course Name" },
-  //   seriesType: "bars",
-  //   series: { 3: { type: "line" } },
-  // };
+  const options = {
+    vAxis: { title: "Completion rate (%)" },
+    hAxis: { title: "Course Name" },
+    seriesType: "bars",
+    series: { 5: { type: "line" } },
+  };
 
   return (
     <>
@@ -127,6 +115,7 @@ const Teacher = () => {
           </svg>
         </span>
       </div> */}
+      {/* <p>hi {user}</p> */}
       <div class="h-screen  p-20">
         <div class="text-left">
           <p class="text-sm font-bold">Quick Access</p>
@@ -171,7 +160,6 @@ const Teacher = () => {
             <p class="text-sm">Resources</p>
           </div>
         </div>
-
         <div class="flex flex-end relative">
           <div class="absolute inset-y-0  flex items-center ps-3 pointer-events-none">
             <svg
@@ -191,37 +179,21 @@ const Teacher = () => {
             </svg>
           </div>
         </div>
-        {/* <select
-          className="select select-bordered"
-          value={courseName}
-          onChange={(e) => {
-            setCourseName(e.target.value);
-          }}
-        >
-          {courseOptions}
-          
-        </select> */}
         <select
           value={courseName}
           onChange={(e) => setCourseName(e.target.value)}
         >
-          <option>Select Courses</option>
           {courseOptions}
         </select>
-        <div class="flex  justify-around">
-          <button>Course Progress</button>
-        </div>
-        <button onClick={fetchSheetData}>Fetch data</button>
-        {/* {!errMsg & errMsg} */}
-
-        {/* <Chart
+        <Chart
           chartType="ComboChart"
           data={data}
           options={options}
           width={"100%"}
-          height={"400px"}
-        /> */}
+          height={"300px"}
+        />
       </div>
+      <button onClick={() => navigate("settings")}>Settings</button>
     </>
   );
 };
