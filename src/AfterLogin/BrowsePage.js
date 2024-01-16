@@ -4,6 +4,7 @@ import { Card, Button } from "@mui/material";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
+import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import Divider from "@mui/material/Divider";
 import "./Study.css";
 import ErrorPage from "../ErrorPage";
@@ -31,6 +32,10 @@ export default function BrowsePage() {
 
   const handleStudy = () => {
     navigate(`/study/${deckID}`);
+  };
+
+  const handleEdit = () => {
+    navigate(`/editDeck/${deckID}`);
   };
 
   useEffect(() => {
@@ -90,10 +95,13 @@ export default function BrowsePage() {
         errorMessage={errorMessage}
         handleErrorMessage={handleErrorMessage}
       />
-      <div className="browse-card-layout">
+      <div className="browse-card-title">
         <h2>{deck.deckName}</h2>
+        <Button value={deckID} onClick={(e) => handleEdit(e.value)}>
+          <ModeEditIcon />
+        </Button>
       </div>
-      <div>
+      <div className="browse-card-button-layout">
         <Button
           fullWidth
           className="browse-flashcard-button"
@@ -101,7 +109,7 @@ export default function BrowsePage() {
           variant="contained"
           onClick={() => handleStudy()}
         >
-          👩🏻‍💻Study Flashcard 💡
+          📖 Study Flashcard
         </Button>
         {deck.deckCards && deck.deckCards.length < 13 ? (
           <p>
@@ -111,12 +119,12 @@ export default function BrowsePage() {
           <Button
             fullWidth
             disabled={deck.deckCards && deck.deckCards.length < 13}
-            className="browse-flashcard-quiz-button"
+            className="browse-flashcard-button-blue"
             size="large"
             variant="contained"
             onClick={() => navigate(`/quiz/MC/${deckID}`)}
           >
-            👩🏻‍💻Multiple Choice Quiz💡
+            📝 Multiple Choice Quiz
           </Button>
         )}
         {deck.deckCards && deck.deckCards.length < 10 ? (
@@ -124,16 +132,18 @@ export default function BrowsePage() {
         ) : (
           <Button
             fullWidth
-            className="browse-flashcard-quiz-button"
+            className="browse-flashcard-button-blue"
             size="large"
             variant="contained"
             onClick={() => navigate(`/quiz/MixAndMatch/${deckID}`)}
             disabled={deck.deckCards && deck.deckCards.length < 10}
           >
-            👩🏻‍💻Mix & Match Quiz💡
+            📋Mix & Match Quiz
           </Button>
         )}
       </div>
+      <br />
+      <p className="browse-text">Terms in this set:</p>
       {<div>{cardsDisplay}</div>}
     </div>
   );
