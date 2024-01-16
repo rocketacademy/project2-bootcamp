@@ -5,6 +5,7 @@ import ErrorPage from "../../ErrorPage";
 import LoadingButton from "@mui/lab/LoadingButton";
 import TextToSpeech from "../../Controller/TextToSpeech";
 import "./EditCardForm.css";
+import { useTheme } from "@mui/material/styles";
 
 export default function EditCardForm(props) {
   const card = props.card;
@@ -16,6 +17,7 @@ export default function EditCardForm(props) {
   const [errorMessage, setErrorMessage] = useState("");
   const [loadingAudio, setLoadingAudio] = useState(false);
   const [englishToSpanish, setEnglishToSpanish] = useState(true);
+  const theme = useTheme();
   const translator = useMemo(
     () => new Translator(setErrorMessage, process.env.REACT_APP_SPANISH_KEY),
     [setErrorMessage]
@@ -79,17 +81,76 @@ export default function EditCardForm(props) {
           handleErrorMessage={() => setErrorMessage("")}
         />
         <div className="edit-card-buttons">
-          <Button disabled={isDisable} onClick={handleLanguageSwitch}>
+          <Button
+            disabled={isDisable}
+            sx={{
+              color: "black",
+              [theme.breakpoints.down("sm")]: {
+                fontSize: "10px",
+              },
+              [theme.breakpoints.up("md")]: {
+                fontSize: "14px",
+              },
+              [theme.breakpoints.up("lg")]: {
+                fontSize: "16px",
+              },
+            }}
+            onClick={handleLanguageSwitch}
+          >
             Switch languages
           </Button>
-          <Button disabled={isDisable} onClick={() => handleTranslate()}>
+          <Button
+            disabled={isDisable}
+            sx={{
+              color: "black",
+              [theme.breakpoints.down("sm")]: {
+                fontSize: "10px",
+              },
+              [theme.breakpoints.up("md")]: {
+                fontSize: "14px",
+              },
+              [theme.breakpoints.up("lg")]: {
+                fontSize: "16px",
+              },
+            }}
+            onClick={() => handleTranslate()}
+          >
             Translate
           </Button>
 
-          <Button onClick={() => props.handleDelete(card.cardID)}>
+          <Button
+            sx={{
+              color: "black",
+              [theme.breakpoints.down("sm")]: {
+                fontSize: "10px",
+              },
+              [theme.breakpoints.up("md")]: {
+                fontSize: "14px",
+              },
+              [theme.breakpoints.up("lg")]: {
+                fontSize: "16px",
+              },
+            }}
+            onClick={() => props.handleDelete(card.cardID)}
+          >
             Delete card
           </Button>
-          <Button disabled={isEditDisable} onClick={handleEdit}>
+          <Button
+            sx={{
+              color: "black",
+              [theme.breakpoints.down("sm")]: {
+                fontSize: "10px",
+              },
+              [theme.breakpoints.up("md")]: {
+                fontSize: "14px",
+              },
+              [theme.breakpoints.up("lg")]: {
+                fontSize: "16px",
+              },
+            }}
+            disabled={isEditDisable}
+            onClick={handleEdit}
+          >
             {props.editing === card.cardID ? "Save card" : "Edit"}
           </Button>
         </div>
@@ -122,17 +183,29 @@ export default function EditCardForm(props) {
                 autoSelect
                 freeSolo
                 disablePortal
+                fullWidth
                 id="combo-box-demo"
-                sx={{ width: 350 }}
                 getOptionLabel={(option) => option}
                 renderInput={(params) => (
                   <TextField
+                    variant="standard"
                     {...params}
                     label={
                       englishToSpanish
                         ? "Spanish translation"
                         : "English translation"
                     }
+                    sx={{
+                      [theme.breakpoints.down("sm")]: {
+                        marginTop: "18px",
+                      },
+                      [theme.breakpoints.up("md")]: {
+                        marginTop: "25px",
+                      },
+                      [theme.breakpoints.up("lg")]: {
+                        marginTop: "25px",
+                      },
+                    }}
                   />
                 )}
               />

@@ -1,12 +1,13 @@
 import { useParams, useNavigate, useOutletContext } from "react-router-dom";
 import { useState, useEffect, useMemo } from "react";
-import { Button, TextField, Grid, Stack } from "@mui/material";
+import { Button, TextField } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import SaveDone from "./EditComponent/SaveDone";
-import "./Study.css";
 import ErrorPage from "../ErrorPage";
 import DBHandler from "../Controller/DBHandler";
 import EditCardForm from "./CardComponent/EditCardForm";
 import axios from "axios";
+import "./EditDeckPage.css";
 
 export default function EditDeckPage() {
   const [user] = useOutletContext();
@@ -19,6 +20,7 @@ export default function EditDeckPage() {
   const [goHome, setGoHome] = useState(false);
   const navigate = useNavigate();
   const { deckID } = useParams();
+  const theme = useTheme();
   const dbHandler = useMemo(
     () => new DBHandler(user.uid, setErrorMessage, setGoHome),
     [user.uid, setErrorMessage, setGoHome]
@@ -46,6 +48,7 @@ export default function EditDeckPage() {
         setErrorMessage(error.message);
       }
     };
+
     const genDeckInfo = async () => {
       try {
         const genCardID = await axios.get(
@@ -161,50 +164,78 @@ export default function EditDeckPage() {
       />
       {
         <div>
-          <Stack
-            direction="column"
-            justifyContent="center"
-            alignItems="center"
-            spacing={1}
-          >
+          <div className="save-button">
+            <Button
+              variant="contained"
+              sx={{
+                color: "white",
+                backgroundColor: "black",
+                [theme.breakpoints.down("sm")]: {
+                  fontSize: "10px",
+                  padding: "6px 12px",
+                },
+                [theme.breakpoints.up("md")]: {
+                  fontSize: "12px",
+                  padding: "8px 16px",
+                },
+                [theme.breakpoints.up("lg")]: {
+                  fontSize: "16px",
+                  padding: "10px 20px",
+                },
+              }}
+              onClick={handleSave}
+            >
+              Save deck
+            </Button>
+          </div>
+          <div className="content-container">
             <div className="deck-name-field">
-              <h1
+              <TextField
                 style={{
-                  display: "inline-block",
-                  marginLeft: "-20px",
-                  marginTop: "10px",
+                  width: "70vw",
+                  marginBottom: "50px",
+                  marginTop: "20px",
+                  backgroundColor: "white",
                 }}
-              >
-                <TextField
-                  sx={{ width: 300 }}
-                  value={deckName}
-                  onChange={(e) => setDeckName(e.target.value)}
-                  label="Deck Name"
-                ></TextField>
-              </h1>
+                value={deckName}
+                onChange={(e) => setDeckName(e.target.value)}
+                label="Deck Name"
+              ></TextField>
             </div>
-            <div className="edit-deck-buttons">
-              <Grid
-                container
-                spacing={2}
-                display="flex"
-                justifyContent="center"
-                mt={2}
-              >
-                <Grid item>
-                  <Button variant="contained" onClick={handleAdd}>
-                    Add card
-                  </Button>
-                </Grid>
-                <Grid item>
-                  <Button variant="contained" onClick={handleSave}>
-                    Save deck
-                  </Button>
-                </Grid>
-              </Grid>
-            </div>
+
+            <Button
+              variant="outlined"
+              className="add-card-button"
+              onClick={handleAdd}
+              sx={{
+                color: "black",
+                [theme.breakpoints.down("sm")]: {
+                  fontSize: "10px",
+                  padding: "6px 12px",
+                  height: "40px",
+                  marginTop: "20px",
+                  marginBottom: "5px",
+                },
+                [theme.breakpoints.up("md")]: {
+                  fontSize: "14px",
+                  padding: "12px 24px",
+                  height: "50px",
+                  marginTop: "40px",
+                  marginBottom: "10px",
+                },
+                [theme.breakpoints.up("lg")]: {
+                  fontSize: "18px",
+                  padding: "15px 30px",
+                  height: "65px",
+                  marginTop: "50px",
+                  marginBottom: "10px",
+                },
+              }}
+            >
+              + New card
+            </Button>
             <div> {cardsDisplay}</div>
-          </Stack>
+          </div>
         </div>
       }
       {saveDone && <SaveDone open={saveDone} onClose={handleCloseSaveDone} />}
