@@ -8,9 +8,10 @@ import {
   equalTo,
   get,
 } from "firebase/database";
-
+import { AlertError } from "../components/Alerts";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
+import { TextboxWithLabels } from "../components/Textbox";
 
 export const UserContext = React.createContext();
 
@@ -19,6 +20,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const [response, setResponse] = useState("");
+  const [showErrorAlert, setShowErrorAlert] = useState(false);
 
   // const [isStudentLoggedIn, setIsStudentLoggedIn] = useState(false);
   const [user, setUser] = useState("");
@@ -49,6 +51,10 @@ const Login = () => {
     } catch (error) {
       console.log(error);
       setMessage(error.message);
+      setShowErrorAlert(true);
+      setTimeout(() => {
+        setShowErrorAlert(false);
+      }, 5000);
     }
   };
 
@@ -106,50 +112,51 @@ const Login = () => {
   return (
     <>
       <UserContext.Provider value={value}>
-        <p className="font-bold tracking-wider">
-          LEARNING
-          <br />
-          MANAGEMENT
-          <br />
-          PLATFORM
-        </p>
-        <div className="pr-12 pl-6 py-6 mt-8  bg-amber-50 rounded-lg">
-          <form onSubmit={handleSignin}>
-            <p className="text-sm text-left mb-4 font-bold">Login</p>
-            <p className="mb-2">{message && message}</p>
+        <div className="prose max-w-sm">
+          <h2 className="text-center">LEARNING MANAGEMENT PLATFORM</h2>
+          <div className="pr-12 pl-6 py-6 mt-8  bg-amber-50 rounded-lg">
+            <form onSubmit={handleSignin}>
+              {showErrorAlert && (
+                <AlertError alertText={`Login failed. ${message}`} />
+              )}
+              <TextboxWithLabels
+                label={"Email"}
+                type={"email"}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required={"required"}
+              />
 
-            <label className="block text-sm text-left mb-2">Email</label>
-            <input
-              type="email"
-              autoComplete="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="input input-bordered w-full max-w-xs dark:bg-white mb-2 dark:border-gray-600"
-            />
-            <label className="block text-sm text-left mb-2">Password</label>
-            <input
-              type="password"
-              autoComplete="current-password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="input input-bordered w-full max-w-xs dark:bg-white mb-6 dark:border-gray-600"
-            />
-            <button className="text-white font-bold shadow-lg border text-sm rounded-lg block w-full p-2.5 dark:bg-red-200 dark:border-gray-600 mb-6">
-              LOGIN
-            </button>
-          </form>
+              <TextboxWithLabels
+                label={"Password"}
+                type={"password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required={"required"}
+              />
 
-          <p className="text-sm">
-            Not an existing user?
-            <button onClick={() => navigate("signup")}>
-              <span className="underline underline-offset-4 m-1">Sign up</span>
-            </button>
-          </p>
-          <p className="text-sm mt-2">
-            <button onClick={() => navigate("password-reset")}>
-              Forget password?
-            </button>
-          </p>
+              <button
+                type="submit"
+                className="btn mt-8 text-white font-bold shadow-lg border text-sm rounded-lg block w-full p-2.5 dark:bg-red-200 dark:border-gray-600 mb-6"
+              >
+                LOGIN
+              </button>
+            </form>
+
+            <p className="text-sm">
+              Not an existing user?
+              <button onClick={() => navigate("signup")}>
+                <span className="underline underline-offset-4 m-1">
+                  Sign up
+                </span>
+              </button>
+            </p>
+            <p className="text-sm mt-2">
+              <button onClick={() => navigate("password-reset")}>
+                Forget password?
+              </button>
+            </p>
+          </div>
         </div>
       </UserContext.Provider>
     </>
