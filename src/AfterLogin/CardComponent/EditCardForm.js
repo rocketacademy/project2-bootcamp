@@ -89,10 +89,10 @@ export default function EditCardForm(props) {
                 fontSize: "10px",
               },
               [theme.breakpoints.up("md")]: {
-                fontSize: "16px",
+                fontSize: "14px",
               },
               [theme.breakpoints.up("lg")]: {
-                fontSize: "20px",
+                fontSize: "16px",
               },
             }}
             onClick={handleLanguageSwitch}
@@ -107,10 +107,10 @@ export default function EditCardForm(props) {
                 fontSize: "10px",
               },
               [theme.breakpoints.up("md")]: {
-                fontSize: "15px",
+                fontSize: "14px",
               },
               [theme.breakpoints.up("lg")]: {
-                fontSize: "20px",
+                fontSize: "16px",
               },
             }}
             onClick={() => handleTranslate()}
@@ -125,10 +125,10 @@ export default function EditCardForm(props) {
                 fontSize: "10px",
               },
               [theme.breakpoints.up("md")]: {
-                fontSize: "15px",
+                fontSize: "14px",
               },
               [theme.breakpoints.up("lg")]: {
-                fontSize: "20px",
+                fontSize: "16px",
               },
             }}
             onClick={() => props.handleDelete(card.cardID)}
@@ -142,10 +142,10 @@ export default function EditCardForm(props) {
                 fontSize: "10px",
               },
               [theme.breakpoints.up("md")]: {
-                fontSize: "15px",
+                fontSize: "14px",
               },
               [theme.breakpoints.up("lg")]: {
-                fontSize: "20px",
+                fontSize: "16px",
               },
             }}
             disabled={isEditDisable}

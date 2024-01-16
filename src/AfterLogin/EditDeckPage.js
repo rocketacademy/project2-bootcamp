@@ -3,7 +3,6 @@ import { useState, useEffect, useMemo } from "react";
 import { Button, TextField } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import SaveDone from "./EditComponent/SaveDone";
-import "./Study.css";
 import ErrorPage from "../ErrorPage";
 import DBHandler from "../Controller/DBHandler";
 import EditCardForm from "./CardComponent/EditCardForm";
@@ -49,6 +48,7 @@ export default function EditDeckPage() {
         setErrorMessage(error.message);
       }
     };
+
     const genDeckInfo = async () => {
       try {
         const genCardID = await axios.get(
@@ -175,12 +175,12 @@ export default function EditDeckPage() {
                   padding: "6px 12px",
                 },
                 [theme.breakpoints.up("md")]: {
-                  fontSize: "15px",
-                  padding: "10px 20px",
+                  fontSize: "12px",
+                  padding: "8px 16px",
                 },
                 [theme.breakpoints.up("lg")]: {
-                  fontSize: "18px",
-                  padding: "14px 28px",
+                  fontSize: "16px",
+                  padding: "10px 20px",
                 },
               }}
               onClick={handleSave}
@@ -217,16 +217,16 @@ export default function EditDeckPage() {
                   marginBottom: "5px",
                 },
                 [theme.breakpoints.up("md")]: {
-                  fontSize: "15px",
+                  fontSize: "14px",
                   padding: "12px 24px",
                   height: "65px",
                   marginTop: "40px",
                   marginBottom: "10px",
                 },
                 [theme.breakpoints.up("lg")]: {
-                  fontSize: "20px",
-                  padding: "16px 32px",
-                  height: "80px",
+                  fontSize: "18px",
+                  padding: "15px 30px",
+                  height: "65px",
                   marginTop: "50px",
                   marginBottom: "10px",
                 },
