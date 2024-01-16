@@ -178,6 +178,10 @@
   height: 85%;
 }
 
+.homepage-card-body:hover {
+  cursor: pointer;
+}
+
 .homepage-welcome {
   display: flex;
   flex-direction: column;
@@ -194,6 +198,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.homepage-add-deck-card-form {
+  cursor: pointer;
 }
 
 .homepage-empty-deck {
@@ -224,12 +232,18 @@
   margin-top: 10px;
 }
 
+.browse-flashcard-div {
+  display: flex;
+  flex-direction: row;
+}
+
 .browse-card {
   margin-bottom: 10px;
   margin-top: 10px;
   padding-right: 10px;
   padding-top: 10px;
   display: grid;
+  width: 100%;
 }
 
 .browse-card-number {
@@ -255,6 +269,13 @@
   background-color: #4f6ef7 !important;
   margin-top: 10px;
   padding-top: 10px;
+}
+
+.browse-flashcard-quiz-button {
+  background-color: #dde2fc !important;
+  color: black !important;
+  width: fit-content;
+  height: 10vh;
 }
 
 .edit-card {
@@ -285,4 +306,8 @@
 
 .field-audio {
   display: flex;
+}
+
+.homepage-menu:hover {
+  cursor: pointer;
 }

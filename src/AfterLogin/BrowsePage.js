@@ -1,6 +1,6 @@
 import { useParams, useNavigate, useOutletContext } from "react-router-dom";
 import { useState, useEffect, useMemo } from "react";
-import { Card, Button, TextField } from "@mui/material";
+import { Card, Button } from "@mui/material";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
@@ -12,7 +12,6 @@ import DBHandler from "../Controller/DBHandler";
 
 export default function BrowsePage() {
   const [user] = useOutletContext();
-  const [deckName, setDeckName] = useState("");
   const [deck, setDecks] = useState({});
   const [cards, setCards] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
@@ -42,22 +41,21 @@ export default function BrowsePage() {
   useEffect(() => {
     const getDeckInfo = async () => {
       try {
+        if (!deckID) {
+          throw new Error("Page not found.");
+        }
         await dbHandler.checkUserDeckID(deckID, true);
         const { deckInfo, cardsInfo } = await dbHandler.getDeckAndCards(
           deckID,
           true
         );
-        setDeckName(deckInfo.deckName);
         setDecks(deckInfo);
         setCards(cardsInfo);
       } catch (error) {
         setErrorMessage(error.message);
       }
     };
-
-    if (deckID) {
-      getDeckInfo();
-    }
+    getDeckInfo();
   }, [deckID, dbHandler]);
 
   const style = {
@@ -71,7 +69,7 @@ export default function BrowsePage() {
   const cardsDisplay = cards.length
     ? cards.map((card, index) => {
         return (
-          <Card className="browse-card">
+          <Card className="browse-card" key={card.cardID}>
             <div className="browse-card-number">
               <p>{index + 1}</p>
             </div>
@@ -113,22 +111,36 @@ export default function BrowsePage() {
         >
           📖 Study Flashcard
         </Button>
-        <Button
-          fullWidth
-          className="browse-flashcard-button-blue"
-          size="large"
-          variant="contained"
-        >
-          📝 Quiz
-        </Button>
-        <Button
-          fullWidth
-          className="browse-flashcard-button-blue"
-          size="large"
-          variant="contained"
-        >
-          📋 Match
-        </Button>
+        {deck.deckCards && deck.deckCards.length < 13 ? (
+          <p>
+            You need to have at least 13 cards to start Multiple Choice Quiz.
+          </p>
+        ) : (
+          <Button
+            fullWidth
+            disabled={deck.deckCards && deck.deckCards.length < 13}
+            className="browse-flashcard-button-blue"
+            size="large"
+            variant="contained"
+            onClick={() => navigate(`/quiz/MC/${deckID}`)}
+          >
+            📝 Multiple Choice Quiz
+          </Button>
+        )}
+        {deck.deckCards && deck.deckCards.length < 10 ? (
+          <p>You need to have at least 10 cards to start Mix & Match Quiz.</p>
+        ) : (
+          <Button
+            fullWidth
+            className="browse-flashcard-button-blue"
+            size="large"
+            variant="contained"
+            onClick={() => navigate(`/quiz/MixAndMatch/${deckID}`)}
+            disabled={deck.deckCards && deck.deckCards.length < 10}
+          >
+            📋Mix & Match Quiz
+          </Button>
+        )}
       </div>
       <br />
       <p className="browse-text">Terms in this set:</p>
