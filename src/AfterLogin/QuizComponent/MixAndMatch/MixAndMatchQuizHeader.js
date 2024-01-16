@@ -15,10 +15,18 @@ export default function MixAndMatchQuizHeader() {
           Are you sure you want to exit?
           <p>All progress will not be saved</p>
           <div className="dialog-button-div">
-            <Button variant="contained" onClick={() => navi("/")}>
+            <Button
+              className="quiz-selection-button"
+              variant="contained"
+              onClick={() => navi("/")}
+            >
               yes
             </Button>
-            <Button variant="contained" onClick={() => setDialog(false)}>
+            <Button
+              className="quiz-selection-button"
+              variant="contained"
+              onClick={() => setDialog(false)}
+            >
               no
             </Button>
           </div>

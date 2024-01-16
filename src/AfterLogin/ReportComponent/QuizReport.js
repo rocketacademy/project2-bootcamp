@@ -83,7 +83,7 @@ export default function QuizReport() {
 
   const display = quizInfo ? (
     <div className="page">
-      <Button variant="outlined" onClick={() => navi("/quizList")}>
+      <Button variant="outlined" onClick={() => navi("/reportList")}>
         Back to Quiz report Page
       </Button>
       <div className="quiz-report-header">

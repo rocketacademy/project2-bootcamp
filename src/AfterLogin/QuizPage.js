@@ -46,7 +46,7 @@ export default function QuizPage() {
       }
     };
     fetchData();
-  }, [dbHandler]);
+  }, [deckID, mode, dbHandler]);
 
   let modeDisplay;
   switch (quizMode) {

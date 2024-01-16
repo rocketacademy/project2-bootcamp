@@ -83,9 +83,12 @@ export default function QuizFirstPageMC(props) {
         </Link>
         <h1>
           <div className="dialog-button-div">
-            <Button variant="contained">MC Quiz</Button>
+            <Button variant="outlined" className="quiz-selection-button">
+              MC Quiz
+            </Button>
             <Button
-              variant="outlined"
+              variant="contained"
+              className="quiz-selection-button"
               onClick={() => props.setQuizMode("MixAndMatch")}
             >
               Mix&Match Quiz

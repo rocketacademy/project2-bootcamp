@@ -86,7 +86,7 @@ export default function McQuizQuestion(props) {
         answer,
         userChoice
       );
-      navi(`/quizList/${quizID}`);
+      navi(`/reportList/${quizID}`);
     } catch (error) {
       setErrorMessage(error.message);
     }
