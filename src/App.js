@@ -177,9 +177,14 @@ const App = () => {
     });
   };
 
+  const createBreakLines = (AImessage) => {
+    const paragraphs = AImessage.split(`NEW`);
+    return paragraphs.map((paragraph, index) => <p key={index}>{paragraph}</p>);
+  };
+
   //Function to call OpenAI API
   const sendMessage = async (targetMessage) => {
-    setLoading(true);
+    //setLoading(true);
 
     try {
       const messageToSend = userMessage === "" ? targetMessage : userMessage;
@@ -193,14 +198,15 @@ const App = () => {
       });
 
       const data = await response.json();
-      setAiResponse(data.message);
+      const parsedMessage = createBreakLines(data.message);
+      setAiResponse(parsedMessage);
       setUserMessage("");
 
       // console.log(data.message);
 
-      setLoading(false);
+      //setLoading(false);
     } catch (error) {
-      setLoading(true);
+      //setLoading(true);
       console.error("Error sending message:", error);
       // Handle error state here if needed
     }
