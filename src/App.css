@@ -15,6 +15,7 @@ a {
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
+  background-color: #f0f1f7;
 }
 
 .outlet {
@@ -56,6 +57,17 @@ a {
   .navi-icon-div {
     width: 50vw;
   }
+  .intro-page-right-layout {
+    height: 60vh;
+    width: 80vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-bottom: -70px;
+  }
 }
 
 @media screen and (min-width: 601px) {
@@ -67,6 +79,15 @@ a {
 @media screen and (min-width: 992px) {
   .navi-icon-div {
     width: 20vw;
+  }
+  .intro-page {
+    display: flex;
+  }
+  .intro-page-right-layout {
+    width: 40%;
+  }
+  .intro-page-left-layout {
+    width: 60%;
   }
 }
 
@@ -102,10 +123,10 @@ a {
 }
 
 .front-page-button {
-  width: 60vw;
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+  justify-content: center;
+  padding: 20px;
+  gap: 20px;
 }
 
 .logo {
@@ -115,4 +136,43 @@ a {
 .navi-logo {
   height: 10vh;
   margin-left: 5px;
+}
+
+.intro-page {
+  width: 90vw;
+  margin-left: 10px;
+  margin-right: 10px;
+  align-items: center;
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+
+.intro-features-page {
+  width: 90vw;
+  display: flex;
+  margin-left: 10px;
+  margin-right: 10px;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  row-gap: 5px;
+  margin-bottom: 30px;
+}
+
+.intro-features-page > h1 {
+  padding-left: 0px !important;
+}
+
+.intro-image {
+  object-fit: contain;
+  width: 80%;
+  height: 80%;
+}
+
+.intro-page-right-layout > h1 {
+  font-size: 2.5rem;
+}
+
+.register-button {
+  background-color: #4f6ef7 !important;
 }
