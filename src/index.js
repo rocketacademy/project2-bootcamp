@@ -14,6 +14,7 @@ import EditDeckPage from "./AfterLogin/EditDeckPage";
 import QuizReportList from "./AfterLogin/ReportComponent/QuizReportList";
 import QuizReport from "./AfterLogin/ReportComponent/QuizReport";
 import SecretPage from "./SecretPage";
+import SearchPage from "./AfterLogin/SearchPage";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -34,6 +35,7 @@ root.render(
         <Route path="quiz" element={<QuizPage />} />
         <Route path="quiz/:mode/:deckID" element={<QuizPage />} />
         <Route path="*" element={<div>404</div>} />
+        <Route path="search/:keyword" element={<SearchPage />} />
       </Route>
       <Route path="*" element={<div>404</div>} />
       <Route path="/signin" element={<SignInPage />} />
