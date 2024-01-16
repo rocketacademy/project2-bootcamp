@@ -158,47 +158,45 @@ export const useAttemptData = ({ userEmail }) => {
   }, [courseGidMap, userEmail]);
 
   useEffect(() => {
-    attemptedCourses.forEach((course) => {
-      course.hasAttempted
-        ? setAttemptCount((prevCount) => prevCount + 1)
-        : setNotAttemptCount((prevCount) => prevCount + 1);
-    });
+    // attemptedCourses.forEach((course) => {
+    //   course.hasAttempted
+    //     ? setAttemptCount((prevCount) => prevCount + 1)
+    //     : setNotAttemptCount((prevCount) => prevCount + 1);
+    // });
     getAttemptedCourseMap();
     getNotAttemptedCourseMap();
   }, [attemptedCourses]);
 
   const getAttemptedCourseMap = () => {
     const courseArray = Array.from(courseMap.entries());
-    const filteredArray = courseArray.filter(([courseID, courseData]) => {
+    const filteredArray = courseArray.filter(([courseID]) => {
       return attemptedCourses.some(
         (attemptedCourse) =>
           attemptedCourse.courseID === courseID && attemptedCourse.hasAttempted
       );
     });
-    setAttemptedCourseMap((prevMap) => {
-      const newMap = new Map(prevMap);
-      filteredArray.forEach(([courseID, courseData]) => {
-        newMap.set(courseID, courseData);
-      });
-      return newMap;
-    });
+
+    const newMap = new Map(filteredArray);
+    setAttemptedCourseMap(newMap);
+    console.log(newMap);
+    console.log(newMap.size);
+    setAttemptCount(newMap.size);
   };
 
   const getNotAttemptedCourseMap = () => {
     const courseArray = Array.from(courseMap.entries());
-    const filteredArray = courseArray.filter(([courseID, courseData]) => {
+    const filteredArray = courseArray.filter(([courseID]) => {
       return !attemptedCourses.some(
         (attemptedCourse) =>
           attemptedCourse.courseID === courseID && attemptedCourse.hasAttempted
       );
     });
-    setNotAttemptedCourseMap((prevMap) => {
-      const newMap = new Map(prevMap);
-      filteredArray.forEach(([courseID, courseData]) => {
-        newMap.set(courseID, courseData);
-      });
-      return newMap;
-    });
+
+    const newMap = new Map(filteredArray);
+    setNotAttemptedCourseMap(newMap);
+    console.log(newMap);
+    console.log(newMap.size);
+    setNotAttemptCount(newMap.size);
   };
   return {
     attemptCount,
