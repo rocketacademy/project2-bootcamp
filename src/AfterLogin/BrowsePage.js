@@ -111,11 +111,7 @@ export default function BrowsePage() {
         >
           📖 Study Flashcard
         </Button>
-        {deck.deckCards && deck.deckCards.length < 13 ? (
-          <p>
-            You need to have at least 13 cards to start Multiple Choice Quiz.
-          </p>
-        ) : (
+        {deck.deckCards && deck.deckCards.length < 13 ? null : (
           <Button
             fullWidth
             disabled={deck.deckCards && deck.deckCards.length < 13}
@@ -127,9 +123,7 @@ export default function BrowsePage() {
             📝 Multiple Choice Quiz
           </Button>
         )}
-        {deck.deckCards && deck.deckCards.length < 10 ? (
-          <p>You need to have at least 10 cards to start Mix & Match Quiz.</p>
-        ) : (
+        {deck.deckCards && deck.deckCards.length < 10 ? null : (
           <Button
             fullWidth
             className="browse-flashcard-button-blue"

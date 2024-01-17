@@ -1,4 +1,4 @@
-import DisabledByDefaultOutlinedIcon from "@mui/icons-material/DisabledByDefaultOutlined";
+import CloseIcon from "@mui/icons-material/Close";
 import {
   FormGroup,
   FormControlLabel,
@@ -76,33 +76,49 @@ export default function QuizFirstPageMixAndMatch(props) {
   return (
     <div className="quiz-sub-page">
       <Card className="quiz-card">
-        <Link to="/" className="homepage-button">
-          <DisabledByDefaultOutlinedIcon />
-        </Link>
-        <h1>
-          <div className="dialog-button-div">
-            <Button variant="outlined" onClick={() => props.setQuizMode("MC")}>
-              MC Quiz
-            </Button>
-            <Button variant="contained">Mix&Match Quiz</Button>
-          </div>
-        </h1>
-        <h4>
-          Hit the 'start' button to begin this quiz. You'll need to match all 10
-          answer options with correct one.
-        </h4>
-        <h3>Please select decks include in the quiz.</h3>
-
+        <div className="quiz-close-button">
+          <Link to="/">
+            <CloseIcon />
+          </Link>
+        </div>
+        <h1>🔧Set up your quiz</h1>
+        <div className="quiz-mode-card-container">
+          <Button
+            fullWidth
+            className={`${
+              props.quizMode === "MC" ? "quiz-chosen-button" : "quiz-mode-card"
+            }`}
+            onClick={() => props.setQuizMode("MC")}
+            variant="contained"
+          >
+            📝 Multiple Choice
+          </Button>
+          <Button
+            fullWidth
+            className={`${
+              props.quizMode === "MixAndMatch"
+                ? "quiz-chosen-button"
+                : "quiz-mode-card"
+            }`}
+            variant="contained"
+            onClick={() => props.setQuizMode("MixAndMatch")}
+          >
+            📋Mix & Match
+          </Button>
+        </div>
+        <p>Questions from:</p>
         <FormGroup>{userDecks ? selection : loadingPhase}</FormGroup>
         <Button
+          fullWidth
           variant="contained"
           disabled={!isEnoughCards}
           onClick={() => props.setQuizPage(1)}
+          className="quiz-start-button"
         >
           Start
         </Button>
         {!isEnoughCards && (
-          <h6>You need to have enough cards to start the quiz.</h6>
+          <p>You need to have enough cards to start the quiz.</p>
         )}
       </Card>
     </div>

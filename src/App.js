@@ -10,7 +10,6 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import { TouchBackend } from "react-dnd-touch-backend";
 import { isBrowser } from "react-device-detect";
 import { Button, Card, Paper } from "@mui/material";
-import logo from "./img/logo.jpg";
 import LibraryBooksIcon from "@mui/icons-material/LibraryBooks";
 import GraphicEqIcon from "@mui/icons-material/GraphicEq";
 import SchoolIcon from "@mui/icons-material/School";
@@ -46,7 +45,7 @@ export default function App() {
       <div className="intro-page">
         {/* <img src={logo} alt="logo" className="logo" /> */}
         <div className="intro-page-right-layout">
-          <h1>Master Spanish effortlessly with Flashcard App</h1>
+          <h1>Master Spanish effortlessly with Lingo</h1>
           <div className="front-page-button">
             <Button
               className="register-button"

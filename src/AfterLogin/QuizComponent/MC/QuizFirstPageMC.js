@@ -1,4 +1,4 @@
-import DisabledByDefaultOutlinedIcon from "@mui/icons-material/DisabledByDefaultOutlined";
+import CloseIcon from "@mui/icons-material/Close";
 import {
   FormGroup,
   FormControlLabel,
@@ -57,6 +57,7 @@ export default function QuizFirstPageMC(props) {
                 value={deckID}
                 onChange={(e) => handleChange(e, deck)}
                 checked={isDeckChecked}
+                className="quiz-checkbox"
               />
             }
             label={`${deckName} (Cards: ${cardsNum})`}
@@ -65,7 +66,7 @@ export default function QuizFirstPageMC(props) {
         );
       })
     ) : (
-      <p>You need to add deck before taking the quiz.</p>
+      <p>No Deck</p>
     );
 
   let questionAvailable = 0;
@@ -78,35 +79,50 @@ export default function QuizFirstPageMC(props) {
   return (
     <div className="quiz-sub-page">
       <Card className="quiz-card">
-        <Link to="/" className="homepage-button">
-          <DisabledByDefaultOutlinedIcon />
-        </Link>
-        <h1>
-          <div className="dialog-button-div">
-            <Button variant="contained">MC Quiz</Button>
-            <Button
-              variant="outlined"
-              onClick={() => props.setQuizMode("MixAndMatch")}
-            >
-              Mix&Match Quiz
-            </Button>
-          </div>
-        </h1>
-        <h4>
-          Hit the 'start' button to begin this quiz. You'll have 4 answer
-          options and your task is to select the correct option.
-        </h4>
-        <h3>Please select decks include in the quiz.</h3>
+        <div className="quiz-close-button">
+          <Link to="/">
+            <CloseIcon />
+          </Link>
+        </div>
+        <h1>🔧Set up your quiz</h1>
+
+        <div className="quiz-mode-card-container">
+          <Button
+            fullWidth
+            className={` ${
+              props.quizMode === "MC" ? "quiz-chosen-button" : "quiz-mode-card"
+            }`}
+            onClick={() => props.setQuizMode("MC")}
+            variant="contained"
+          >
+            📝 Multiple Choice
+          </Button>
+          <Button
+            fullWidth
+            className={`${
+              props.quizMode === "MixAndMatch"
+                ? "quiz-chosen-button"
+                : "quiz-mode-card"
+            }`}
+            variant="contained"
+            onClick={() => props.setQuizMode("MixAndMatch")}
+          >
+            📋Mix & Match
+          </Button>
+        </div>
+        <p>Questions from:</p>
         <FormGroup>{userDecks ? selection : loadingPhase}</FormGroup>
         <Button
+          fullWidth
           variant="contained"
           disabled={!isEnoughCards}
           onClick={() => props.setQuizPage(1)}
+          className="quiz-start-button"
         >
           Start
         </Button>
         {!isEnoughCards && (
-          <h6>You need to have enough cards to start the quiz.</h6>
+          <p>You need to have enough cards to start the quiz.</p>
         )}
       </Card>
     </div>

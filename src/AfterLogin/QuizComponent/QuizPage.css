@@ -1,3 +1,53 @@
+@media screen and (max-width: 600px) {
+  .quiz-card {
+    width: 80vw;
+  }
+  .quiz-mode-card-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 30px;
+  }
+  .english-card {
+    width: 100%;
+    height: 150px;
+  }
+  .quiz-sub-question-page {
+    width: 80vw;
+  }
+  .quiz-choices {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+  .quiz-header {
+    width: 80vw;
+  }
+}
+
+@media screen and (min-width: 601px) {
+  .quiz-card {
+    width: 50vw;
+  }
+  .english-card {
+    width: 100%;
+    height: 40vh;
+  }
+
+  .quiz-choices {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 15px;
+  }
+  .quiz-sub-question-page {
+    width: 70vw;
+  }
+  .quiz-header {
+    width: 70vw;
+  }
+}
+
 .homepage-button {
   position: relative;
   left: 45%;
@@ -7,22 +57,54 @@
 .quiz-sub-page {
   min-width: 100%;
   max-width: 100%;
-  min-height: 75vh;
+  min-height: 80vh;
   display: flex;
   justify-content: center;
   flex-direction: column;
-  position: relative;
+  padding-bottom: 2vh;
+}
+
+.quiz-close-button {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: right;
+}
+
+.quiz-close-button a {
+  color: black !important;
+}
+
+.quiz-start-button {
+  background-color: black !important;
+  color: white !important;
+  &:active {
+    background-color: #4f6ef7 !important;
+  }
+  &:hover {
+    background-color: #4f6ef7 !important;
+  }
+}
+
+.quiz-home-button {
+  background-color: black !important;
+}
+
+.quiz-start-button:disabled {
+  background-color: lightgray !important;
 }
 
 .quiz-card {
-  width: 60vw;
   max-width: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   align-self: center;
-  padding: 1vh;
+  padding-top: 1vh;
+  padding-left: 3vh;
+  padding-right: 3vh;
+  padding-bottom: 3vh;
 }
 
 .quiz-question {
@@ -34,8 +116,6 @@
 }
 
 .quiz-sub-question-page {
-  width: 100%;
-  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -44,7 +124,6 @@
 }
 
 .quiz-header {
-  width: 60%;
   height: 20%;
   display: flex;
   flex-direction: column;
@@ -62,6 +141,43 @@
 
 .quiz-subheader h3 {
   margin: 10px 0px 10px 0px;
+}
+
+.quiz-mode-card-container {
+  display: flex;
+  width: 100%;
+  gap: 10px;
+  margin-bottom: 30px;
+}
+
+.quiz-card > h1 {
+  padding-left: 0px;
+  margin-bottom: 20px;
+}
+
+.quiz-card > p {
+  font-size: 1rem;
+  margin: 0px;
+}
+
+.quiz-checkbox {
+  margin: 0px;
+}
+
+.quiz-mode-card {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: lightgray !important;
+}
+
+.quiz-chosen-button {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #4f6ef7 !important;
 }
 
 .progress-bar {
@@ -82,47 +198,64 @@
 }
 
 .button-div {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  width: 60%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 15px;
+  width: 100%;
   margin-bottom: 10px;
+  margin-top: 10px;
 }
 
 .question-button {
   width: 49%;
   height: 50px;
+  background-color: black !important;
+}
+
+.question-button:disabled {
+  background-color: lightgray !important;
 }
 
 .english-card {
-  position: relative;
-  width: 60%;
-  height: 150px;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  margin: 10px;
 }
 
-.english-card h6 {
-  position: absolute;
-  margin: 0px;
-  top: 5px;
-  left: 5px;
+.english-card-info {
+  height: 10%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: left;
+  padding-top: 10px;
+  padding-left: 10px;
+}
+
+.english-card-question {
+  height: 90%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .spanish-card {
+  width: 100%;
+  margin-top: 10px;
+  padding: 5px;
   position: relative;
-  width: 60%;
   height: fit-content;
-  margin: 10px;
 }
 
 .spanish-card span {
   position: absolute;
   left: 5px;
+}
+
+.MuiCardContent-root:last-child {
+  padding: 5px;
+}
+
+.css-46bh2p-MuiCardContent-root:last-child {
+  padding-bottom: 5px !important;
 }
 
 .spanish-card:hover {
@@ -157,4 +290,23 @@
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: center;
+}
+
+.quiz-report-header {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  margin-bottom: 2vh;
+}
+
+.report-page > h1 {
+  padding-left: 0px;
+  margin-bottom: 2vh;
+}
+
+.report-page {
+  width: 80vw;
+  text-align: left;
+  margin-top: 10vh;
+  margin-bottom: 15vh;
 }

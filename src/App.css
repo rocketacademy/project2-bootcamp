@@ -105,8 +105,16 @@ a {
 .correct {
   background-color: #34a853;
 }
+
+.correct-no-fill {
+  color: #34a853 !important;
+}
 .wrong {
   background-color: #db004f;
+}
+
+.wrong-no-fill {
+  color: #db004f !important;
 }
 
 .dialog {
@@ -134,8 +142,8 @@ a {
 }
 
 .navi-logo {
-  height: 10vh;
-  margin-left: 5px;
+  height: 4.5vh;
+  margin-left: 15px;
 }
 
 .intro-page {
