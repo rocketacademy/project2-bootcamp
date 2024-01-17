@@ -17,7 +17,6 @@ import { useEffect, useMemo, useState } from "react";
 import ErrorPage from "../ErrorPage";
 import DBHandler from "../Controller/DBHandler";
 import StorageHandler from "../Controller/StorageHandler";
-import logo from "../img/logo.jpg";
 
 export default function NaviBar(props) {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -126,7 +125,7 @@ export default function NaviBar(props) {
       </Menu>
 
       <Link to="/">
-        <img src={logo} alt="logo" className="navi-logo" />
+        <img className="navi-logo" src="Logo-black-text.png" alt="logo" />
       </Link>
       <div className="navi-icon-div">
         <Link to="/addDeck">
