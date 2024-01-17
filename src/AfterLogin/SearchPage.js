@@ -1,34 +1,168 @@
 import { useOutletContext, useParams } from "react-router-dom";
 import DBHandler from "../Controller/DBHandler";
 import { useEffect, useMemo, useState } from "react";
-import { Backdrop, CircularProgress } from "@mui/material";
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Backdrop,
+  CircularProgress,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+} from "@mui/material";
 import ErrorPage from "../ErrorPage";
 
 export default function SearchPage() {
   const [user] = useOutletContext();
   const { keyword } = useParams();
   const [errorMessage, setErrorMessage] = useState("");
-  const [result, setResult] = useState();
+  const [result, setResult] = useState(null);
+  const [advice, setAdvice] = useState(null);
+  const [expanded, setExpanded] = useState(false);
   const dbHandler = useMemo(
     () => new DBHandler(user.uid, setErrorMessage),
     [user.uid, setErrorMessage]
   );
 
   useEffect(() => {
-    const searchData = async () => {
+    const fetchData = async () => {
       try {
-        await dbHandler.searchDeck(keyword);
+        const { resultInfo, adviceInfo } = await dbHandler.searchData(keyword);
+        setResult(resultInfo);
+        setAdvice(adviceInfo);
       } catch (error) {
         setErrorMessage(error.message);
       }
     };
-    searchData();
-  });
+    fetchData();
+  }, [keyword, dbHandler]);
 
-  const resultDisplay = <div></div>;
+  const handleExpanded = (deckID) => {
+    setExpanded((prev) => {
+      if (prev === deckID) {
+        return false;
+      } else return deckID;
+    });
+  };
+
+  const adviceList =
+    advice &&
+    advice.map((deck) => {
+      const cardListBody = deck.cardInfos.map((card) => {
+        return (
+          <TableRow key={`card${card.cardID}`}>
+            <TableCell>{card.english}</TableCell>
+            <TableCell>{card.spanish}</TableCell>
+          </TableRow>
+        );
+      });
+      const cardList = (
+        <AccordionDetails>
+          <TableContainer component={Paper}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>English</TableCell>
+                  <TableCell>Spanish</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>{cardListBody}</TableBody>
+            </Table>
+          </TableContainer>
+        </AccordionDetails>
+      );
+      return (
+        <Accordion
+          expanded={expanded === deck.deckID}
+          key={`deck${deck.deckID}`}
+          onChange={() => handleExpanded(deck.deckID)}
+        >
+          <AccordionSummary>
+            Deck Name: {deck.deckName} Deck Cards: {deck.deckCards.length}
+          </AccordionSummary>
+          {cardList}
+        </Accordion>
+      );
+    });
+
+  console.log(expanded);
+  const resultList =
+    result &&
+    result.map((deck) => {
+      const cardListBody = deck.cardInfos.map((card) => {
+        return (
+          <TableRow key={`card${card.cardID}`}>
+            <TableCell>{card.english}</TableCell>
+            <TableCell>{card.spanish}</TableCell>
+          </TableRow>
+        );
+      });
+      const cardList = (
+        <AccordionDetails>
+          <TableContainer component={Paper}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>
+                    <b>English</b>
+                  </TableCell>
+                  <TableCell>
+                    <b>Spanish</b>
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>{cardListBody}</TableBody>
+            </Table>
+          </TableContainer>
+        </AccordionDetails>
+      );
+      return (
+        <Accordion
+          expanded={expanded === deck.deckID}
+          key={`deck${deck.deckID}`}
+          onChange={() => handleExpanded(deck.deckID)}
+        >
+          <AccordionSummary>
+            Deck Name: {deck.deckName} Deck Cards: {deck.deckCards.length}
+          </AccordionSummary>
+          {cardList}
+        </Accordion>
+      );
+    });
+
+  const resultDisplay =
+    result && result.length ? (
+      <div>
+        <div>
+          {result.length} results of keyword "{keyword}" found:
+        </div>
+        <div>{resultList}</div>
+      </div>
+    ) : (
+      <div>No result of "{keyword}"</div>
+    );
+
+  const adviceDisplay = advice && advice.length && (
+    <div>
+      <div>You may also interested in:</div>
+      <div>{adviceList}</div>
+    </div>
+  );
+
+  const displayList = (
+    <div>
+      {resultDisplay}
+      {adviceDisplay}
+    </div>
+  );
 
   const display = result ? (
-    resultDisplay
+    displayList
   ) : (
     <Backdrop open={!result}>
       <h3>Searching Deck</h3>
@@ -37,6 +171,7 @@ export default function SearchPage() {
       </h1>
     </Backdrop>
   );
+
   return (
     <div>
       {display}

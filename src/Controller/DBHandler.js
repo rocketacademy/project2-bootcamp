@@ -1,4 +1,4 @@
-import { get, ref, remove, set } from "firebase/database";
+import { get, ref, set } from "firebase/database";
 import { database } from "../firebase";
 import axios from "axios";
 
@@ -124,7 +124,7 @@ export default class DBHandler {
 
   //search Deck with user doesn't have.
   //return {resultInfo,adviceInfo] (array of deckInfo with new key cardInfos contains cards detail in that deck)
-  searchDeck = async (keyword) => {
+  searchData = async (keyword) => {
     try {
       const resultInfo = [];
       const remainInfo = [];
