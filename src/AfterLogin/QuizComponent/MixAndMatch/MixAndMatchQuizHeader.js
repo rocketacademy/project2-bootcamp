@@ -1,5 +1,5 @@
-import { Button, Dialog } from "@mui/material";
-import DisabledByDefaultOutlinedIcon from "@mui/icons-material/DisabledByDefaultOutlined";
+import { Button, Dialog, DialogContent } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -11,7 +11,7 @@ export default function MixAndMatchQuizHeader() {
   return (
     <div className="quiz-header">
       <Dialog open={dialog}>
-        <div className="dialog">
+        <DialogContent className="dialog">
           Are you sure you want to exit?
           <p>All progress will not be saved</p>
           <div className="dialog-button-div">
@@ -30,14 +30,11 @@ export default function MixAndMatchQuizHeader() {
               no
             </Button>
           </div>
-        </div>
+        </DialogContent>
       </Dialog>
       <div className="quiz-subheader">
         <h3>Mix and Match Quiz</h3>
-        <DisabledByDefaultOutlinedIcon
-          onClick={() => setDialog(true)}
-          className="exit-button"
-        />
+        <CloseIcon onClick={() => setDialog(true)} className="exit-button" />
       </div>
       <br />
       <h6>Please drag the spanish word and drop it next to the english word</h6>

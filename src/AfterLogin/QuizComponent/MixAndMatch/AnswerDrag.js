@@ -18,7 +18,7 @@ export default function AnswerDrag(props) {
     !isUsed && (
       <Card
         ref={drag}
-        className="mix-and-match-question-card"
+        className="mix-and-match-answer-card"
         style={{ opacity: isDragging ? 0.5 : 1 }}
       >
         {props.word}
