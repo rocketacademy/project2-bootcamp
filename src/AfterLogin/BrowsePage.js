@@ -114,7 +114,6 @@ export default function BrowsePage() {
         {deck.deckCards && deck.deckCards.length < 13 ? null : (
           <Button
             fullWidth
-            disabled={deck.deckCards && deck.deckCards.length < 13}
             className="browse-flashcard-button-blue"
             size="large"
             variant="contained"
@@ -130,7 +129,6 @@ export default function BrowsePage() {
             size="large"
             variant="contained"
             onClick={() => navigate(`/quiz/MixAndMatch/${deckID}`)}
-            disabled={deck.deckCards && deck.deckCards.length < 10}
           >
             📋Mix & Match Quiz
           </Button>
