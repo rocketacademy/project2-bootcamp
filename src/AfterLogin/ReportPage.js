@@ -115,8 +115,11 @@ export default function ReportPage() {
             {userInfo && userInfo.quizReport ? (
               <div className="info">
                 <h4>{averageScore}/100 pts</h4>
+                <br />
                 <Link to="/reportList">
-                  <Button>View Quiz History Reports</Button>
+                  <Button className="quiz-history-reports">
+                    View Quiz History Reports
+                  </Button>
                 </Link>
               </div>
             ) : (
