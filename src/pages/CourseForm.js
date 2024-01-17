@@ -1,9 +1,14 @@
-import { TextboxWithLabels, TextboxWithoutLabels } from "../components/Textbox";
+import {
+  TextboxWithLabels,
+  TextboxWithoutLabels,
+  DateInputWithLabels,
+} from "../components/Textbox";
 import { FileUpload } from "../components/FileUpload";
 import { AssignCourseCard } from "../components/Card";
 import { push, ref, set } from "firebase/database";
 import { db } from "../firebase";
 import { useState, useEffect } from "react";
+import { AlertError, AlertSuccess } from "../components/Alerts";
 
 const generateRandomAlphanumeric = (length) => {
   const characters =
@@ -27,13 +32,28 @@ const generateCourseID = () => {
   return courseID;
 };
 
+const extractGid = (link) => {
+  const parts = link.split("#gid=");
+
+  if (parts.length > 1) {
+    return parts[1]; // Extract the GID after #gid=
+  } else {
+    throw new Error("Invalid Google Sheets link format");
+  }
+};
+
 export const CourseForm = () => {
   const [quizLink, setQuizLink] = useState("");
   const [courseTitle, setCourseTitle] = useState("");
   const [courseDescription, setCourseDescription] = useState("");
   const [courseID, setCourseID] = useState("");
+  const [gid, setGid] = useState("");
+  const [gidValue, setGidValue] = useState("");
+  const [dueDate, setDueDate] = useState("");
   const DB_COURSE_KEY = "courses";
   const coursesRef = ref(db, DB_COURSE_KEY);
+  const [showSuccessAlert, setShowSuccessAlert] = useState(false);
+  const [showErrorAlert, setShowErrorAlert] = useState(false);
 
   useEffect(() => {
     getCourseID();
@@ -43,23 +63,54 @@ export const CourseForm = () => {
     setCourseID(generateCourseID());
   };
 
-  const writeData = () => {
-    const newCoursesRef = push(coursesRef);
-    set(newCoursesRef, {
-      createdDate: new Date().toLocaleString(),
-      courseTitle: courseTitle,
-      courseDescription: courseDescription,
-      quizLink: quizLink,
-      courseID: courseID,
-    });
-    setCourseTitle("");
-    setCourseDescription("");
-    setQuizLink("");
-    getCourseID(); //regenerate courseID after clicking submit
+  const writeData = async () => {
+    try {
+      const newCoursesRef = push(coursesRef);
+      await set(newCoursesRef, {
+        createdDate: new Date().toLocaleString(),
+        courseTitle: courseTitle,
+        courseDescription: courseDescription,
+        quizLink: quizLink,
+        gid: gid,
+        courseID: courseID,
+        dueDate: dueDate,
+      });
+      window.scrollTo(0, 0); //scroll to the top after submission
+      setShowSuccessAlert(true);
+
+      // Reset success alert after 3 seconds
+      setTimeout(() => {
+        setShowSuccessAlert(false);
+      }, 5000);
+
+      setCourseTitle("");
+      setCourseDescription("");
+      setQuizLink("");
+      setGid("");
+      setGidValue("");
+      getCourseID(); //regenerate courseID after clicking submit
+      setDueDate("");
+    } catch (error) {
+      console.error("Error writing data to Firebase:", error);
+      setShowErrorAlert(true);
+      //bug regenerate courseID if error
+
+      // Reset error alert after 3 seconds
+      setTimeout(() => {
+        setShowErrorAlert(false);
+      }, 5000);
+    }
   };
 
   const handleQuizLink = (e) => {
     setQuizLink(e.target.value);
+  };
+
+  const handleGidLink = (e) => {
+    setGidValue(e.target.value);
+    const extractedGid = extractGid(e.target.value);
+    console.log(`GID: ${extractedGid}`);
+    setGid(extractedGid);
   };
 
   const handleCourseTitle = (e) => {
@@ -68,28 +119,49 @@ export const CourseForm = () => {
   const handleCourseDescription = (e) => {
     setCourseDescription(e.target.value);
   };
+  const handleDueDate = (e) => {
+    setDueDate(e.target.value);
+  };
 
-  console.log(courseID);
   return (
     <>
-      <div className="prose flex flex-col p-6">
+      <div className="prose flex flex-col p-6 max-w-full">
+        {/* alerts */}
+        <div className="mb-5">
+          {showSuccessAlert && (
+            <AlertSuccess alertText={"Submitted successfully."} />
+          )}
+
+          {showErrorAlert && (
+            <AlertError alertText={"Submission failed. Please try again."} />
+          )}
+        </div>
+
         <h1 className="text-center">Create A Course</h1>
 
         {/* course form */}
         <form className="pb-8 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
           {/* Course Title Description File Upload */}
-          <div className="sm:col-span-3">
+          <div className="sm:col-span-2">
             <TextboxWithLabels
               label={"Course Title"}
               onChange={handleCourseTitle}
               value={courseTitle}
             />
           </div>
-          <div className="sm:col-span-3">
+          <div className="sm:col-span-2">
             <TextboxWithLabels
               label={"Course Description"}
               onChange={handleCourseDescription}
               value={courseDescription}
+            />
+          </div>
+          <div className="sm:col-span-2">
+            <DateInputWithLabels
+              label={"Due Date"}
+              onChange={handleDueDate}
+              value={dueDate}
+              pattern="\d{4}-\d{2}-\d{2}"
             />
           </div>
           <div className="sm:col-span-6">
@@ -97,7 +169,7 @@ export const CourseForm = () => {
           </div>
 
           {/* create quiz on gform*/}
-          <div className="sm:col-span-2">
+          <div className="sm:col-span-1">
             <a
               role="button"
               className="btn btn-accent w-full"
@@ -110,18 +182,26 @@ export const CourseForm = () => {
           </div>
 
           {/* quiz link */}
-          <div className="sm:col-span-4">
+          <div className="sm:col-span-3">
             <TextboxWithoutLabels
               inlineLabel={"Paste the SHAREABLE Google Form link here!"}
               onChange={handleQuizLink}
               value={quizLink}
             />
           </div>
+          {/* GID link */}
+          <div className="sm:col-span-2">
+            <TextboxWithoutLabels
+              inlineLabel={"Paste the Google Sheets link here!"}
+              onChange={handleGidLink}
+              value={gidValue}
+            />
+          </div>
 
           {/* assign course */}
-          <div className="sm:col-span-6">
+          {/* <div className="sm:col-span-6">
             <AssignCourseCard cardTitle={"Assign Course"} />
-          </div>
+          </div> */}
         </form>
         <button className="btn btn-primary" onClick={writeData}>
           Submit

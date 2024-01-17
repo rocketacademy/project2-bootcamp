@@ -7,16 +7,26 @@ import { useEffect, useState } from "react";
 const STORAGE_KEY = `/courseMaterials`;
 const filesRef = ref(db, STORAGE_KEY);
 
-const deleteFile = (fileKey, fileName) => {
-  const fileRef = storageRef(storage, `${STORAGE_KEY}_${fileName}`);
-  deleteObject(fileRef).then(() => {
-    const fileUploadRef = ref(db, `${STORAGE_KEY}/${fileKey}`);
-    remove(fileUploadRef);
-  });
-};
-
 export const CurrentUploadedFiles = ({ currentCourseID }) => {
   const [fileDisplay, setFileDisplay] = useState([]);
+
+  const deleteFile = async (fileKey, fileName, currentCourseID) => {
+    try {
+      const fileStorageRef = storageRef(
+        storage,
+        `${STORAGE_KEY}/${currentCourseID}/${fileName}`
+      );
+      await deleteObject(fileStorageRef);
+      const fileDatabaseRef = ref(db, `${STORAGE_KEY}/${fileKey}`);
+      await remove(fileDatabaseRef);
+      setFileDisplay((prevFiles) =>
+        prevFiles.filter((file) => file.key !== fileKey)
+      );
+      console.log("File deleted successfully!");
+    } catch (error) {
+      console.error("Error deleting file:", error);
+    }
+  };
 
   useEffect(() => {
     onChildAdded(filesRef, (data) => {
@@ -38,7 +48,12 @@ export const CurrentUploadedFiles = ({ currentCourseID }) => {
       <tr key={file.key}>
         <td>{file.val.fileName}</td>
         <td>
-          <button onClick={() => deleteFile(file.key, file.val.fileName)}>
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              deleteFile(file.key, file.val.fileName, file.val.courseID);
+            }}
+          >
             Delete
           </button>
         </td>
