@@ -193,3 +193,17 @@ a {
   align-items: flex-end;
   justify-content: space-between;
 }
+
+.search-bar-input {
+  width: 30vw;
+}
+
+.upload-button {
+  background-color: #dde2fc !important;
+  color: black !important;
+  margin: 5px !important;
+}
+
+.name-input {
+  margin: 5px !important;
+}

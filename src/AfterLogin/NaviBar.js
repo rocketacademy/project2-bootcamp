@@ -20,7 +20,6 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import ErrorPage from "../ErrorPage";
 import DBHandler from "../Controller/DBHandler";
 import StorageHandler from "../Controller/StorageHandler";
-import logo from "../img/logo.jpg";
 
 export default function NaviBar(props) {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -106,7 +105,6 @@ export default function NaviBar(props) {
             <Input
               value={keyword}
               onChange={(e) => setKeyWord(e.target.value)}
-              className="search-bar-input"
             />
             <SearchIcon
               onClick={() => {
@@ -138,7 +136,7 @@ export default function NaviBar(props) {
   const smallWindowDisplay = (
     <div className="navi-bar" ref={naviBarRef}>
       <Link to="/">
-        <img src={logo} alt="logo" className="navi-logo" />
+        <img className="navi-logo" src="Logo-black-text.png" alt="logo" />
       </Link>
       <Slide in={openSearch} direction="left" container={naviBarRef.current}>
         <div className="small-search-bar">
@@ -190,7 +188,11 @@ export default function NaviBar(props) {
           accept="image/*"
           onChange={(e) => setFile(e.target.files[0])}
         />
-        <Button variant="contained" onClick={handleUploadPhoto}>
+        <Button
+          variant="contained"
+          onClick={handleUploadPhoto}
+          className="upload-button"
+        >
           Upload
         </Button>
       </Dialog>
@@ -200,8 +202,13 @@ export default function NaviBar(props) {
           placeholder="Your Name"
           value={name}
           onChange={(e) => setName(e.target.value)}
+          className="name-input"
         />
-        <Button variant="contained" onClick={handleChangeName}>
+        <Button
+          variant="contained"
+          onClick={handleChangeName}
+          className="upload-button"
+        >
           Confirm
         </Button>
       </Dialog>
