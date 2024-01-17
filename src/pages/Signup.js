@@ -16,18 +16,18 @@ const Signup = () => {
     e.preventDefault();
     if (!password || !email || !username) return;
 
-    try {
-      await createUserWithEmailAndPassword(
-        auth,
+    if (password.length < 6) {
+      setErrorMessage(`Password has to be at least 6 characters.`);
+      return;
+    }
 
-        email,
-        password
-      ).then((userCredential) => {
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
         const user = userCredential.user;
         updateProfile(auth.currentUser, {
           displayName: username,
         });
-        set(ref(db, `${selectedRadio}/${username}`), {
+        set(ref(db, `${selectedRadio}/${user.uid}`), {
           uid: user.uid,
           username: username,
           email: email,
@@ -38,10 +38,12 @@ const Signup = () => {
         setPassword("");
         setSelectedRadio("Teacher");
         navigate("/");
+      })
+      .catch((error) => {
+        if (error.code === "auth/email-already-in-use") {
+          setErrorMessage(`Email already in use`);
+        }
       });
-    } catch (error) {
-      setErrorMessage(error.code);
-    }
   };
 
   return (
@@ -53,27 +55,27 @@ const Signup = () => {
         <br />
         PLATFORM
       </p>
-      <div className="pr-12 pl-6 py-6 mt-8 bg-amber-50 rounded-lg">
+      <div className="px-12 py-6 mt-8 bg-amber-50 rounded-lg">
         <form onSubmit={handleSignUp}>
-          <p className="text-sm text-left mb-4 font-bold">Sign Up</p>
-          <p className="text-sm mb-2">{errorMessage && errorMessage}</p>
-          <label for="username" class="block text-sm text-left mb-2">
+          <p className="text-sm text-left mb-9 font-bold">Sign Up</p>
+          <p className="text-sm mb-6 text-red-600 font-bold">{errorMessage}</p>
+          <label for="username" className="block text-sm text-left mb-2">
             Username
           </label>
           <input
             type="text"
             name="username"
+            required
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             className="input input-bordered w-full max-w-xs dark:bg-white mb-2 dark:border-gray-600"
           />
 
-          <label for="email" class="block text-sm text-left mb-2">
-            Email
-          </label>
+          <label className="block text-sm text-left mb-2">Email</label>
           <input
             type="email"
             name="email"
+            required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="input input-bordered w-full max-w-xs dark:bg-white mb-2 dark:border-gray-600"
@@ -84,12 +86,13 @@ const Signup = () => {
           <input
             type="password"
             name="password"
+            required
             autoComplete="current-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             className="input input-bordered w-full max-w-xs dark:bg-white mb-6 dark:border-gray-600"
           />
-          <div className="flex mb-6">
+          <div className="flex mb-6 justify-around">
             <div className="flex items-center me-4">
               <input
                 id="teacher-radio"
