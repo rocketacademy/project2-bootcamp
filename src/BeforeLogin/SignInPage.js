@@ -1,12 +1,8 @@
 import { Link, useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.css";
 import { auth } from "../firebase";
-import {
-  onAuthStateChanged,
-  signInWithEmailAndPassword,
-  updateProfile,
-} from "firebase/auth";
-import { useEffect, useState } from "react";
+import { signInWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { useState } from "react";
 import DisabledByDefaultOutlinedIcon from "@mui/icons-material/DisabledByDefaultOutlined";
 import ErrorPage from "../ErrorPage";
 
@@ -34,7 +30,9 @@ export default function SignInPage() {
         setErrorMessage(error.message.slice(10));
       });
   };
-
+  const handleForgotPasswordClick = () => {
+    navi("/reset-password");
+  };
   return (
     <div className="App">
       <ErrorPage
@@ -74,6 +72,7 @@ export default function SignInPage() {
       <button type="button" className="btn btn-dark mb-4" onClick={logIn}>
         Log in
       </button>
+      <h6 onClick={handleForgotPasswordClick}>Forgot your password?</h6>
     </div>
   );
 }
