@@ -1,11 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { auth } from "../firebase";
-import {
-  createUserWithEmailAndPassword,
-  onAuthStateChanged,
-  updateProfile,
-} from "firebase/auth";
-import { useEffect, useState } from "react";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { useState } from "react";
 import { ref, set } from "firebase/database";
 import { database } from "../firebase";
 import DisabledByDefaultOutlinedIcon from "@mui/icons-material/DisabledByDefaultOutlined";

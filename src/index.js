@@ -14,6 +14,7 @@ import EditDeckPage from "./AfterLogin/EditDeckPage";
 import QuizReportList from "./AfterLogin/ReportComponent/QuizReportList";
 import QuizReport from "./AfterLogin/ReportComponent/QuizReport";
 import SearchPage from "./AfterLogin/SearchPage";
+import ResetPasswordPage from "./BeforeLogin/ResetPasswordPage";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -38,6 +39,7 @@ root.render(
       </Route>
       <Route path="*" element={<div>404</div>} />
       <Route path="/signin" element={<SignInPage />} />
+      <Route path="/reset-password" element={<ResetPasswordPage />} />
       <Route path="/register" element={<RegisterPage />} />
     </Routes>
   </BrowserRouter>
