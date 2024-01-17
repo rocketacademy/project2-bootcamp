@@ -4,7 +4,7 @@ import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { useState } from "react";
 import { ref, set } from "firebase/database";
 import { database } from "../firebase";
-import DisabledByDefaultOutlinedIcon from "@mui/icons-material/DisabledByDefaultOutlined";
+import CloseIcon from "@mui/icons-material/Close";
 import "bootstrap/dist/css/bootstrap.css";
 import ErrorPage from "../ErrorPage";
 
@@ -50,7 +50,7 @@ export default function RegisterPage() {
         handleErrorMessage={() => setErrorMessage("")}
       />
       <Link to="/" className="homepage-button">
-        <DisabledByDefaultOutlinedIcon />
+        <CloseIcon />
       </Link>
       <h2 className="mb-5">Hi, nice to meet you!</h2>
       <div className="mb-3">
@@ -83,7 +83,7 @@ export default function RegisterPage() {
         <label className="form-label">
           Password:
           <input
-            type="text"
+            type="password"
             className="form-control"
             name="password"
             placeholder="********"
