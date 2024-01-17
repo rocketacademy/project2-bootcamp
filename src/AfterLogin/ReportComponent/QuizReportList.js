@@ -4,6 +4,7 @@ import { useOutletContext, useNavigate } from "react-router-dom";
 import { DataGrid } from "@mui/x-data-grid";
 import ErrorPage from "../../ErrorPage";
 import DBHandler from "../../Controller/DBHandler";
+import "../ReportPage.css";
 
 export default function QuizReportList() {
   const [user] = useOutletContext();
@@ -37,7 +38,7 @@ export default function QuizReportList() {
   const columnData = [
     { field: "id", headerName: "ID", width: 90 },
     { field: "score", headerName: "Score", width: 110 },
-    { field: "date", headerName: "Date", width: 100 },
+    { field: "date", headerName: "Date", width: 110 },
   ];
 
   //data for the DataGrid
@@ -54,17 +55,17 @@ export default function QuizReportList() {
   //when getting data, show a backdrop
   //otherwise, show dataGrid
   const display = quizList ? (
-    <div>
+    <div className="report-list">
       <DataGrid
         rows={listData}
         columns={columnData}
         onRowClick={(e) => navi(`${e.id}`)}
         className="quiz-list"
         initialState={{
-          pagination: { paginationModel: { pageSize: 10 } },
+          pagination: { paginationModel: { pageSize: 5 } },
           sorting: { sortModel: [{ field: "id", sort: "asc" }] },
         }}
-        pageSizeOptions={[10]}
+        pageSizeOptions={[5]}
       />
       <h6>Click on the row to view detailed report</h6>
       <Button onClick={() => navi("/report")}>Back</Button>

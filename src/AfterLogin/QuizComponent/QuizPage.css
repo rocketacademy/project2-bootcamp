@@ -51,7 +51,13 @@
 .homepage-button {
   position: relative;
   left: 45%;
-  top: 10px;
+  top: 5px;
+  color: black;
+}
+
+.quiz-selection-button {
+  background-color: #dde2fc !important;
+  color: black !important;
 }
 
 .quiz-sub-page {
@@ -276,7 +282,7 @@
   justify-content: center;
   border: 1px solid black;
   margin-bottom: 5px;
-  width: 400px;
+  width: 360px;
 }
 
 .mix-and-match-question-card {

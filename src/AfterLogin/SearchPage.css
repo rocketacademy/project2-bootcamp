@@ -1,0 +1,26 @@
+.search-list {
+  width: 80vw;
+}
+
+.search-page {
+  width: 100vw;
+  max-width: 100%;
+  min-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  background-color: #f0f1f7;
+  padding: 5vw;
+}
+
+.search-header {
+  align-self: flex-start;
+  margin: 5px;
+}
+
+.copy-button {
+  width: 100%;
+  background-color: #dde2fc !important;
+  color: black !important;
+}

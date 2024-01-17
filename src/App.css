@@ -28,6 +28,8 @@ a {
 }
 
 .navi-bar {
+  position: relative;
+  overflow: hidden;
   height: 10vh;
   display: flex;
   flex-direction: row;
@@ -43,14 +45,6 @@ a {
 
 .profile-pic:hover {
   cursor: pointer;
-}
-
-.navi-icon-div {
-  padding-right: 10px;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
 }
 
 @media screen and (max-width: 600px) {
@@ -72,13 +66,7 @@ a {
 
 @media screen and (min-width: 601px) {
   .navi-icon-div {
-    width: 30vw;
-  }
-}
-
-@media screen and (min-width: 992px) {
-  .navi-icon-div {
-    width: 20vw;
+    width: 500px;
   }
   .intro-page {
     display: flex;
@@ -183,4 +171,39 @@ a {
 
 .register-button {
   background-color: #4f6ef7 !important;
+}
+
+.large-search-bar {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+}
+
+.small-search-bar {
+  position: absolute;
+  right: 5vw;
+  display: flex;
+  flex-direction: row;
+}
+
+.navi-icon-div {
+  padding-right: 10px;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.search-bar-input {
+  width: 30vw;
+}
+
+.upload-button {
+  background-color: #dde2fc !important;
+  color: black !important;
+  margin: 5px !important;
+}
+
+.name-input {
+  margin: 5px !important;
 }

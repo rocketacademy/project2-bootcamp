@@ -39,7 +39,7 @@ export default function MixAndMatchQuizQuestion(props) {
         correctAnswer,
         answer
       );
-      navi(`/quizList/${quizID}`);
+      navi(`/reportList/${quizID}`);
     } catch (error) {
       setErrorMessage(error.message);
     }
@@ -93,11 +93,13 @@ export default function MixAndMatchQuizQuestion(props) {
       <div className="dialog-button-div">
         <Button
           variant="contained"
+          className="quiz-selection-button"
           onClick={() => setAnswer(new Array(10).fill(""))}
         >
           Reset
         </Button>
         <Button
+          className="quiz-selection-button"
           variant="contained"
           disabled={!isAnswerAll}
           onClick={handleConfirm}

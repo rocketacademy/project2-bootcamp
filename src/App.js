@@ -9,7 +9,7 @@ import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { TouchBackend } from "react-dnd-touch-backend";
 import { isBrowser } from "react-device-detect";
-import { Button, Card, Paper } from "@mui/material";
+import { Button } from "@mui/material";
 import LibraryBooksIcon from "@mui/icons-material/LibraryBooks";
 import GraphicEqIcon from "@mui/icons-material/GraphicEq";
 import SchoolIcon from "@mui/icons-material/School";

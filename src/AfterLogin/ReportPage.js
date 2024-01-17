@@ -52,10 +52,12 @@ export default function ReportPage() {
   let accumulateScore = 0;
   const chartData =
     userInfo && userInfo.quizReport
-      ? Object.values(userInfo.quizReport).map(({ score, quizID }) => {
-          accumulateScore += score;
-          return { averageScore: accumulateScore / quizID, quiz: quizID };
-        })
+      ? Object.values(userInfo.quizReport)
+          .sort((a, b) => a.quizID - b.quizID)
+          .map(({ score, quizID }) => {
+            accumulateScore += score;
+            return { averageScore: accumulateScore / quizID, quiz: quizID };
+          })
       : [];
 
   //Total average score same as the last index
@@ -113,7 +115,7 @@ export default function ReportPage() {
             {userInfo && userInfo.quizReport ? (
               <div className="info">
                 <h4>{averageScore}/100 pts</h4>
-                <Link to="/quizList">
+                <Link to="/reportList">
                   <Button>View Quiz History Reports</Button>
                 </Link>
               </div>

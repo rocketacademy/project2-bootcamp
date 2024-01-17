@@ -92,7 +92,7 @@ export default function QuizReport() {
       <p>Date: {quizInfo.date}</p>
       <h1>Score: {quizInfo.score}</h1>
       <div className="quiz-report-header">
-        <Button variant="outlined" onClick={() => navi("/quizList")}>
+        <Button variant="outlined" onClick={() => navi("/reportList")}>
           Quiz History Report
         </Button>
         <Button
