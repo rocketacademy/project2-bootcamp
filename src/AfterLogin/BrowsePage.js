@@ -130,6 +130,7 @@ export default function BrowsePage() {
         <h2>{deck.deckName}</h2>
         <Button value={deckID} onClick={(e) => handleEdit(e.value)}>
           <ModeEditIcon />
+          Edit
         </Button>
       </div>
       <div className="browse-card-button-layout">
