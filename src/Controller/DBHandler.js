@@ -122,6 +122,77 @@ export default class DBHandler {
     }
   };
 
+  //search Deck with user doesn't have.
+  //return {resultInfo,adviceInfo] (array of deckInfo with new key cardInfos contains cards detail in that deck)
+  searchDeck = async (keyword) => {
+    try {
+      const resultInfo = [];
+      const remainInfo = [];
+      const userInfo = await this.getUserInfo();
+      const userDeckIDs = userInfo.decks;
+      const decksRef = ref(database, `decks`);
+      const decksRes = await get(decksRef);
+      const decks = decksRes.val();
+      for (const userDeckID of userDeckIDs) {
+        delete decks[`deck${userDeckID}`];
+      }
+      const cardsRef = ref(database, `cards`);
+      const cardsRes = await get(cardsRef);
+      const cards = cardsRes.val();
+      const cardsMatch = {};
+      for (const { english, spanish, cardID } of Object.values(cards)) {
+        if (
+          english.toLowerCase().includes(keyword) ||
+          spanish.toLowerCase().includes(keyword)
+        ) {
+          cardsMatch[cardID] = true;
+        }
+      }
+      //cardsMatch contains cardID that match keyword
+      //decks is decks the user do not have
+      for (const deck of Object.values(decks)) {
+        if (deck.deckName.toLowerCase().includes(keyword)) {
+          resultInfo.push(deck);
+        } else {
+          let haveMatch = false;
+          for (const deckCardID of deck.deckCards) {
+            if (cardsMatch[deckCardID]) {
+              resultInfo.push(deck);
+              haveMatch = true;
+              break;
+            }
+          }
+          if (!haveMatch) {
+            remainInfo.push(deck);
+          }
+        }
+      }
+      //randomly take 3 from remain
+      const adviceInfo = [];
+      while (!remainInfo.length || adviceInfo.length < 3) {
+        const randomIndex = Math.floor(Math.random() * remainInfo.length);
+        adviceInfo.push(remainInfo[randomIndex]);
+        remainInfo.splice(randomIndex, 1);
+      }
+      //put cardInfo into each resultInfo&adviceInfo with new key cardInfos in each deck
+      for (const deck of Object.values(resultInfo)) {
+        deck.cardInfos = [];
+        for (const cardID of deck.deckCards) {
+          deck.cardInfos.push(cards[`card${cardID}`]);
+        }
+      }
+      for (const deck of Object.values(adviceInfo)) {
+        deck.cardInfos = [];
+        for (const cardID of deck.deckCards) {
+          deck.cardInfos.push(cards[`card${cardID}`]);
+        }
+      }
+      return { resultInfo, adviceInfo };
+    } catch (error) {
+      this.setErrorMessage(error.message);
+    }
+  };
+
   //get user info and decks detail related to user
   //return { userInfo, userDecks }
   getUserAndDecksInfo = async (isGoHome) => {
@@ -328,53 +399,6 @@ export default class DBHandler {
       return quizID;
     } catch (error) {
       this.setErrorMessage(error.message);
-    }
-  };
-
-  //Clear Up unused data
-  clearUpData = async () => {
-    try {
-      const userInfoRef = ref(database, `userInfo`);
-      const allUserDataRes = await get(userInfoRef);
-      const allUserData = allUserDataRes.val();
-      const allUserDecks = new Set();
-      for (const userInfo of Object.values(allUserData)) {
-        if (!userInfo.decks) {
-          continue;
-        }
-        for (const deck of userInfo.decks) {
-          allUserDecks.add(deck);
-        }
-      }
-      const allDeckRef = ref(database, `decks`);
-      const allDecksRes = await get(allDeckRef);
-      const allDecks = allDecksRes.val();
-      const allRemainDecks = [];
-      for (const deck of Object.values(allDecks)) {
-        if (!allUserDecks.has(deck.deckID)) {
-          const deleteDeckRef = ref(database, `decks/deck${deck.deckID}`);
-          await remove(deleteDeckRef);
-        } else {
-          allRemainDecks.push(deck);
-        }
-      }
-      const allDeckCards = new Set();
-      for (const deck of allRemainDecks) {
-        for (const cardID of deck.deckCards) {
-          allDeckCards.add(cardID);
-        }
-      }
-      const allCardsRef = ref(database, `cards`);
-      const allCardsRes = await get(allCardsRef);
-      const allCards = allCardsRes.val();
-      for (const card of Object.values(allCards)) {
-        if (!allDeckCards.has(card.cardID)) {
-          const deleteCardRef = ref(database, `cards/card${card.cardID}`);
-          await remove(deleteCardRef);
-        }
-      }
-    } catch (error) {
-      console.log(error);
     }
   };
 }
