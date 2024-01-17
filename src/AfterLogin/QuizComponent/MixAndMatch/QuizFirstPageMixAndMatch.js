@@ -81,7 +81,7 @@ export default function QuizFirstPageMixAndMatch(props) {
             <CloseIcon />
           </Link>
         </div>
-        <h1>Set up your quiz</h1>
+        <h1>🔧Set up your quiz</h1>
         <div className="quiz-mode-card-container">
           <Button
             fullWidth

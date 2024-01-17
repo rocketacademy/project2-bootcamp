@@ -84,13 +84,13 @@ export default function QuizFirstPageMC(props) {
             <CloseIcon />
           </Link>
         </div>
-        <h1>Set up your quiz</h1>
+        <h1>🔧Set up your quiz</h1>
 
         <div className="quiz-mode-card-container">
           <Button
             fullWidth
             className={` ${
-              props.quizMode == "MC" ? "quiz-chosen-button" : "quiz-mode-card"
+              props.quizMode === "MC" ? "quiz-chosen-button" : "quiz-mode-card"
             }`}
             onClick={() => props.setQuizMode("MC")}
             variant="contained"
@@ -100,7 +100,7 @@ export default function QuizFirstPageMC(props) {
           <Button
             fullWidth
             className={`${
-              props.quizMode == "MixAndMatch"
+              props.quizMode === "MixAndMatch"
                 ? "quiz-chosen-button"
                 : "quiz-mode-card"
             }`}

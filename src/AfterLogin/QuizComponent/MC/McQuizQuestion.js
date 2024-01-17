@@ -138,12 +138,15 @@ export default function McQuizQuestion(props) {
       >
         <div className="quiz-sub-question-page">
           <Card className="english-card">
-            <h6>English</h6>
-            {question.english}
+            <div className="english-card-info">
+              <h6>English</h6>
+            </div>
+            <div className="english-card-question">{question.english}</div>
           </Card>
-          {choicesDisplay}
+          <div className="quiz-choices">{choicesDisplay}</div>
           <div className="button-div">
             <Button
+              fullWidth
               variant="contained"
               className="question-button"
               onClick={handlePrevQuestion}
@@ -152,6 +155,7 @@ export default function McQuizQuestion(props) {
               ←
             </Button>
             <Button
+              fullWidth
               variant="contained"
               className="question-button"
               onClick={

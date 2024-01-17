@@ -1,5 +1,5 @@
 import { Button, Dialog, DialogContent, LinearProgress } from "@mui/material";
-import DisabledByDefaultOutlinedIcon from "@mui/icons-material/DisabledByDefaultOutlined";
+import CloseIcon from "@mui/icons-material/Close";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -26,14 +26,12 @@ export default function McQuizHeader(props) {
       </Dialog>
       <div className="quiz-subheader">
         <h3>{props.questions[props.currentQuestion].deckName}</h3>
-        <DisabledByDefaultOutlinedIcon
-          onClick={() => setDialog(true)}
-          className="exit-button"
-        />
+        <CloseIcon onClick={() => setDialog(true)} className="exit-button" />
       </div>
       <span className="progress-number">{props.currentQuestion + 1}/10</span>
       <LinearProgress
         variant="determinate"
+        color="error"
         value={(props.currentQuestion + 1) * 10}
         className="progress-bar"
       />
