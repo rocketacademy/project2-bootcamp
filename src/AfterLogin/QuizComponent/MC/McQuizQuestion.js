@@ -38,13 +38,13 @@ export default function McQuizQuestion(props) {
   const inlineAnimateNext = {
     animationName: startAnimationNext ? "next-question" : "none",
     animationDuration: "0.5s",
-    postition: "relative",
+    position: "relative",
     right: `${currentQuestion * 100}%`,
   };
   const inlineAnimatePrev = {
     animationName: startAnimationPrev ? "prev-question" : "none",
     animationDuration: "0.5s",
-    postition: "relative",
+    position: "relative",
     right: `${currentQuestion * 100}%`,
   };
 

@@ -111,9 +111,7 @@ export default function BrowsePage() {
         >
           📖 Study Flashcard
         </Button>
-        {deck.deckCards && deck.deckCards.length < 13 ? (
-          <></>
-        ) : (
+        {deck.deckCards && deck.deckCards.length < 13 ? null : (
           <Button
             fullWidth
             disabled={deck.deckCards && deck.deckCards.length < 13}
@@ -125,9 +123,7 @@ export default function BrowsePage() {
             📝 Multiple Choice Quiz
           </Button>
         )}
-        {deck.deckCards && deck.deckCards.length < 10 ? (
-          <></>
-        ) : (
+        {deck.deckCards && deck.deckCards.length < 10 ? null : (
           <Button
             fullWidth
             className="browse-flashcard-button-blue"

@@ -26,7 +26,7 @@
 }
 
 .quiz-start-button {
-  background-color: grey !important;
+  background-color: black !important;
   color: white !important;
   &:active {
     background-color: #4f6ef7 !important;
@@ -34,7 +34,10 @@
   &:hover {
     background-color: #4f6ef7 !important;
   }
-  /* border-color: black !important; */
+}
+
+.quiz-start-button:disabled {
+  background-color: lightgray !important;
 }
 
 @media screen and (max-width: 600px) {
@@ -168,7 +171,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: grey !important;
+  background-color: lightgray !important;
 }
 
 .quiz-chosen-button {
@@ -208,7 +211,7 @@
 .question-button {
   width: 49%;
   height: 50px;
-  background-color: #4f6ef7 !important;
+  background-color: black !important;
 }
 
 .question-button:disabled {
