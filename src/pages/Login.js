@@ -58,19 +58,19 @@ const Login = () => {
     }
   };
 
-  const checkStudentDB = (userID, emailID) => {
-    return onValue(
-      query(ref(db, "Student"), orderByKey("email"), equalTo(emailID)),
-      (snapshot) => {
-        const role = snapshot.val() && snapshot.val().role;
-        console.log(role);
-        setResponse(role);
-      },
-      {
-        onlyOnce: true,
-      }
-    );
-  };
+  // const checkStudentDB = (userID, emailID) => {
+  //   return onValue(
+  //     query(ref(db, "Student"), orderByKey("email"), equalTo(emailID)),
+  //     (snapshot) => {
+  //       const role = snapshot.val() && snapshot.val().role;
+  //       console.log(role);
+  //       setResponse(role);
+  //     },
+  //     {
+  //       onlyOnce: true,
+  //     }
+  //   );
+  // };
 
   const checkStudentDBV2 = (uid) => {
     const dbRef = ref(db, `Student/${uid}`);
@@ -94,19 +94,19 @@ const Login = () => {
     });
   };
 
-  const checkTeacherDB = (userID) => {
-    return onValue(
-      ref(db, "/Teacher/" + userID),
-      (snapshot) => {
-        const role = snapshot.val() && snapshot.val().role;
-        console.log(role);
-        setResponse(role);
-      },
-      {
-        onlyOnce: true,
-      }
-    );
-  };
+  // const checkTeacherDB = (userID) => {
+  //   return onValue(
+  //     ref(db, "/Teacher/" + userID),
+  //     (snapshot) => {
+  //       const role = snapshot.val() && snapshot.val().role;
+  //       console.log(role);
+  //       setResponse(role);
+  //     },
+  //     {
+  //       onlyOnce: true,
+  //     }
+  //   );
+  // };
 
   console.log("Response: " + response);
   return (
