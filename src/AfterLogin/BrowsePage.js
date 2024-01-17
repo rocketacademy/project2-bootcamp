@@ -112,9 +112,7 @@ export default function BrowsePage() {
           📖 Study Flashcard
         </Button>
         {deck.deckCards && deck.deckCards.length < 13 ? (
-          <p>
-            You need to have at least 13 cards to start Multiple Choice Quiz.
-          </p>
+          <></>
         ) : (
           <Button
             fullWidth
@@ -128,7 +126,7 @@ export default function BrowsePage() {
           </Button>
         )}
         {deck.deckCards && deck.deckCards.length < 10 ? (
-          <p>You need to have at least 10 cards to start Mix & Match Quiz.</p>
+          <></>
         ) : (
           <Button
             fullWidth
