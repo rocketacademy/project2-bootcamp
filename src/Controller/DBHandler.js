@@ -379,6 +379,23 @@ export default class DBHandler {
     }
   };
 
+  //add exiting deck to user
+  //return ture means user already have this deck
+  putExistingDeck = async (deckID) => {
+    try {
+      const userInfo = await this.getUserInfo();
+      const userDeckIDs = userInfo.decks ? userInfo.decks : [];
+      if (userDeckIDs.includes(deckID)) {
+        return true;
+      }
+      userDeckIDs.push(deckID);
+      const userDecksRef = ref(database, `userInfo/${this.uid}/decks`);
+      await set(userDecksRef, userDeckIDs);
+    } catch (error) {
+      this.setErrorMessage(error.message);
+    }
+  };
+
   //add new user quiz report
   //return quizID
   putUserQuizReport = async (score, answer, choice) => {

@@ -6,8 +6,10 @@ import {
   AccordionDetails,
   AccordionSummary,
   Backdrop,
+  Button,
   CircularProgress,
   Paper,
+  Snackbar,
   Table,
   TableBody,
   TableCell,
@@ -16,6 +18,7 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import ErrorPage from "../ErrorPage";
 import "./SearchPage.css";
 
@@ -26,6 +29,7 @@ export default function SearchPage() {
   const [result, setResult] = useState(null);
   const [advice, setAdvice] = useState(null);
   const [expanded, setExpanded] = useState(false);
+  const [snackBar, setSnackBar] = useState(false);
   const dbHandler = useMemo(
     () => new DBHandler(user.uid, setErrorMessage),
     [user.uid, setErrorMessage]
@@ -50,6 +54,19 @@ export default function SearchPage() {
         return false;
       } else return deckID;
     });
+  };
+
+  const handleCopy = async (deckID) => {
+    try {
+      const isAlreadyTaken = await dbHandler.putExistingDeck(deckID);
+      if (isAlreadyTaken) {
+        setSnackBar("existed");
+      } else {
+        setSnackBar("copied");
+      }
+    } catch (error) {
+      setErrorMessage(error.message);
+    }
   };
 
   const adviceList =
@@ -83,9 +100,17 @@ export default function SearchPage() {
           expanded={expanded === deck.deckID}
           key={`deck${deck.deckID}`}
           onChange={() => handleExpanded(deck.deckID)}
+          className="search-list"
         >
           <AccordionSummary>
-            Deck Name: {deck.deckName} Deck Cards: {deck.deckCards.length}
+            <Typography sx={{ width: "30%" }}>Deck Name:</Typography>
+            <Typography sx={{ width: "35%" }}>
+              <b>{deck.deckName}</b>
+            </Typography>
+            <Typography sx={{ width: "30%" }}>Deck Cards: </Typography>
+            <Typography sx={{ width: "5%" }}>
+              {deck.deckCards.length}
+            </Typography>
           </AccordionSummary>
           {cardList}
         </Accordion>
@@ -120,6 +145,14 @@ export default function SearchPage() {
               <TableBody>{cardListBody}</TableBody>
             </Table>
           </TableContainer>
+          <Button
+            variant="contained"
+            className="copy-button"
+            onClick={() => handleCopy(deck.deckID)}
+          >
+            <div>Copy Deck</div>
+            <ContentCopyIcon />
+          </Button>
         </AccordionDetails>
       );
       return (
@@ -130,11 +163,11 @@ export default function SearchPage() {
           onChange={() => handleExpanded(deck.deckID)}
         >
           <AccordionSummary>
-            <Typography sx={{ width: "15%" }}>Deck Name:</Typography>
-            <Typography sx={{ width: "65%" }}>
+            <Typography sx={{ width: "30%" }}>Deck Name:</Typography>
+            <Typography sx={{ width: "35%" }}>
               <b>{deck.deckName}</b>
             </Typography>
-            <Typography sx={{ width: "15%" }}>Deck Cards: </Typography>
+            <Typography sx={{ width: "30%" }}>Deck Cards: </Typography>
             <Typography sx={{ width: "5%" }}>
               {deck.deckCards.length}
             </Typography>
@@ -144,17 +177,7 @@ export default function SearchPage() {
       );
     });
 
-  const resultDisplay =
-    result && result.length ? (
-      <div>
-        <div>
-          {result.length} results of keyword "{keyword}" found:
-        </div>
-        <div>{resultList}</div>
-      </div>
-    ) : (
-      <div>No result of "{keyword}"</div>
-    );
+  const resultDisplay = result && !!result.length && <div>{resultList}</div>;
 
   const adviceDisplay = advice && !!advice.length && (
     <div>
@@ -182,12 +205,32 @@ export default function SearchPage() {
     </Backdrop>
   );
 
+  const pageHeader = (
+    <div className="search-header">
+      {result && result.length
+        ? `${result.length} results of keyword "${keyword}" found:`
+        : `No result of "${keyword}"`}
+    </div>
+  );
   return (
-    <div className="page">
+    <div className="search-page">
+      {pageHeader}
       {display}
       <ErrorPage
         errorMessage={errorMessage}
         handleErrorMessage={() => setErrorMessage("")}
+      />
+      <Snackbar
+        open={!!snackBar}
+        autoHideDuration={1000}
+        onClose={() => setSnackBar(false)}
+        message={
+          snackBar === "copied"
+            ? `Deck Copied!`
+            : snackBar === "existed"
+            ? `You already have this deck.`
+            : null
+        }
       />
     </div>
   );
