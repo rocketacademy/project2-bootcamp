@@ -6,9 +6,12 @@ import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import Divider from "@mui/material/Divider";
+import LoadingButton from "@mui/lab/LoadingButton";
+import VolumeUpIcon from "@mui/icons-material/VolumeUp";
 import "./Study.css";
 import ErrorPage from "../ErrorPage";
 import DBHandler from "../Controller/DBHandler";
+import TextToSpeech from "../Controller/TextToSpeech";
 
 export default function BrowsePage() {
   const [user] = useOutletContext();
@@ -18,9 +21,19 @@ export default function BrowsePage() {
   const [goHome, setGoHome] = useState(false);
   const navigate = useNavigate();
   const { deckID } = useParams();
+  const [loadingAudio, setLoadingAudio] = useState(false);
   const dbHandler = useMemo(
     () => new DBHandler(user.uid, setErrorMessage, setGoHome),
     [user.uid, setErrorMessage, setGoHome]
+  );
+  const audioHandler = useMemo(
+    () =>
+      new TextToSpeech(
+        setErrorMessage,
+        setLoadingAudio,
+        process.env.REACT_APP_OPENAI_KEY
+      ),
+    [setErrorMessage, setLoadingAudio]
   );
 
   const handleErrorMessage = () => {
@@ -36,6 +49,15 @@ export default function BrowsePage() {
 
   const handleEdit = () => {
     navigate(`/editDeck/${deckID}`);
+  };
+
+  const handlePlayAudio = async (word) => {
+    try {
+      setLoadingAudio(true);
+      await audioHandler.playAudio(word);
+    } catch (error) {
+      setErrorMessage(error.message);
+    }
   };
 
   useEffect(() => {
@@ -81,6 +103,15 @@ export default function BrowsePage() {
                 <Divider component="li" />
                 <ListItem>
                   <ListItemText primary={card.spanish} />
+                  <LoadingButton
+                    loading={loadingAudio}
+                    className="study-audio-loading"
+                    onClick={() => {
+                      handlePlayAudio(card.spanish);
+                    }}
+                  >
+                    <VolumeUpIcon fontSize="small" />
+                  </LoadingButton>
                 </ListItem>
               </List>
             </div>
@@ -99,6 +130,7 @@ export default function BrowsePage() {
         <h2>{deck.deckName}</h2>
         <Button value={deckID} onClick={(e) => handleEdit(e.value)}>
           <ModeEditIcon />
+          Edit
         </Button>
       </div>
       <div className="browse-card-button-layout">
