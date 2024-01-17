@@ -27,6 +27,9 @@ export const Navbar = () => {
               <a href="/student">Student Home</a>
             </li>
             <li>
+              <a href="/teacher">Teacher Home</a>
+            </li>
+            <li>
               <a href="/teacher/attendance">Attendance</a>
             </li>
             <li>
@@ -35,17 +38,21 @@ export const Navbar = () => {
             <li>
               <a href="/teacher/resources">Resources</a>
             </li>
+            <li>
+              <a href="/student/courses">Student Courses</a>
+            </li>
           </ul>
         </div>
-        <a className="btn btn-ghost text-xl" href="/teacher">
-          LMS
-        </a>
+        <a className="btn btn-ghost text-xl">LMS</a>
         <div className="navbar-center hidden lg:flex">
           <ul className="menu menu-horizontal px-1">
             <li>
               <a href="/student">Student Home</a>
             </li>
             <li>
+              <a href="/teacher">Teacher Home</a>
+            </li>
+            <li>
               <a href="/teacher/attendance">Attendance</a>
             </li>
             <li>
@@ -53,6 +60,9 @@ export const Navbar = () => {
             </li>
             <li>
               <a href="/teacher/resources">Resources</a>
+            </li>
+            <li>
+              <a href="/student/courses">Student Courses</a>
             </li>
           </ul>
         </div>
@@ -90,7 +100,10 @@ export const Navbar = () => {
               <a className="justify-between">Profile</a>
             </li>
             <li>
-              <a>Settings</a>
+              <a href="/teacher/settings">Teacher Settings</a>
+            </li>
+            <li>
+              <a href="/student/settings">Student Settings</a>
             </li>
             <li>
               <a>Logout</a>
