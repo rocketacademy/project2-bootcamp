@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import ErrorPage from "../../ErrorPage";
 import DBHandler from "../../Controller/DBHandler";
+import "../QuizComponent/QuizPage.css";
 
 export default function QuizReport() {
   const [user] = useOutletContext();
@@ -50,12 +51,16 @@ export default function QuizReport() {
       return (
         <TableRow key={english}>
           <TableCell>{english}</TableCell>
-          <TableCell>{spanish}</TableCell>
           <TableCell
-            className={spanish === quizInfo.choice[i] ? "correct" : "wrong"}
+            className={
+              spanish === quizInfo.choice[i]
+                ? "correct-no-fill"
+                : "wrong-no-fill"
+            }
           >
             {quizInfo.choice[i]}
           </TableCell>
+          <TableCell>{spanish}</TableCell>
         </TableRow>
       );
     });
@@ -69,10 +74,10 @@ export default function QuizReport() {
               <h3>English</h3>
             </TableCell>
             <TableCell>
-              <h3>Answer</h3>
+              <h3>Your Choice</h3>
             </TableCell>
             <TableCell>
-              <h3>Your Choice</h3>
+              <h3>Answer</h3>
             </TableCell>
           </TableRow>
           {quizDetail}
@@ -82,16 +87,23 @@ export default function QuizReport() {
   );
 
   const display = quizInfo ? (
-    <div className="page">
-      <Button variant="outlined" onClick={() => navi("/reportList")}>
-        Back to Quiz report Page
-      </Button>
+    <div className="report-page">
+      <h5>Quiz {quizNo}</h5>
+      <p>Date: {quizInfo.date}</p>
+      <h1>Score: {quizInfo.score}</h1>
       <div className="quiz-report-header">
-        <h2>Quiz {quizNo}</h2>
-        <h5>Score: {quizInfo.score}</h5>
+        <Button variant="outlined" onClick={() => navi("/reportList")}>
+          Quiz History Report
+        </Button>
+        <Button
+          variant="contained"
+          className="quiz-home-button"
+          onClick={() => navi("/")}
+        >
+          Home
+        </Button>
       </div>
       <div>{quizDetailTable}</div>
-      <div>Date: {quizInfo.date}</div>
     </div>
   ) : (
     <Backdrop open={true}>

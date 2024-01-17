@@ -60,6 +60,7 @@ export default function QuizPage() {
           userDecks={userDecks}
           setDecks={setDecks}
           setQuizPage={setQuizPage}
+          quizMode={quizMode}
           setQuizMode={setQuizMode}
         />
       );
@@ -75,6 +76,7 @@ export default function QuizPage() {
           userDecks={userDecks}
           setDecks={setDecks}
           setQuizPage={setQuizPage}
+          quizMode={quizMode}
           setQuizMode={setQuizMode}
         />
       );

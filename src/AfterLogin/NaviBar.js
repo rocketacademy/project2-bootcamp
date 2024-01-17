@@ -97,7 +97,7 @@ export default function NaviBar(props) {
   const largeWindowDisplay = (
     <div className="navi-bar" ref={naviBarRef}>
       <Link to="/">
-        <img src={logo} alt="logo" className="navi-logo" />
+        <img className="navi-logo" src="Logo-black-text.png" alt="logo" />
       </Link>
 
       <div className="navi-icon-div">

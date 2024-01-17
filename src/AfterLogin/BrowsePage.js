@@ -1,6 +1,6 @@
 import { useParams, useNavigate, useOutletContext } from "react-router-dom";
 import { useState, useEffect, useMemo } from "react";
-import { Card, Button, Snackbar } from "@mui/material";
+import { Card, Button } from "@mui/material";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
@@ -16,7 +16,6 @@ export default function BrowsePage() {
   const [cards, setCards] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
   const [goHome, setGoHome] = useState(false);
-  const [snackBar, setSnackBar] = useState(null);
   const navigate = useNavigate();
   const { deckID } = useParams();
   const dbHandler = useMemo(
@@ -90,36 +89,8 @@ export default function BrowsePage() {
       })
     : null;
 
-  const handleSnackBar = (mode) => {
-    switch (mode) {
-      case "MixAndMatch":
-        if (deck.deckCards.length < 10) {
-          setSnackBar(10);
-        } else {
-          navigate(`/quiz/MixAndMatch/${deckID}`);
-        }
-        break;
-      case "MC":
-        if (deck.deckCards.length < 13) {
-          setSnackBar(13);
-        } else {
-          navigate(`/quiz/MC/${deckID}`);
-        }
-        break;
-      default:
-    }
-  };
   return (
     <div>
-      <Snackbar
-        open={!!snackBar}
-        autoHideDuration={1000}
-        onClose={() => setSnackBar(null)}
-        message={
-          !!snackBar &&
-          `You need to have at least ${snackBar} cards to start this quiz.`
-        }
-      />
       <ErrorPage
         errorMessage={errorMessage}
         handleErrorMessage={handleErrorMessage}
@@ -140,24 +111,30 @@ export default function BrowsePage() {
         >
           📖 Study Flashcard
         </Button>
-        <Button
-          fullWidth
-          className="browse-flashcard-quiz-button"
-          size="large"
-          variant="contained"
-          onClick={() => handleSnackBar("MC")}
-        >
-          👩🏻‍💻Multiple Choice Quiz💡
-        </Button>
-        <Button
-          fullWidth
-          className="browse-flashcard-quiz-button"
-          size="large"
-          variant="contained"
-          onClick={() => handleSnackBar("MixAndMatch")}
-        >
-          👩🏻‍💻Mix & Match Quiz💡
-        </Button>
+        {deck.deckCards && deck.deckCards.length < 13 ? null : (
+          <Button
+            fullWidth
+            disabled={deck.deckCards && deck.deckCards.length < 13}
+            className="browse-flashcard-button-blue"
+            size="large"
+            variant="contained"
+            onClick={() => navigate(`/quiz/MC/${deckID}`)}
+          >
+            📝 Multiple Choice Quiz
+          </Button>
+        )}
+        {deck.deckCards && deck.deckCards.length < 10 ? null : (
+          <Button
+            fullWidth
+            className="browse-flashcard-button-blue"
+            size="large"
+            variant="contained"
+            onClick={() => navigate(`/quiz/MixAndMatch/${deckID}`)}
+            disabled={deck.deckCards && deck.deckCards.length < 10}
+          >
+            📋Mix & Match Quiz
+          </Button>
+        )}
       </div>
       <br />
       <p className="browse-text">Terms in this set:</p>
