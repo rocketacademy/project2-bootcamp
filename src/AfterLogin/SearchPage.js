@@ -14,8 +14,10 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Typography,
 } from "@mui/material";
 import ErrorPage from "../ErrorPage";
+import "./SearchPage.css";
 
 export default function SearchPage() {
   const [user] = useOutletContext();
@@ -90,7 +92,6 @@ export default function SearchPage() {
       );
     });
 
-  console.log(expanded);
   const resultList =
     result &&
     result.map((deck) => {
@@ -123,12 +124,20 @@ export default function SearchPage() {
       );
       return (
         <Accordion
+          className="search-list"
           expanded={expanded === deck.deckID}
           key={`deck${deck.deckID}`}
           onChange={() => handleExpanded(deck.deckID)}
         >
           <AccordionSummary>
-            Deck Name: {deck.deckName} Deck Cards: {deck.deckCards.length}
+            <Typography sx={{ width: "15%" }}>Deck Name:</Typography>
+            <Typography sx={{ width: "65%" }}>
+              <b>{deck.deckName}</b>
+            </Typography>
+            <Typography sx={{ width: "15%" }}>Deck Cards: </Typography>
+            <Typography sx={{ width: "5%" }}>
+              {deck.deckCards.length}
+            </Typography>
           </AccordionSummary>
           {cardList}
         </Accordion>
@@ -147,7 +156,7 @@ export default function SearchPage() {
       <div>No result of "{keyword}"</div>
     );
 
-  const adviceDisplay = advice && advice.length && (
+  const adviceDisplay = advice && !!advice.length && (
     <div>
       <div>You may also interested in:</div>
       <div>{adviceList}</div>
@@ -157,6 +166,7 @@ export default function SearchPage() {
   const displayList = (
     <div>
       {resultDisplay}
+      <br />
       {adviceDisplay}
     </div>
   );
@@ -173,7 +183,7 @@ export default function SearchPage() {
   );
 
   return (
-    <div>
+    <div className="page">
       {display}
       <ErrorPage
         errorMessage={errorMessage}

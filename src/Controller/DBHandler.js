@@ -124,12 +124,13 @@ export default class DBHandler {
 
   //search Deck with user doesn't have.
   //return {resultInfo,adviceInfo] (array of deckInfo with new key cardInfos contains cards detail in that deck)
-  searchData = async (keyword) => {
+  searchData = async (keywordRaw) => {
     try {
+      const keyword = keywordRaw.toLowerCase();
       const resultInfo = [];
       const remainInfo = [];
       const userInfo = await this.getUserInfo();
-      const userDeckIDs = userInfo.decks;
+      const userDeckIDs = userInfo.decks ? userInfo.decks : [];
       const decksRef = ref(database, `decks`);
       const decksRes = await get(decksRef);
       const decks = decksRes.val();
@@ -189,7 +190,7 @@ export default class DBHandler {
       }
       return { resultInfo, adviceInfo };
     } catch (error) {
-      this.setErrorMessage(error.message);
+      console.log(error);
     }
   };
 
