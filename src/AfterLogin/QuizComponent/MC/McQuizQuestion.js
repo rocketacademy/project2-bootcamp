@@ -4,6 +4,8 @@ import McQuizHeader from "./McQuizHeader";
 import { useNavigate } from "react-router-dom";
 import ErrorPage from "../../../ErrorPage";
 import DBHandler from "../../../Controller/DBHandler";
+import { ThemeProvider } from "@mui/material/styles";
+import theme from "../../../Theme";
 
 //mc question content component
 export default function McQuizQuestion(props) {
@@ -127,53 +129,55 @@ export default function McQuizQuestion(props) {
       );
     });
     return (
-      <div
-        className="quiz-sub-page"
-        key={`question${i}`}
-        style={startAnimationNext ? inlineAnimateNext : inlineAnimatePrev}
-        onAnimationEnd={() => {
-          setAnimationNext(false);
-          setAnimationPrev(false);
-        }}
-      >
-        <div className="quiz-sub-question-page">
-          <Card className="english-card">
-            <div className="english-card-info">
-              <h6>English</h6>
+      <ThemeProvider theme={theme}>
+        <div
+          className="quiz-sub-page"
+          key={`question${i}`}
+          style={startAnimationNext ? inlineAnimateNext : inlineAnimatePrev}
+          onAnimationEnd={() => {
+            setAnimationNext(false);
+            setAnimationPrev(false);
+          }}
+        >
+          <div className="quiz-sub-question-page">
+            <Card className="english-card">
+              <div className="english-card-info">
+                <h6>English</h6>
+              </div>
+              <div className="english-card-question">{question.english}</div>
+            </Card>
+            <div className="quiz-choices">{choicesDisplay}</div>
+            <div className="button-div">
+              <Button
+                fullWidth
+                variant="contained"
+                color="secondary"
+                onClick={handlePrevQuestion}
+                disabled={startAnimationNext || startAnimationPrev || i === 0}
+              >
+                ←
+              </Button>
+              <Button
+                fullWidth
+                variant="contained"
+                color="secondary"
+                onClick={
+                  i === 9 && isFinishedAllQuestion
+                    ? handleToResult
+                    : handleNextQuestion
+                }
+                disabled={
+                  startAnimationNext ||
+                  startAnimationPrev ||
+                  (i === 9 && !isFinishedAllQuestion)
+                }
+              >
+                {isFinishedAllQuestion && i === 9 ? "Result" : "→"}
+              </Button>
             </div>
-            <div className="english-card-question">{question.english}</div>
-          </Card>
-          <div className="quiz-choices">{choicesDisplay}</div>
-          <div className="button-div">
-            <Button
-              fullWidth
-              variant="contained"
-              className="question-button"
-              onClick={handlePrevQuestion}
-              disabled={startAnimationNext || startAnimationPrev || i === 0}
-            >
-              ←
-            </Button>
-            <Button
-              fullWidth
-              variant="contained"
-              className="question-button"
-              onClick={
-                i === 9 && isFinishedAllQuestion
-                  ? handleToResult
-                  : handleNextQuestion
-              }
-              disabled={
-                startAnimationNext ||
-                startAnimationPrev ||
-                (i === 9 && !isFinishedAllQuestion)
-              }
-            >
-              {isFinishedAllQuestion && i === 9 ? "Result" : "→"}
-            </Button>
           </div>
         </div>
-      </div>
+      </ThemeProvider>
     );
   });
 

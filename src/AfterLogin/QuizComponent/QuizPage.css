@@ -215,7 +215,6 @@
 .question-button {
   width: 49%;
   height: 50px;
-  background-color: black !important;
 }
 
 .question-button:disabled {
