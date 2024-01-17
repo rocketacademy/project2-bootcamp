@@ -62,7 +62,9 @@ export const Certificate = ({ userName, courseName }) => {
 
   return (
     <div>
-      <button onClick={handleModifyPDF}>Modify PDF</button>
+      <button onClick={handleModifyPDF} className="btn btn-primary">
+        Download Certificate
+      </button>
     </div>
   );
 };

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { CourseCards } from "../components/Card";
+import { CourseCards, CourseCardsWithCert } from "../components/Card";
 import { useCourseData, useAttemptData } from "../components/FetchCourses";
 
 const AttemptedCourses = ({ userEmail }) => {
@@ -9,7 +9,7 @@ const AttemptedCourses = ({ userEmail }) => {
   ) : (
     <>
       <h3 className="sm:col-span-7">Completed</h3>
-      <CourseCards courseMap={attemptedCourseMap} />
+      <CourseCardsWithCert courseMap={attemptedCourseMap} />
     </>
   );
 };
