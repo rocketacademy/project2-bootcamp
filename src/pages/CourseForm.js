@@ -63,7 +63,8 @@ export const CourseForm = () => {
     setCourseID(generateCourseID());
   };
 
-  const writeData = async () => {
+  const writeData = async (e) => {
+    e.preventDefault();
     try {
       const newCoursesRef = push(coursesRef);
       await set(newCoursesRef, {
@@ -78,7 +79,7 @@ export const CourseForm = () => {
       window.scrollTo(0, 0); //scroll to the top after submission
       setShowSuccessAlert(true);
 
-      // Reset success alert after 3 seconds
+      // Reset success alert after 5 seconds
       setTimeout(() => {
         setShowSuccessAlert(false);
       }, 5000);
@@ -95,7 +96,7 @@ export const CourseForm = () => {
       setShowErrorAlert(true);
       //bug regenerate courseID if error
 
-      // Reset error alert after 3 seconds
+      // Reset error alert after 5 seconds
       setTimeout(() => {
         setShowErrorAlert(false);
       }, 5000);
@@ -140,13 +141,17 @@ export const CourseForm = () => {
         <h1 className="text-center">Create A Course</h1>
 
         {/* course form */}
-        <form className="pb-8 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
+        <form
+          className="pb-8 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-8"
+          onSubmit={writeData}
+        >
           {/* Course Title Description File Upload */}
-          <div className="sm:col-span-2">
+          <div className="sm:col-start-2 sm:col-span-2">
             <TextboxWithLabels
               label={"Course Title"}
               onChange={handleCourseTitle}
               value={courseTitle}
+              required
             />
           </div>
           <div className="sm:col-span-2">
@@ -154,6 +159,7 @@ export const CourseForm = () => {
               label={"Course Description"}
               onChange={handleCourseDescription}
               value={courseDescription}
+              required
             />
           </div>
           <div className="sm:col-span-2">
@@ -162,14 +168,15 @@ export const CourseForm = () => {
               onChange={handleDueDate}
               value={dueDate}
               pattern="\d{4}-\d{2}-\d{2}"
+              required
             />
           </div>
-          <div className="sm:col-span-6">
+          <div className="sm:col-start-2 sm:col-span-6">
             <FileUpload courseID={courseID} />
           </div>
 
           {/* create quiz on gform*/}
-          <div className="sm:col-span-1">
+          <div className="sm:col-start-2 sm:col-span-1">
             <a
               role="button"
               className="btn btn-accent w-full"
@@ -184,17 +191,21 @@ export const CourseForm = () => {
           {/* quiz link */}
           <div className="sm:col-span-3">
             <TextboxWithoutLabels
-              inlineLabel={"Paste the SHAREABLE Google Form link here!"}
+              inlineLabel={"Paste SHAREABLE Google Form link here!"}
+              inputType={"url"}
               onChange={handleQuizLink}
               value={quizLink}
+              required
             />
           </div>
           {/* GID link */}
           <div className="sm:col-span-2">
             <TextboxWithoutLabels
-              inlineLabel={"Paste the Google Sheets link here!"}
+              inlineLabel={"Paste Google Sheets link here!"}
+              inputType={"url"}
               onChange={handleGidLink}
               value={gidValue}
+              required
             />
           </div>
 
@@ -202,10 +213,13 @@ export const CourseForm = () => {
           {/* <div className="sm:col-span-6">
             <AssignCourseCard cardTitle={"Assign Course"} />
           </div> */}
+          <button
+            className="btn btn-primary sm:col-start-4 sm:col-span-2"
+            type="submit"
+          >
+            Submit
+          </button>
         </form>
-        <button className="btn btn-primary" onClick={writeData}>
-          Submit
-        </button>
       </div>
     </>
   );
