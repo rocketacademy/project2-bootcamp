@@ -1,21 +1,24 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import React from "react";
 import ReactDOM from "react-dom/client";
-import "./index.css";
-import Appp from "./components/App.js";
 
 // Pages
 import History from "./pages/History.js";
+import Settings from "./pages/Settings.js";
+import Insights from "./pages/Insights";
+import App from "./App";
+import Appp from "./components/App.js";
 
 import "bootstrap/dist/css/bootstrap.css";
 import "./index.css";
-import App from "./App";
+import "./App.css";
+
 // import History from "./pages/History";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { ThemeProvider } from "./components/ThemeContext";
-import Insights from "./pages/Insights";
-import "./App.css";
+
 import AddStock from "./pages/AddStock.jsx"
+
 
 const router = createBrowserRouter([
   {
@@ -29,6 +32,7 @@ const router = createBrowserRouter([
   { path: "/history", element: <History /> },
   { path: "/addstock", element: <AddStock /> },
   { path: "/insights", element: <Insights /> },
+  { path: "/settings", element: <Settings /> },
 ]);
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
