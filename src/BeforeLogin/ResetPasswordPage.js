@@ -11,15 +11,14 @@ export default function ResetPasswordPage() {
   const navi = useNavigate();
 
   const resetPassword = async () => {
-    await sendPasswordResetEmail(auth, email)
-      .then(() => {
-        console.log("email sent, password reset");
-        setEmail("");
-        navi("/signin");
-      })
-      .catch((error) => {
-        setErrorMessage(error.message.slice(10));
-      });
+    try {
+      await sendPasswordResetEmail(auth, email);
+      console.log("email sent, password reset");
+      setEmail("");
+      navi("/signin");
+    } catch (error) {
+      setErrorMessage(error.message.slice(10));
+    }
   };
 
   return (
