@@ -5,7 +5,7 @@ import { signInWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import ErrorPage from "../ErrorPage";
-
+import "./SignInPage.css";
 // need to add logic to Sign in with firebase auth
 //After login into the auth, return to "/"
 export default function SignInPage() {
@@ -16,19 +16,18 @@ export default function SignInPage() {
   const navi = useNavigate();
 
   const logIn = async () => {
-    await signInWithEmailAndPassword(auth, email, password)
-      .then(() => {
-        updateProfile(auth.currentUser, {
-          displayName: name,
-        });
-        setEmail("");
-        setPassword("");
-        setName("");
-        navi("/");
-      })
-      .catch((error) => {
-        setErrorMessage(error.message.slice(10));
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      await updateProfile(auth.currentUser, {
+        displayName: name,
       });
+      setEmail("");
+      setPassword("");
+      setName("");
+      navi("/");
+    } catch (error) {
+      setErrorMessage(error.message.slice(10));
+    }
   };
   const handleForgotPasswordClick = () => {
     navi("/reset-password");
@@ -69,10 +68,10 @@ export default function SignInPage() {
           ></input>
         </label>
       </div>
-      <button type="button" className="btn btn-dark mb-4" onClick={logIn}>
+      <h6 onClick={handleForgotPasswordClick}>Forgot your password?</h6>
+      <button type="button" className="btn btn-dark mb-4 mt-3" onClick={logIn}>
         Log in
       </button>
-      <h6 onClick={handleForgotPasswordClick}>Forgot your password?</h6>
     </div>
   );
 }
