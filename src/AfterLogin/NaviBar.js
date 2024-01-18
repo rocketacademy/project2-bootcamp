@@ -109,6 +109,7 @@ export default function NaviBar(props) {
             <SearchIcon
               className="search-bar-icon"
               onClick={() => {
+                setKeyWord("");
                 navi(`/search/${keyword}`);
               }}
             />
@@ -155,6 +156,7 @@ export default function NaviBar(props) {
           <SearchIcon
             className="search-bar-icon"
             onClick={() => {
+              setKeyWord("");
               navi(`/search/${keyword}`);
             }}
           />
