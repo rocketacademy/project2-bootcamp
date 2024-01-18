@@ -16,19 +16,18 @@ export default function SignInPage() {
   const navi = useNavigate();
 
   const logIn = async () => {
-    await signInWithEmailAndPassword(auth, email, password)
-      .then(() => {
-        updateProfile(auth.currentUser, {
-          displayName: name,
-        });
-        setEmail("");
-        setPassword("");
-        setName("");
-        navi("/");
-      })
-      .catch((error) => {
-        setErrorMessage(error.message.slice(10));
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      await updateProfile(auth.currentUser, {
+        displayName: name,
       });
+      setEmail("");
+      setPassword("");
+      setName("");
+      navi("/");
+    } catch (error) {
+      setErrorMessage(error.message.slice(10));
+    }
   };
   const handleForgotPasswordClick = () => {
     navi("/reset-password");
