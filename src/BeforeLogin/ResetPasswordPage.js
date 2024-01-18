@@ -4,10 +4,12 @@ import { auth } from "../firebase";
 import { sendPasswordResetEmail } from "firebase/auth";
 import "bootstrap/dist/css/bootstrap.css";
 import ErrorPage from "../ErrorPage";
+import ResetPasswordDonePopUp from "./ResetPasswordDonePopUp";
 
 export default function ResetPasswordPage() {
   const [errorMessage, setErrorMessage] = useState("");
   const [email, setEmail] = useState("");
+  const [passwordReset, setPasswordReset] = useState(false);
   const navi = useNavigate();
 
   const resetPassword = async () => {
@@ -15,10 +17,15 @@ export default function ResetPasswordPage() {
       await sendPasswordResetEmail(auth, email);
       console.log("email sent, password reset");
       setEmail("");
-      navi("/signin");
+      setPasswordReset(true);
     } catch (error) {
       setErrorMessage(error.message.slice(10));
     }
+  };
+
+  const handleClosePopUp = () => {
+    setPasswordReset(false);
+    navi("/signin");
   };
 
   return (
@@ -50,6 +57,12 @@ export default function ResetPasswordPage() {
       >
         Reset password
       </button>
+      {passwordReset && (
+        <ResetPasswordDonePopUp
+          open={passwordReset}
+          onClose={handleClosePopUp}
+        />
+      )}
     </div>
   );
 }
