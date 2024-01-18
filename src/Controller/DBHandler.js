@@ -190,7 +190,7 @@ export default class DBHandler {
       }
       return { resultInfo, adviceInfo };
     } catch (error) {
-      console.log(error);
+      this.setErrorMessage(error);
     }
   };
 
