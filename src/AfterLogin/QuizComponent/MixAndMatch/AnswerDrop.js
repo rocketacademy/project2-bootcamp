@@ -29,7 +29,7 @@ export default function AnswerDrop(props) {
   return (
     <Card
       ref={drop}
-      className="mix-and-match-question-card"
+      className="mix-and-match-answer-card"
       style={{ background: canDrop && isOver ? "rgb(141, 141, 255)" : null }}
     >
       {props.answer}

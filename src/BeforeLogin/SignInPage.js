@@ -3,7 +3,7 @@ import "bootstrap/dist/css/bootstrap.css";
 import { auth } from "../firebase";
 import { signInWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { useState } from "react";
-import DisabledByDefaultOutlinedIcon from "@mui/icons-material/DisabledByDefaultOutlined";
+import CloseIcon from "@mui/icons-material/Close";
 import ErrorPage from "../ErrorPage";
 
 // need to add logic to Sign in with firebase auth
@@ -40,7 +40,7 @@ export default function SignInPage() {
         handleErrorMessage={() => setErrorMessage("")}
       />
       <Link to="/" className="homepage-button">
-        <DisabledByDefaultOutlinedIcon />
+        <CloseIcon />
       </Link>
       <h2 className="mb-5">Welcome back! </h2>
       <div className="mb-3">

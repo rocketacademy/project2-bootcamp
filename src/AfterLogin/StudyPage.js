@@ -16,6 +16,8 @@ import StudyDone from "./StudyComponent/StudyDone";
 import ErrorPage from "../ErrorPage";
 import DBHandler from "../Controller/DBHandler";
 import TextToSpeech from "../Controller/TextToSpeech";
+import { ThemeProvider } from "@mui/material/styles";
+import theme from "../Theme";
 import "./Study.css";
 
 export default function StudyPage() {
@@ -157,6 +159,7 @@ export default function StudyPage() {
             <Button
               fullWidth
               className="study-show-answer-button"
+              color="primary"
               size="large"
               variant="contained"
               onClick={handleClick}
@@ -198,7 +201,7 @@ export default function StudyPage() {
           <div className="study-container-button">
             <Button
               fullWidth
-              className="study-repeat-button"
+              color="error"
               size="large"
               variant="contained"
               onClick={handleRepeat}
@@ -206,7 +209,7 @@ export default function StudyPage() {
               👎Again
             </Button>
             <Button
-              className="study-next-button"
+              color="primary"
               fullWidth
               size="large"
               variant="contained"
@@ -232,44 +235,48 @@ export default function StudyPage() {
     );
   };
   return (
-    <div>
-      <ErrorPage
-        errorMessage={errorMessage}
-        handleErrorMessage={handleErrorMessage}
-      />
-      <Backdrop open={!deck.deckCards}>
-        <h3>Generating deck</h3>
-        <h1>
-          <CircularProgress color="inherit" />
-        </h1>
-      </Backdrop>
+    <ThemeProvider theme={theme}>
+      <div>
+        <ErrorPage
+          errorMessage={errorMessage}
+          handleErrorMessage={handleErrorMessage}
+        />
+        <Backdrop open={!deck.deckCards}>
+          <h3>Generating deck</h3>
+          <h1>
+            <CircularProgress color="inherit" />
+          </h1>
+        </Backdrop>
 
-      {deck.deckCards && Object.keys(deck.deckCards).length > 0 && (
-        <>
-          <div className="study-header">
-            <h2>{deck.deckName}</h2>
-            <FormGroup>
-              <FormControlLabel
-                control={<Switch checked={autoPlay} onChange={handleChange} />}
-                label="Auto-Play"
-              />
-            </FormGroup>
-          </div>
+        {deck.deckCards && Object.keys(deck.deckCards).length > 0 && (
+          <>
+            <div className="study-header">
+              <h2>{deck.deckName}</h2>
+              <FormGroup>
+                <FormControlLabel
+                  control={
+                    <Switch checked={autoPlay} onChange={handleChange} />
+                  }
+                  label="Auto-Play"
+                />
+              </FormGroup>
+            </div>
 
-          <p className="study-current-index">
-            {currentIndex + 1}/{totalCards}
-          </p>
-          {progressBar({ current: currentIndex + 1, total: totalCards })}
+            <p className="study-current-index">
+              {currentIndex + 1}/{totalCards}
+            </p>
+            {progressBar({ current: currentIndex + 1, total: totalCards })}
 
-          <div className="study-card">
-            {displayEnglish ? cardEnglish : cardSpanish}
-          </div>
-        </>
-      )}
+            <div className="study-card">
+              {displayEnglish ? cardEnglish : cardSpanish}
+            </div>
+          </>
+        )}
 
-      {studyDone && (
-        <StudyDone open={studyDone} onClose={handleCloseStudyDone} />
-      )}
-    </div>
+        {studyDone && (
+          <StudyDone open={studyDone} onClose={handleCloseStudyDone} />
+        )}
+      </div>
+    </ThemeProvider>
   );
 }

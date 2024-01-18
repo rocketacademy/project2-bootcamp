@@ -125,16 +125,6 @@
   min-width: 0 !important;
 }
 
-.study-repeat-button {
-  background-color: grey !important;
-}
-
-.study-next-button {
-  background-color: #4f6ef7 !important;
-}
-.study-show-answer-button {
-  background-color: #4f6ef7 !important;
-}
 .study-container-button {
   display: flex;
   justify-content: space-between;
