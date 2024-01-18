@@ -93,6 +93,14 @@ export default function SearchPage() {
               <TableBody>{cardListBody}</TableBody>
             </Table>
           </TableContainer>
+          <Button
+            variant="contained"
+            className="copy-button"
+            onClick={() => handleCopy(deck.deckID)}
+          >
+            <div>Copy Deck</div>
+            <ContentCopyIcon />
+          </Button>
         </AccordionDetails>
       );
       return (

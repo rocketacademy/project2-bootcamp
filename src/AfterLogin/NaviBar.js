@@ -107,14 +107,22 @@ export default function NaviBar(props) {
               onChange={(e) => setKeyWord(e.target.value)}
             />
             <SearchIcon
+              className="search-bar-icon"
               onClick={() => {
+                setKeyWord("");
                 navi(`/search/${keyword}`);
               }}
             />
-            <ChevronRightIcon onClick={() => setOpenSearch(false)} />
+            <ChevronRightIcon
+              className="search-bar-icon"
+              onClick={() => setOpenSearch(false)}
+            />
           </div>
         </Slide>
-        <SearchIcon onClick={() => setOpenSearch(true)} />
+        <SearchIcon
+          className="search-bar-icon"
+          onClick={() => setOpenSearch(true)}
+        />
         <Link to="/addDeck">
           <AddCircleOutlineIcon />
         </Link>
@@ -146,16 +154,24 @@ export default function NaviBar(props) {
             className="search-bar-input"
           />
           <SearchIcon
+            className="search-bar-icon"
             onClick={() => {
+              setKeyWord("");
               navi(`/search/${keyword}`);
             }}
           />
-          <ChevronRightIcon onClick={() => setOpenSearch(false)} />
+          <ChevronRightIcon
+            className="search-bar-icon"
+            onClick={() => setOpenSearch(false)}
+          />
         </div>
       </Slide>
       <Slide in={!openSearch} direction="left" container={naviBarRef.current}>
         <div className="navi-icon-div">
-          <SearchIcon onClick={() => setOpenSearch(true)} />
+          <SearchIcon
+            className="search-bar-icon"
+            onClick={() => setOpenSearch(true)}
+          />
           <Link to="/addDeck">
             <AddCircleOutlineIcon />
           </Link>
