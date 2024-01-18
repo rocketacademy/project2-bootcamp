@@ -9,7 +9,8 @@ import triangle from "../assets/triangle.png";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import News from "./News";
 import React, { useState } from "react";
-import StockList from "./StockList";;
+import StockList from "./StockList";import WatchLists from "./WatchLists";
+;
 
 const Performance = () => {
   // Sample data for the pie chart
@@ -32,23 +33,25 @@ const Performance = () => {
            className="d-flex "
           >
             <div className="fw-bold">Perfomance over the past 6 months </div>{" "}
-            <select onChange={(e) => setCompanyName(e.target.value)}>
+            {/* <select onChange={(e) => setCompanyName(e.target.value)}>
               <option value="apple">Apple Inc</option>
               <option value="stanchart">Stanchart</option>
               <option value="sumsung">Sumsung</option>
               <option value="vivo">Vivo</option>{" "}
               <option value="realme">Realme</option>
-            </select>
+            </select> */}
           </div>
           <div className="fw-bold">Pie chart of portfolio</div>
           {/* <LineGraph /> */}
-          <LineGraph companyname={companyname} />
+          <LineGraph 
+          // companyname={companyname}
+           />
 
           <div>
             <div className="d-flex justify-content-between">
               <PieChat />
               {/* <Grid /> */}
-              <StockList />
+              <WatchLists />
             </div>
           </div>
         </div>

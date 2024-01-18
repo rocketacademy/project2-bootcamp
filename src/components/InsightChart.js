@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import ReactApexChart from "react-apexcharts";
 
 const InsightChart = () => {
@@ -48,7 +49,31 @@ const InsightChart = () => {
       },
     },
   });
+  async function getdata() {
 
+      const options = {
+        method: 'GET',
+        url: 'https://apidojo-yahoo-finance-v1.p.rapidapi.com/stock/v3/get-insights',
+        params: {symbol: 'AAPL'},
+        headers: {
+          'X-RapidAPI-Key': 'd6da08cc1fmsh2ffc0e825183be8p1c8245jsn3ba9199a4d47',
+          'X-RapidAPI-Host': 'apidojo-yahoo-finance-v1.p.rapidapi.com'
+        }
+      };
+      
+      try {
+        const response = await axios.request(options);
+        // console.log(response.data.finance.result);
+        // console.log(response.data.finance.result.instrumentInfo.keyTechnicals.support);
+        // console.log(response?.data?.finance.result.instrumentInfo);
+      } catch (error) {
+        console.error(error);
+      }
+      
+    }
+    useEffect(() => {
+      getdata();
+    }, []);
   return (
     <div id="chart">
       <ReactApexChart
