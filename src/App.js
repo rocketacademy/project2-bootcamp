@@ -12,8 +12,12 @@ import { StudentCourses } from "./pages/StudentCourses";
 import { Navbar } from "./components/Navbar";
 import { StudentHome } from "./pages/StudentHome";
 import Settings from "./pages/Settings";
+import { auth } from "./firebase";
 
 const App = () => {
+  const currentUser = auth.currentUser;
+  console.log(currentUser);
+
   return (
     <div className="App">
       <header className="App-header">

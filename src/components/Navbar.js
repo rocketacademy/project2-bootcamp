@@ -1,4 +1,18 @@
+import { useEffect, useState } from "react";
+import { auth } from "../firebase";
+import { onAuthStateChanged } from "firebase/auth";
+
 export const Navbar = () => {
+  const [user, setUser] = useState("");
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const initials = user.displayName.slice(0, 2).toUpperCase();
+        setUser(initials);
+      }
+    });
+  });
+
   return (
     <div className="navbar bg-base-100">
       <div className="navbar-start">
@@ -88,8 +102,8 @@ export const Navbar = () => {
             role="button"
             className="btn btn-ghost btn-circle avatar placeholder"
           >
-            <div className="w-10 rounded-full bg-neutral text-neutral-content">
-              <span>HY</span>
+            <div className="w-20 rounded-full bg-neutral text-neutral-content">
+              <span>{user}</span>
             </div>
           </div>
           <ul
