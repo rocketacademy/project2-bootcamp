@@ -17,7 +17,7 @@ import "./App.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { ThemeProvider } from "./components/ThemeContext";
 
-import AddStock from "./pages/AddStock.jsx"
+import AddStock from "./pages/AddStock.js"
 
 
 const router = createBrowserRouter([
