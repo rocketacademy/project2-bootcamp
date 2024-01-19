@@ -132,6 +132,7 @@ a {
 .navi-logo {
   height: 4.5vh;
   margin-left: 15px;
+  margin-top: 15px;
 }
 
 .intro-page {
@@ -210,4 +211,8 @@ a {
 
 .search-bar-icon:hover {
   cursor: pointer;
+}
+
+.register-layout {
+  width: 80%;
 }

@@ -4,6 +4,7 @@ import { Autocomplete, Button, Card, TextField } from "@mui/material";
 import ErrorPage from "../../ErrorPage";
 import LoadingButton from "@mui/lab/LoadingButton";
 import TextToSpeech from "../../Controller/TextToSpeech";
+import VolumeUpIcon from "@mui/icons-material/VolumeUp";
 import "./EditCardForm.css";
 import { useTheme } from "@mui/material/styles";
 
@@ -194,7 +195,7 @@ export default function EditCardForm(props) {
                   handlePlayAudio(translationValue);
                 }}
               >
-                🔊
+                <VolumeUpIcon />
               </LoadingButton>
             </div>
           </div>

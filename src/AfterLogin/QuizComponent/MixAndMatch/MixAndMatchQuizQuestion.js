@@ -6,6 +6,8 @@ import { useMemo, useState } from "react";
 import { useNavigate } from "react-router";
 import ErrorPage from "../../../ErrorPage";
 import DBHandler from "../../../Controller/DBHandler";
+import { ThemeProvider } from "@mui/material/styles";
+import theme from "../../../Theme";
 
 export default function MixAndMatchQuizQuestion(props) {
   const [answer, setAnswer] = useState(new Array(10).fill(""));
@@ -82,31 +84,33 @@ export default function MixAndMatchQuizQuestion(props) {
   }
   const isAnswerAll = !answer.includes("");
   return (
-    <div className="page">
-      <ErrorPage
-        errorMessage={errorMessage}
-        handleErrorMessage={handleErrorMessage}
-      />
-      <MixAndMatchQuizHeader />
-      <div className="mix-and-match-question">{questionDisplay}</div>
-      <div className="mix-and-match-answer">{answerDisplay}</div>
-      <div className="dialog-button-div">
-        <Button
-          variant="contained"
-          className="quiz-selection-button"
-          onClick={() => setAnswer(new Array(10).fill(""))}
-        >
-          Reset
-        </Button>
-        <Button
-          className="quiz-selection-button"
-          variant="contained"
-          disabled={!isAnswerAll}
-          onClick={handleConfirm}
-        >
-          Confirm
-        </Button>
+    <ThemeProvider theme={theme}>
+      <div className="page">
+        <ErrorPage
+          errorMessage={errorMessage}
+          handleErrorMessage={handleErrorMessage}
+        />
+        <MixAndMatchQuizHeader />
+        <div className="mix-and-match-question">{questionDisplay}</div>
+        <div className="mix-and-match-answer">{answerDisplay}</div>
+        <div className="dialog-button-div">
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={() => setAnswer(new Array(10).fill(""))}
+          >
+            Reset
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            disabled={!isAnswerAll}
+            onClick={handleConfirm}
+          >
+            Confirm
+          </Button>
+        </div>
       </div>
-    </div>
+    </ThemeProvider>
   );
 }
