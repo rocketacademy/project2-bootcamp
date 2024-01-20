@@ -1,4 +1,57 @@
+import { auth } from "../firebase";
+import { signOut } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../pages/AuthProvider";
+import { useContext } from "react";
+
 export const Navbar = () => {
+  const { currentUser, role } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const handleSignOut = async () => {
+    try {
+      await signOut(auth);
+      navigate("/");
+    } catch (error) {
+      console.error("Error signing out:", error.message);
+    }
+  };
+
+  const navbarItems = () => {
+    console.log(currentUser);
+    console.log(role);
+    if (currentUser && role === "student") {
+      return (
+        <>
+          <li>
+            <a href="/student">Student Home</a>
+          </li>
+
+          <li>
+            <a href="/student/courses">Student Courses</a>
+          </li>
+        </>
+      );
+    } else if (currentUser && role === "teacher") {
+      return (
+        <>
+          <li>
+            <a href="/teacher">Teacher Home</a>
+          </li>
+          <li>
+            <a href="/teacher/attendance">Attendance</a>
+          </li>
+          <li>
+            <a href="/teacher/resources/courseform">Create Course</a>
+          </li>
+          <li>
+            <a href="/teacher/resources">Resources</a>
+          </li>
+        </>
+      );
+    }
+  };
+
   return (
     <div className="navbar bg-base-100">
       <div className="navbar-start">
@@ -23,94 +76,53 @@ export const Navbar = () => {
             tabIndex={0}
             className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
           >
-            <li>
-              <a href="/student">Student Home</a>
-            </li>
-            <li>
-              <a href="/teacher">Teacher Home</a>
-            </li>
-            <li>
-              <a href="/teacher/attendance">Attendance</a>
-            </li>
-            <li>
-              <a href="/teacher/resources/courseform">Create Course</a>
-            </li>
-            <li>
-              <a href="/teacher/resources">Resources</a>
-            </li>
-            <li>
-              <a href="/student/courses">Student Courses</a>
-            </li>
+            {navbarItems()}
           </ul>
         </div>
-        <a className="btn btn-ghost text-xl">LMS</a>
+        {currentUser && <a className="btn btn-ghost text-xl">LMS</a>}
         <div className="navbar-center hidden lg:flex">
-          <ul className="menu menu-horizontal px-1">
-            <li>
-              <a href="/student">Student Home</a>
-            </li>
-            <li>
-              <a href="/teacher">Teacher Home</a>
-            </li>
-            <li>
-              <a href="/teacher/attendance">Attendance</a>
-            </li>
-            <li>
-              <a href="/teacher/resources/courseform">Create Course</a>
-            </li>
-            <li>
-              <a href="/teacher/resources">Resources</a>
-            </li>
-            <li>
-              <a href="/student/courses">Student Courses</a>
-            </li>
-          </ul>
+          <ul className="menu menu-horizontal px-1">{navbarItems()}</ul>
         </div>
       </div>
-      {/* <div className="navbar-center hidden lg:flex">
-        <ul className="menu menu-horizontal px-1">
-          <li>
-            <a>Item 1</a>
-          </li>
-          <li>
-            <a>Item 2</a>
-          </li>
-          <li>
-            <a>Item 3</a>
-          </li>
-        </ul>
-      </div> */}
-      <div className="navbar-end">
-        <a className="btn btn-ghost">Logout</a>
-        <div className="dropdown dropdown-end">
-          <div
-            tabIndex={0}
-            role="button"
-            className="btn btn-ghost btn-circle avatar placeholder"
-          >
-            <div className="w-10 rounded-full bg-neutral text-neutral-content">
-              <span>HY</span>
+      {currentUser && (
+        <div className="navbar-end">
+          <a className="btn btn-ghost" onClick={handleSignOut}>
+            Logout
+          </a>
+          <div className="dropdown dropdown-end">
+            <div
+              tabIndex={0}
+              role="button"
+              className="btn btn-ghost btn-circle avatar placeholder"
+            >
+              <div className="w-10 rounded-full bg-neutral text-neutral-content">
+                <span>
+                  {currentUser &&
+                    currentUser.displayName.slice(0, 2).toUpperCase()}
+                </span>
+              </div>
             </div>
+            <ul
+              tabIndex={0}
+              className="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52"
+            >
+              <li>
+                <a className="justify-between">Profile</a>
+              </li>
+              {role === "teacher" && (
+                <li>
+                  <a href="/teacher/settings">Settings</a>
+                </li>
+              )}
+              {role === "student" && (
+                <li>
+                  <a href="/student/settings">Settings</a>
+                </li>
+              )}
+            </ul>
           </div>
-          <ul
-            tabIndex={0}
-            className="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52"
-          >
-            <li>
-              <a className="justify-between">Profile</a>
-            </li>
-            <li>
-              <a href="/teacher/settings">Teacher Settings</a>
-            </li>
-            <li>
-              <a href="/student/settings">Student Settings</a>
-            </li>
-            <li>
-              <a>Logout</a>
-            </li>
-          </ul>
         </div>
-      </div>
+      )}
     </div>
   );
 };
