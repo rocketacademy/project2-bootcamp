@@ -69,6 +69,19 @@ export default function EditCardForm(props) {
     }
   };
 
+  const playSoundButton = (
+    <div className="play-audio-button">
+      <LoadingButton
+        loading={loadingAudio}
+        onClick={() => {
+          handlePlayAudio(translationValue);
+        }}
+      >
+        <VolumeUpIcon />
+      </LoadingButton>
+    </div>
+  );
+
   return (
     <div>
       <Card className="edit-card">
@@ -133,17 +146,20 @@ export default function EditCardForm(props) {
           </Button>
         </div>
         <div className="edit">
-          <div className="field">
-            <TextField
-              className="user-input"
-              disabled={isDisable}
-              fullWidth
-              value={userInputValue}
-              onChange={(e) => setUserInputValue(e.target.value)}
-              label={props.englishToSpanish ? "English" : "Spanish"}
-              variant="standard"
-              sx={{ marginTop: 4 }}
-            ></TextField>
+          <div className="field-audio">
+            <div className="field">
+              <TextField
+                className="user-input"
+                disabled={isDisable}
+                fullWidth
+                value={userInputValue}
+                onChange={(e) => setUserInputValue(e.target.value)}
+                label={props.englishToSpanish ? "English" : "Spanish"}
+                variant="standard"
+                sx={{ marginTop: 4 }}
+              ></TextField>
+            </div>
+            {!props.englishToSpanish && playSoundButton}
           </div>
           <br />
           <div className="field-audio">
@@ -188,7 +204,7 @@ export default function EditCardForm(props) {
                 )}
               />
             </div>
-            <div className="play-audio-button">
+            {/* <div className="play-audio-button">
               <LoadingButton
                 loading={loadingAudio}
                 onClick={() => {
@@ -197,7 +213,8 @@ export default function EditCardForm(props) {
               >
                 <VolumeUpIcon />
               </LoadingButton>
-            </div>
+            </div> */}
+            {props.englishToSpanish && playSoundButton}
           </div>
         </div>
       </Card>
