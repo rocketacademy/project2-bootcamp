@@ -1,32 +1,33 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { db } from "../firebase";
-import { ref, onValue } from "firebase/database";
+// import { db, auth } from "../firebase";
+// import { ref, onValue } from "firebase/database";
 import { Chart } from "react-google-charts";
 import useLoadChartData from "../hooks/useLoadData";
 import useLoadCourseSearch from "../hooks/useLoadCourseSearch";
+import useLoadStudent from "../hooks/useLoadStudents";
+
 import axios from "axios";
 
 const Teacher = () => {
-  const { initialGid, initialCourse } = useLoadChartData();
+  const { initialGid, initialCourse } = useLoadChartData(0);
   const [count, setCount] = useState(null);
-
-  console.log(count);
   const [gid, setGid] = useState(null);
-  // console.log(gid);
   const { courseOptions, courseGidMap } = useLoadCourseSearch();
+
+  const { studentCount } = useLoadStudent();
   const [courseName, setCourseName] = useState("");
+  const [remainingCount, setRemainingCount] = useState(null);
   const navigate = useNavigate();
 
   const spreadSheetId = "16HTIiiOq82Tm1tLHRQcr_8YJnO81QxZOOBOfR4hU3zc";
 
-  const fetchAllUsers = () => {
-    const usersRef = ref(db, "Student");
-    onValue(usersRef, (snapshot) => {
-      console.log(snapshot.val());
-    });
-  };
-  fetchAllUsers();
+  useEffect(() => {
+    if (studentCount && count) {
+      setRemainingCount(studentCount - count);
+    }
+  }, [count]);
+
   useEffect(() => {
     const fetchCount = async () => {
       await axios
@@ -38,14 +39,13 @@ const Teacher = () => {
           setCount(numEntries);
         });
     };
-    if (initialGid) {
+    if (initialGid && studentCount) {
       fetchCount();
     }
-  }, [initialGid]);
+  }, [initialGid, studentCount]);
 
   const parseCSVToArr = (csvText) => {
     const rows = csvText.split(/\r?\n/);
-    console.log(rows);
     const data = [];
     for (const row of rows) {
       const rowData = row.split(", ");
@@ -68,8 +68,8 @@ const Teacher = () => {
         )
         .then((res) => {
           const numEntries = parseCSVToArr(res.data);
-          console.log(numEntries);
-          setCount(numEntries);
+
+          setCount(numEntries / studentCount);
         });
     };
     if (gid) {
@@ -77,6 +77,7 @@ const Teacher = () => {
     }
   }, [gid]);
 
+  // when page first loads
   useEffect(() => {
     if (initialCourse) {
       setCourseName(initialCourse);
@@ -84,43 +85,22 @@ const Teacher = () => {
   }, [initialCourse]);
 
   const data = [
-    ["Course", "Completion Rate "],
-    [courseName, count],
+    ["Courses", "Completion rate (%)"],
+    ["Completed", (count / studentCount) * 100],
+    ["Not Completed", (remainingCount / studentCount) * 100],
   ];
 
   const options = {
-    vAxis: { title: "Completion rate (%)" },
-    hAxis: { title: "Course Name" },
-    seriesType: "bars",
-    series: { 5: { type: "line" } },
+    title: `${courseName} Completion Rate`,
   };
 
   return (
     <>
-      {/* <div class="flex flex-col text-sm p-4 mt-4 justify-end">
-        <div>TEACHER NAME</div>
-        <div>Teacher</div>
-        <span class="relative w-10 h-10 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
-          <svg
-            class="absolute w-12 h-12 text-gray-400 -left-1"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-              clip-rule="evenodd"
-            ></path>
-          </svg>
-        </span>
-      </div> */}
-      {/* <p>hi {user}</p> */}
       <div class="h-screen  p-20">
         <div class="text-left">
           <p class="text-sm font-bold">Quick Access</p>
         </div>
-        <div class="space-x-20 flex shadow-lg rounded-lg dark:bg-[#fdba74] p-10 mb-20 mt-2.5">
+        <div class="space-x-20 flex shadow-lg rounded-lg justify-around p-10 mb-20 mt-2.5">
           <div>
             <button>
               <svg
@@ -185,13 +165,19 @@ const Teacher = () => {
         >
           {courseOptions}
         </select>
-        <Chart
-          chartType="ComboChart"
-          data={data}
-          options={options}
-          width={"100%"}
-          height={"300px"}
-        />
+        <div className="m-12">
+          {!initialGid ? (
+            "No courses available to view"
+          ) : (
+            <Chart
+              chartType="PieChart"
+              data={data}
+              options={options}
+              width={"80%"}
+              height={"300px"}
+            />
+          )}
+        </div>
       </div>
       <button onClick={() => navigate("settings")}>Settings</button>
     </>

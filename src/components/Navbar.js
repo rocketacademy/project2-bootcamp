@@ -1,17 +1,54 @@
 import { useEffect, useState } from "react";
-import { auth } from "../firebase";
+import { auth, db } from "../firebase";
 import { onAuthStateChanged } from "firebase/auth";
+import { ref, get } from "firebase/database";
+
+// import Settings from "../pages/Settings";
 
 export const Navbar = () => {
   const [user, setUser] = useState("");
+  console.log(user);
+  const [response, setResponse] = useState("");
+
+  // const [role, setRole] = useState("")
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
         const initials = user.displayName.slice(0, 2).toUpperCase();
+        const uid = user.uid;
+        console.log(uid);
+        checkStudentDBV2(uid);
+        checkTeacherDBV2(uid);
+
         setUser(initials);
       }
     });
   });
+
+  console.log(response);
+  const checkStudentDBV2 = (uid) => {
+    const dbRef = ref(db, `Student/${uid}`);
+    get(dbRef).then((snapshot) => {
+      const data = snapshot.val();
+
+      if (data === null) {
+        return;
+      }
+      data.role === "Student" && setResponse("student");
+    });
+  };
+
+  const checkTeacherDBV2 = (uid) => {
+    const dbRef = ref(db, `Teacher/${uid}`);
+    get(dbRef).then((snapshot) => {
+      const data = snapshot.val();
+
+      if (data === null) {
+        return;
+      }
+      data.role === "Teacher" && setResponse("teacher");
+    });
+  };
 
   return (
     <div className="navbar bg-base-100">
@@ -40,6 +77,7 @@ export const Navbar = () => {
             <li>
               <a href="/student">Student Home</a>
             </li>
+
             <li>
               <a href="/teacher">Teacher Home</a>
             </li>
@@ -123,6 +161,7 @@ export const Navbar = () => {
               <a>Logout</a>
             </li>
           </ul>
+          {/* <Settings user={user} /> */}
         </div>
       </div>
     </div>
