@@ -20,6 +20,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import ErrorPage from "../ErrorPage";
 import DBHandler from "../Controller/DBHandler";
 import StorageHandler from "../Controller/StorageHandler";
+import logo from "./img/Logo-black-text.png";
 
 export default function NaviBar(props) {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -96,7 +97,7 @@ export default function NaviBar(props) {
   const largeWindowDisplay = (
     <div className="navi-bar" ref={naviBarRef}>
       <Link to="/">
-        <img className="navi-logo" src="Logo-black-text.png" alt="logo" />
+        <img className="navi-logo" src={logo} alt="logo" />
       </Link>
 
       <div className="navi-icon-div">
@@ -144,7 +145,7 @@ export default function NaviBar(props) {
   const smallWindowDisplay = (
     <div className="navi-bar" ref={naviBarRef}>
       <Link to="/">
-        <img className="navi-logo" src="Logo-black-text.png" alt="logo" />
+        <img className="navi-logo" src={logo} alt="logo" />
       </Link>
       <Slide in={openSearch} direction="left" container={naviBarRef.current}>
         <div className="small-search-bar">

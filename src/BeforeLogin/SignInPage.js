@@ -32,46 +32,60 @@ export default function SignInPage() {
   const handleForgotPasswordClick = () => {
     navi("/reset-password");
   };
+  const image = <img className="log-in-img" src="log-in.png" alt="log-in" />;
   return (
     <div className="App">
       <ErrorPage
         errorMessage={errorMessage}
         handleErrorMessage={() => setErrorMessage("")}
       />
-      <Link to="/" className="homepage-button">
+      {/* <Link to="/" className="homepage-button">
         <CloseIcon />
-      </Link>
-      <h2 className="mb-5">Welcome back! </h2>
-      <div className="mb-3">
-        <label className="form-label">
-          Email:
-          <input
-            type="email"
-            className="form-control"
-            name="email"
-            placeholder="brian123@brian.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          ></input>
-        </label>
+      </Link> */}
+      <div className="log-in-page-header">
+        <h2>Welcome back! </h2>
       </div>
-      <div className="mb-3">
-        <label className="form-label">
-          Password:
-          <input
-            type="password"
-            className="form-control"
-            name="password"
-            placeholder="*******"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          ></input>
-        </label>
+      <div className="log-in-page-content">
+        <div>
+          <img className="log-in-img" src="log-in.png" alt="log-in" />
+        </div>
+        <div className="log-in-form">
+          <div className="mb-3">
+            <label className="form-label">
+              Email:
+              <input
+                type="email"
+                className="form-control"
+                name="email"
+                placeholder="brian123@brian.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              ></input>
+            </label>
+          </div>
+          <div className="mb-3">
+            <label className="form-label">
+              Password:
+              <input
+                type="password"
+                className="form-control"
+                name="password"
+                placeholder="*******"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              ></input>
+            </label>
+          </div>
+          <h6 onClick={handleForgotPasswordClick}>Forgot your password?</h6>
+          <button
+            type="button"
+            className="btn btn-dark mb-4 mt-3"
+            onClick={logIn}
+          >
+            Log in
+          </button>
+        </div>
       </div>
-      <h6 onClick={handleForgotPasswordClick}>Forgot your password?</h6>
-      <button type="button" className="btn btn-dark mb-4 mt-3" onClick={logIn}>
-        Log in
-      </button>
     </div>
   );
 }
