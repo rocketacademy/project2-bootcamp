@@ -55,67 +55,61 @@ export default function QuizAI({ user }) {
 
   const [loading, setLoading] = useState(false);
 
-  const quizData = [
-    {
-      question: "Marina Bay Sands",
-      index: 0,
-    },
-    {
-      question: "Singapore Flyer",
-      index: 1,
-    },
-    {
-      question: "Chinatown Singapore",
-      index: 2,
-    },
-    {
-      question: "dummy question",
-      index: 3,
-      counter: 0,
-    },
+  const quizDataNatureParks = [
+    { question: "Bukit Timah Nature Reserve", index: 0 },
+    { question: "MacRitchie Reservoir", index: 1 },
+    { question: "Sungei Buloh Wetland Reserve", index: 2 },
+    { question: "Labrador Nature Reserve", index: 3 },
+    { question: "Pulau Ubin", index: 4 },
+    { question: "Coney Island Park", index: 5 },
+    { question: "Pasir Ris Park", index: 6 },
+    { question: "East Coast Park", index: 7 },
+    { question: "Kent Ridge Park", index: 8 },
+    { question: "Fort Canning Park", index: 9 },
+    { question: "dummy question", index: 10, counter: 0 },
   ];
+
+  const quizDataHistoricalLandmarks = [];
 
   const getQuizFromOpenAI = async (argument) => {
     setLoading(true);
 
     if (answerSelected === true) {
       setAnswerSelected(false);
-      if (answerSelected === true) {
-        setAnswerSelected(false);
-      }
+    }
 
-      const landmark = argument.question;
-      try {
-        const prompt = `Generate a multiple choice question about ${landmark} where the options are labelled in capital letters, A), B), C), D). Don't leave any empty lines between the question and options. Put just the answer letter at the bottom as Answer: answer letter and don't put Question at the beginning`;
+    const landmark = argument.question;
+    try {
+      const prompt = `Generate a multiple choice question about ${landmark} where the options are labelled in capital letters, A), B), C), D). Don't leave any empty lines between the question and options. Put just the answer letter at the bottom as Answer: answer letter and don't put Question at the beginning`;
 
-        const response = await fetch("http://localhost:3002/send-message", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ message: prompt }),
-        });
+      const response = await fetch("http://localhost:3002/send-message", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ message: prompt }),
+      });
 
-        const data = await response.json();
-        console.log(data.message);
+      const data = await response.json();
+      console.log(data.message);
 
-        const { question, extractedData, answer } = parseOpenAIResponse(
-          data.message
-        );
+      const { question, extractedData, answer } = parseOpenAIResponse(
+        data.message
+      );
 
-        console.log(question);
-        console.log(extractedData);
+      console.log(question);
+      console.log(extractedData);
 
-        setQuestion(question);
-        setOptions(extractedData);
-        setAnswer(answer);
+      setQuestion(question);
+      setOptions(extractedData);
+      setAnswer(answer);
 
-        setIndexOfQuestion(argument.index);
-        setLoading(false);
-      } catch (err) {
-        setLoading(false);
-        console.error(`Error sending message due to: ${err}`);
-      }
+      setIndexOfQuestion(argument.index);
+
+      setLoading(false);
+    } catch (err) {
+      setLoading(false);
+      console.error(`Error sending message due to: ${err}`);
     }
   };
 
@@ -138,7 +132,7 @@ export default function QuizAI({ user }) {
     setSelectedAnswerCorrectness(null);
     setAnswerSelected(false);
 
-    getQuizFromOpenAI(quizData[indexOfQuestion + 1]);
+    getQuizFromOpenAI(quizDataNatureParks[indexOfQuestion + 1]);
   };
 
   const resetQuiz = () => {
@@ -170,11 +164,11 @@ export default function QuizAI({ user }) {
           </ListItem>
         </Box>
       </Box>
-      <Button onClick={() => getQuizFromOpenAI(quizData[0])}>
-        Start Quiz!
+      <Button onClick={() => getQuizFromOpenAI(quizDataNatureParks[0])}>
+        Start Quiz on Nature Parks!
       </Button>
-      <Button onClick={() => getQuizFromOpenAI(quizData[0])}>
-        Start Quiz!
+      <Button onClick={() => getQuizFromOpenAI(quizDataNatureParks[0])}>
+        Start Quiz on Nature Parks!
       </Button>
 
       {question ? (
@@ -278,10 +272,10 @@ export default function QuizAI({ user }) {
           </Box>
         </Box>
       )}
-      {question && indexOfQuestion < quizData.length - 2 ? (
+      {question && indexOfQuestion < quizDataNatureParks.length - 2 ? (
         <Button onClick={moveToNextQuestion}>Move to next question</Button>
       ) : null}
-      {indexOfQuestion >= quizData.length - 2 ? (
+      {indexOfQuestion >= quizDataNatureParks.length - 2 ? (
         <Button onClick={resetQuiz}>Reset</Button>
       ) : null}
       <Typography variant="h5">Your score: {score}</Typography>
