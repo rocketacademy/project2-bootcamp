@@ -1,43 +1,43 @@
-import React from 'react';
-import { GoogleMap, useLoadScript, Marker } from '@react-google-maps/api';
-import { useState, useEffect } from 'react';
-import './App.css';
-import AuthFormTesting from './Components/AuthFormTesting';
-import { auth } from './firebase';
-import { onAuthStateChanged, signOut } from 'firebase/auth';
+import React from "react";
+import { GoogleMap, useLoadScript, Marker } from "@react-google-maps/api";
+import { useState, useEffect } from "react";
+import "./App.css";
+import AuthFormTesting from "./Components/AuthFormTesting";
+import { auth } from "./firebase";
+import { onAuthStateChanged, signOut } from "firebase/auth";
 
-import { BrowserRouter as Router, Link, Routes, Route } from 'react-router-dom';
-import Quiz from './Components/Quizzes';
+import { BrowserRouter as Router, Link, Routes, Route } from "react-router-dom";
+import Quiz from "./Components/Quizzes";
 
-import App from './App';
-import QuizAI from './Components/QuizzesAI';
-import { Box } from '@mui/material';
+import App from "./App";
+import QuizAI from "./Components/QuizzesAI";
+import { Box } from "@mui/material";
 
-import SignInPage from './SignInPage';
-import GuidePage from './Components/GuidePage';
-import Protected from './Components/Protected';
-import Onboarding from './Components/OnboardingForm';
-import { useNavigate } from 'react-router-dom';
+import SignInPage from "./SignInPage";
+import GuidePage from "./Components/GuidePage";
+import Protected from "./Components/Protected";
+import Onboarding from "./Components/Onboarding";
+import { useNavigate } from "react-router-dom";
 
-const libraries = ['places'];
+const libraries = ["places"];
 
 const linkStyle = {
-  marginRight: '50px',
-  marginLeft: '50px',
-  marginTop: '10px',
-  marginBottom: '10px',
-  textDecoration: 'none',
-  color: 'black',
-  fontWeight: 'bold',
-  fontSize: '30px',
-  display: 'flex',
+  marginRight: "50px",
+  marginLeft: "50px",
+  marginTop: "10px",
+  marginBottom: "10px",
+  textDecoration: "none",
+  color: "black",
+  fontWeight: "bold",
+  fontSize: "30px",
+  display: "flex",
   // flexDirection: 'column',
 };
 
 // A separate component to render Links
 const AppLinks = () => (
   <>
-    <Box className="link-container" sx={{ display: 'flex', flexWrap: 'wrap' }}>
+    <Box className="link-container" sx={{ display: "flex", flexWrap: "wrap" }}>
       <Link to="/" style={linkStyle}>
         Map
       </Link>
@@ -90,15 +90,15 @@ const AppMain = () => {
   // PASS LOGOUT FUNCTION FROM APPMAIN TO APP SO THAT YOU CAN USE NAVIGATE(/SIGN-IN)
   const handleLogoutAppMain = async () => {
     try {
-      console.log('Logging out...');
+      console.log("Logging out...");
       await signOut(auth);
-      console.log('User signed out');
+      console.log("User signed out");
       setUser({});
       // navigate('/sign-in');
       setIsLoggedIn(false);
-      console.log('Navigation complete');
+      console.log("Navigation complete");
     } catch (err) {
-      console.error('Error signing out', err);
+      console.error("Error signing out", err);
     }
   };
 
@@ -107,13 +107,13 @@ const AppMain = () => {
   return (
     <Router>
       {isLoggedIn && ( // Conditionally render the navigation if user is logged in
-        <div style={{ display: 'flex', alignItems: 'center' }}>
+        <div style={{ display: "flex", alignItems: "center" }}>
           <div
             style={{
-              display: 'flex',
+              display: "flex",
               flex: 1,
-              justifyContent: 'center',
-              marginRight: '500px',
+              justifyContent: "center",
+              marginRight: "500px",
             }}
           ></div>
         </div>
