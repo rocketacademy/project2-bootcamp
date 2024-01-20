@@ -50,8 +50,7 @@ export const CourseForm = () => {
   const [gid, setGid] = useState("");
   const [gidValue, setGidValue] = useState("");
   const [dueDate, setDueDate] = useState("");
-  const DB_COURSE_KEY = "courses";
-  const coursesRef = ref(db, DB_COURSE_KEY);
+  const coursesRef = ref(db, `courses`);
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
   const [showErrorAlert, setShowErrorAlert] = useState(false);
 

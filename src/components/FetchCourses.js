@@ -30,9 +30,9 @@ export const fetchAttemptedCourses = async (
   return attemptedCoursesResults;
 };
 
-export const useCourseData = () => {
+export const useCourseData = (courseID) => {
   const DB_COURSE_KEY = "courses";
-  const DB_STORAGE_KEY = "courseMaterials";
+  const DB_STORAGE_KEY = `courseMaterials/${courseID}`;
   const coursesRef = ref(db, DB_COURSE_KEY);
   const courseMaterialsRef = ref(db, DB_STORAGE_KEY);
   const [courseMap, setCourseMap] = useState(new Map());
@@ -48,7 +48,9 @@ export const useCourseData = () => {
         dueDate,
         quizLink,
       } = data.val();
+      const firebaseKey = data.key;
       courseMap.set(courseID, {
+        firebaseKey,
         courseDescription,
         courseTitle,
         courseID,
@@ -60,6 +62,7 @@ export const useCourseData = () => {
         (prevMap) =>
           new Map(
             prevMap.set(courseID, {
+              firebaseKey,
               courseDescription,
               courseTitle,
               courseID,

@@ -22,7 +22,7 @@ export const FileUpload = ({ courseID }) => {
   };
 
   const writeData = (url, fileName) => {
-    const fileUploadRef = ref(db, STORAGE_KEY);
+    const fileUploadRef = ref(db, STORAGE_FOLDER);
     const newFileUploadRef = push(fileUploadRef);
     set(newFileUploadRef, {
       url: url,
