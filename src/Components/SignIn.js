@@ -13,7 +13,8 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useState } from "react";
-import { auth } from "../firebase";
+import { auth, db } from "../firebase";
+import { doc, setDoc } from "firebase/firestore";
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
@@ -28,29 +29,37 @@ const defaultTheme = createTheme();
 export default function SignIn() {
   const navigate = useNavigate();
 
+  const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   // const [signInPreFillEmail, setSignInPreFillEmail] = useState();
   const [password, setPassword] = useState("");
   const [secondPassword, setSecondPassword] = useState("");
   const [passwordMatch, setPasswordMatch] = useState(true);
-  // const [signInPreFillPassword, setSignInPreFillPassword] = useState();
+  // const [signInPreFillPassword, setSignInPreFillPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [newUser, setNewUser] = useState(false);
-  const [onboarded, setOnboarded] = useState(false);
 
   const signUp = async () => {
     if (password === secondPassword) {
       try {
-        const user = await createUserWithEmailAndPassword(
+        const userCredential = await createUserWithEmailAndPassword(
           auth,
           email,
           password
         );
-        console.log(user);
+        console.log(userCredential.user.uid);
+        await setDoc(doc(db, "users", userCredential.user.uid), {
+          email: email,
+          uid: userCredential.user.uid,
+          name: fullName,
+        });
+        console.log("Document written with ID: ", userCredential.user.uid);
+        console.log(userCredential.user);
         setEmail("");
         setPassword("");
         setNewUser(false);
-        navigate("/");
+        console.log("setDoc");
+        // navigate("/");
         // navigate("/sign-up");
       } catch (error) {
         if (error.code === "auth/email-already-in-use") {
@@ -141,6 +150,20 @@ export default function SignIn() {
               </Typography>
             )}
             <Box>
+              {newUser && (
+                <TextField
+                  margin="normal"
+                  required
+                  fullWidth
+                  name="user name"
+                  label="Your full name"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  type="text"
+                  id="username"
+                  placeholder="Full Name"
+                />
+              )}
               <TextField
                 margin="normal"
                 required
@@ -165,7 +188,7 @@ export default function SignIn() {
                 id="password"
                 autoComplete="current-password"
               />
-              {newUser ? (
+              {newUser && (
                 <TextField
                   margin="normal"
                   required
@@ -178,8 +201,6 @@ export default function SignIn() {
                   id="password"
                   autoComplete="current-password"
                 />
-              ) : (
-                <></>
               )}
               {!passwordMatch && <p style={{ color: "red" }}>{errorMessage}</p>}
               <FormControlLabel
@@ -187,9 +208,14 @@ export default function SignIn() {
                 label="Remember me"
               />
               <FormControlLabel
-                control={<Button value="forgot" color="secondary" />}
+                control={
+                  <Button
+                    value="forgot"
+                    color="secondary"
+                    onClick={forgotPassword}
+                  />
+                }
                 label="Forgot Password"
-                onClick={forgotPassword}
               ></FormControlLabel>
               {!newUser ? (
                 <Button
@@ -204,7 +230,7 @@ export default function SignIn() {
               ) : (
                 <> </>
               )}
-              {newUser ? (
+              {newUser && (
                 <Button
                   type="submit"
                   fullWidth
@@ -214,8 +240,6 @@ export default function SignIn() {
                 >
                   Sign Up
                 </Button>
-              ) : (
-                <> </>
               )}
               <Grid container></Grid>
             </Box>
