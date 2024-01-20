@@ -99,6 +99,7 @@ export default function EditCardForm(props) {
               sx={{
                 backgroundColor: "rgb(79, 110, 247)",
                 color: "white",
+                padding: 0.5,
                 [theme.breakpoints.down("sm")]: {
                   fontSize: "8px",
                   padding: 0,
@@ -122,6 +123,7 @@ export default function EditCardForm(props) {
               sx={{
                 backgroundColor: "rgb(79, 110, 247)",
                 color: "white",
+                padding: 0.5,
                 [theme.breakpoints.down("sm")]: {
                   fontSize: "8px",
                   padding: 0,
