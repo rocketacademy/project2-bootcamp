@@ -1,9 +1,8 @@
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.css";
 import { auth } from "../firebase";
 import { signInWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { useState } from "react";
-import CloseIcon from "@mui/icons-material/Close";
 import ErrorPage from "../ErrorPage";
 import "./SignInPage.css";
 // need to add logic to Sign in with firebase auth
@@ -32,7 +31,6 @@ export default function SignInPage() {
   const handleForgotPasswordClick = () => {
     navi("/reset-password");
   };
-  const image = <img className="log-in-img" src="log-in.png" alt="log-in" />;
   return (
     <div className="App">
       <ErrorPage
