@@ -29,28 +29,66 @@ export default function SignIn() {
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
+  // const [signInPreFillEmail, setSignInPreFillEmail] = useState();
   const [password, setPassword] = useState("");
+  const [secondPassword, setSecondPassword] = useState("");
+  const [passwordMatch, setPasswordMatch] = useState(true);
+  // const [signInPreFillPassword, setSignInPreFillPassword] = useState();
+  const [errorMessage, setErrorMessage] = useState("");
+  const [newUser, setNewUser] = useState(false);
+  const [onboarded, setOnboarded] = useState(false);
 
   const signUp = async () => {
-    try {
-      const user = await createUserWithEmailAndPassword(auth, email, password);
-      console.log(user);
-      setEmail("");
-      setPassword("");
-
-      navigate("/onboarding");
-    } catch (error) {
-      console.error("Error signing up", error);
+    if (password === secondPassword) {
+      try {
+        const user = await createUserWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
+        console.log(user);
+        setEmail("");
+        setPassword("");
+        setNewUser(false);
+        navigate("/");
+        // navigate("/sign-up");
+      } catch (error) {
+        if (error.code === "auth/email-already-in-use") {
+          setErrorMessage("Email is already in use.");
+        } else if (error.code === "auth/weak-password") {
+          setErrorMessage("Password is too weak.");
+        } else {
+          setErrorMessage("Error signing up.");
+        }
+        console.error("Error signing up", error);
+      }
+    } else {
+      setPasswordMatch(false);
+      setErrorMessage("Your passwords do not match");
+      console.log("Incorrect password");
     }
   };
 
   const signIn = async () => {
-    const user = await signInWithEmailAndPassword(auth, email, password);
-    console.log(user);
-    setEmail("");
-    setPassword("");
-
-    navigate("/");
+    try {
+      const user = await signInWithEmailAndPassword(auth, email, password);
+      console.log(user);
+      setEmail("");
+      setPassword("");
+      navigate("/");
+    } catch (error) {
+      if (error.code === "auth/invalid-credential") {
+        setEmail(email);
+        setPassword(password);
+        setNewUser(true);
+        // navigate("/sign-up", {
+        //   state: {
+        //     email: email,
+        //     password: password,
+        //   },
+        // });
+      }
+    }
   };
 
   const forgotPassword = async () => {
@@ -93,9 +131,15 @@ export default function SignIn() {
             <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
               <LockOutlinedIcon />
             </Avatar>
-            <Typography component="h1" variant="h5">
-              Sign in
-            </Typography>
+            {!newUser ? (
+              <Typography component="h1" variant="h5">
+                Sign in
+              </Typography>
+            ) : (
+              <Typography component="h1" variant="h5">
+                Sign up
+              </Typography>
+            )}
             <Box>
               <TextField
                 margin="normal"
@@ -121,6 +165,23 @@ export default function SignIn() {
                 id="password"
                 autoComplete="current-password"
               />
+              {newUser ? (
+                <TextField
+                  margin="normal"
+                  required
+                  fullWidth
+                  name="password"
+                  label="Password"
+                  value={secondPassword}
+                  onChange={(e) => setSecondPassword(e.target.value)}
+                  type="password"
+                  id="password"
+                  autoComplete="current-password"
+                />
+              ) : (
+                <></>
+              )}
+              {!passwordMatch && <p style={{ color: "red" }}>{errorMessage}</p>}
               <FormControlLabel
                 control={<Checkbox value="remember" color="primary" />}
                 label="Remember me"
@@ -130,24 +191,32 @@ export default function SignIn() {
                 label="Forgot Password"
                 onClick={forgotPassword}
               ></FormControlLabel>
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                sx={{ mt: 3, mb: 2 }}
-                onClick={signIn}
-              >
-                Sign In
-              </Button>
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                sx={{ mt: 1, mb: 1 }}
-                onClick={signUp}
-              >
-                Sign Up
-              </Button>
+              {!newUser ? (
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  sx={{ mt: 3, mb: 2 }}
+                  onClick={signIn}
+                >
+                  Sign In
+                </Button>
+              ) : (
+                <> </>
+              )}
+              {newUser ? (
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  sx={{ mt: 1, mb: 1 }}
+                  onClick={signUp}
+                >
+                  Sign Up
+                </Button>
+              ) : (
+                <> </>
+              )}
               <Grid container></Grid>
             </Box>
           </Box>
