@@ -14,6 +14,28 @@ import { StudentHome } from "./pages/StudentHome";
 import Settings from "./pages/Settings";
 import { AuthProvider } from "./pages/AuthProvider";
 
+const TeacherRoutes = () => (
+  <>
+    <Routes>
+      <Route path="/" element={<Teacher />} />
+      <Route path="resources" element={<Resources />} />
+      <Route path="resources/courseform" element={<CourseForm />} />
+      <Route path="attendance" element={<AttendancePublic />} />
+      <Route path="settings" element={<Settings />} />
+    </Routes>
+  </>
+);
+
+const StudentRoutes = () => (
+  <>
+    <Routes>
+      <Route path="/" element={<StudentHome />} />
+      <Route path="courses" element={<StudentCourses />} />
+      <Route path="settings" element={<Settings />} />
+    </Routes>
+  </>
+);
+
 const App = () => {
   return (
     <div className="App">
@@ -25,17 +47,8 @@ const App = () => {
               <Route path="/" element={<Login />} />
               <Route path="signup" element={<Signup />} />
               <Route path="password-reset" element={<Reset />} />
-              <Route path="teacher" element={<Teacher />} />
-              <Route path="teacher/resources" element={<Resources />} />
-              <Route
-                path="teacher/resources/courseform"
-                element={<CourseForm />}
-              />
-              <Route path="teacher/attendance" element={<AttendancePublic />} />
-              <Route path="teacher/settings" element={<Settings />} />
-              <Route path="student/settings" element={<Settings />} />
-              <Route path="student" element={<StudentHome />} />
-              <Route path="student/courses" element={<StudentCourses />} />
+              <Route path="teacher/*" element={<TeacherRoutes />} />
+              <Route path="student/*" element={<StudentRoutes />} />
             </Routes>
           </BrowserRouter>
         </AuthProvider>
