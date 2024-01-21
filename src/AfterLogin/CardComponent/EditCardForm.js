@@ -86,7 +86,7 @@ export default function EditCardForm(props) {
           handlePlayAudio(translationValue);
         }}
       >
-        <VolumeUpIcon />
+        <VolumeUpIcon sx={{ color: "black" }} />
       </LoadingButton>
     </div>
   );
