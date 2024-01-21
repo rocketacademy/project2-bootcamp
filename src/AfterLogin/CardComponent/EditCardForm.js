@@ -37,10 +37,16 @@ export default function EditCardForm(props) {
 
   const handleEdit = () => {
     if (props.editing) {
-      props.setEditing(null);
-      if (props.englishToSpanish) {
-        props.handleConfirmEdit(userInputValue, translationValue);
-      } else props.handleConfirmEdit(translationValue, userInputValue);
+      if (userInputValue && translationValue) {
+        if (props.englishToSpanish) {
+          props.handleConfirmEdit(userInputValue, translationValue);
+        } else {
+          props.handleConfirmEdit(translationValue, userInputValue);
+        }
+        props.setEditing(null);
+      } else {
+        setErrorMessage("Fill out both fields before saving the card");
+      }
     } else {
       props.setEditing(card.cardID);
     }
