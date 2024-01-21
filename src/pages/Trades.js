@@ -9,12 +9,13 @@ import TradesDropdown from "../components/Trades/TradesDropdown.js";
 import AddTradeLineItem from "../components/Trades/AddTradeLineItem.js";
 
 // Firebase
-import { onChildAdded, ref, get } from "firebase/database";
+import { onChildAdded, ref, remove } from "firebase/database";
 import { database } from "../firebase.js";
 import { auth } from "../firebase.js";
 
 // CSS
 import "./Trades.css";
+import EditTradeModal from "../components/Trades/EditTradeModal.js";
 
 const TRADES_KEY = "trades";
 
@@ -25,6 +26,9 @@ const Trades = () => {
   const [filter, setFilter] = useState("none");
   const [filterCat, setFilterCat] = useState("none");
   const [showModal, setShowModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editTrade, setEditTrade] = useState(false);
+  const [editTradeModal, setEditTradeModal] = useState(<div></div>);
   const [tradesArr, setTradesArr] = useState([]);
   const [tradelines, setTradelines] = useState(<div></div>);
   const [masterTradesArr, setMasterTradesArr] = useState([]);
@@ -44,12 +48,12 @@ const Trades = () => {
       unsubscribe();
     };
   });
+
   useEffect(() => {
     let loadedTrades = [];
     const tradesRef = ref(database, `${user}/${TRADES_KEY}`);
-    // onChildAdded will return data for every child at the reference and every subsequent new child
+
     const unsubscribe = onChildAdded(tradesRef, (data) => {
-      // Add the subsequent child to local component state, initialising a new array to trigger re-render
       loadedTrades = [...loadedTrades, { key: data.key, val: data.val() }];
       setTradesArr(loadedTrades);
       setMasterTradesArr(loadedTrades);
@@ -68,14 +72,14 @@ const Trades = () => {
       tradesArr.map((obj) => (
         <TradeLineItem
           key={obj.key}
-          stockName={obj.val.stockName}
-          stockCode={obj.val.stockCode}
-          tradeTime={obj.val.date}
-          tradePrice={obj.val.price + obj.val.currency}
-          platform={obj.val.platform}
+          uid={obj.key}
+          val={obj.val}
+          handleDel={handleDel}
+          handleEdit={handleEdit}
         />
       ))
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tradesArr, sort]);
 
   const sortTrades = (arr, sortMethod) => {
@@ -93,8 +97,6 @@ const Trades = () => {
 
   const filterTrades = (filter) => {
     const loadedTrades = [];
-    let trades = {};
-    const tradesRef = ref(database, `${user}/${TRADES_KEY}`);
     if (filter === "none") {
       setTradesArr(masterTradesArr);
     } else {
@@ -107,7 +109,29 @@ const Trades = () => {
     }
   };
 
-  const handleClose = () => setShowModal(false);
+  const handleDel = (tradeUid) => {
+    remove(ref(database, `${user}/${TRADES_KEY}/${tradeUid}`)).then(() => {
+      let newTradesArr = tradesArr;
+      for (let i = 0; i < newTradesArr.length; i++) {
+        if (newTradesArr[i].key === tradeUid) {
+          newTradesArr.splice(i, 1);
+          setTradesArr([...newTradesArr]);
+          setMasterTradesArr([...newTradesArr]);
+          break;
+        }
+      }
+    });
+  };
+
+  const handleEdit = (trade) => {
+    setEditTrade(trade);
+    setShowEditModal(true);
+  };
+
+  const handleClose = (setter) => {
+    setEditTrade(false);
+    setter(false);
+  };
 
   const noDisplayMessage = (
     <div className="no-display-message">
@@ -123,14 +147,21 @@ const Trades = () => {
         <FilterInputModal
           filterCat={filterCat}
           show={showModal}
-          close={handleClose}
+          close={() => handleClose(setShowModal)}
           setFilter={setFilter}
+        />
+        <EditTradeModal
+          show={showEditModal}
+          close={() => handleClose(setShowEditModal)}
+          trade={editTrade}
+          tradesArr={tradesArr}
+          setTradesArr={setTradesArr}
         />
         <div>
           <div className="trades-header">
             <h1>Your Trades</h1>
             <div className="flex-row">
-              <AddTradeLineItem />
+              <AddTradeLineItem setFilter={setFilter} />
               <TradesDropdown
                 isDark={isDark}
                 setSort={setSort}
@@ -143,9 +174,11 @@ const Trades = () => {
             <div className="trade-line">
               <p className="trade-info mb-0">Stock Name</p>
               <p className="trade-info mb-0">Stock Code</p>
+              <p className="trade-info mb-0">Buy/Sell</p>
               <p className="trade-info mb-0">Trade Time</p>
               <p className="trade-info mb-0">Price</p>
               <p className="trade-info mb-0">Platform</p>
+              <p className="trade-info mb-0"></p>
             </div>
             {tradesArr.length === 0 ? noDisplayMessage : tradelines}
             {/* to-do, sort objects by date adn display from database */}
