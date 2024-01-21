@@ -62,7 +62,8 @@ h2 {
 }
 @media (min-width: 1024px) {
   .log-in-page-content {
-    margin-left: 10vw;
+    /* margin-left: 10vw; */
+    margin-right: 15vw;
     flex-direction: row;
   }
   .log-in-img {
@@ -71,7 +72,7 @@ h2 {
   }
   .log-in-form {
     padding-bottom: 25px;
-    margin-left: 2vw;
+    /* margin-left: 2vw; */
   }
 
   h2 {
@@ -82,6 +83,14 @@ h2 {
     height: 60px;
   }
 }
+
+@media (min-width: 1280px) {
+  .log-in-page-content {
+    margin-right: 22vw;
+    flex-direction: row;
+  }
+}
+
 .form-label {
   font-family: "Gill Sans", sans-serif;
   font-weight: bold;
