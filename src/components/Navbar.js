@@ -24,7 +24,7 @@ export const Navbar = () => {
       return (
         <>
           <li>
-            <a href="/student">Student Home</a>
+            <a href="/student">Dashboard</a>
           </li>
 
           <li>
@@ -36,7 +36,7 @@ export const Navbar = () => {
       return (
         <>
           <li>
-            <a href="/teacher">Teacher Home</a>
+            <a href="/teacher">Dashboard</a>
           </li>
           <li>
             <a href="/teacher/attendance">Attendance</a>
@@ -95,7 +95,7 @@ export const Navbar = () => {
               role="button"
               className="btn btn-ghost btn-circle avatar placeholder"
             >
-              <div className="w-10 rounded-full bg-neutral text-neutral-content">
+              <div className="w-10 rounded-full bg-error text-neutral-content">
                 <span>
                   {currentUser &&
                     currentUser.displayName.slice(0, 2).toUpperCase()}

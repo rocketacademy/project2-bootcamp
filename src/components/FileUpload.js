@@ -53,13 +53,13 @@ export const FileUpload = ({ courseID }) => {
           </div>
           <input
             type="file"
-            className="file-input file-input-bordered"
+            className="file-input file-input-bordered file-input-info"
             onChange={handleFileUpload}
             value={fileInputValue}
           />
         </label>
         <div
-          className="btn w-full sm:col-span-1 sm:place-self-center sm:mt-7"
+          className="btn bg-info w-full sm:col-span-1 sm:place-self-center sm:mt-7"
           onClick={uploadFile}
         >
           Upload
