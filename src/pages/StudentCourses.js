@@ -1,15 +1,21 @@
 import { useState } from "react";
 import { CourseCards, CourseCardsWithCert } from "../components/Card";
 import { useCourseData, useAttemptData } from "../components/FetchCourses";
+import { useContext } from "react";
+import { AuthContext } from "./AuthProvider";
 
 const AttemptedCourses = ({ userEmail }) => {
+  const { currentUser } = useContext(AuthContext);
   const { attemptedCourseMap, isLoading } = useAttemptData({ userEmail });
   return isLoading ? (
     <span className="loading loading-dots loading-lg place-self-center sm:col-start-4 sm:col-span-1"></span>
   ) : (
     <>
       <h3 className="sm:col-span-7">Completed</h3>
-      <CourseCardsWithCert courseMap={attemptedCourseMap} />
+      <CourseCardsWithCert
+        courseMap={attemptedCourseMap}
+        displayName={currentUser.displayName}
+      />
     </>
   );
 };
@@ -31,6 +37,7 @@ export const StudentCourses = ({ userEmail }) => {
   const [notAttempted, setNotAttempted] = useState(false);
   const [attempted, setAttempted] = useState(false);
   const [allCourses, setAllCourses] = useState(false);
+  const { currentUser } = useContext(AuthContext);
 
   return (
     <>
