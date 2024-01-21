@@ -29,9 +29,9 @@ const linkStyle = {
   textDecoration: "none",
   color: "black",
   fontWeight: "bold",
-  fontSize: "30px",
+  fontSize: "25px",
   display: "flex",
-  // flexDirection: 'column',
+  fontFamily: "Roboto, sans-serif", // Add the desired font family here
 };
 
 // A separate component to render Links
