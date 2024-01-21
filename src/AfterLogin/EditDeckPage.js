@@ -103,20 +103,40 @@ export default function EditDeckPage() {
   };
 
   const handleAdd = async () => {
+    let hasEmptyCard = false;
+
+    for (let i = 0; i < cards.length; i++) {
+      const card = cards[i];
+      if (!card.english || !card.spanish) {
+        hasEmptyCard = true;
+        break;
+      }
+    }
+
+    if (hasEmptyCard) {
+      setErrorMessage(
+        "Oops, seems that you have an unsaved card. After creating a card, don't forget to click ☑️ to save it before adding a new empty card 😉"
+      );
+      return;
+    }
+
     try {
       const res = await axios.get("https://www.uuidgenerator.net/api/version7");
       const newCardID = res.data;
       const newCard = { cardID: newCardID, english: "", spanish: "" };
+
       setCards((prevCards) => {
         const newCards = prevCards ? [...prevCards] : [];
         newCards.unshift(newCard);
         return newCards;
       });
+
       setDecks((prevDeck) => {
         const newDeckCards = [...prevDeck.deckCards, newCardID];
         const newDeck = { ...prevDeck, deckCards: newDeckCards };
         return newDeck;
       });
+
       setEditing(newCardID);
     } catch (error) {
       setErrorMessage(error.message);
