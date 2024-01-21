@@ -37,6 +37,17 @@ h2 {
   border-radius: 10px;
   box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
 }
+.password-input-container {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.password-visibility-icon {
+  position: absolute;
+  right: 10px;
+  cursor: pointer;
+}
 
 @media (max-width: 540px) {
   .log-in-page-content {
