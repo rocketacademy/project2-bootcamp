@@ -45,7 +45,9 @@ export default function EditCardForm(props) {
         }
         props.setEditing(null);
       } else {
-        setErrorMessage("Fill out both fields before saving the card");
+        setErrorMessage(
+          "A friendly reminder: you gotta fill out both fields before saving the card 😉"
+        );
       }
     } else {
       props.setEditing(card.cardID);
