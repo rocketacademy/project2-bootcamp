@@ -340,6 +340,7 @@ const App = () => {
               >
                 <Button
                   variant="contained"
+                  color="error"
                   onClick={() => {
                     setSelectedLandmarks(natureParks);
                     <RenderMap
@@ -358,6 +359,7 @@ const App = () => {
               >
                 <Button
                   variant="contained"
+                  color="error"
                   onClick={() => {
                     setSelectedLandmarks(politicalLandmarks);
                     <RenderMap
@@ -376,6 +378,7 @@ const App = () => {
               >
                 <Button
                   variant="contained"
+                  color="error"
                   onClick={() => {
                     setSelectedLandmarks(historicalLandmarks);
                   }}

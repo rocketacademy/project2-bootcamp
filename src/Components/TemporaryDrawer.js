@@ -229,6 +229,7 @@ export default function TemporaryDrawer({
         />
         <Button
           variant="contained"
+          color="error"
           // onClick={sendMessage}
           onClick={() => {
             sendMessage(userMessage);
@@ -259,6 +260,7 @@ export default function TemporaryDrawer({
         <Box>
           <Button
             variant="contained"
+            color="error"
             onClick={clearAIResponse}
             sx={{ mt: "20px", mb: "20px" }}
           >
@@ -284,9 +286,10 @@ export default function TemporaryDrawer({
     <div>
       <React.Fragment>
         <Button onClick={toggleDrawer("left", true)}>
-          <MenuIcon />
+          <MenuIcon style={{ color: "maroon" }} />
         </Button>
         <Drawer
+          color="error"
           anchor={"left"}
           open={state["left"]}
           onClose={toggleDrawer("left", false)}
