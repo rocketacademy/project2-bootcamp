@@ -175,18 +175,15 @@ export default function EditDeckPage() {
               variant="contained"
               sx={{
                 color: "white",
-                backgroundColor: "black",
+                backgroundColor: "rgb(79, 110, 247)",
                 [theme.breakpoints.down("sm")]: {
-                  fontSize: "10px",
-                  padding: "6px 12px",
+                  fontSize: "8px",
                 },
                 [theme.breakpoints.up("md")]: {
-                  fontSize: "12px",
-                  padding: "8px 16px",
+                  fontSize: "10px",
                 },
                 [theme.breakpoints.up("lg")]: {
-                  fontSize: "16px",
-                  padding: "10px 20px",
+                  fontSize: "12px",
                 },
               }}
               onClick={handleLanguageSwitch}
@@ -197,18 +194,15 @@ export default function EditDeckPage() {
               variant="contained"
               sx={{
                 color: "white",
-                backgroundColor: "black",
+                backgroundColor: "rgb(79, 110, 247)",
                 [theme.breakpoints.down("sm")]: {
-                  fontSize: "10px",
-                  padding: "6px 12px",
+                  fontSize: "8px",
                 },
                 [theme.breakpoints.up("md")]: {
-                  fontSize: "12px",
-                  padding: "8px 16px",
+                  fontSize: "10px",
                 },
                 [theme.breakpoints.up("lg")]: {
-                  fontSize: "16px",
-                  padding: "10px 20px",
+                  fontSize: "12px",
                 },
               }}
               onClick={handleSave}
@@ -221,7 +215,7 @@ export default function EditDeckPage() {
               <TextField
                 style={{
                   width: "70vw",
-                  marginBottom: "50px",
+                  marginBottom: "25px",
                   marginTop: "20px",
                   backgroundColor: "white",
                 }}

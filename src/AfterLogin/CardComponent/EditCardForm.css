@@ -10,13 +10,17 @@
   left: 0;
   width: 100%;
   display: flex;
-  justify-content: space-evenly;
+  justify-content: flex-end;
   margin-bottom: 20px;
   margin-top: 10px;
   margin-right: 10px;
-  flex-wrap: wrap;
+  /* flex-wrap: wrap; */
 }
-
+.edit-card-button {
+  margin: 5px;
+  margin-right: 10px;
+  padding: auto;
+}
 .edit-card .edit {
   margin-top: 20px;
 }
