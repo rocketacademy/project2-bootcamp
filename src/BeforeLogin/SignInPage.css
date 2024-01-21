@@ -7,16 +7,19 @@ h2 {
   margin-right: auto;
   font-family: "Gill Sans", sans-serif;
   font-weight: bold;
-  font-stretch: expanded;
   font-size: 180%;
+  letter-spacing: 1px;
 }
 .log-in-page-header {
-  margin-top: 2vh;
-  margin-bottom: 3vh;
+  position: absolute;
+  top: 0;
+  margin-top: 5vh;
+  margin-bottom: 1vh;
 }
 
 .log-in-page-content {
   display: flex;
+  justify-content: center;
   align-items: center;
   margin-left: auto;
   margin-right: auto;
@@ -24,39 +27,67 @@ h2 {
 
 .log-in-img {
   width: 100%;
-  max-width: 50vw;
+  width: 50vw;
 }
 
 .log-in-form {
   flex-grow: 1;
-  max-width: 50vw;
+  width: 400px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
 }
 
-@media (max-width: 920px) {
+@media (max-width: 540px) {
+  .log-in-page-content {
+    flex-direction: column;
+  }
+  .log-in-form {
+    padding: 15px;
+    width: 250px;
+  }
+}
+@media (min-width: 550px) {
   .log-in-page-content {
     flex-direction: column;
   }
 
   .log-in-form {
-    padding: 10px;
+    padding: 20px;
+  }
+  .form-control {
+    width: 250px;
+    height: 50px;
   }
 }
 @media (min-width: 1024px) {
   .log-in-page-content {
     margin-left: 10vw;
+    flex-direction: row;
   }
   .log-in-img {
-    max-width: 40vw;
+    padding-top: 15px;
+    width: 35vw;
   }
   .log-in-form {
-    padding: 50px;
-    padding-top: 0;
+    padding-bottom: 25px;
     margin-left: 2vw;
   }
 
   h2 {
     font-size: 220%;
   }
+  .form-control {
+    width: 300px;
+    height: 60px;
+  }
+}
+.form-label {
+  font-family: "Gill Sans", sans-serif;
+  font-weight: bold;
+}
+.form-control {
+  opacity: 0.5;
 }
 
 .btn {

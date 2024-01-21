@@ -40,6 +40,7 @@ export default function SignInPage() {
       {/* <Link to="/" className="homepage-button">
         <CloseIcon />
       </Link> */}
+
       <div className="log-in-page-header">
         <h2>Welcome back! </h2>
       </div>
@@ -75,11 +76,7 @@ export default function SignInPage() {
             </label>
           </div>
           <h6 onClick={handleForgotPasswordClick}>Forgot your password?</h6>
-          <button
-            type="button"
-            className="btn btn-dark mb-4 mt-3"
-            onClick={logIn}
-          >
+          <button type="button" className="btn btn-dark  mt-3" onClick={logIn}>
             Log in
           </button>
         </div>
