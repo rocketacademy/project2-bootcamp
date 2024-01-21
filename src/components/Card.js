@@ -42,7 +42,7 @@ export const CourseCards = ({ courseMap }) => {
           <a
             key={key}
             href={materialsData.url}
-            className="btn btn-sm btn-outline max-w-xs"
+            className="btn btn-sm bg-info max-w-xs min-h-10"
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -55,16 +55,18 @@ export const CourseCards = ({ courseMap }) => {
   return Array.from(courseMap.entries()).map(([courseID, courseData]) => (
     <div
       key={courseID}
-      className="card max-w-full mb-8 bg-base-100 shadow-xl sm:col-start-2 sm:col-span-5"
+      className="card max-w-full mb-8 bg-base-200 shadow-xl sm:col-start-2 sm:col-span-5"
     >
       <div className="card-body">
         <div className="card-actions justify-end">
-          <div className="badge badge-base-100">
+          <div className="badge bg-base-200 text-gray-600">
             Due Date: {courseData.dueDate}
           </div>
         </div>
-        <h2 className="card-title">{courseData.courseTitle}</h2>
-        <p className="text-start">{courseData.courseDescription}</p>
+        <h2 className="card-title text-gray-700">{courseData.courseTitle}</h2>
+        <p className="text-start text-gray-600">
+          {courseData.courseDescription}
+        </p>
         <div className="card-actions justify-start">
           <CourseMaterialsButton cardCourseID={courseID} />
         </div>
@@ -84,17 +86,16 @@ export const CourseCards = ({ courseMap }) => {
   ));
 };
 
-export const CourseCardsWithCert = ({ courseMap }) => {
-  const { courseMaterialsMap } = useCourseData();
-
+export const CourseCardsWithCert = ({ courseMap, displayName }) => {
   const CourseMaterialsButton = ({ cardCourseID }) => {
+    const { courseMaterialsMap } = useCourseData(cardCourseID);
     return Array.from(courseMaterialsMap.entries()).map(
       ([key, materialsData]) =>
         materialsData.courseID === cardCourseID && (
           <a
             key={key}
             href={materialsData.url}
-            className="btn btn-sm btn-outline max-w-xs"
+            className="btn btn-sm bg-info max-w-xs min-h-10"
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -107,23 +108,25 @@ export const CourseCardsWithCert = ({ courseMap }) => {
   return Array.from(courseMap.entries()).map(([courseID, courseData]) => (
     <div
       key={courseID}
-      className="card max-w-full mb-8 bg-base-100 shadow-xl sm:col-start-2 sm:col-span-5"
+      className="card max-w-full mb-8 bg-base-200 shadow-xl sm:col-start-2 sm:col-span-5"
     >
       <div className="card-body">
         <div className="card-actions justify-end">
-          <div className="badge badge-base-100">
+          <div className="badge bg-base-200 text-gray-600">
             Due Date: {courseData.dueDate}
           </div>
         </div>
-        <h2 className="card-title">{courseData.courseTitle}</h2>
-        <p className="text-start">{courseData.courseDescription}</p>
+        <h2 className="card-title text-gray-700">{courseData.courseTitle}</h2>
+        <p className="text-start text-gray-600">
+          {courseData.courseDescription}
+        </p>
         <div className="card-actions justify-start">
           <CourseMaterialsButton cardCourseID={courseID} />
         </div>
         <div className="mt-5 card-actions justify-end">
           {/* Download Cert */}
           <Certificate
-            userName={"HELLO123"}
+            userName={displayName}
             courseName={courseData.courseTitle}
           />
         </div>
@@ -135,14 +138,12 @@ export const CourseCardsWithCert = ({ courseMap }) => {
 export const CourseCardsWithDelete = ({ initialCourseMap }) => {
   const [courseMap, setCourseMap] = useState(initialCourseMap);
   const deleteUploadedFiles = async (courseID, courseKey) => {
-    console.log(courseKey);
     try {
       const folderStorageRef = storageRef(
         storage,
         `/courseMaterials/${courseID}`
       );
       const folderFiles = await listAll(folderStorageRef);
-      console.log(folderFiles);
       await Promise.all(
         folderFiles.items.map(async (item) => {
           await deleteObject(item);
@@ -173,7 +174,7 @@ export const CourseCardsWithDelete = ({ initialCourseMap }) => {
           <a
             key={key}
             href={materialsData.url}
-            className="btn btn-sm btn-outline max-w-xs"
+            className="btn btn-sm bg-info max-w-xs min-h-10"
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -183,36 +184,56 @@ export const CourseCardsWithDelete = ({ initialCourseMap }) => {
     );
   };
 
-  console.log(courseMap);
-
   return Array.from(courseMap.entries()).map(([courseID, courseData]) => (
     <div
       key={courseID}
-      className="card max-w-full mb-8 bg-base-100 shadow-xl sm:col-start-2 sm:col-span-5"
+      className="card max-w-full mb-8 bg-base-200 shadow-xl sm:col-start-2 sm:col-span-5"
     >
       <div className="card-body">
         <div className="card-actions justify-end">
-          <div className="badge badge-base-100">
+          <div className="badge bg-base-200 text-gray-600">
             Due Date: {courseData.dueDate}
           </div>
-          <div className="badge badge-base-100">
-            Course Key: {courseData.firebaseKey}
-          </div>
         </div>
-        <h2 className="card-title">{courseData.courseTitle}</h2>
-        <p className="text-start">{courseData.courseDescription}</p>
+        <h2 className="card-title text-gray-700">{courseData.courseTitle}</h2>
+        <p className="text-start text-gray-600">
+          {courseData.courseDescription}
+        </p>
         <div className="card-actions justify-start">
           <CourseMaterialsButton cardCourseID={courseID} />
         </div>
         <div className="mt-5 card-actions justify-end">
           <button
-            className="btn btn-primary"
-            onClick={() => {
-              deleteUploadedFiles(courseID, courseData.firebaseKey);
-            }}
+            className="btn btn-accent"
+            onClick={() => document.getElementById("my_modal_5").showModal()}
           >
-            Delete Course
+            Delete
           </button>
+          <dialog
+            id="my_modal_5"
+            className="modal modal-bottom sm:modal-middle"
+          >
+            <div className="modal-box bg-warning">
+              <h3 className="font-bold text-lg">WARNING!</h3>
+              <p className="py-4">
+                Are you sure you want to delete this course? This action cannot
+                be undone.
+              </p>
+              <div className="modal-action">
+                <form method="dialog">
+                  <button
+                    className="btn mr-3 btn-accent"
+                    onClick={() => {
+                      deleteUploadedFiles(courseID, courseData.firebaseKey);
+                    }}
+                  >
+                    Confirm Delete
+                  </button>
+                  <button className="btn">Close</button>
+                </form>
+              </div>
+            </div>
+          </dialog>
         </div>
       </div>
     </div>
