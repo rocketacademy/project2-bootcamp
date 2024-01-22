@@ -107,7 +107,8 @@ h2 {
   font-weight: bold;
 }
 .form-control {
-  opacity: 0.5;
+  opacity: 0.8;
+  background-color: #f0f1f7;
 }
 
 .btn {

@@ -85,7 +85,7 @@ export default function SignInPage() {
                 />
                 <div className="password-visibility-icon">
                   {isPasswordVisible ? (
-                    <VisibilityOffIcon
+                    <VisibilityIcon
                       sx={{
                         [theme.breakpoints.down("sm")]: {
                           fontSize: "medium",
@@ -100,7 +100,7 @@ export default function SignInPage() {
                       onClick={changePasswordVisibility}
                     />
                   ) : (
-                    <VisibilityIcon
+                    <VisibilityOffIcon
                       sx={{
                         [theme.breakpoints.down("sm")]: {
                           fontSize: "medium",
