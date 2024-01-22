@@ -10,7 +10,7 @@ h2 {
   font-size: 180%;
   letter-spacing: 1px;
 }
-.log-in-page-header {
+.header {
   position: absolute;
   top: 0;
   margin-top: 5vh;
@@ -29,7 +29,10 @@ h2 {
   width: 100%;
   width: 50vw;
 }
-
+.register-img {
+  width: 100%;
+  width: 50vw;
+}
 .log-in-form {
   flex-grow: 1;
   width: 400px;
@@ -48,14 +51,25 @@ h2 {
   right: 10px;
   cursor: pointer;
 }
+.register-page-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: auto;
+  margin-right: auto;
+}
 
 @media (max-width: 540px) {
   .log-in-page-content {
     flex-direction: column;
   }
+
   .log-in-form {
     padding: 15px;
     width: 250px;
+  }
+  .register-page-content {
+    flex-direction: column;
   }
 }
 @media (min-width: 550px) {
@@ -70,6 +84,9 @@ h2 {
     width: 250px;
     height: 50px;
   }
+  .register-page-content {
+    flex-direction: column;
+  }
 }
 @media (min-width: 1024px) {
   .log-in-page-content {
@@ -81,11 +98,20 @@ h2 {
     padding-top: 15px;
     width: 35vw;
   }
+
   .log-in-form {
     padding-bottom: 25px;
     /* margin-left: 2vw; */
   }
 
+  .register-page-content {
+    margin-right: 15vw;
+    flex-direction: row-reverse;
+  }
+  .register-img {
+    padding-top: 15px;
+    width: 40vw;
+  }
   h2 {
     font-size: 220%;
   }
@@ -99,6 +125,11 @@ h2 {
   .log-in-page-content {
     margin-right: 22vw;
     flex-direction: row;
+  }
+  .register-page-content {
+    /* margin-right: 9vw; */
+    margin-left: 22vw;
+    flex-direction: row-reverse;
   }
 }
 

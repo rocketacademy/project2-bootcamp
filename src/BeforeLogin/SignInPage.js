@@ -50,7 +50,7 @@ export default function SignInPage() {
         <CloseIcon />
       </Link> */}
 
-      <div className="log-in-page-header">
+      <div className="header">
         <h2>Welcome back! </h2>
       </div>
       <div className="log-in-page-content">
