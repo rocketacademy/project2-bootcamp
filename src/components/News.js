@@ -6,7 +6,7 @@ const News = () => {
   const [News, setNews] = useState([]);
   async function GetNewsArticles() {
     const response = await fetch(
-      "https://newsapi.org/v2/everything?q=finance&from=2024-01-03&sortBy=publishedAt&apiKey=bf56f1217d1e4d048c67722c005ee4be"
+      "https://newsapi.org/v2/everything?q=finance&from=2024-01-12&sortBy=publishedAt&apiKey=bf56f1217d1e4d048c67722c005ee4be"
     );
     const data = await response.json();
     setNewsArticles(data.articles);
@@ -37,7 +37,7 @@ const News = () => {
     getnews();
   }, []);
 
-  const slicedNews = News?.slice(0, 3);
+  const slicedNews = News?.slice(4, 7);
 
   return (
     <div className="flex flex-row justify-content-center align-items-center py-5  flex-wrap">

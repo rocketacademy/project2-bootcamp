@@ -77,56 +77,127 @@
 
 // export default WatchLists;
 // Import necessary libraries
-import React from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-// Define the Table component
 const WatchLists = () => {
-  // Sample data for the table
-  const data = [
-    { id: 1, col1: "Tesla", col2: "$87.5", col3: "52.1", col4: "342" },
-    { id: 2, col1: "Ford Motor", col2: "$4.6", col3: "38.1", col4: "122" },
-    { id: 3, col1: "Disney Co", col2: "$2.2", col3: "25.6", col4: "175" },
-    { id: 4, col1: "Carnival Co", col2: "$0.73", col3: "19.9", col4: "123" },
-    { id: 5, col1: "AliBaba", col2: "$1.05", col3: "1.63", col4: "34" },
-    { id: 6, col1: "Amazon.com", col2: "$17.5", col3: "1.67", col4: "123" },
-  ];
+  const [companyData, setCompanyData] = useState([]);
+  const [error, setError] = useState(null);
+
+  const getAlphaVantageData = async (symbol) => {
+    const apiKey = "HYYWPKPI7YSU0TXJ"; // Replace with your Alpha Vantage API key
+
+    const url = `https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY_ADJUSTED&symbol=${symbol}&apikey=${apiKey}`;
+
+    try {
+      const response = await axios.get(url);
+      const data = response.data;
+
+      const monthlyData = data?.["Monthly Adjusted Time Series"];
+
+      if (monthlyData) {
+        // Extract relevant data for the table
+        const latestMonth = Object.entries(monthlyData).slice(0, 1);
+        const latestData = latestMonth[0]?.[1];
+
+        const newData = {
+          symbol,
+          open: latestData["1. open"],
+          high: latestData["2. high"],
+          low: latestData["3. low"],
+          close: latestData["4. close"],
+          volume: latestData["6. volume"],
+        };
+
+        setCompanyData((prevData) => [...prevData, newData]);
+      }
+    } catch (error) {
+      console.error(error);
+      setError(`Failed to fetch data for ${symbol}`);
+    }
+  };
+
+  useEffect(() => {
+    // Call the API for each company
+    getAlphaVantageData("AMZN");
+    getAlphaVantageData("IBM");
+    getAlphaVantageData("FB");
+    getAlphaVantageData("INTC");
+    getAlphaVantageData("NFLX");
+    getAlphaVantageData("KO");
+    getAlphaVantageData("PG");
+    getAlphaVantageData("XOM");
+    // Add more companies as needed
+  }, []);
 
   return (
-    <table className="table table-bordered border-none">
-      {/* <thead className="table-dark">
-      <tr>
-        <th>ID</th> 
-        <th>Tesla</th>
-        <th>Ford Motor</th>
-        <th>Disney Co</th>
-        <th>Carnival Co</th>
-      </tr>
-    </thead> */}
-      <tbody>
-        {data.map((row) => (
-          <tr key={row.id}>
-            {/* <td>{row.id}</td> */}
-            <td className="text-start font-weight-bold">{row.col1}</td>
-            <td>{row.col2}</td>
-            <td className="text-success">+${row.col3}</td>
-            <td className="text-danger ">
-              <span className="bg-body-secondary p-1 rounded-2">
-            <svg xmlns="http://www.w3.org/2000/svg" 
-            width="16"
-            height="16"
-            fill="currentColor" class="bi bi-arrow-up" viewBox="0 0 16 16">
-            <path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5"/>
-</svg>
-              -{row.col4}%
-              </span>
-            </td>
+    <>
+       <div className="mt-4 p-4 border rounded shadow bg-light">
+      {error && <p className="text-danger">{error}</p>}
+      <table className="table table-bordered border-none table-responsive">
+        <thead className="table-primary">
+          <tr>
+            <th>Company</th>
+            <th>Open</th>
+            <th>High</th>
+            <th>Low</th>
+            <th>Close</th>
+            <th>Volume</th>
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {companyData.map((row, index) => (
+            <tr key={index}>
+              <td className="text-start font-weight-bold">{row.symbol}</td>
+              <td>{row.open}</td>
+              <td>
+                <span  className="bg-success text-white rounded p-1 d-flex justify-content-center align-items-center">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    fill="currentColor"
+                    className="bi bi-arrow-up"
+                    viewBox="0 0 16 16"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5"
+                    />
+                  </svg>
+                  {row.high}
+                </span>
+              </td>
+              <td>
+                <span className="bg-danger text-white rounded p-1 d-flex justify-content-center align-items-center">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                    strokeWidth="1.5"
+                    stroke="currentColor"
+                    className="w-6 h-6"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M15.75 17.25 12 21m0 0-3.75-3.75M12 21V3"
+                    />
+                  </svg>
+                  {row.low}
+                </span>
+              </td>
+              <td>{row.close}</td>
+              <td>{row.volume}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    </>
   );
 };
 
-// Export the component
 export default WatchLists;

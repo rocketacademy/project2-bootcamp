@@ -2,39 +2,30 @@ import React, { useEffect, useState } from "react";
 import { Table, Spinner } from "react-bootstrap";
 import axios from "axios";
 
-// Function to convert "4Q2022" to a more readable date format
-const convertToReadableDate = (quarterYear) => {
-  const match = quarterYear.match(/(\d)Q(\d{4})/);
-  if (match) {
-    const quarter = match[1];
-    const year = match[2];
-    const month = (parseInt(quarter) - 1) * 3 + 1;
-    return new Date(`${year}-${month}-01`).toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
-  }
-  return quarterYear; // Return original string if the format is not as expected
-};
-
 const StockList = () => {
-  const [stockData, setStockData] = useState([]);
+  const [stockData, setStockData] = useState({});
   const [loading, setLoading] = useState(true);
 
-  async function getdata() {
-    const options = {
-      method: "GET",
-      url: "https://apidojo-yahoo-finance-v1.p.rapidapi.com/stock/v2/get-summary",
-      params: {
-        symbol: "AMRN",
-        region: "US",
-      },
-      headers: {
-        "X-RapidAPI-Key": "d6da08cc1fmsh2ffc0e825183be8p1c8245jsn3ba9199a4d47",
-        "X-RapidAPI-Host": "apidojo-yahoo-finance-v1.p.rapidapi.com",
-      },
-    };
+  async function getData() {
+    const apiKey = "HYYWPKPI7YSU0TXJ"; // Replace with your Alpha Vantage API key
+    const symbols = ["TSLA", "NFLX", "IBM", "KO"]; // Add more company symbols as needed
+
+    const promises = symbols.map(async (symbol) => {
+      const url = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${symbol}&apikey=${apiKey}`;
+
+      try {
+        const response = await axios.get(url);
+        return { [symbol]: response?.data?.["Global Quote"] || {} };
+      } catch (error) {
+        console.error(`Error fetching data for ${symbol}:`, error);
+        return { [symbol]: {} };
+      }
+    });
 
     try {
-      const response = await axios.request(options);
-      setStockData(response?.data?.earnings.financialsChart.quarterly || []);
+      const results = await Promise.all(promises);
+      const mergedData = Object.assign({}, ...results);
+      setStockData(mergedData);
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
@@ -43,34 +34,102 @@ const StockList = () => {
   }
 
   useEffect(() => {
-    getdata();
+    getData();
+  }, []);
+  const [analyticsData, setAnalyticsData] = useState({});
+  // const [loading, setLoading] = useState(true);
+  const symbolsAnalytics = ["AAPL", "MSFT", "GOOGL", "AMZN", "NFLX", "IBM"];
+
+  async function getAnalyticsData() {
+    const apiKey = "HYYWPKPI7YSU0TXJ";
+
+    // Fetch data from Analytics API for multiple symbols
+    const urlAnalytics = `https://alphavantageapi.co/timeseries/analytics?SYMBOLS=${symbolsAnalytics.join(
+      ","
+    )}&RANGE=2023-07-01&RANGE=2023-08-31&INTERVAL=DAILY&OHLC=close&CALCULATIONS=MEAN,STDDEV,CORRELATION&apikey=${apiKey}`;
+
+    try {
+      const response = await axios.get(urlAnalytics);
+      const data = response?.data?.payload?.RETURNS_CALCULATIONS || {};
+      setAnalyticsData(data);
+    } catch (error) {
+      console.error("Error fetching data from Analytics API:", error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    getAnalyticsData();
   }, []);
 
   return (
-    <div className="w-25">
-      <h2>Metrics</h2>
+    <div className="w-100  py-4 border mt-2 rounded shadow bg-light">
+      <h2 className="mb-4 text-primary">Metrics</h2>
       {loading ? (
-        <Spinner animation="border" role="status">
+        <Spinner animation="border" role="status" variant="primary">
           <span className="visually-hidden">Loading...</span>
         </Spinner>
       ) : (
-        <Table striped bordered hover responsive>
-          <thead>
+        <Table striped bordered hover responsive className="mb-4">
+          <thead className="bg-primary text-white">
             <tr className="text-center">
-              <th>Date</th>
-              <th>$</th>
+              <th>Company</th>
+              <th>Previous Close</th>
+              <th>Change</th>
+              <th>Close</th>
             </tr>
           </thead>
           <tbody>
-            {stockData.map((stockItem, i) => (
-              <tr key={i} className="text-center">
-                <td>{convertToReadableDate(stockItem?.date)}</td>
-                <td className="text-center">{stockItem?.revenue?.fmt}</td>
+            {Object?.entries(stockData)?.map(([symbol, data]) => (
+              <tr key={symbol} className="text-center">
+                <td>{symbol}</td>
+                <td>{data["08. previous close"]}</td>
+                <td>{data["09. change"]}</td>
+                <td>{data["05. price"]}</td>
               </tr>
             ))}
           </tbody>
         </Table>
       )}
+
+      <Table striped bordered hover responsive>
+        <thead className="bg-primary text-white">
+          <tr className="text-center">
+            <th>Symbol</th>
+            <th>Mean</th>
+            <th>StdDev</th>
+            <th>Correlation</th>
+          </tr>
+        </thead>
+        <tbody>
+          {Object.entries(analyticsData?.MEAN || {}).map(
+            ([symbol, mean], index) => (
+              <tr key={symbol} className="text-center">
+                <td>{symbol}</td>
+                <td>{analyticsData?.STDDEV?.[symbol]}</td>
+                <td>{mean}</td>
+                <td>
+                  {symbolsAnalytics.map((targetSymbol, targetIndex) => (
+                    <div key={targetSymbol} className="text-primary">
+                      {targetSymbol !== symbol && targetIndex < index ? (
+                        <span>
+                          {targetSymbol}:{" "}
+                          {
+                            analyticsData?.CORRELATION?.correlation?.[
+                              index - 1
+                            ]?.[targetIndex]
+                          }
+                        </span>
+                      ) : null}
+                    </div>
+                  ))}
+                </td>
+              </tr>
+            )
+          )}
+        </tbody>
+      </Table>
     </div>
   );
 };
