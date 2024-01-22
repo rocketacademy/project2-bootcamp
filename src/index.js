@@ -16,7 +16,6 @@ import "./App.css";
 // import History from "./pages/History";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { ThemeProvider } from "./components/ThemeContext";
-
 import AddStock from "./pages/AddStock.js"
 
 
