@@ -9,6 +9,8 @@ import DBHandler from "../Controller/DBHandler";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { ThemeProvider } from "@mui/material/styles";
+import theme from "../Theme";
 
 export default function HomePage() {
   const [user] = useOutletContext();
@@ -141,7 +143,8 @@ export default function HomePage() {
       );
     });
 
-  const allCards = userDecks.length ? [...deckList, addDeckCardForm] : null;
+  const allCards =
+    userDecks.length > 6 ? [...deckList, addDeckCardForm] : deckList;
 
   const emptyCard = (
     <div className="homepage-empty-deck">
@@ -159,19 +162,30 @@ export default function HomePage() {
   );
 
   return (
-    <div>
-      <ErrorPage
-        errorMessage={errorMessage}
-        handleErrorMessage={() => setErrorMessage("")}
-      />
+    <ThemeProvider theme={theme}>
+      <div>
+        <ErrorPage
+          errorMessage={errorMessage}
+          handleErrorMessage={() => setErrorMessage("")}
+        />
 
-      <div className="homepage-welcome">
-        <br />
-        <h3>🗂️Decks</h3>
-        <br />
+        <div className="homepage-welcome">
+          <br />
+          <div className="homepage-row">
+            <h3>🗂️Decks</h3>
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={() => handleAdd()}
+            >
+              Add a deck
+            </Button>
+          </div>
+          <br />
+        </div>
+        <div className="homepage-layout">{allCards}</div>
+        {!allCards && emptyCard}
       </div>
-      <div className="homepage-layout">{allCards}</div>
-      {!allCards && emptyCard}
-    </div>
+    </ThemeProvider>
   );
 }
