@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { auth } from "../firebase";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { useState } from "react";
@@ -7,7 +7,6 @@ import { database } from "../firebase";
 import { useTheme } from "@mui/material/styles";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
-import CloseIcon from "@mui/icons-material/Close";
 import "bootstrap/dist/css/bootstrap.css";
 import "./SignInPage.css";
 import ErrorPage from "../ErrorPage";
@@ -53,6 +52,9 @@ export default function RegisterPage() {
   const changePasswordVisibility = () => {
     setIsPasswordVisible((prevState) => !prevState);
   };
+  const handleGoToSignInPage = () => {
+    navi("/signin");
+  };
 
   return (
     <div className="App">
@@ -60,10 +62,6 @@ export default function RegisterPage() {
         errorMessage={errorMessage}
         handleErrorMessage={() => setErrorMessage("")}
       />
-      {/* <Link to="/" className="homepage-button">
-        <CloseIcon />
-      </Link> */}
-
       <div className="header">
         <h2>Hi, nice to meet you!</h2>
       </div>
@@ -146,7 +144,14 @@ export default function RegisterPage() {
               </div>
             </label>
           </div>
-          <button type="button" className="btn btn-dark " onClick={register}>
+          <h6 onClick={handleGoToSignInPage}>
+            Already have an account? Click here to log in.
+          </h6>
+          <button
+            type="button"
+            className="btn btn-dark mt-3"
+            onClick={register}
+          >
             Register
           </button>
         </div>

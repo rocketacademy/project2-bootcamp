@@ -40,16 +40,16 @@ export default function SignInPage() {
   const handleForgotPasswordClick = () => {
     navi("/reset-password");
   };
+
+  const handleGoToRegisterPage = () => {
+    navi("/register");
+  };
   return (
     <div className="App">
       <ErrorPage
         errorMessage={errorMessage}
         handleErrorMessage={() => setErrorMessage("")}
       />
-      {/* <Link to="/" className="homepage-button">
-        <CloseIcon />
-      </Link> */}
-
       <div className="header">
         <h2>Welcome back! </h2>
       </div>
@@ -71,7 +71,7 @@ export default function SignInPage() {
               ></input>
             </label>
           </div>
-          <div className="mb-3">
+          <div className="mb-2">
             <label className="form-label">
               Password:
               <div className="password-input-container">
@@ -120,6 +120,9 @@ export default function SignInPage() {
             </label>
           </div>
           <h6 onClick={handleForgotPasswordClick}>Forgot your password?</h6>
+          <h6 className="mt-1" onClick={handleGoToRegisterPage}>
+            Don't have an account? Click here to register.
+          </h6>
           <button type="button" className="btn btn-dark  mt-3" onClick={logIn}>
             Log in
           </button>
