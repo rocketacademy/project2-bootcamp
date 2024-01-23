@@ -127,14 +127,19 @@ export default class DBHandler {
   searchData = async (keywordRaw) => {
     try {
       const keyword = keywordRaw.toLowerCase();
-      const resultInfo = [];
-      const remainInfo = [];
+      const resultInfoSet = new Set();
+      const remainInfo = new Set();
       const userInfo = await this.getUserInfo();
       const userDeckIDs = userInfo.decks ? userInfo.decks : [];
       const decksRef = ref(database, `decks`);
       const decksRes = await get(decksRef);
       const decks = decksRes.val();
+      //comparing Cards is use to comparing cards with the search result
+      const comparingCards = {};
       for (const userDeckID of userDeckIDs) {
+        for (const cardID of decks[`deck${userDeckID}`].deckCards) {
+          comparingCards[cardID] = true;
+        }
         delete decks[`deck${userDeckID}`];
       }
       const cardsRef = ref(database, `cards`);
@@ -149,32 +154,54 @@ export default class DBHandler {
           cardsMatch[cardID] = true;
         }
       }
+      //sort deck in deckCards.length decending order for checking repeat deck in later codes
+      const sortedDeck = Object.values(decks).sort(
+        (a, b) => b.deckCards.length - a.deckCards.length
+      );
       //cardsMatch contains cardID that match keyword
       //decks is decks the user do not have
-      for (const deck of Object.values(decks)) {
+
+      for (const deck of sortedDeck) {
         if (deck.deckName.toLowerCase().includes(keyword)) {
-          resultInfo.push(deck);
-        } else {
-          let haveMatch = false;
-          for (const deckCardID of deck.deckCards) {
-            if (cardsMatch[deckCardID]) {
-              resultInfo.push(deck);
-              haveMatch = true;
-              break;
+          const shallowCards = [...deck.deckCards];
+          while (shallowCards.length) {
+            const checkCardID = shallowCards.pop();
+            if (!comparingCards[checkCardID]) {
+              comparingCards[checkCardID] = true;
+              resultInfoSet.add(deck);
             }
           }
+        } else {
+          let haveMatch = false;
+          let isNew = false;
+          const shallowCards = [...deck.deckCards];
+          while (shallowCards.length) {
+            const checkCardID = shallowCards.pop();
+            if (cardsMatch[checkCardID]) {
+              haveMatch = true;
+            }
+            if (!comparingCards[checkCardID]) {
+              comparingCards[checkCardID] = true;
+              isNew = true;
+            }
+          }
+          if (haveMatch && isNew) {
+            resultInfoSet.add(deck);
+          }
           if (!haveMatch) {
-            remainInfo.push(deck);
+            remainInfo.add(deck);
           }
         }
       }
       //randomly take 3 from remain
       const adviceInfo = [];
-      while (!remainInfo.length || adviceInfo.length < 3) {
-        const randomIndex = Math.floor(Math.random() * remainInfo.length);
-        adviceInfo.push(remainInfo[randomIndex]);
-        remainInfo.splice(randomIndex, 1);
+      const remainInfoArr = [...remainInfo];
+      while (!remainInfoArr.length || adviceInfo.length < 3) {
+        const randomIndex = Math.floor(Math.random() * remainInfoArr.length);
+        adviceInfo.push(remainInfoArr[randomIndex]);
+        remainInfoArr.splice(randomIndex, 1);
       }
+      const resultInfo = [...resultInfoSet];
       //put cardInfo into each resultInfo&adviceInfo with new key cardInfos in each deck
       for (const deck of Object.values(resultInfo)) {
         deck.cardInfos = [];
