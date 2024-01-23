@@ -115,7 +115,7 @@ export default function EditDeckPage() {
 
     if (hasEmptyCard) {
       setErrorMessage(
-        "Oops, seems that you have an unsaved card. After creating a card, don't forget to click ☑️ to save it before adding a new empty card 😉"
+        "Oops, seems that you have an unfinished or unsaved card. Tip: make sure you save a newly created card  by clicking ☑️ before you add a new empty card 😉"
       );
       return;
     }
