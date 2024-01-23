@@ -308,7 +308,8 @@ export default class DBHandler {
     const userDeckRef = ref(database, `userInfo/${this.uid}/decks`);
     try {
       const newCards = [];
-      const cardsPromises = deck.deckCards.map(
+      const comparingDeck = await this.getDeckInfo(deck.deckID);
+      const cardsPromises = comparingDeck.deckCards.map(
         async (cardID) => await this.getCardInfo(cardID, false)
       );
       //comparing cards order following deck.deckCardsID
