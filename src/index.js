@@ -27,7 +27,7 @@ const router = createBrowserRouter([
     element: <App />,
   },
   { path: "/trades", element: <Trades /> },
-  { path: "/addstock", element: <AddStock /> },
+  
   { path: "/insights", element: <Insights /> },
   { path: "/settings", element: <Settings /> },
 ]);

@@ -1,79 +1,133 @@
 import React, { useEffect, useState } from "react";
-import { onValue, ref as databaseRef, remove } from "firebase/database";
-import { database } from "../firebase";
-import { Table } from "react-bootstrap";
-const StockList = () => {
-  const [stockData, setStockData] = useState([]);
+import { Table, Spinner } from "react-bootstrap";
+import axios from "axios";
 
-  useEffect(() => {
-    // Fetch stock data from Firebase
-    const stockListRef = databaseRef(database, "stock");
-    const unsubscribe = onValue(stockListRef, (snapshot) => {
-      const stockArray = [];
-      snapshot.forEach((childSnapshot) => {
-        const stockItem = {
-          id: childSnapshot.key,
-          ...childSnapshot.val(),
-        };
-        stockArray.push(stockItem);
-      });
-      setStockData(stockArray);
+const StockList = () => {
+  const [stockData, setStockData] = useState({});
+  const [loading, setLoading] = useState(true);
+
+  async function getData() {
+    const apiKey = "HYYWPKPI7YSU0TXJ"; // Replace with your Alpha Vantage API key
+    const symbols = ["TSLA", "NFLX", "IBM", "KO"]; // Add more company symbols as needed
+
+    const promises = symbols.map(async (symbol) => {
+      const url = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${symbol}&apikey=${apiKey}`;
+
+      try {
+        const response = await axios.get(url);
+        return { [symbol]: response?.data?.["Global Quote"] || {} };
+      } catch (error) {
+        console.error(`Error fetching data for ${symbol}:`, error);
+        return { [symbol]: {} };
+      }
     });
 
-    // Cleanup the subscription when the component unmounts
-    return () => unsubscribe();
+    try {
+      const results = await Promise.all(promises);
+      const mergedData = Object.assign({}, ...results);
+      setStockData(mergedData);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    getData();
+  }, []);
+  const [analyticsData, setAnalyticsData] = useState({});
+  // const [loading, setLoading] = useState(true);
+  const symbolsAnalytics = ["AAPL", "MSFT", "GOOGL", "AMZN", "NFLX", "IBM"];
+
+  async function getAnalyticsData() {
+    const apiKey = "HYYWPKPI7YSU0TXJ";
+
+    // Fetch data from Analytics API for multiple symbols
+    const urlAnalytics = `https://alphavantageapi.co/timeseries/analytics?SYMBOLS=${symbolsAnalytics.join(
+      ","
+    )}&RANGE=2023-07-01&RANGE=2023-08-31&INTERVAL=DAILY&OHLC=close&CALCULATIONS=MEAN,STDDEV,CORRELATION&apikey=${apiKey}`;
+
+    try {
+      const response = await axios.get(urlAnalytics);
+      const data = response?.data?.payload?.RETURNS_CALCULATIONS || {};
+      setAnalyticsData(data);
+    } catch (error) {
+      console.error("Error fetching data from Analytics API:", error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    getAnalyticsData();
   }, []);
 
-  const handleDelete = (id) => {
-    // Remove stock entry from Firebase
-    const stockItemRef = databaseRef(database, `stock/${id}`);
-    remove(stockItemRef);
-  };
-
   return (
-    <div>
-      <h2>Watchlist</h2>
-      <Table striped bordered hover responsive>
-        <thead>
-          <tr>
-            <th>Title</th>
-            <th>Description</th>
+    <div className="w-100  py-4 border mt-2 rounded shadow bg-light">
+      <h2 className="mb-4 text-primary">Metrics</h2>
+      {loading ? (
+        <Spinner animation="border" role="status" variant="primary">
+          <span className="visually-hidden">Loading...</span>
+        </Spinner>
+      ) : (
+        <Table striped bordered hover responsive className="mb-4">
+          <thead className="bg-primary text-white">
+            <tr className="text-center">
+              <th>Company</th>
+              <th>Previous Close</th>
+              <th>Change</th>
+              <th>Close</th>
+            </tr>
+          </thead>
+          <tbody>
+            {Object?.entries(stockData)?.map(([symbol, data]) => (
+              <tr key={symbol} className="text-center">
+                <td>{symbol}</td>
+                <td>{data["08. previous close"]}</td>
+                <td>{data["09. change"]}</td>
+                <td>{data["05. price"]}</td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+      )}
 
-            <th>Action</th>
+      <Table striped bordered hover responsive>
+        <thead className="bg-primary text-white">
+          <tr className="text-center">
+            <th>Symbol</th>
+            <th>Mean</th>
+            <th>StdDev</th>
+            <th>Correlation</th>
           </tr>
         </thead>
         <tbody>
-          {stockData?.map((stockItem) => (
-            <tr key={stockItem.id}>
-              <td>{stockItem.title}</td>
-              <td>{stockItem.description}</td>
-
-              <td>
-                {/* <button onClick={() => handleDelete(stockItem.id)}>
-                  Delete
-                </button> */}
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke-width="1.5"
-                  stroke="red"
-                  className="w-3 h-3"
-                  style={{
-                    width: "25px",
-                    height: "25px",
-                  }}
-                  onClick={() => handleDelete(stockItem.id)}
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
-                  />
-                </svg>
-              </td>
-            </tr>
-          ))}
+          {Object.entries(analyticsData?.MEAN || {}).map(
+            ([symbol, mean], index) => (
+              <tr key={symbol} className="text-center">
+                <td>{symbol}</td>
+                <td>{analyticsData?.STDDEV?.[symbol]}</td>
+                <td>{mean}</td>
+                <td>
+                  {symbolsAnalytics.map((targetSymbol, targetIndex) => (
+                    <div key={targetSymbol} className="text-primary">
+                      {targetSymbol !== symbol && targetIndex < index ? (
+                        <span>
+                          {targetSymbol}:{" "}
+                          {
+                            analyticsData?.CORRELATION?.correlation?.[
+                              index - 1
+                            ]?.[targetIndex]
+                          }
+                        </span>
+                      ) : null}
+                    </div>
+                  ))}
+                </td>
+              </tr>
+            )
+          )}
         </tbody>
       </Table>
     </div>
