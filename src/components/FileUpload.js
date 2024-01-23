@@ -1,7 +1,7 @@
 import { storage } from "../firebase";
 import {
   ref as storageRef,
-  uploadBytes,
+  uploadBytesResumable,
   getDownloadURL,
 } from "firebase/storage";
 import { push, ref, set } from "firebase/database";
@@ -15,10 +15,12 @@ export const FileUpload = ({ courseID }) => {
 
   const [fileInputFile, setFileInputFile] = useState(null);
   const [fileInputValue, setFileInputValue] = useState("");
+  const [uploadProgress, setUploadProgress] = useState(0);
 
   const handleFileUpload = (e) => {
     setFileInputFile(e.target.files[0]);
     setFileInputValue(e.target.value);
+    setUploadProgress(0);
   };
 
   const writeData = (url, fileName) => {
@@ -37,11 +39,27 @@ export const FileUpload = ({ courseID }) => {
       storage,
       `${STORAGE_FOLDER}/${fileInputFile.name}`
     );
-    uploadBytes(fullStorageRef, fileInputFile).then((snapshot) => {
-      getDownloadURL(fullStorageRef, fileInputFile.name).then((url) => {
-        writeData(url, fileInputFile.name);
-      });
-    });
+    const uploadTask = uploadBytesResumable(fullStorageRef, fileInputFile);
+    uploadTask.on(
+      `state_changed`,
+      (snapshot) => {
+        setUploadProgress(
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+        );
+      },
+      console.error,
+      () => {
+        getDownloadURL(fullStorageRef, fileInputFile.name).then((url) => {
+          writeData(url, fileInputFile.name);
+        });
+
+        // uploadBytes(fullStorageRef, fileInputFile).then((snapshot) => {
+        //   getDownloadURL(fullStorageRef, fileInputFile.name).then((url) => {
+        //     writeData(url, fileInputFile.name);
+        //   });
+        // });
+      }
+    );
   };
 
   return (
@@ -65,6 +83,11 @@ export const FileUpload = ({ courseID }) => {
           Upload
         </div>
         <div className="sm:col-span-6">
+          <progress
+            className="progress progress-info w-full"
+            value={uploadProgress}
+            max="100"
+          ></progress>
           <CurrentUploadedFiles currentCourseID={courseID} />
         </div>
       </div>
