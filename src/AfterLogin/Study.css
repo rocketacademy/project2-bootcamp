@@ -181,6 +181,12 @@
   margin-top: 5vh;
 }
 
+.homepage-row {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
 .homepage-add-deck-card-form {
   background-color: transparent !important;
   border-color: black !important;
