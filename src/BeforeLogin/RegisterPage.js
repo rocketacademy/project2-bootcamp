@@ -71,7 +71,7 @@ export default function RegisterPage() {
         <div>
           <img className="register-img" src="register-page.png" alt="log-in" />
         </div>
-        <div className="log-in-form">
+        <div className="form">
           <div className="mb-3">
             <label className="form-label">
               Name or nickname:
@@ -146,11 +146,7 @@ export default function RegisterPage() {
               </div>
             </label>
           </div>
-          <button
-            type="button"
-            className="btn btn-dark mb-4"
-            onClick={register}
-          >
+          <button type="button" className="btn btn-dark " onClick={register}>
             Register
           </button>
         </div>

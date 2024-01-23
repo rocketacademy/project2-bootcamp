@@ -57,7 +57,7 @@ export default function SignInPage() {
         <div>
           <img className="log-in-img" src="log-in.png" alt="log-in" />
         </div>
-        <div className="log-in-form">
+        <div className="form">
           <div className="mb-3">
             <label className="form-label">
               Email:

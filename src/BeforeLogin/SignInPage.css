@@ -11,7 +11,7 @@ h2 {
   letter-spacing: 1px;
 }
 .header {
-  position: absolute;
+  position: relative;
   top: 0;
   margin-top: 5vh;
   margin-bottom: 1vh;
@@ -33,7 +33,7 @@ h2 {
   width: 100%;
   width: 50vw;
 }
-.log-in-form {
+.form {
   flex-grow: 1;
   width: 400px;
   background-color: #fff;
@@ -64,7 +64,7 @@ h2 {
     flex-direction: column;
   }
 
-  .log-in-form {
+  .form {
     padding: 15px;
     width: 250px;
   }
@@ -77,7 +77,7 @@ h2 {
     flex-direction: column;
   }
 
-  .log-in-form {
+  .form {
     padding: 20px;
   }
   .form-control {
@@ -92,6 +92,7 @@ h2 {
   .log-in-page-content {
     /* margin-left: 10vw; */
     margin-right: 15vw;
+    margin-top: 5vh;
     flex-direction: row;
   }
   .log-in-img {
@@ -99,13 +100,9 @@ h2 {
     width: 35vw;
   }
 
-  .log-in-form {
-    padding-bottom: 25px;
-    /* margin-left: 2vw; */
-  }
-
   .register-page-content {
-    margin-right: 15vw;
+    margin-left: 12vw;
+    margin-top: 2vh;
     flex-direction: row-reverse;
   }
   .register-img {
@@ -115,6 +112,7 @@ h2 {
   h2 {
     font-size: 220%;
   }
+
   .form-control {
     width: 300px;
     height: 60px;
@@ -123,11 +121,12 @@ h2 {
 
 @media (min-width: 1280px) {
   .log-in-page-content {
+    margin-top: 1vh;
     margin-right: 22vw;
     flex-direction: row;
   }
   .register-page-content {
-    /* margin-right: 9vw; */
+    margin-top: 1vh;
     margin-left: 22vw;
     flex-direction: row-reverse;
   }
@@ -142,6 +141,9 @@ h2 {
   background-color: #f0f1f7;
 }
 
+.form-label:focus {
+  outline: none;
+}
 .btn {
   padding: 8px 16px;
   border-radius: 4px;
@@ -149,4 +151,8 @@ h2 {
   color: #fff;
   border: none;
   cursor: pointer;
+}
+
+.btn:hover {
+  background-color: #7089f5;
 }
