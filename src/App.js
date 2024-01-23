@@ -13,6 +13,7 @@ import { Navbar } from "./components/Navbar";
 import { StudentHome } from "./pages/StudentHome";
 import Settings from "./pages/Settings";
 import { AuthProvider } from "./pages/AuthProvider";
+import { Landing } from "./pages/Landing";
 
 const TeacherRoutes = () => (
   <>
@@ -46,6 +47,7 @@ const App = () => {
             <Routes>
               <Route path="/" element={<Login />} />
               <Route path="signup" element={<Signup />} />
+              <Route path="landing" element={<Landing />} />
               <Route path="password-reset" element={<Reset />} />
               <Route path="teacher/*" element={<TeacherRoutes />} />
               <Route path="student/*" element={<StudentRoutes />} />

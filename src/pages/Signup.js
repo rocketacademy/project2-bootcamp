@@ -37,7 +37,7 @@ const Signup = () => {
         setEmail("");
         setPassword("");
         setSelectedRadio("Teacher");
-        navigate("/");
+        navigate("/landing");
       })
       .catch((error) => {
         if (error.code === "auth/email-already-in-use") {
