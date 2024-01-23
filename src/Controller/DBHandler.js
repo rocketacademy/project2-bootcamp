@@ -196,7 +196,7 @@ export default class DBHandler {
       //randomly take 3 from remain
       const adviceInfo = [];
       const remainInfoArr = [...remainInfo];
-      while (!remainInfoArr.length || adviceInfo.length < 3) {
+      while (remainInfoArr.length && adviceInfo.length < 3) {
         const randomIndex = Math.floor(Math.random() * remainInfoArr.length);
         adviceInfo.push(remainInfoArr[randomIndex]);
         remainInfoArr.splice(randomIndex, 1);
@@ -217,7 +217,7 @@ export default class DBHandler {
       }
       return { resultInfo, adviceInfo };
     } catch (error) {
-      this.setErrorMessage(error);
+      this.setErrorMessage(error.message);
     }
   };
 
