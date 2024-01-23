@@ -10,19 +10,36 @@ import { auth } from "../../firebase.js";
 
 // CSS
 import "./AddTradeLineItem.css";
+import { propTypes } from "react-bootstrap/esm/Image.js";
 
 const TRADES_KEY = "trades";
 
-const AddTradeLineItem = () => {
+const AddTradeLineItem = (props) => {
   const [user, setUser] = useState("noUser");
   const [userDisplayName, setUserDisplayName] = useState("noUserDisplayName");
   const [nameField, setNameField] = useState("");
   const [codeField, setCodeField] = useState("");
+  const [buySellField, setBuySellField] = useState("Buy");
   const [dateField, setDateField] = useState("");
   const [priceField, setPriceField] = useState("");
   const [currencyField, setCurrencyField] = useState("");
   const [platformField, setPlatformField] = useState("");
   const [showModal, setShowModal] = useState(false);
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged(() => {
+      if (auth.currentUser === null) {
+        setUser("noUser");
+        setUserDisplayName("noUserDisplayName");
+      } else {
+        setUser(auth.currentUser.uid);
+        setUserDisplayName(auth.currentUser.displayName);
+      }
+    });
+    return () => {
+      unsubscribe();
+    };
+  });
 
   const fieldList = [
     {
@@ -36,6 +53,12 @@ const AddTradeLineItem = () => {
       type: "text",
       value: codeField,
       setter: setCodeField,
+    },
+    {
+      header: "Buy or Sell?",
+
+      value: buySellField,
+      setter: setBuySellField,
     },
     {
       header: "Date of Purchase",
@@ -64,38 +87,34 @@ const AddTradeLineItem = () => {
   ];
 
   const inputFields = fieldList.map((item) => (
-    <Form.Group controlId="date" bsSize="large" key={item.header}>
+    <Form.Group controlId="date" bssize="large" key={item.header}>
       <Form.Label>{item.header}</Form.Label>
-      <Form.Control
-        type={item.type}
-        onChange={(e) => handleChange(e, item.setter)}
-      />
+      {item.type ? (
+        <Form.Control
+          type={item.type}
+          onChange={(e) => handleChange(e, item.setter)}
+        />
+      ) : (
+        <select
+          className="action-select"
+          value={item.value}
+          onChange={(e) => handleChange(e, item.setter)}
+        >
+          <option value="Buy">Buy</option>
+          <option value="Sell">Sell</option>
+        </select>
+      )}
     </Form.Group>
   ));
-
-  useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(() => {
-      if (auth.currentUser === null) {
-        setUser("noUser");
-        setUserDisplayName("noUserDisplayName");
-      } else {
-        setUser(auth.currentUser.uid);
-        setUserDisplayName(auth.currentUser.displayName);
-      }
-    });
-    return () => {
-      unsubscribe();
-    };
-  });
 
   const writeNewTrade = () => {
     const tradeRef = ref(database, `${user}/${TRADES_KEY}`);
     const newTradeRef = push(tradeRef);
-    // newDate = newDate - newDate.getTimezoneOffset() * 60000;
     const tradeDate = new Date(dateField) - 0;
     set(newTradeRef, {
       stockCode: codeField,
       stockName: nameField,
+      action: buySellField,
       date: tradeDate,
       price: priceField,
       currency: currencyField,
@@ -114,6 +133,7 @@ const AddTradeLineItem = () => {
   const handleClose = (isSubmit) => {
     if (isSubmit) {
       writeNewTrade();
+      props.setFilter("none");
     }
     setShowModal(false);
     resetFields();
@@ -128,7 +148,7 @@ const AddTradeLineItem = () => {
         onHide={() => handleClose(false)}
       >
         <Modal.Header closeButton>
-          <Modal.Title>Add your new trade here {user}</Modal.Title>
+          <Modal.Title>Add your new trade here</Modal.Title>
         </Modal.Header>
         <Modal.Body className="input-fields-container">
           {inputFields}

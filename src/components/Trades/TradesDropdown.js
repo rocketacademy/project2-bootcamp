@@ -12,7 +12,7 @@ const HistoryDropdown = (props) => {
       data-bs-theme={props.isDark ? "dark" : "secondary"}
     >
       <Dropdown.Header>Sort by</Dropdown.Header>
-      <Dropdown.Item>
+      <Dropdown.Item as="button">
         <NavDropdown title="Time" id="basic-nav-dropdown">
           <NavDropdown.Item onClick={() => props.setSort("timeA")}>
             Ascending

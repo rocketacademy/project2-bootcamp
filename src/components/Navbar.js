@@ -36,8 +36,8 @@ const Navbar = ({ toggleDarkMode, darkMode }) => {
             <Link className="nav-link text-white" to="/dash">
               Dashboard
             </Link>
-            <Link className="nav-link text-white" to="/history">
-              History
+            <Link className="nav-link text - white" to="/trades">
+              Trades 
             </Link>
             <Link className="nav-link text-white" to="/insights">
               Insights
