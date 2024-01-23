@@ -42,7 +42,7 @@ export const StudentCourses = ({ userEmail }) => {
   return (
     <>
       <div className="prose grid grid-cols-1 p-6 max-w-full sm:grid-cols-7">
-        <h1 className="text-center sm:col-span-7">Courses</h1>
+        <h1 className="text-center text-gray-600 sm:col-span-7">My Courses</h1>
 
         <div className="form-control sm:col-start-2 sm:col-span-1">
           <label className="label cursor-pointer">
@@ -79,11 +79,11 @@ export const StudentCourses = ({ userEmail }) => {
         </div>
 
         {allCourses === true && <CourseCards courseMap={courseMap} />}
-        {attempted === true && (
-          <AttemptedCourses userEmail={"imhongyun@gmail.com"} />
+        {attempted === true && currentUser && (
+          <AttemptedCourses userEmail={currentUser.email} />
         )}
-        {notAttempted === true && (
-          <NotAttemptedCourses userEmail={"imhongyun@gmail.com"} />
+        {notAttempted === true && currentUser && (
+          <NotAttemptedCourses userEmail={currentUser.email} />
         )}
       </div>
     </>
