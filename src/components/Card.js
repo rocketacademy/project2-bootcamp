@@ -38,7 +38,13 @@ export const CourseCards = ({ courseMap }) => {
 
     return Array.from(courseMaterialsMap.entries()).map(
       ([key, materialsData]) =>
-        materialsData.courseID === cardCourseID && (
+        materialsData.courseID === cardCourseID &&
+        (/\.(mp4|mov|avi|mkv)$/i.test(materialsData.fileName) ? (
+          <video key={key} className="video" width="640" height="480" controls>
+            <source src={materialsData.url} type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+        ) : (
           <a
             key={key}
             href={materialsData.url}
@@ -48,7 +54,7 @@ export const CourseCards = ({ courseMap }) => {
           >
             {materialsData.fileName}
           </a>
-        )
+        ))
     );
   };
 
@@ -91,7 +97,13 @@ export const CourseCardsWithCert = ({ courseMap, displayName }) => {
     const { courseMaterialsMap } = useCourseData(cardCourseID);
     return Array.from(courseMaterialsMap.entries()).map(
       ([key, materialsData]) =>
-        materialsData.courseID === cardCourseID && (
+        materialsData.courseID === cardCourseID &&
+        (/\.(mp4|mov|avi|mkv)$/i.test(materialsData.fileName) ? (
+          <video key={key} className="video" width="640" height="480" controls>
+            <source src={materialsData.url} type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+        ) : (
           <a
             key={key}
             href={materialsData.url}
@@ -101,7 +113,7 @@ export const CourseCardsWithCert = ({ courseMap, displayName }) => {
           >
             {materialsData.fileName}
           </a>
-        )
+        ))
     );
   };
 
@@ -170,7 +182,13 @@ export const CourseCardsWithDelete = ({ initialCourseMap }) => {
     const { courseMaterialsMap } = useCourseData(cardCourseID);
     return Array.from(courseMaterialsMap.entries()).map(
       ([key, materialsData]) =>
-        materialsData.courseID === cardCourseID && (
+        materialsData.courseID === cardCourseID &&
+        (/\.(mp4|mov|avi|mkv)$/i.test(materialsData.fileName) ? (
+          <video key={key} className="video" width="640" height="480" controls>
+            <source src={materialsData.url} type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+        ) : (
           <a
             key={key}
             href={materialsData.url}
@@ -180,7 +198,7 @@ export const CourseCardsWithDelete = ({ initialCourseMap }) => {
           >
             {materialsData.fileName}
           </a>
-        )
+        ))
     );
   };
 
