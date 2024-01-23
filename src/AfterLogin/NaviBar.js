@@ -1,5 +1,4 @@
 import LeaderboardIcon from "@mui/icons-material/Leaderboard";
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import SearchIcon from "@mui/icons-material/Search";
 import { Link, useNavigate } from "react-router-dom";
 import QuizIcon from "@mui/icons-material/Quiz";
@@ -124,9 +123,7 @@ export default function NaviBar(props) {
           className="search-bar-icon"
           onClick={() => setOpenSearch(true)}
         />
-        <Link to="/addDeck">
-          <AddCircleOutlineIcon />
-        </Link>
+
         <Link to="/quiz">
           <QuizIcon />
         </Link>
@@ -173,9 +170,7 @@ export default function NaviBar(props) {
             className="search-bar-icon"
             onClick={() => setOpenSearch(true)}
           />
-          <Link to="/addDeck">
-            <AddCircleOutlineIcon />
-          </Link>
+
           <Link to="/quiz">
             <QuizIcon />
           </Link>
