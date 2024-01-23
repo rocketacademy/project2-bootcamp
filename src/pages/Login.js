@@ -72,7 +72,60 @@ const Login = () => {
 
   return (
     <>
-      <div className="prose max-w-sm">
+      <div className="hero min-h-screen bg-base-200">
+        <div className="hero-content flex-col lg:flex-row-reverse">
+          <div className="text-center lg:text-left">
+            <h1 className="text-5xl font-bold">LMS</h1>
+            <p className="py-6">
+              Please register/login with your gmail account. It will be used for
+              taking quizzes and tracking of attendance.
+            </p>
+          </div>
+          <div className="card shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
+            <form className="card-body" onSubmit={handleSignin}>
+              {showErrorAlert && (
+                <AlertError alertText={`Login failed. ${message}`} />
+              )}
+              <div className="form-control">
+                <TextboxWithLabels
+                  label={"Email"}
+                  type={"email"}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required={"required"}
+                />
+              </div>
+              <div className="form-control">
+                <TextboxWithLabels
+                  label={"Password"}
+                  type={"password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required={"required"}
+                />
+                <label className="label">
+                  <a href="signup" className="label-text-alt link link-hover">
+                    Not an existing user?
+                  </a>
+                  <a
+                    href="password-reset"
+                    className="label-text-alt link link-hover"
+                  >
+                    Forgot password?
+                  </a>
+                </label>
+              </div>
+              <div className="form-control mt-6">
+                <button className="btn btn-primary" type="submit">
+                  Login
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      {/* <div className="prose max-w-sm">
         <h2 className="text-center">LEARNING MANAGEMENT PLATFORM</h2>
         <div className="pr-12 pl-6 py-6 mt-8  bg-amber-50 rounded-lg">
           <form onSubmit={handleSignin}>
@@ -115,7 +168,7 @@ const Login = () => {
             </button>
           </p>
         </div>
-      </div>
+      </div> */}
     </>
   );
 };
