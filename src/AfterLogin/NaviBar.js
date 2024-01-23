@@ -123,7 +123,6 @@ export default function NaviBar(props) {
           className="search-bar-icon"
           onClick={() => setOpenSearch(true)}
         />
-
         <Link to="/quiz">
           <QuizIcon />
         </Link>
@@ -170,7 +169,6 @@ export default function NaviBar(props) {
             className="search-bar-icon"
             onClick={() => setOpenSearch(true)}
           />
-
           <Link to="/quiz">
             <QuizIcon />
           </Link>
