@@ -10,8 +10,8 @@ h2 {
   font-size: 180%;
   letter-spacing: 1px;
 }
-.log-in-page-header {
-  position: absolute;
+.header {
+  position: relative;
   top: 0;
   margin-top: 5vh;
   margin-bottom: 1vh;
@@ -29,8 +29,11 @@ h2 {
   width: 100%;
   width: 50vw;
 }
-
-.log-in-form {
+.register-img {
+  width: 100%;
+  width: 50vw;
+}
+.form {
   flex-grow: 1;
   width: 400px;
   background-color: #fff;
@@ -48,14 +51,25 @@ h2 {
   right: 10px;
   cursor: pointer;
 }
+.register-page-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: auto;
+  margin-right: auto;
+}
 
 @media (max-width: 540px) {
   .log-in-page-content {
     flex-direction: column;
   }
-  .log-in-form {
+
+  .form {
     padding: 15px;
     width: 250px;
+  }
+  .register-page-content {
+    flex-direction: column;
   }
 }
 @media (min-width: 550px) {
@@ -63,32 +77,42 @@ h2 {
     flex-direction: column;
   }
 
-  .log-in-form {
+  .form {
     padding: 20px;
   }
   .form-control {
     width: 250px;
     height: 50px;
   }
+  .register-page-content {
+    flex-direction: column;
+  }
 }
 @media (min-width: 1024px) {
   .log-in-page-content {
     /* margin-left: 10vw; */
     margin-right: 15vw;
+    margin-top: 5vh;
     flex-direction: row;
   }
   .log-in-img {
     padding-top: 15px;
     width: 35vw;
   }
-  .log-in-form {
-    padding-bottom: 25px;
-    /* margin-left: 2vw; */
-  }
 
+  .register-page-content {
+    margin-left: 12vw;
+    margin-top: 2vh;
+    flex-direction: row-reverse;
+  }
+  .register-img {
+    padding-top: 15px;
+    width: 40vw;
+  }
   h2 {
     font-size: 220%;
   }
+
   .form-control {
     width: 300px;
     height: 60px;
@@ -97,8 +121,14 @@ h2 {
 
 @media (min-width: 1280px) {
   .log-in-page-content {
+    margin-top: 1vh;
     margin-right: 22vw;
     flex-direction: row;
+  }
+  .register-page-content {
+    margin-top: 1vh;
+    margin-left: 18vw;
+    flex-direction: row-reverse;
   }
 }
 
@@ -107,9 +137,13 @@ h2 {
   font-weight: bold;
 }
 .form-control {
-  opacity: 0.5;
+  opacity: 0.8;
+  background-color: #f0f1f7;
 }
 
+.form-label:focus {
+  outline: none;
+}
 .btn {
   padding: 8px 16px;
   border-radius: 4px;
@@ -117,4 +151,8 @@ h2 {
   color: #fff;
   border: none;
   cursor: pointer;
+}
+
+.btn:hover {
+  background-color: #7089f5;
 }

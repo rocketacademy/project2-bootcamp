@@ -15,9 +15,9 @@ export default function EditCardForm(props) {
   const card = props.card;
   const isDisable = props.editing !== card.cardID;
   const isEditDisable = props.editing && props.editing !== card.cardID;
-  const [userInputValue, setUserInputValue] = useState(card.english);
+  const [englishValue, setEnglishValue] = useState(card.english);
   const [options, setOptions] = useState([card.spanish]);
-  const [translationValue, setTranslationValue] = useState(card.spanish);
+  const [spanishValue, setSpanishValue] = useState(card.spanish);
   const [errorMessage, setErrorMessage] = useState("");
   const [loadingAudio, setLoadingAudio] = useState(false);
   const theme = useTheme();
@@ -37,12 +37,8 @@ export default function EditCardForm(props) {
 
   const handleEdit = () => {
     if (props.editing) {
-      if (userInputValue && translationValue) {
-        if (props.englishToSpanish) {
-          props.handleConfirmEdit(userInputValue, translationValue);
-        } else {
-          props.handleConfirmEdit(translationValue, userInputValue);
-        }
+      if (englishValue && spanishValue) {
+        props.handleConfirmEdit(englishValue, spanishValue);
         props.setEditing(null);
       } else {
         setErrorMessage(
@@ -57,17 +53,17 @@ export default function EditCardForm(props) {
   const handleTranslate = async () => {
     try {
       if (props.englishToSpanish) {
-        const translationToSpan = await translator.engToSpan(userInputValue);
+        const translationToSpan = await translator.engToSpan(englishValue);
         setOptions(translationToSpan);
-        setTranslationValue(translationToSpan[0]);
+        setSpanishValue(translationToSpan[0]);
       } else {
-        const translationToEng = await translator.spanToEng(userInputValue);
+        const translationToEng = await translator.spanToEng(spanishValue);
         setOptions(translationToEng);
-        setTranslationValue(translationToEng[0]);
+        setEnglishValue(translationToEng[0]);
       }
     } catch (error) {
       setOptions([]);
-      setTranslationValue("");
+      setSpanishValue("");
     }
   };
 
@@ -85,7 +81,7 @@ export default function EditCardForm(props) {
       <LoadingButton
         loading={loadingAudio}
         onClick={() => {
-          handlePlayAudio(translationValue);
+          handlePlayAudio(spanishValue);
         }}
       >
         <VolumeUpIcon sx={{ color: "black" }} />
@@ -156,8 +152,12 @@ export default function EditCardForm(props) {
                 className="user-input"
                 disabled={isDisable}
                 fullWidth
-                value={userInputValue}
-                onChange={(e) => setUserInputValue(e.target.value)}
+                value={props.englishToSpanish ? englishValue : spanishValue}
+                onChange={(e) =>
+                  props.englishToSpanish
+                    ? setEnglishValue(e.target.value)
+                    : setSpanishValue(e.target.value)
+                }
                 label={props.englishToSpanish ? "English" : "Spanish"}
                 variant="standard"
                 sx={{ marginTop: 4, marginBottom: 2 }}
@@ -190,14 +190,18 @@ export default function EditCardForm(props) {
           <div className="field-audio">
             <div className="field">
               <Autocomplete
-                value={translationValue}
+                value={props.englishToSpanish ? spanishValue : englishValue}
                 disabled={isDisable}
                 options={options}
                 onChange={(e, input) => {
-                  setTranslationValue(input);
+                  props.englishToSpanish
+                    ? setSpanishValue(input)
+                    : setEnglishValue(input);
                 }}
                 onInputChange={(e, input) => {
-                  setTranslationValue(input);
+                  props.englishToSpanish
+                    ? setSpanishValue(input)
+                    : setEnglishValue(input);
                 }}
                 autoSelect
                 freeSolo
