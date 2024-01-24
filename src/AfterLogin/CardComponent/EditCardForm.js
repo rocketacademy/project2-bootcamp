@@ -63,7 +63,11 @@ export default function EditCardForm(props) {
       }
     } catch (error) {
       setOptions([]);
-      setSpanishValue("");
+      if (props.englishToSpanish) {
+        setSpanishValue("");
+      } else {
+        setEnglishValue("");
+      }
     }
   };
 
@@ -205,7 +209,6 @@ export default function EditCardForm(props) {
                 }}
                 autoSelect
                 freeSolo
-                disablePortal
                 fullWidth
                 id="combo-box-demo"
                 getOptionLabel={(option) => option}
