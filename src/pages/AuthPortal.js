@@ -6,20 +6,10 @@ import logo from "../logo.png";
 import Navbar from "../components/Navbar";
 
 const AuthPortal = () => {
-  const [user, setUser] = useState("No User");
-  const [userDisplayName, setUserDisplayName] = useState("noUserDisplayName");
   const [showAuthForm, setShowAuthForm] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(() => {
-      if (auth.currentUser === null) {
-        setUser("noUser");
-        setUserDisplayName("noUserDisplayName");
-      } else {
-        setUser(auth.currentUser.uid);
-        setUserDisplayName(auth.currentUser.displayName);
-      }
-    });
+    const unsubscribe = auth.onAuthStateChanged(() => {});
     return () => {
       unsubscribe();
     };
@@ -35,7 +25,13 @@ const AuthPortal = () => {
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <br />
-        {auth.currentUser ? <h1>Welcome!</h1> : null}
+        {auth.currentUser ? (
+          <h1>
+            Welcome
+            {auth.currentUser.displayName && " " + auth.currentUser.displayName}
+            !
+          </h1>
+        ) : null}
         <br />
         {auth.currentUser ? null : <AuthForm toggleAuthForm={toggleAuthForm} />}
       </header>

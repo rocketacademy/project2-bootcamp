@@ -15,6 +15,7 @@ import "./App.css";
 
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { ThemeProvider } from "./components/ThemeContext";
+import PrivateRoute from "./components/PrivateRoute.js";
 
 const router = createBrowserRouter([
   {
@@ -23,12 +24,37 @@ const router = createBrowserRouter([
   },
   {
     path: "/dash",
-    element: <App />,
+    element: (
+      <PrivateRoute>
+        <App />
+      </PrivateRoute>
+    ),
   },
-  { path: "/trades", element: <Trades /> },
+  {
+    path: "/trades",
+    element: (
+      <PrivateRoute>
+        <Trades />
+      </PrivateRoute>
+    ),
+  },
 
-  { path: "/insights", element: <Insights /> },
-  { path: "/settings", element: <Settings /> },
+  {
+    path: "/insights",
+    element: (
+      <PrivateRoute>
+        <Insights />
+      </PrivateRoute>
+    ),
+  },
+  {
+    path: "/settings",
+    element: (
+      <PrivateRoute>
+        <Settings />
+      </PrivateRoute>
+    ),
+  },
 ]);
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
