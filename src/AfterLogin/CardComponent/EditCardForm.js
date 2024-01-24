@@ -63,7 +63,11 @@ export default function EditCardForm(props) {
       }
     } catch (error) {
       setOptions([]);
-      setSpanishValue("");
+      if (props.englishToSpanish) {
+        setSpanishValue("");
+      } else {
+        setEnglishValue("");
+      }
     }
   };
 
