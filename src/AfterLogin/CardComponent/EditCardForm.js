@@ -209,7 +209,6 @@ export default function EditCardForm(props) {
                 }}
                 autoSelect
                 freeSolo
-                disablePortal
                 fullWidth
                 id="combo-box-demo"
                 getOptionLabel={(option) => option}
