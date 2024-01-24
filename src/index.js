@@ -6,9 +6,8 @@ import ReactDOM from "react-dom/client";
 import Trades from "./pages/Trades.js";
 import Settings from "./pages/Settings.js";
 import Insights from "./pages/Insights";
-import AddStock from "./pages/AddStock.jsx";
 import App from "./App";
-import Appp from "./components/App.js";
+import AuthPortal from "./pages/AuthPortal.js";
 
 import "bootstrap/dist/css/bootstrap.css";
 import "./index.css";
@@ -20,14 +19,14 @@ import { ThemeProvider } from "./components/ThemeContext";
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Appp />,
+    element: <AuthPortal />,
   },
   {
     path: "/dash",
     element: <App />,
   },
   { path: "/trades", element: <Trades /> },
-  
+
   { path: "/insights", element: <Insights /> },
   { path: "/settings", element: <Settings /> },
 ]);

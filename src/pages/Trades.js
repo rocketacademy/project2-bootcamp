@@ -28,7 +28,6 @@ const Trades = () => {
   const [showModal, setShowModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [editTrade, setEditTrade] = useState(false);
-  const [editTradeModal, setEditTradeModal] = useState(<div></div>);
   const [tradesArr, setTradesArr] = useState([]);
   const [tradelines, setTradelines] = useState(<div></div>);
   const [masterTradesArr, setMasterTradesArr] = useState([]);

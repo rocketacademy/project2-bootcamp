@@ -5,7 +5,7 @@ import {
   uploadBytes,
 } from "firebase/storage";
 import React from "react";
-import { database, storage } from "../firebase";
+import { database, storage } from "../../firebase";
 
 // Save Firebase folder names as constants to avoid bugs due to misspelling
 const IMAGES_FOLDER_NAME = "images";
