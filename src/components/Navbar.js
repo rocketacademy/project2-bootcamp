@@ -51,7 +51,7 @@ export const Navbar = () => {
       );
     }
   };
-  console.log(photo);
+
   return (
     <>
       {currentUser && currentUser.displayName && (
@@ -96,18 +96,31 @@ export const Navbar = () => {
               Logout
             </a>
             <div className="dropdown dropdown-end">
-              <div
-                tabIndex={0}
-                role="button"
-                className="btn btn-ghost btn-circle avatar placeholder"
-              >
-                <div className="w-10 rounded-full bg-error text-neutral-content">
-                  <span>
-                    {/* {currentUser.displayName.slice(0, 2).toUpperCase()} */}
-                    {<img src={photo} />}
-                  </span>
+              {photo ? (
+                <div
+                  tabIndex={0}
+                  role="button"
+                  className="btn btn-ghost btn-circle border-gray-300 avatar placeholder"
+                >
+                  <div className="w-10 rounded-full text-neutral-content">
+                    <span>
+                      <img src={photo} />
+                    </span>
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <div
+                  tabIndex={0}
+                  role="button"
+                  className="btn btn-ghost btn-circle border-gray-300 avatar placeholder"
+                >
+                  <div className="w-10 rounded-full bg-error text-neutral-content">
+                    <span>
+                      {currentUser.displayName.slice(0, 2).toUpperCase()}
+                    </span>
+                  </div>
+                </div>
+              )}
               <ul
                 tabIndex={0}
                 className="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52"
