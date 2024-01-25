@@ -8,6 +8,7 @@ export const AuthProvider = ({ children }) => {
   const [authState, setAuthState] = useState({
     currentUser: null,
     role: null,
+    photo: null,
   });
 
   useEffect(() => {
@@ -17,11 +18,13 @@ export const AuthProvider = ({ children }) => {
         setAuthState({
           currentUser: user,
           role: role,
+          photo: user.photoURL,
         });
       } else {
         setAuthState({
           currentUser: null,
           role: null,
+          photo: null,
         });
       }
     });

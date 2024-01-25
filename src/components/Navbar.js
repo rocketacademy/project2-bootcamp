@@ -5,7 +5,7 @@ import { AuthContext } from "../pages/AuthProvider";
 import { useContext } from "react";
 
 export const Navbar = () => {
-  const { currentUser, role } = useContext(AuthContext);
+  const { currentUser, role, photo } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleSignOut = async () => {
@@ -51,7 +51,7 @@ export const Navbar = () => {
       );
     }
   };
-
+  console.log(photo);
   return (
     <>
       {currentUser && currentUser.displayName && (
@@ -103,7 +103,8 @@ export const Navbar = () => {
               >
                 <div className="w-10 rounded-full bg-error text-neutral-content">
                   <span>
-                    {currentUser.displayName.slice(0, 2).toUpperCase()}
+                    {/* {currentUser.displayName.slice(0, 2).toUpperCase()} */}
+                    {<img src={photo} />}
                   </span>
                 </div>
               </div>
