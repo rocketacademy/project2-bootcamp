@@ -108,6 +108,9 @@ export default function EditCardForm(props) {
                 backgroundColor: "rgb(79, 110, 247)",
                 color: "white",
                 padding: 0.5,
+                ":hover": {
+                  backgroundColor: "#7089f5",
+                },
                 [theme.breakpoints.down("sm")]: {
                   fontSize: "8px",
                   padding: 0,
@@ -132,6 +135,9 @@ export default function EditCardForm(props) {
                 backgroundColor: "rgb(79, 110, 247)",
                 color: "white",
                 padding: 0.5,
+                ":hover": {
+                  backgroundColor: "#7089f5",
+                },
                 [theme.breakpoints.down("sm")]: {
                   fontSize: "8px",
                   padding: 0,
@@ -176,6 +182,9 @@ export default function EditCardForm(props) {
               sx={{
                 backgroundColor: "rgb(79, 110, 247)",
                 color: "white",
+                ":hover": {
+                  backgroundColor: "#7089f5",
+                },
                 [theme.breakpoints.down("sm")]: {
                   fontSize: "8px",
                 },
