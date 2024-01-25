@@ -38,9 +38,6 @@ const StudentRoutes = () => (
 );
 
 const App = () => {
-  const currentUser = auth.currentUser;
-  console.log(currentUser);
-
   return (
     <div className="App">
       <header className="App-header">

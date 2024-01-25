@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import React, { useState, useEffect } from "react";
 import { auth, db } from "../firebase";
 import { ref, get } from "firebase/database";
 import { AlertError } from "../components/Alerts";
@@ -27,12 +26,6 @@ const Login = () => {
 
       checkStudentDBV2(uid);
       checkTeacherDBV2(uid);
-      const data = await signInWithEmailAndPassword(auth, email, password);
-      // const userName = data.user.displayName;
-      const uid = data.user.uid;
-
-      checkStudentDBV2(uid);
-      checkTeacherDBV2(uid);
     } catch (error) {
       console.log(error);
       setMessage(error.message);
@@ -52,15 +45,6 @@ const Login = () => {
       navigate("student");
     }
   }, [response]);
-  useEffect(() => {
-    if (!response) {
-      console.log("User does not exist");
-    } else if (response === "teacher") {
-      navigate("teacher");
-    } else if (response === "student") {
-      navigate("student");
-    }
-  }, [response]);
 
   const checkStudentDBV2 = (uid) => {
     const dbRef = ref(db, `Student/${uid}`);
@@ -70,7 +54,6 @@ const Login = () => {
       if (data === null) {
         return;
       }
-      data.role === "Student" && setResponse("student");
       data.role === "Student" && setResponse("student");
     });
   };
@@ -83,7 +66,6 @@ const Login = () => {
       if (data === null) {
         return;
       }
-      data.role === "Teacher" && setResponse("teacher");
       data.role === "Teacher" && setResponse("teacher");
     });
   };
