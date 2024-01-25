@@ -22,7 +22,8 @@
 .trades-container {
   margin: 5px;
   padding: 10px;
-  background-color: bisque;
+  background-color: rgb(21, 28, 87);
+  color: white;
   overflow-x: auto;
 }
 
@@ -40,7 +41,7 @@
   padding: 10px;
   min-width: 105px !important;
   border-bottom: 2px solid;
-  border-bottom-color: black;
+  border-bottom-color: white;
 }
 
 /* modal things */

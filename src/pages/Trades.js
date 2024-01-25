@@ -21,14 +21,12 @@ const TRADES_KEY = "trades";
 
 const Trades = () => {
   const [user, setUser] = useState("noUser");
-  const [userDisplayName, setUserDisplayName] = useState("noUserDisplayName");
   const [sort, setSort] = useState("timeA");
   const [filter, setFilter] = useState("none");
   const [filterCat, setFilterCat] = useState("none");
   const [showModal, setShowModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [editTrade, setEditTrade] = useState(false);
-  const [editTradeModal, setEditTradeModal] = useState(<div></div>);
   const [tradesArr, setTradesArr] = useState([]);
   const [tradelines, setTradelines] = useState(<div></div>);
   const [masterTradesArr, setMasterTradesArr] = useState([]);
@@ -38,10 +36,8 @@ const Trades = () => {
     const unsubscribe = auth.onAuthStateChanged(() => {
       if (auth.currentUser === null) {
         setUser("noUser");
-        setUserDisplayName("noUserDisplayName");
       } else {
         setUser(auth.currentUser.uid);
-        setUserDisplayName(auth.currentUser.displayName);
       }
     });
     return () => {
@@ -159,7 +155,12 @@ const Trades = () => {
         />
         <div>
           <div className="trades-header">
-            <h1>Your Trades</h1>
+            <h1>
+              {auth.currentUser.displayName
+                ? auth.currentUser.displayName + "'s"
+                : "Your"}{" "}
+              Trades
+            </h1>
             <div className="flex-row">
               <AddTradeLineItem setFilter={setFilter} />
               <TradesDropdown

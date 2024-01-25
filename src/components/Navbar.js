@@ -32,12 +32,12 @@ const Navbar = ({ toggleDarkMode, darkMode }) => {
           <Nav className="container-fluid ">
             <Link className="nav-link text-white" to="/">
               Home
-            </Link>{" "}
+            </Link>
             <Link className="nav-link text-white" to="/dash">
               Dashboard
             </Link>
-            <Link className="nav-link text - white" to="/trades">
-              Trades 
+            <Link className="nav-link text-white" to="/trades">
+              Trades
             </Link>
             <Link className="nav-link text-white" to="/insights">
               Insights
@@ -48,9 +48,9 @@ const Navbar = ({ toggleDarkMode, darkMode }) => {
           </Nav>
           {pathname.includes("/dash") && (
             <button
-              className={`border-0  bg-${darkMode ? "primary" : "primary"} text-${
-                darkMode ? "white" : "white"
-              } shadow`}
+              className={`border-0  bg-${
+                darkMode ? "primary" : "primary"
+              } text-${darkMode ? "white" : "white"} shadow`}
               onClick={toggleDarkMode}
             >
               {darkMode ? "🔆" : "🌙"}
