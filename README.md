@@ -2,6 +2,11 @@
 
 https://bc.rocketacademy.co/2-full-stack/2.p-full-stack-app-firebase
 
+# Project Title: MadeOfeMoney
+
+Visit our project here: https://madeofmoney.web.app/
+If you wish to use this repository, do create your own .env files with your own firebase credentials.
+
 ## Available Scripts
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app). In the project directory, you can run:
