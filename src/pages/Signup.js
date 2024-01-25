@@ -52,7 +52,7 @@ const Signup = () => {
     <>
       <div className="prose max-w-sm m-auto my-12">
         <h2 className="text-center">LEARNING MANAGEMENT PLATFORM</h2>
-        <div className="pr-12 pl-6 py-4 mt-8 border-4 border  rounded-lg ">
+        <div className="pr-12 pl-6 py-4 mt-8 border-4 rounded-lg ">
           <form onSubmit={handleSignUp}>
             <p className="text-xl font-bold">Create an Account</p>
             {showErrorAlert && (

@@ -98,7 +98,7 @@ const Settings = () => {
   return (
     <>
       <div className="prose max-w-sm m-auto my-12">
-        <div className="pr-12 pl-6 py-4 border-4 border  rounded-lg ">
+        <div className="pr-12 pl-6 py-4 border-4 rounded-lg ">
           <p className="text-xl  font-bold "> Edit Profile</p>
           <form onSubmit={handleSubmit} className="text-left">
             {/* <div className="w-24 h-24 rounded-full  text-white text-center">
@@ -107,7 +107,7 @@ const Settings = () => {
               </div>
             </div> */}
             <div className="avatar placeholder">
-              <div className="w-40 rounded-full bg-neutral bg-orange-700 text-white">
+              <div className="w-40 rounded-full bg-neutral text-white">
                 {!photo ? initials : <img src={photo} alt="" />}
               </div>
             </div>
