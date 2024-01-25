@@ -5,6 +5,7 @@ import { sendPasswordResetEmail } from "firebase/auth";
 import "bootstrap/dist/css/bootstrap.css";
 import ErrorPage from "../ErrorPage";
 import ResetPasswordDonePopUp from "./ResetPasswordDonePopUp";
+import "./SignInPage.css";
 
 export default function ResetPasswordPage() {
   const [errorMessage, setErrorMessage] = useState("");
@@ -34,35 +35,32 @@ export default function ResetPasswordPage() {
         errorMessage={errorMessage}
         handleErrorMessage={() => setErrorMessage("")}
       />
-      <h5>
-        Type in your email you registered with, a link to reset your password
-        will be sent to you:
-      </h5>
-      <div className="mb-3">
-        <label className="form-label">
-          <input
-            type="email"
-            className="form-control"
-            name="email"
-            placeholder="brian123@brian.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          ></input>
-        </label>
+      <div className="form mt-5 mb-5" id="reset-password-form">
+        <h5 className="mb-4">
+          Type in your email, a link to reset your password will be sent to you:
+        </h5>
+        <div className="mb-3">
+          <label className="form-label">
+            <input
+              type="email"
+              className="form-control"
+              name="email"
+              placeholder="brian123@brian.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            ></input>
+          </label>
+        </div>
+        <button type="button" className="btn btn-dark" onClick={resetPassword}>
+          Reset password
+        </button>
+        {passwordReset && (
+          <ResetPasswordDonePopUp
+            open={passwordReset}
+            onClose={handleClosePopUp}
+          />
+        )}
       </div>
-      <button
-        type="button"
-        className="btn btn-dark mb-4"
-        onClick={resetPassword}
-      >
-        Reset password
-      </button>
-      {passwordReset && (
-        <ResetPasswordDonePopUp
-          open={passwordReset}
-          onClose={handleClosePopUp}
-        />
-      )}
     </div>
   );
 }

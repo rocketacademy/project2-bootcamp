@@ -156,3 +156,7 @@ h2 {
 .btn:hover {
   background-color: #7089f5;
 }
+
+#reset-password-form {
+  max-height: 250px;
+}
