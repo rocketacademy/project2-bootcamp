@@ -183,7 +183,9 @@ export default function HomePage() {
           </div>
           <br />
         </div>
-        <div className="homepage-layout">{allCards}</div>
+        {allCards.length > 0 && (
+          <div className="homepage-layout">{allCards}</div>
+        )}
         {!allCards && emptyCard}
       </div>
     </ThemeProvider>
