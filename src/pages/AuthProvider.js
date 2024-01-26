@@ -9,6 +9,7 @@ export const AuthProvider = ({ children }) => {
     currentUser: null,
     role: null,
     photo: null,
+    uid: null,
   });
 
   useEffect(() => {
@@ -19,12 +20,14 @@ export const AuthProvider = ({ children }) => {
           currentUser: user,
           role: role,
           photo: user.photoURL,
+          uid: user.uid,
         });
       } else {
         setAuthState({
           currentUser: null,
           role: null,
           photo: null,
+          uid: null,
         });
       }
     });
@@ -33,6 +36,13 @@ export const AuthProvider = ({ children }) => {
     //   unsubscribe();
     // };
   }, []);
+
+  const updatePhoto = (newPhotoURL) => {
+    setAuthState((prevState) => ({
+      ...prevState,
+      photo: newPhotoURL,
+    }));
+  };
 
   const getUserRole = async (uid) => {
     const studentRef = ref(db, `Student/${uid}`);
@@ -51,6 +61,8 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={authState}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={{ ...authState, updatePhoto }}>
+      {children}
+    </AuthContext.Provider>
   );
 };
