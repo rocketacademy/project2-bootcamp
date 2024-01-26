@@ -137,7 +137,7 @@ export const CourseForm = () => {
           )}
         </div>
 
-        <h1 className="text-center">Create A Course</h1>
+        <h1 className="text-center text-gray-600">Create A Course</h1>
 
         {/* course form */}
         <form

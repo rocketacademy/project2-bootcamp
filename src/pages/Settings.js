@@ -79,7 +79,6 @@ const Settings = () => {
               <p className="col-span-2">
                 Name: <b>{currentUser.displayName}</b> <br />
                 Email: <b>{currentUser.email}</b> <br />
-                User ID: {uid}
               </p>
               <label className="form-control col-span-2">
                 <div className="label ">

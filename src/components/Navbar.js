@@ -85,7 +85,9 @@ export const Navbar = () => {
                 {navbarItems()}
               </ul>
             </div>
-            <a className="btn btn-ghost text-xl">LMS</a>
+            <p className="text-l mx-3">
+              <b>LMS</b>
+            </p>
             <div className="navbar-center hidden lg:flex">
               <ul className="menu menu-horizontal px-1">{navbarItems()}</ul>
             </div>

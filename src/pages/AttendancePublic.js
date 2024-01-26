@@ -51,7 +51,29 @@ const QuizData = ({ gid, courseName }) => {
       ) : (
         responses.length > 0 && (
           <>
-            <h1 className="text-center sm:col-span-6">{courseName}</h1>
+            <div className="card w-full bg-neutral text-neutral-content sm:col-start-2 sm:col-span-4">
+              <div className="card-body items-center text-center">
+                <h1 className="card-title">{courseName}</h1>
+                <div className="card-actions justify-end">
+                  <button
+                    className="btn btn-primary btn-sm"
+                    onClick={fetchData}
+                  >
+                    REFRESH
+                  </button>
+                  <button
+                    className="btn btn-ghost btn-sm"
+                    onClick={downloadSheet}
+                  >
+                    DOWNLOAD
+                  </button>
+                </div>
+                <QuizTable responses={responses} />
+              </div>
+            </div>
+            {/* <h1 className="text-center text-secondary sm:col-span-6">
+              {courseName}
+            </h1>
             <button
               className="mb-6 btn btn-ghost sm:col-start-3 sm:col-span-2"
               onClick={fetchData}
@@ -63,8 +85,8 @@ const QuizData = ({ gid, courseName }) => {
               onClick={downloadSheet}
             >
               DOWNLOAD
-            </button>
-            <QuizTable responses={responses} />
+            </button> */}
+            {/* <QuizTable responses={responses} /> */}
           </>
         )
       )}
@@ -138,7 +160,7 @@ export const AttendancePublic = () => {
   return (
     <>
       <div className="prose grid grid-cols-1 p-6 max-w-full sm:grid-cols-6">
-        <h1 className="text-center sm:col-span-6">Attendance</h1>
+        <h1 className="text-center text-gray-600 sm:col-span-6">Attendance</h1>
         <div className="mb-5 form-control sm:col-start-3 col-span-2 ">
           <div className="label">
             <span className="label-text">Course Name</span>
@@ -152,7 +174,7 @@ export const AttendancePublic = () => {
             {courseOptions}
           </select>
         </div>
-        <div className="sm:col-span-6">
+        <div className="mt-8 sm:col-span-6">
           <QuizData gid={gid} courseName={courseName} />
         </div>
       </div>
