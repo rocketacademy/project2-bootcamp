@@ -51,7 +51,7 @@ export default function SignInPage() {
         handleErrorMessage={() => setErrorMessage("")}
       />
       <div className="header">
-        <h2>Welcome back! </h2>
+        <h2>Welcome back, amigo! </h2>
       </div>
       <div className="log-in-page-content">
         <div>

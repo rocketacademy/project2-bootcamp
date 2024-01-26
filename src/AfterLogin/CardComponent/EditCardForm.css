@@ -1,7 +1,6 @@
 .edit-card {
   position: relative;
   width: 70vw;
-  /* height: 50vh; */
 }
 
 .edit-card-buttons {
@@ -14,7 +13,6 @@
   margin-bottom: 20px;
   margin-top: 10px;
   margin-right: 10px;
-  /* flex-wrap: wrap; */
 }
 .edit-card-button {
   margin: 5px;

@@ -5,8 +5,19 @@ export default function ErrorPage({ errorMessage, handleErrorMessage }) {
     <Dialog open={!!errorMessage} onClose={handleErrorMessage}>
       <DialogTitle>{errorMessage}</DialogTitle>
       <DialogContent className="error-dialog-content">
-        <p>Please contact developer if you need help.</p>
-        <Button onClick={handleErrorMessage}>Back</Button>
+        <p>Please contact developer at developer@dev.com if you need help.</p>
+        <Button
+          sx={{
+            backgroundColor: "rgb(79, 110, 247)",
+            color: "white",
+            ":hover": {
+              backgroundColor: "#7089f5",
+            },
+          }}
+          onClick={handleErrorMessage}
+        >
+          Back
+        </Button>
       </DialogContent>
     </Dialog>
   );

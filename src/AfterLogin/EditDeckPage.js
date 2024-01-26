@@ -195,7 +195,10 @@ export default function EditDeckPage() {
               variant="contained"
               sx={{
                 color: "white",
-                backgroundColor: "rgb(79, 110, 247)",
+                backgroundColor: "black",
+                ":hover": {
+                  backgroundColor: "#303841",
+                },
                 [theme.breakpoints.down("sm")]: {
                   fontSize: "8px",
                 },
@@ -214,7 +217,10 @@ export default function EditDeckPage() {
               variant="contained"
               sx={{
                 color: "white",
-                backgroundColor: "rgb(79, 110, 247)",
+                backgroundColor: "black",
+                ":hover": {
+                  backgroundColor: "#303841",
+                },
                 [theme.breakpoints.down("sm")]: {
                   fontSize: "8px",
                 },
