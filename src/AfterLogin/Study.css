@@ -83,6 +83,10 @@
   margin-bottom: 15px;
 }
 
+.study-header > h2 {
+  margin-left: 0 !important;
+}
+
 .study-card {
   display: flex;
   flex-direction: column;
@@ -228,6 +232,9 @@
   margin-top: 10px;
 }
 
+.browse-card-title > h2 {
+  margin-left: 0 !important;
+}
 .browse-flashcard-div {
   display: flex;
   flex-direction: row;
