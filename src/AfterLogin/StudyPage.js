@@ -130,7 +130,7 @@ export default function StudyPage() {
     if (event.target.checked) {
       const id = setInterval(() => {
         setDisplayEnglish(false);
-      }, 3000);
+      }, 3600);
       setIntervalID(id);
     } else {
       clearInterval(intervalID);
