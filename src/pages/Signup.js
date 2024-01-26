@@ -60,7 +60,7 @@ const Signup = () => {
             )}
             <TextboxWithLabels
               id="username"
-              label={"Username"}
+              label={"Full Name"}
               type={"text"}
               value={username}
               onChange={(e) => setUsername(e.target.value)}

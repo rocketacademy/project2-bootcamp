@@ -80,14 +80,18 @@ const Settings = () => {
     setFileInputValue("");
     setFile(null);
   };
+
   useEffect(() => {
-    if ((file, fileInputValue)) {
+    if (file && fileInputValue) {
       return onValue(ref(db, `${response}/${user.uid}`), (snapshot) => {
         const { photo } = snapshot.val();
         setDisplayPhoto(photo);
       });
     }
-  }, [file, fileInputValue]);
+  }, [file, fileInputValue, photo]);
+
+  console.log(displayPhoto);
+
   const handleDelete = () => {
     const user = auth.currentUser;
     deleteUser(user).then(() => {
@@ -95,42 +99,42 @@ const Settings = () => {
       navigate("/");
     });
   };
+
   return (
     <>
       <div className="prose max-w-sm m-auto my-12">
         <div className="px-6 py-4 border-4 gap-x-4 rounded-lg grid grid-cols-2 justify-items-center">
           <h2 className="col-span-2"> Edit Profile</h2>
-
-          <div className="avatar placeholder col-span-2">
-            <div className="w-40 rounded-full bg-neutral text-white">
-              {!photo ? initials : <img src={photo} alt="" />}
+          <form className="col-span-2" onSubmit={handleSubmit}>
+            <div className="avatar placeholder col-span-2">
+              <div className="w-40 rounded-full bg-neutral text-white">
+                {!photo ? initials : <img src={photo} alt="" />}
+              </div>
             </div>
-          </div>
-          <p className="col-span-2">
-            Name: <b>{user.displayName}</b> <br />
-            Email: <b>{user.email}</b> <br />
-            User ID: {user.uid}
-          </p>
-          <label className="form-control col-span-2">
-            <div className="label ">
-              <span className="label-text">Upload Photo</span>
-            </div>
-            <input
-              label="file"
-              type="file"
-              value={fileInputValue}
-              onChange={handleChange}
-              className="file-input file-input-info max-w-xs col-span-2 mb-6"
-            />
-          </label>
-          <button
-            type="submit"
-            className="btn btn-primary col-span-2 w-full mb-10 max-w-xs"
-            onSubmit={handleSubmit}
-          >
-            Submit
-          </button>
-
+            <p className="col-span-2">
+              Name: <b>{user.displayName}</b> <br />
+              Email: <b>{user.email}</b> <br />
+              User ID: {user.uid}
+            </p>
+            <label className="form-control col-span-2">
+              <div className="label ">
+                <span className="label-text">Upload Photo</span>
+              </div>
+              <input
+                label="file"
+                type="file"
+                value={fileInputValue}
+                onChange={handleChange}
+                className="file-input file-input-info max-w-xs col-span-2 mb-6"
+              />
+            </label>
+            <button
+              type="submit"
+              className="btn btn-primary col-span-2 w-full mb-10 max-w-xs"
+            >
+              Submit
+            </button>
+          </form>
           <button
             className="btn btn-accent col-span-2 max-w-xs mb-14"
             onClick={() => document.getElementById("my_modal_5").showModal()}
