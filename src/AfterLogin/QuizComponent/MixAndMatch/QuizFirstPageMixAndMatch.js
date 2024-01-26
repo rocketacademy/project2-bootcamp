@@ -58,7 +58,7 @@ export default function QuizFirstPageMixAndMatch(props) {
         );
       })
     ) : (
-      <p>You need to add deck before taking the quiz.</p>
+      <p>No deck yet!</p>
     );
 
   const loadingPhase = (

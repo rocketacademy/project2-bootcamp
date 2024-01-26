@@ -66,7 +66,7 @@ export default function QuizFirstPageMC(props) {
         );
       })
     ) : (
-      <p>No Deck</p>
+      <p>No deck yet!</p>
     );
 
   let questionAvailable = 0;

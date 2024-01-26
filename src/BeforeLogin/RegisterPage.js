@@ -101,7 +101,7 @@ export default function RegisterPage() {
               Password:
               <div className="password-input-container">
                 <input
-                  type="password"
+                  type={isPasswordVisible ? "input" : "password"}
                   className="form-control"
                   name="password"
                   placeholder="********"
