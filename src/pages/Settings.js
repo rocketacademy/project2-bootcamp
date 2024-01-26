@@ -98,49 +98,68 @@ const Settings = () => {
   return (
     <>
       <div className="prose max-w-sm m-auto my-12">
-        <div className="pr-12 pl-6 py-4 border-4 rounded-lg ">
-          <p className="text-xl  font-bold "> Edit Profile</p>
-          <form onSubmit={handleSubmit} className="text-left">
-            {/* <div className="w-24 h-24 rounded-full  text-white text-center">
-              <div className="rounded-full justify-content ">
-                {!displayPhoto ? initials : <img src={displayPhoto} alt="" />}
-              </div>
-            </div> */}
-            <div className="avatar placeholder">
-              <div className="w-40 rounded-full bg-neutral text-white">
-                {!photo ? initials : <img src={photo} alt="" />}
-              </div>
+        <div className="px-6 py-4 border-4 gap-x-4 rounded-lg grid grid-cols-2 justify-items-center">
+          <h2 className="col-span-2"> Edit Profile</h2>
+
+          <div className="avatar placeholder col-span-2">
+            <div className="w-40 rounded-full bg-neutral text-white">
+              {!photo ? initials : <img src={photo} alt="" />}
             </div>
-            <p>
-              Username: <span>{user.displayName}</span>
-            </p>
-            <p>
-              Email: <span>{user.email}</span>
-            </p>
-            <p>
-              User ID: <span>{user.uid}</span>
-            </p>
+          </div>
+          <p className="col-span-2">
+            Name: <b>{user.displayName}</b> <br />
+            Email: <b>{user.email}</b> <br />
+            User ID: {user.uid}
+          </p>
+          <label className="form-control col-span-2">
+            <div className="label ">
+              <span className="label-text">Upload Photo</span>
+            </div>
             <input
               label="file"
               type="file"
               value={fileInputValue}
               onChange={handleChange}
-              className="mb-4"
+              className="file-input file-input-info max-w-xs col-span-2 mb-6"
             />
-            <div>
-              <button
-                type="submit"
-                className="text-white font-bold shadow-lg border text-sm rounded-lg block w-full p-2.5 dark:bg-red-200 dark:border-gray-600 mb-6"
-              >
-                Submit
-              </button>
+          </label>
+          <button
+            type="submit"
+            className="btn btn-primary col-span-2 w-full mb-10 max-w-xs"
+            onSubmit={handleSubmit}
+          >
+            Submit
+          </button>
+
+          <button
+            className="btn btn-accent col-span-2 max-w-xs mb-14"
+            onClick={() => document.getElementById("my_modal_5").showModal()}
+          >
+            Delete account
+          </button>
+          <dialog
+            id="my_modal_5"
+            className="modal modal-bottom sm:modal-middle"
+          >
+            <div className="modal-box bg-warning">
+              <h3 className="font-bold text-lg">WARNING!</h3>
+              <p className="py-4">
+                Are you sure you want to delete your account? This action cannot
+                be undone.
+              </p>
+              <div className="modal-action">
+                <form method="dialog">
+                  <button
+                    className="btn mr-3 btn-accent"
+                    onClick={handleDelete}
+                  >
+                    Confirm Delete
+                  </button>
+                  <button className="btn">Close</button>
+                </form>
+              </div>
             </div>
-          </form>
-          <p>
-            <button className="btn btn-error" onClick={handleDelete}>
-              Delete account
-            </button>
-          </p>
+          </dialog>
         </div>
       </div>
     </>
