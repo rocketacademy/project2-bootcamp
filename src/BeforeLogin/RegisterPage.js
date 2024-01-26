@@ -63,7 +63,7 @@ export default function RegisterPage() {
         handleErrorMessage={() => setErrorMessage("")}
       />
       <div className="header">
-        <h2>Hi, nice to meet you!</h2>
+        <h2>¡Hola! Nice to meet you!</h2>
       </div>
       <div className="register-page-content">
         <div>
