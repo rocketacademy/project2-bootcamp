@@ -6,7 +6,7 @@ https://bc.rocketacademy.co/2-full-stack/2.p-full-stack-app-firebase
 
 This is a web app for learning Spanish with the help of several study tools, e.g. flashcards, translator and game-based quizzes.
 
-The app is designated for fluent English speakers as English is the default language.
+The app is designated for Spanish learners of all ages who can already speak fluent English.
 
 In this app, users can
 
@@ -20,7 +20,12 @@ In this app, users can
 
 ## How to use the app
 
-1.
+1. All users have to create an account / log in before they can access the main features of the app.
+2. Logged in users are redirected to their homepage where they can see their own flashcards sets.
+3. Users can add a new flashcard set by clicking button "Add deck".
+4. When creating a new set, users need to make sure they fill out both fields of the card and save changes by clicking ✅. Empty or unfinished cards cannot be saved. It is possible to edit any previously saved card by clicking the edit icon or delete it by clicking ❎
+5. When adding/editing a card in the set, users may opt to use the translator feature to translate the word in the top input field. Once a user filled out the first input, they may click "translate" and the translation will appear in the bottom input field. In some cases, there will be more than one translation option, the user can select the one they prefer. It is possible to edit the translation if the user does not find it accurate enough.
+6.
 
 ## Requirements
 
