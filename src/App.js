@@ -1,20 +1,23 @@
-import React from "react";
-import logo from "./logo.png";
+import React, { useState } from "react";
+import Navbar from "./components/Navbar";
 import "./App.css";
+import Dashboard from "./pages/Dashboard";
 
-class App extends React.Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-        </header>
-      </div>
-    );
-  }
-}
+const App = () => {
+  const [darkMode, setDarkMode] = useState(false);
+
+  const toggleDarkMode = () => {
+    setDarkMode(!darkMode);
+  };
+
+  return (
+    <div className={`App ${darkMode ? "dark" : ""}`}>
+      <Navbar toggleDarkMode={toggleDarkMode} darkMode={darkMode} />
+      <header className="py-5 my-5">
+        <Dashboard />
+      </header>
+    </div>
+  );
+};
 
 export default App;
