@@ -85,8 +85,9 @@ const Teacher = () => {
   useEffect(() => {
     if (initialCourse) {
       setCourseName(initialCourse);
+      setGid(initialGid);
     }
-  }, [initialCourse]);
+  }, [initialCourse, initialGid]);
 
   console.log(count);
   console.log(remainingCount);
