@@ -57,18 +57,18 @@ Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
 ## Built with
 
-! [Static Badge](https://img.shields.io/badge/React-61DBFB?style=for-the-badge&logo=React&labelColor=black)
+![Static Badge](https://img.shields.io/badge/React-61DBFB?style=for-the-badge&logo=React&labelColor=black)
 
-! [Static Badge](https://img.shields.io/badge/Firebase-F6C746?style=for-the-badge&logo=Firebase&labelColor=black)
+![Static Badge](https://img.shields.io/badge/Firebase-F6C746?style=for-the-badge&logo=Firebase&labelColor=black)
 
-! [Static Badge](https://img.shields.io/badge/OpenAI-66A270?style=for-the-badge&logo=OpenAI&logoColor=66A270&labelColor=black)
+![Static Badge](https://img.shields.io/badge/OpenAI-66A270?style=for-the-badge&logo=OpenAI&logoColor=66A270&labelColor=black)
 
-! [Static Badge](https://img.shields.io/badge/Axios-FAFAF9?style=for-the-badge&logo=Axios&labelColor=black)
+![Static Badge](https://img.shields.io/badge/Axios-FAFAF9?style=for-the-badge&logo=Axios&labelColor=black)
 
-! [Static Badge](https://img.shields.io/badge/Google%20cloud-FA6322?style=for-the-badge&logo=Google-cloud&logoColor=FA6322&labelColor=black)
+![Static Badge](https://img.shields.io/badge/Google%20cloud-FA6322?style=for-the-badge&logo=Google-cloud&logoColor=FA6322&labelColor=black)
 
-! [Static Badge](https://img.shields.io/badge/MUI-2061D2?style=for-the-badge&logo=MUI&labelColor=black)
+![Static Badge](https://img.shields.io/badge/MUI-2061D2?style=for-the-badge&logo=MUI&labelColor=black)
 
-! [Static Badge](https://img.shields.io/badge/Bootstrap-6331AE?style=for-the-badge&logo=Bootstrap&labelColor=black)
+![Static Badge](https://img.shields.io/badge/Bootstrap-6331AE?style=for-the-badge&logo=Bootstrap&labelColor=black)
 
-! [Static Badge](https://img.shields.io/badge/.env-4AE97A?style=for-the-badge&logo=dotenv&logoColor=4AE97A&labelColor=black)
+![Static Badge](https://img.shields.io/badge/.env-4AE97A?style=for-the-badge&logo=dotenv&logoColor=4AE97A&labelColor=black)
