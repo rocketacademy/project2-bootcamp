@@ -1,19 +1,218 @@
+h1 {
+  padding-left: 20px;
+}
+
+a {
+  text-decoration: none;
+  color: black;
+}
+
 .App {
   text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-.App-header {
-  background-color: #282c34;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: white;
+  background-color: #f0f1f7;
+}
+
+.outlet {
+  text-align: center;
+  min-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #f0f1f7;
+}
+
+.navi-bar {
+  position: relative;
+  overflow: hidden;
+  height: 10vh;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #f0f1f7;
+}
+
+.navi-bar a {
+  color: black;
+  text-decoration: none;
+}
+
+.profile-pic:hover {
+  cursor: pointer;
+}
+
+@media screen and (max-width: 600px) {
+  .navi-icon-div {
+    width: 50vw;
+  }
+  .intro-page-right-layout {
+    height: 60vh;
+    width: 80vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-bottom: -70px;
+  }
+}
+
+@media screen and (min-width: 601px) {
+  .navi-icon-div {
+    width: 500px;
+  }
+  .intro-page {
+    display: flex;
+  }
+  .intro-page-right-layout {
+    width: 40%;
+  }
+  .intro-page-left-layout {
+    width: 60%;
+  }
+}
+
+.page {
+  width: 100vw;
+  max-width: 100%;
+  min-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #f0f1f7;
+}
+
+.correct {
+  background-color: #34a853;
+}
+
+.correct-no-fill {
+  color: #34a853 !important;
+}
+.wrong {
+  background-color: #db004f;
+}
+
+.wrong-no-fill {
+  color: #db004f !important;
+}
+
+.dialog {
+  min-width: max-content;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.error-dialog-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.front-page-button {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+  gap: 20px;
+}
+
+.logo {
+  width: 350px;
+}
+
+.navi-logo {
+  height: 4.5vh;
+  margin-left: 15px;
+  margin-top: 15px;
+}
+
+.intro-page {
+  width: 90vw;
+  margin-left: 10px;
+  margin-right: 10px;
+  align-items: center;
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+
+.intro-features-page {
+  width: 90vw;
+  display: flex;
+  margin-left: 10px;
+  margin-right: 10px;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  row-gap: 5px;
+  margin-bottom: 30px;
+}
+
+.intro-features-page > h1 {
+  padding-left: 0px !important;
+}
+
+.intro-image {
+  object-fit: contain;
+  width: 80%;
+  height: 80%;
+}
+
+.intro-page-right-layout > h1 {
+  font-size: 2.5rem;
+}
+
+.register-button {
+  background-color: #4f6ef7 !important;
+}
+
+.large-search-bar {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+}
+
+.small-search-bar {
+  position: absolute;
+  right: 5vw;
+  display: flex;
+  flex-direction: row;
+}
+
+.navi-icon-div {
+  padding-right: 10px;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.search-bar-input {
+  width: 30vw;
+}
+
+.upload-button {
+  background-color: #dde2fc !important;
+  color: black !important;
+  margin: 5px !important;
+}
+
+.name-input {
+  margin: 5px !important;
+}
+
+.search-bar-icon:hover {
+  cursor: pointer;
+}
+
+.register-layout {
+  width: 80%;
 }

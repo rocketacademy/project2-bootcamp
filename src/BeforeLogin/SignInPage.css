@@ -1,0 +1,162 @@
+h6:hover {
+  color: rgb(57, 57, 187);
+}
+
+h2 {
+  margin-left: auto;
+  margin-right: auto;
+  font-family: "Gill Sans", sans-serif;
+  font-weight: bold;
+  font-size: 180%;
+  letter-spacing: 1px;
+}
+.header {
+  position: relative;
+  top: 0;
+  margin-top: 5vh;
+  margin-bottom: 1vh;
+}
+
+.log-in-page-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.log-in-img {
+  width: 100%;
+  width: 50vw;
+}
+.register-img {
+  width: 100%;
+  width: 50vw;
+}
+.form {
+  flex-grow: 1;
+  width: 400px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+.password-input-container {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.password-visibility-icon {
+  position: absolute;
+  right: 10px;
+  cursor: pointer;
+}
+.register-page-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (max-width: 540px) {
+  .log-in-page-content {
+    flex-direction: column;
+  }
+
+  .form {
+    padding: 15px;
+    width: 250px;
+  }
+  .register-page-content {
+    flex-direction: column;
+  }
+}
+@media (min-width: 550px) {
+  .log-in-page-content {
+    flex-direction: column;
+  }
+
+  .form {
+    padding: 20px;
+  }
+  .form-control {
+    width: 250px;
+    height: 50px;
+  }
+  .register-page-content {
+    flex-direction: column;
+  }
+}
+@media (min-width: 1024px) {
+  .log-in-page-content {
+    /* margin-left: 10vw; */
+    margin-right: 15vw;
+    margin-top: 5vh;
+    flex-direction: row;
+  }
+  .log-in-img {
+    padding-top: 15px;
+    width: 35vw;
+  }
+
+  .register-page-content {
+    margin-left: 12vw;
+    margin-top: 2vh;
+    flex-direction: row-reverse;
+  }
+  .register-img {
+    padding-top: 15px;
+    width: 40vw;
+  }
+  h2 {
+    font-size: 220%;
+  }
+
+  .form-control {
+    width: 300px;
+    height: 60px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .log-in-page-content {
+    margin-top: 1vh;
+    margin-right: 22vw;
+    flex-direction: row;
+  }
+  .register-page-content {
+    margin-top: 1vh;
+    margin-left: 18vw;
+    flex-direction: row-reverse;
+  }
+}
+
+.form-label {
+  font-family: "Gill Sans", sans-serif;
+  font-weight: bold;
+}
+.form-control {
+  opacity: 0.8;
+  background-color: #f0f1f7;
+}
+
+.form-label:focus {
+  outline: none;
+}
+.btn {
+  padding: 8px 16px;
+  border-radius: 4px;
+  background-color: #4f6ef7;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background-color: #7089f5;
+}
+
+#reset-password-form {
+  max-height: 250px;
+}
