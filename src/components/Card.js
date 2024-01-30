@@ -223,7 +223,11 @@ export const CourseCardsWithDelete = ({ initialCourseMap }) => {
         <div className="mt-5 card-actions justify-end">
           <button
             className="btn btn-accent"
-            onClick={() => document.getElementById("my_modal_5").showModal()}
+            onClick={() => {
+              const modal = document.getElementById("my_modal_5");
+              modal.showModal();
+              modal.courseID = courseID;
+            }}
           >
             Delete
           </button>
@@ -242,7 +246,12 @@ export const CourseCardsWithDelete = ({ initialCourseMap }) => {
                   <button
                     className="btn mr-3 btn-accent"
                     onClick={() => {
-                      deleteUploadedFiles(courseID, courseData.firebaseKey);
+                      const modal = document.getElementById("my_modal_5");
+                      const courseIDToDelete = modal.courseID;
+                      deleteUploadedFiles(
+                        courseIDToDelete,
+                        courseData.firebaseKey
+                      );
                     }}
                   >
                     Confirm Delete

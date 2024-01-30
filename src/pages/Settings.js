@@ -59,7 +59,7 @@ const Settings = () => {
   return (
     <>
       {currentUser && (
-        <div className="prose max-w-sm m-auto my-12">
+        <div className="prose text-center max-w-sm m-auto my-12">
           <div className="px-6 py-4 border-4 gap-x-4 rounded-lg grid grid-cols-2 justify-items-center">
             <h2 className="col-span-2"> Edit Profile</h2>
             <form className="col-span-2" onSubmit={handleSubmit}>

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { Chart } from "react-google-charts";
 import useLoadChartData from "../hooks/useLoadData";
 import useLoadCourseSearch from "../hooks/useLoadCourseSearch";
@@ -18,31 +17,7 @@ const Teacher = () => {
   const [courseName, setCourseName] = useState("");
   const [remainingCount, setRemainingCount] = useState(0);
   const [data, setData] = useState([]);
-  const navigate = useNavigate();
   const spreadSheetId = "16HTIiiOq82Tm1tLHRQcr_8YJnO81QxZOOBOfR4hU3zc";
-
-  // useEffect(() => {
-  //   if (studentCount && count) {
-  //     setRemainingCount(studentCount - count);
-  //   }
-  // }, [count]);
-
-  // useEffect(() => {
-  //   const fetchCount = async () => {
-  //     await axios
-  //       .get(
-  //         `https://docs.google.com/spreadsheets/d/${spreadSheetId}/export?format=csv&gid=${initialGid}`
-  //       )
-  //       .then((res) => {
-  //         const numEntries = getNumOfAttemptedStudents(res.data);
-  //         console.log(numEntries);
-  //         setCount(numEntries);
-  //       });
-  //   };
-  //   if (initialGid && studentCount) {
-  //     fetchCount();
-  //   }
-  // }, [initialGid, studentCount]);
 
   const getNumOfAttemptedStudents = (csvText) => {
     const attemptedStudents = new Set(); //set ensures unique values
@@ -131,9 +106,12 @@ const Teacher = () => {
         {remainingCount < 0 ? (
           <>
             <span className="loading loading-dots loading-lg sm:col-start-4 sm:col-span-1"></span>
-            <p className="text-center sm:col-span-6">
-              Error loading, please refresh.
-            </p>
+            <button
+              className="btn btn-ghost text-error sm:col-start-3 sm:col-span-2"
+              onClick={() => fetchData()}
+            >
+              REFRESH
+            </button>
           </>
         ) : (
           <div className="h-96 sm:col-start-2 sm:col-span-4">

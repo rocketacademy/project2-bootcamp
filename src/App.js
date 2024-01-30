@@ -6,7 +6,7 @@ import Reset from "./pages/Reset";
 import Teacher from "./pages/Teacher";
 import Resources from "./pages/Resources";
 import { CourseForm } from "./pages/CourseForm";
-import "./App.css";
+import "./index.css";
 import { AttendancePublic } from "./pages/AttendancePublic";
 import { StudentCourses } from "./pages/StudentCourses";
 import { Navbar } from "./components/Navbar";
@@ -39,23 +39,21 @@ const StudentRoutes = () => (
 
 const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <AuthProvider>
-          <BrowserRouter>
-            <Navbar />
-            <Routes>
-              <Route path="/" element={<Login />} />
-              <Route path="signup" element={<Signup />} />
-              <Route path="landing" element={<Landing />} />
-              <Route path="password-reset" element={<Reset />} />
-              <Route path="teacher/*" element={<TeacherRoutes />} />
-              <Route path="student/*" element={<StudentRoutes />} />
-            </Routes>
-          </BrowserRouter>
-        </AuthProvider>
-      </header>
-    </div>
+    <>
+      <AuthProvider>
+        <BrowserRouter>
+          <Navbar />
+          <Routes>
+            <Route path="/" element={<Login />} />
+            <Route path="signup" element={<Signup />} />
+            <Route path="landing" element={<Landing />} />
+            <Route path="password-reset" element={<Reset />} />
+            <Route path="teacher/*" element={<TeacherRoutes />} />
+            <Route path="student/*" element={<StudentRoutes />} />
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
+    </>
   );
 };
 

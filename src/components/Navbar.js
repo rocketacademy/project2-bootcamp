@@ -23,11 +23,11 @@ export const Navbar = () => {
     if (currentUser && role === "student") {
       return (
         <>
-          <li>
+          <li className="navbar-item">
             <a href="/student">Dashboard</a>
           </li>
 
-          <li>
+          <li className="navbar-item">
             <a href="/student/courses">Student Courses</a>
           </li>
         </>
@@ -35,16 +35,16 @@ export const Navbar = () => {
     } else if (currentUser && role === "teacher") {
       return (
         <>
-          <li>
+          <li className="navbar-item">
             <a href="/teacher">Dashboard</a>
           </li>
-          <li>
+          <li className="navbar-item">
             <a href="/teacher/attendance">Attendance</a>
           </li>
-          <li>
+          <li className="navbar-item">
             <a href="/teacher/resources/courseform">Create Course</a>
           </li>
-          <li>
+          <li className="navbar-item">
             <a href="/teacher/resources">Resources</a>
           </li>
         </>
@@ -128,12 +128,12 @@ export const Navbar = () => {
                 className="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52"
               >
                 {role === "teacher" && (
-                  <li>
+                  <li className="navbar-item">
                     <a href="/teacher/settings">Settings</a>
                   </li>
                 )}
                 {role === "student" && (
-                  <li>
+                  <li className="navbar-item">
                     <a href="/student/settings">Settings</a>
                   </li>
                 )}
