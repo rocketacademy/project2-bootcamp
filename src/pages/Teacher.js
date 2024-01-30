@@ -28,8 +28,6 @@ const Teacher = () => {
       const [timeStamp, emailAddress] = row; //get email address from each row
       attemptedStudents.add(emailAddress.trim());
     });
-    console.log(attemptedStudents);
-    console.log(attemptedStudents.size);
     return attemptedStudents.size;
   };
 
@@ -64,9 +62,6 @@ const Teacher = () => {
     }
   }, [initialCourse, initialGid]);
 
-  console.log(count);
-  console.log(remainingCount);
-
   useEffect(() => {
     setData([
       ["Courses", "Completion rate (%)"],
@@ -75,7 +70,6 @@ const Teacher = () => {
     ]);
   }, [count, studentCount, remainingCount]);
 
-  console.log(data);
   const options = {
     title: `${courseName} Completion Rate`,
     backgroundColor: "transparent",

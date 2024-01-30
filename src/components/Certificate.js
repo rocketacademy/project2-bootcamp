@@ -3,7 +3,6 @@ import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
 const modifyPDF = async ({ userName, courseName }) => {
   const url = process.env.PUBLIC_URL + "/cert.pdf";
   const existingPdfBytes = await fetch(url).then((res) => res.arrayBuffer());
-  console.log(existingPdfBytes);
 
   const pdfDoc = await PDFDocument.load(existingPdfBytes);
   const helveticaFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);

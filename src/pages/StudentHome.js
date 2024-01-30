@@ -41,7 +41,6 @@ const AttemptData = ({ userEmail }) => {
 
 export const StudentHome = () => {
   const { currentUser } = useContext(AuthContext);
-  console.log(currentUser);
   return (
     <>
       <div className="prose grid grid-cols-1 p-6 max-w-full sm:grid-cols-6">

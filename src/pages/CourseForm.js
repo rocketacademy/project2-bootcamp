@@ -109,7 +109,6 @@ export const CourseForm = () => {
   const handleGidLink = (e) => {
     setGidValue(e.target.value);
     const extractedGid = extractGid(e.target.value);
-    console.log(`GID: ${extractedGid}`);
     setGid(extractedGid);
   };
 
@@ -207,11 +206,6 @@ export const CourseForm = () => {
               required
             />
           </div>
-
-          {/* assign course */}
-          {/* <div className="sm:col-span-6">
-            <AssignCourseCard cardTitle={"Assign Course"} />
-          </div> */}
           <button
             className="btn btn-primary sm:col-start-4 sm:col-span-2"
             type="submit"

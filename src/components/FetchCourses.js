@@ -181,8 +181,6 @@ export const useAttemptData = ({ userEmail }) => {
 
     const newMap = new Map(filteredArray);
     setAttemptedCourseMap(newMap);
-    console.log(newMap);
-    console.log(newMap.size);
     setAttemptCount(newMap.size);
   };
 
@@ -197,8 +195,6 @@ export const useAttemptData = ({ userEmail }) => {
 
     const newMap = new Map(filteredArray);
     setNotAttemptedCourseMap(newMap);
-    console.log(newMap);
-    console.log(newMap.size);
     setNotAttemptCount(newMap.size);
   };
   return {

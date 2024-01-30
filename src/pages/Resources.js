@@ -1,4 +1,3 @@
-import { useNavigate } from "react-router-dom";
 import { CourseCardsWithDelete } from "../components/Card";
 import { useCourseData } from "../components/FetchCourses";
 

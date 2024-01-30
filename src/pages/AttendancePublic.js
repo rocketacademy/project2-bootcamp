@@ -11,25 +11,20 @@ const QuizData = ({ gid, courseName }) => {
 
   const downloadSheet = () => {
     const publicSheetUrl = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/export?format=csv&gid=${gid}`;
-    console.log(publicSheetUrl);
     window.open(publicSheetUrl, "_blank");
   };
 
   const fetchData = async () => {
     setIsLoading(true);
     const publicSheetUrl = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/export?format=csv&gid=${gid}`;
-    console.log(publicSheetUrl);
 
     try {
       const response = await axios.get(publicSheetUrl);
-      console.log(response);
 
       const csvData = response.data;
-      console.log(csvData);
 
       const rows = csvData.split("\n");
       const parsedData = rows.map((row) => row.split(","));
-      console.log(parsedData);
       setResponses(parsedData);
     } catch (error) {
       console.error("Error fetching sheet data:", error);
@@ -71,22 +66,6 @@ const QuizData = ({ gid, courseName }) => {
                 <QuizTable responses={responses} />
               </div>
             </div>
-            {/* <h1 className="text-center text-secondary sm:col-span-6">
-              {courseName}
-            </h1>
-            <button
-              className="mb-6 btn btn-ghost sm:col-start-3 sm:col-span-2"
-              onClick={fetchData}
-            >
-              REFRESH
-            </button>
-            <button
-              className="mb-6 btn btn-ghost sm:col-start-6 sm:col-span-1"
-              onClick={downloadSheet}
-            >
-              DOWNLOAD
-            </button> */}
-            {/* <QuizTable responses={responses} /> */}
           </>
         )
       )}

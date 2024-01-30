@@ -10,7 +10,6 @@ const Reset = () => {
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
-  const [showErrorAlert, setShowErrorAlert] = useState(false);
 
   const handleReset = async (e) => {
     e.preventDefault();

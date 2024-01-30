@@ -31,10 +31,6 @@ export const AuthProvider = ({ children }) => {
         });
       }
     });
-
-    // return () => {
-    //   unsubscribe();
-    // };
   }, []);
 
   const updatePhoto = (newPhotoURL) => {
