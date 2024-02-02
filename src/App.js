@@ -1,20 +1,60 @@
 import React from "react";
-import logo from "./logo.png";
-import "./App.css";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+import Reset from "./pages/Reset";
+import Teacher from "./pages/Teacher";
+import Resources from "./pages/Resources";
+import { CourseForm } from "./pages/CourseForm";
+import "./index.css";
+import { AttendancePublic } from "./pages/AttendancePublic";
+import { StudentCourses } from "./pages/StudentCourses";
+import { Navbar } from "./components/Navbar";
+import { StudentHome } from "./pages/StudentHome";
+import Settings from "./pages/Settings";
+import { AuthProvider } from "./pages/AuthProvider";
+import { Landing } from "./pages/Landing";
 
-class App extends React.Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-        </header>
-      </div>
-    );
-  }
-}
+const TeacherRoutes = () => (
+  <>
+    <Routes>
+      <Route path="/" element={<Teacher />} />
+      <Route path="resources" element={<Resources />} />
+      <Route path="resources/courseform" element={<CourseForm />} />
+      <Route path="attendance" element={<AttendancePublic />} />
+      <Route path="settings" element={<Settings />} />
+    </Routes>
+  </>
+);
+
+const StudentRoutes = () => (
+  <>
+    <Routes>
+      <Route path="/" element={<StudentHome />} />
+      <Route path="courses" element={<StudentCourses />} />
+      <Route path="settings" element={<Settings />} />
+    </Routes>
+  </>
+);
+
+const App = () => {
+  return (
+    <>
+      <AuthProvider>
+        <BrowserRouter>
+          <Navbar />
+          <Routes>
+            <Route path="/" element={<Login />} />
+            <Route path="signup" element={<Signup />} />
+            <Route path="landing" element={<Landing />} />
+            <Route path="password-reset" element={<Reset />} />
+            <Route path="teacher/*" element={<TeacherRoutes />} />
+            <Route path="student/*" element={<StudentRoutes />} />
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
+    </>
+  );
+};
 
 export default App;
