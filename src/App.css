@@ -1,5 +1,29 @@
-.App {
-  text-align: center;
+/* .App {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+} */
+
+@media all and (max-width: 500px) {
+  .app-container {
+    width: 10%;
+  }
+
+  .link-container,
+  .pills-landmarks {
+    display: none;
+    font-family: "Roboto";
+  }
+}
+
+@media all and (min-width: 501px) {
+  .drawer-links {
+    display: none;
+  }
+
+  .pills-landmarks {
+    display: flex;
+  }
 }
 
 .App-logo {
@@ -16,4 +40,43 @@
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.ai-response {
+  animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.ai-response {
+  animation: fadeIn 0.5s ease;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(8px); /* Adjust the blur strength */
+  z-index: 1000; /* Ensure it's above other elements */
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
